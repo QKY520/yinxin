@@ -1,0 +1,52 @@
+# Downloaded tutorial repository; its Codex skills are installed globally.
+/Auto-claude-code-research-in-sleep/
+/AGENTS1.md
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# IDE and OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Secrets and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*credentials*.json
+
+# Large or generated project artifacts
+/models/
+/cache/
+/logs/
+/backups/
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+
+# Datasets are backed up separately, not committed.
+/data/*
+!/data/README.md
+!/data/FROZEN
+
+# Track only paper-facing result summaries and plots.
+/results/*
+!/results/README.md
+!/results/main_table.csv
+!/results/summary.md
+!/results/plots/
+!/results/plots/**
