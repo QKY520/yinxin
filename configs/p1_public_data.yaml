@@ -1,0 +1,122 @@
+phase: P1
+seed: 42
+shots: [1, 5, 10]
+span_sanity_per_dataset: 100
+data_root: /root/autodl-tmp/data
+report_root: /root/autodl-tmp/backup/p1
+log_path: /root/project/logs/p1_public_data.jsonl
+
+datasets:
+  cluener:
+    format: cluener
+    source:
+      data_url: https://storage.googleapis.com/cluebenchmark/tasks/cluener_public.zip
+      archive_sha256: 6dcc30e233034ecd91675182db690be187e61c5a3b5e96bf9f6b971ba8f132fa
+      code_repository: https://github.com/CLUEbenchmark/CLUENER2020
+      code_revision: 2e8fccd1b8cde6b471fe440b9d766e920fb418ab
+      license: Apache-2.0 per project policy
+      license_evidence: The official archive and repository do not bundle a license file; do not redistribute until the upstream license statement is archived.
+    splits:
+      train:
+        input: /root/autodl-tmp/data/raw/cluener_data/extracted/train.json
+        sha256: 60299d202779dc84f3c3bd81f4dc08f5323d0dbf762cb50cd62dd51aa9a871f8
+        output: cluener_train.jsonl
+        labeled: true
+        expected_records: 10748
+      dev:
+        input: /root/autodl-tmp/data/raw/cluener_data/extracted/dev.json
+        sha256: 90036b59832e007c45d11eafe5ed80549f58a18a29aaa7fe8b1229622c69ec38
+        output: cluener_dev.jsonl
+        labeled: true
+        expected_records: 1343
+      test_unlabeled:
+        input: /root/autodl-tmp/data/raw/cluener_data/extracted/test.json
+        sha256: 5ca36f6fbe29230a6e3244110fcd9487fc2f5a672f5bfeba82a30f0ece72aa69
+        output: cluener_test_unlabeled.jsonl
+        labeled: false
+        expected_records: 1345
+
+  fewnerd:
+    format: fewnerd
+    source:
+      original_repository: https://github.com/thunlp/Few-NERD
+      original_revision: fe45e008d62981e14bd2d41bceca21c0025f02da
+      original_supervised_url: https://cloud.tsinghua.edu.cn/f/c1f71c011d6b461786bc/?dl=1
+      fallback_repository: https://huggingface.co/datasets/DFKI-SLT/few-nerd
+      fallback_revision: 205f3e9c9f3577ea2561d43f2f62dc249ab92d5b
+      fallback_reason: The official supervised-data link returned "Link does not exist" on 2026-07-15.
+      license: CC-BY-SA-4.0
+      license_evidence: Hugging Face dataset card for the pinned fallback revision; the upstream code repository separately carries Apache-2.0.
+    splits:
+      train:
+        input: /root/autodl-tmp/data/raw/fewnerd_data/supervised/train-00000-of-00001.parquet
+        sha256: 6ccb192b1accd3d1754db2244d18ddf64040357fb5b9076a338ec421a72d7d61
+        output: fewnerd_train.jsonl
+        labeled: true
+        expected_records: 131767
+      dev:
+        input: /root/autodl-tmp/data/raw/fewnerd_data/supervised/validation-00000-of-00001.parquet
+        sha256: d502de918f2a6510179e64bc8b7cfff4e28999188e308f8b0fe75bd71844da66
+        output: fewnerd_dev.jsonl
+        labeled: true
+        expected_records: 18824
+      test:
+        input: /root/autodl-tmp/data/raw/fewnerd_data/supervised/test-00000-of-00001.parquet
+        sha256: b7ad746fcbeb68fcc235ba7142d7c3723ea2dc39930089e947284defecf300c6
+        output: fewnerd_test.jsonl
+        labeled: true
+        expected_records: 37648
+
+  duie:
+    format: duie
+    source:
+      data_url: https://dataset-bj.cdn.bcebos.com/qianyan/DuIE_2_0.zip
+      archive_sha256: df223b18f3bd0fe19a61d18d7d59a22cd3f145c342c58470e93851bb4d1b40ed
+      license: Bundled DuIE 2.0 License.pdf
+      license_file_sha256: 495bdaab78cf7104b1377f04ef65133f20539dba2bee2937d2cf9d8fc49338e0
+      license_evidence: The official archive is retained privately with its license PDF; redistribution is disabled.
+    splits:
+      train:
+        input: /root/autodl-tmp/data/raw/duie/extracted/DuIE_2_0/train.json
+        sha256: 3fc53f61883e313f3821e69c655e4e9ddaea5055d2431562fbc2e06dadffe415
+        output: duie_train.jsonl
+        labeled: true
+        expected_records: 171293
+      dev:
+        input: /root/autodl-tmp/data/raw/duie/extracted/DuIE_2_0/dev.json
+        sha256: 365318e952024f1910df506cc6bdcb2642d83d4b684e12ccb4685d2b6f80cd54
+        output: duie_dev.jsonl
+        labeled: true
+        expected_records: 20674
+      test_unlabeled:
+        input: /root/autodl-tmp/data/raw/duie/extracted/DuIE_2_0/test.json
+        sha256: 4b671ab2934ccfda225faf959c9d700e17fb157fe17d5742224de460b2ac7706
+        output: duie_test_unlabeled.jsonl
+        labeled: false
+        expected_records: 101311
+
+  cmnee:
+    format: cmnee
+    source:
+      repository: https://www.modelscope.cn/datasets/mzzzhu/CMNEE
+      revision: 5337fbd72516c3de0e67d76877778ba2d410c43e
+      code_repository: https://github.com/Mzzzhu/CMNEE
+      code_revision: ed5a6dda7e9e8696e4023bee5142a8d9f33e464b
+      license: Apache-2.0
+      license_evidence: ModelScope dataset API field "License" returned "Apache License 2.0" on 2026-07-15.
+    splits:
+      train:
+        input: /root/autodl-tmp/data/raw/cmnee_data/train.json
+        sha256: 6a796ca174eef9519e323589944859d8fa909788a4b919bbfe209612d4decad2
+        output: cmnee_train.jsonl
+        labeled: true
+      dev:
+        input: /root/autodl-tmp/data/raw/cmnee_data/valid.json
+        sha256: 7c907d3ace2f94b221a2d03d4deb8a0512fd85718af13edb37f103e2fd247993
+        output: cmnee_dev.jsonl
+        labeled: true
+      test:
+        input: /root/autodl-tmp/data/raw/cmnee_data/test.json
+        sha256: 486be178b4ce8299650261dbbb7e19fb39c79a18c977d71f020ed96c3eb80dc4
+        output: cmnee_test.jsonl
+        labeled: true
