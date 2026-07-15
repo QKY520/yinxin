@@ -14,8 +14,8 @@ deduplication:
   normalize_whitespace: true
 
 source_quotas:
-  baidu_baike: 8
-  patent: 152
+  baidu_baike: 7
+  patent: 153
   cmnee: 240
 
 baidu_baike:
