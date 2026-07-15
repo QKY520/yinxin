@@ -10,9 +10,11 @@ and aggregation. Use a paid GPU boot only for model inference or training.
 After every GPU phase: verify outputs, back up, sync lightweight artifacts to
 `D:\yinsir`, report cost, and remind the human to shut down the instance.
 
-**CURRENT BLOCKER**: AutoDL access is not configured. Do not invent a host,
-port, password, SSH alias, GPU state, or remote path. Wait for the human to
-create the instance and provide the non-secret SSH connection command.
+**CURRENT GATE**: AutoDL SSH is configured and verified in GPU-free mode. The
+project environment has not been installed. Do not install dependencies,
+download models, or enable the paid GPU until the human explicitly confirms
+Step 3. The real host and port live only in the user's local SSH config; use the
+non-secret alias `autodl-paper` in project files and commands.
 
 ## Execution Authority
 
@@ -141,21 +143,23 @@ a reproducible ablation matrix, not a single attractive run.
 
 ## Current Priority And State
 
-Current step: **Step 1 - local repository and durable Git backup foundation**.
+Current step: **Step 2 complete - AutoDL instance and secure SSH verified**.
 
 - Local workspace: `D:\yinsir`.
-- Git repository: not initialized yet.
-- GitHub remote: supplied, connectivity/push not yet verified.
-- AutoDL instance: not created or not yet provided to the agent.
-- SSH alias: not configured.
-- Remote environment: not installed.
+- Git repository: `main` initialized and tracking `origin/main`.
+- GitHub remote: initial project foundation pushed and hash-verified.
+- AutoDL instance: reachable in GPU-free mode.
+- SSH alias: `autodl-paper`; dedicated ED25519 key authentication verified.
+- Base image: Ubuntu 22.04.4, Python 3.12.3, PyTorch 2.5.1+cu124.
+- Remote project environment: not installed; `~/venv` does not exist yet.
+- Storage: 30 GB system disk and 120 GB data disk at `/root/autodl-tmp`.
 - Datasets/models: not downloaded.
 - Domain schema: default proposal only; human approval is required at P2 Pause A.
 - Test set: not created and therefore not frozen.
-- GPU spend: 0 CNY recorded by this project so far.
+- GPU spend: 0 CNY recorded; only GPU-free mode has been used. GPU-free hourly
+  price and elapsed platform charge still require the human's billing record.
 
-Do not start P0 remote installation until Step 1 is committed/pushed and the
-human confirms Step 2.
+Do not start P0 remote installation until the human confirms Step 3.
 
 ## Fixed Technology Decisions
 
@@ -529,17 +533,23 @@ itself a memory leak.
 
 ## Remote Server
 
-The human must populate this section after creating the AutoDL instance. Keep
-passwords and private keys out of this file and out of Git.
+The active AutoDL endpoint is stored only in the user's local SSH config. Keep
+the host, port, passwords, and private keys out of this file and out of Git.
 
 | Item | Current value |
 | --- | --- |
-| SSH | not configured |
-| SSH alias | planned: `autodl-paper` |
-| GPU | planned: RTX 4090 24 GB; verify live allocation |
+| SSH | dedicated ED25519 key verified; use alias only |
+| SSH alias | `autodl-paper` |
+| OS | Ubuntu 22.04.4 LTS |
+| Boot mode | GPU-free; no `/dev/nvidia*`, `nvidia-smi` disabled |
+| GPU | rented RTX 4090 24 GB; not visible until human switches to paid GPU mode |
+| Base Python | `/root/miniconda3/bin/python`, Python 3.12.3 |
+| Base PyTorch | 2.5.1+cu124; CUDA build 12.4 |
+| System disk | 30 GB |
+| Data disk | 120 GB mounted at `/root/autodl-tmp` |
 | Remote code | `/root/project` |
 | Remote data | `/root/autodl-tmp` |
-| Python | `~/venv` |
+| Project Python | planned `~/venv`; not created yet |
 | Long jobs | use one named tmux/screen session per run |
 | Code sync | Git push locally, Git pull remotely |
 
