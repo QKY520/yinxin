@@ -12,3 +12,15 @@ source /root/venv/bin/activate
 python scripts/prepare_public_data.py --config configs/p1_public_data.yaml
 python scripts/verify_artifact_manifest.py
 ```
+
+P2 candidate collection before schema Pause A:
+
+```bash
+source /etc/network_turbo
+cd /root/project
+source /root/venv/bin/activate
+python scripts/prepare_domain_candidates.py --config configs/p2_domain_data.yaml
+```
+
+This command collects candidates only. It does not run the distant-supervision
+prelabeler or any LLM annotation step.

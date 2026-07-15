@@ -1,0 +1,103 @@
+phase: P2
+seed: 42
+candidate_target: 400
+min_chars: 100
+max_chars: 300
+data_root: /root/autodl-tmp/data
+p2_root: /root/autodl-tmp/data/p2
+report_root: /root/autodl-tmp/backup/p2
+log_path: /root/project/logs/p2_collection.jsonl
+
+deduplication:
+  ngram_size: 8
+  containment_threshold: 0.80
+  normalize_whitespace: true
+
+source_quotas:
+  baidu_baike: 100
+  patent: 120
+  cmnee: 180
+
+baidu_baike:
+  cache_path: /root/autodl-tmp/data/p2/cache/baike_descriptions.jsonl
+  max_attempts: 360
+  pool_target: 160
+  request_delay_seconds: 0.25
+  timeout_seconds: 20
+  user_agent: Mozilla/5.0 (compatible; equipment-ie-research/0.1)
+  license: Baidu Baike public page terms; private research cache only
+  redistribution: prohibited
+
+equipment_keywords:
+  specific:
+    - 无人机
+    - 飞行器
+    - 战斗机
+    - 轰炸机
+    - 预警机
+    - 导弹
+    - 雷达
+    - 卫星
+    - 航天器
+    - 火箭
+    - 舰艇
+    - 军舰
+    - 潜艇
+    - 装甲
+    - 火炮
+    - 弹药
+    - 武器
+    - 制导
+    - 防空
+    - 舰载
+    - 机载
+    - 电子对抗
+    - 目标探测
+    - 侦察
+  general:
+    - 导航
+    - 通信
+    - 天线
+    - 相控阵
+    - 发动机
+    - 推进系统
+    - 发射装置
+    - 传感器
+    - 光电
+    - 激光
+    - 遥感
+    - 目标识别
+    - 跟踪
+    - 定位
+
+sources:
+  qaonmilitarykg:
+    repository: https://github.com/RomanGao/QAonMilitaryKG
+    revision: 63bca17982f514852fb70330952d30d266eefb78
+    data_path: /root/autodl-tmp/data/p2/sources/QAonMilitaryKG-RomanGao/data/military.json
+    data_sha256: 76d9bc1ed7fed3ec28ccdcc94d705ac3e3d9a70ed1798ce19c8b6db390213fc0
+    license: NOASSERTION
+    use: Private seed dictionary and Baidu Baike query names only
+  kppatent_zh:
+    repository: https://github.com/tanggongbo/KPPatent-ZH
+    revision: 03881440c311158ba710bb55fcabe66b89182730
+    license: MIT
+    license_path: /root/autodl-tmp/data/p2/sources/KPPatent-ZH/LICENSE
+    license_sha256: fa2d0182559f0d02a4eab1f0dc57ff014adc7ba38100515176181da94a48c786
+    files:
+      - split: train
+        path: /root/autodl-tmp/data/p2/sources/KPPatent-ZH/data/original_data/train.jsonl
+        sha256: 4ecb0753706deecb8cbe25b4f18581ff83c68f63566158c6851d7076b9b218e7
+      - split: dev
+        path: /root/autodl-tmp/data/p2/sources/KPPatent-ZH/data/original_data/dev.jsonl
+        sha256: 9d250ae296bee69e5e4bd3ee927682c4de8ab6385966873a93edf35801735629
+      - split: test
+        path: /root/autodl-tmp/data/p2/sources/KPPatent-ZH/data/original_data/test.json
+        sha256: 589a501b2aaaf4efaa87ed9cdc5286538dd43b79b0f9d297b6ebc035450bf3ad
+  cmnee:
+    repository: https://www.modelscope.cn/datasets/mzzzhu/CMNEE
+    revision: 5337fbd72516c3de0e67d76877778ba2d410c43e
+    code_revision: ed5a6dda7e9e8696e4023bee5142a8d9f33e464b
+    license: Apache-2.0
+    data_path: /root/autodl-tmp/data/raw/cmnee_data/train.json
+    data_sha256: 6a796ca174eef9519e323589944859d8fa909788a4b919bbfe209612d4decad2
