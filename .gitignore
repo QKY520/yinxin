@@ -42,6 +42,7 @@ Thumbs.db
 /data/*
 !/data/README.md
 !/data/FROZEN
+!/data/P1_VALIDATION.md
 
 # Track only paper-facing result summaries and plots.
 /results/*

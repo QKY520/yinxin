@@ -10,11 +10,11 @@ and aggregation. Use a paid GPU boot only for model inference or training.
 After every GPU phase: verify outputs, back up, sync lightweight artifacts to
 `D:\yinsir`, report cost, and remind the human to shut down the instance.
 
-**CURRENT GATE**: P0 environment setup is complete in AutoDL GPU-free mode. The
-human must save the instance image in the AutoDL web UI and explicitly confirm
-Step 4 before any P1 dataset work begins. Do not enable the paid GPU. The real
-host and port live only in the user's local SSH config; use the non-secret alias
-`autodl-paper` in project files and commands.
+**CURRENT GATE**: Step 4 / P1 public-data preparation passed Gate 1 in AutoDL
+GPU-free mode. Do not begin P2 domain-data collection, annotation, or paid-GPU
+work until the human explicitly confirms Step 5. The real host and port live
+only in the user's local SSH config; use the non-secret alias `autodl-paper` in
+project files and commands.
 
 ## Execution Authority
 
@@ -143,13 +143,14 @@ a reproducible ablation matrix, not a single attractive run.
 
 ## Current Priority And State
 
-Current step: **Step 3 agent work complete - P0 awaiting human image save and
+Current step: **Step 4 complete - P1 public data verified and backed up; awaiting
 approval to proceed**.
 
 - Local workspace: `D:\yinsir`.
 - Git repository: `main` initialized and tracking `origin/main`.
-- GitHub remote: P0 project state pushed and hash-verified.
+- GitHub remote: P1 implementation state pushed and hash-verified.
 - AutoDL instance: reachable in GPU-free mode.
+- AutoDL image: the human confirmed the P0 image was saved.
 - SSH alias: `autodl-paper`; dedicated ED25519 key authentication verified.
 - GitHub deploy key: read-only access verified from AutoDL over SSH port 443.
 - Base image: Ubuntu 22.04.4, Python 3.12.3, PyTorch 2.5.1+cu124.
@@ -165,14 +166,25 @@ approval to proceed**.
 - P0 backup: remote metadata and logs are under
   `/root/autodl-tmp/backup/p0`; the verified lightweight copy is under
   `D:\yinsir\backups\P0`.
-- Datasets: not downloaded; P1 has not started.
+- Public datasets: CLUENER, Few-NERD SUP, DuIE 2.0, and CMNEE are downloaded,
+  normalized into 12 official split JSONL files, and accompanied by K=1/5/10
+  support files at seed 42. All files reload and 400 sampled spans pass.
+- Public-test limitation: the official public CLUENER and DuIE test files have
+  no gold labels. They are named `*_test_unlabeled.jsonl` and must never be
+  evaluated as all-negative gold. A documented protocol decision is required
+  before offline CLUENER test metrics.
+- P1 source audit: nine DuIE object values tied to malformed or unalignable
+  annotations were explicitly rejected and logged; all other normalized records
+  passed the unified contract.
+- P1 backup: the 184,027,514-byte private archive is stored under
+  `/root/autodl-tmp/backup/p1` and `D:\yinsir\backups\P1`; remote and local
+  SHA256 both equal `e472122c...440a341`.
 - Domain schema: default proposal only; human approval is required at P2 Pause A.
 - Test set: not created and therefore not frozen.
 - GPU spend: 0 CNY recorded; only GPU-free mode has been used. GPU-free hourly
   price and elapsed platform charge still require the human's billing record.
 
-Do not start P1 dataset work until the human saves the AutoDL image and confirms
-Step 4.
+Do not start P2 domain-data work until the human confirms Step 5.
 
 ## Fixed Technology Decisions
 
