@@ -15,8 +15,8 @@ deduplication:
 
 source_quotas:
   baidu_baike: 7
-  patent: 153
-  cmnee: 240
+  patent: 84
+  cmnee: 309
 
 baidu_baike:
   cache_path: /root/autodl-tmp/data/p2/cache/baike_descriptions.jsonl
