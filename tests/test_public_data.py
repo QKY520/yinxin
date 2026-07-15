@@ -17,6 +17,7 @@ from equipment_ie.public_data import (  # noqa: E402
     duie_row_to_record,
     fewnerd_row_to_record,
     iter_selected_records,
+    partition_record_ids,
 )
 from equipment_ie.schema import validate_record, write_jsonl_atomic  # noqa: E402
 
@@ -172,6 +173,24 @@ class PublicDataConverterTest(unittest.TestCase):
         self.assertEqual(len(first.selected_by_type["A"]), 5)
         self.assertEqual(len(first.selected_by_type["B"]), 5)
         self.assertEqual({record["id"] for record in selected}, set(first.selected_ids))
+
+    def test_record_partition_is_deterministic_disjoint_cover(self) -> None:
+        records = [
+            {"id": f"r{index}", "text": "甲", "entities": [], "relations": []}
+            for index in range(100)
+        ]
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "train.jsonl"
+            write_jsonl_atomic(path, records)
+            first = partition_record_ids(path, tune_fraction=0.1, seed=42)
+            second = partition_record_ids(path, tune_fraction=0.1, seed=42)
+        self.assertEqual(first, second)
+        self.assertEqual(len(first.tune_ids), 10)
+        self.assertEqual(len(first.pool_ids), 90)
+        self.assertFalse(first.pool_ids.intersection(first.tune_ids))
+        self.assertEqual(
+            first.pool_ids.union(first.tune_ids), {record["id"] for record in records}
+        )
 
 
 if __name__ == "__main__":

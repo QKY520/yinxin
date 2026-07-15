@@ -49,5 +49,6 @@ Thumbs.db
 !/results/README.md
 !/results/main_table.csv
 !/results/summary.md
+!/results/cost_log.csv
 !/results/plots/
 !/results/plots/**

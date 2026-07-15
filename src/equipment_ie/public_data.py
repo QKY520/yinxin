@@ -592,6 +592,48 @@ def choose_support_ids(path: Path | str, *, k: int, seed: int) -> SupportSelecti
     )
 
 
+@dataclass(frozen=True)
+class RecordPartition:
+    """A deterministic two-way partition of one JSONL file."""
+
+    pool_ids: frozenset[str]
+    tune_ids: frozenset[str]
+    seed: int
+    tune_fraction: float
+
+
+def partition_record_ids(
+    path: Path | str, *, tune_fraction: float, seed: int
+) -> RecordPartition:
+    """Split record ids with NumPy default_rng while preserving all records."""
+
+    if not 0.0 < tune_fraction < 1.0:
+        raise ValueError("tune_fraction must be between zero and one")
+    try:
+        import numpy as np
+    except ImportError as exc:
+        raise ConversionError("numpy is required for deterministic partitioning") from exc
+
+    record_ids = [record["id"] for record in iter_jsonl(path)]
+    if len(record_ids) < 2:
+        raise SchemaError(f"{path}: at least two records are required for partitioning")
+    tune_count = max(1, min(len(record_ids) - 1, round(len(record_ids) * tune_fraction)))
+    rng = np.random.default_rng(seed)
+    tune_indices = set(int(index) for index in rng.choice(len(record_ids), tune_count, replace=False))
+    tune_ids = frozenset(
+        record_id for index, record_id in enumerate(record_ids) if index in tune_indices
+    )
+    pool_ids = frozenset(record_ids).difference(tune_ids)
+    if pool_ids.intersection(tune_ids) or len(pool_ids) + len(tune_ids) != len(record_ids):
+        raise AssertionError("partition is not a disjoint cover of the source ids")
+    return RecordPartition(
+        pool_ids=pool_ids,
+        tune_ids=tune_ids,
+        seed=seed,
+        tune_fraction=tune_fraction,
+    )
+
+
 def iter_selected_records(
     path: Path | str, selected_ids: frozenset[str]
 ) -> Iterator[dict[str, Any]]:

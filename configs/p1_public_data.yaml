@@ -6,6 +6,13 @@ data_root: /root/autodl-tmp/data
 report_root: /root/autodl-tmp/backup/p1
 log_path: /root/project/logs/p1_public_data.jsonl
 
+cluener_protocol:
+  evaluation_output: cluener_dev.jsonl
+  pool_output: cluener_train_pool.jsonl
+  tune_output: cluener_tune.jsonl
+  tune_fraction: 0.10
+  seed: 42
+
 datasets:
   cluener:
     format: cluener

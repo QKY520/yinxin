@@ -1,0 +1,2 @@
+recorded_at,through_phase,boot_mode,gpu_model,gpu_hours,gpu_cost_cny,platform_cost_cny,cumulative_cost_cny,source,note
+2026-07-15T19:45:00+08:00,P1,gpu_free,,0,0.00,1.50,1.50,human_reported,"Cumulative AutoDL charge through P1"

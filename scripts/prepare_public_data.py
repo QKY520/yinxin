@@ -26,6 +26,7 @@ from equipment_ie.public_data import (  # noqa: E402
     convert_duie,
     convert_fewnerd,
     iter_selected_records,
+    partition_record_ids,
 )
 from equipment_ie.schema import (  # noqa: E402
     iter_jsonl,
@@ -141,6 +142,13 @@ def _span_sanity(
     return report
 
 
+def _entity_type_counts(path: Path) -> dict[str, int]:
+    counts: Counter[str] = Counter()
+    for record in iter_jsonl(path):
+        counts.update(entity["type"] for entity in record["entities"])
+    return dict(sorted(counts.items()))
+
+
 def prepare(config_path: Path) -> dict[str, Any]:
     config = _load_config(config_path)
     data_root = Path(config["data_root"])
@@ -159,6 +167,7 @@ def prepare(config_path: Path) -> dict[str, Any]:
     labeled_outputs: dict[str, list[Path]] = {}
     train_outputs: dict[str, Path] = {}
     official_outputs: list[Path] = []
+    derived_outputs: list[Path] = []
 
     for dataset, dataset_config in config["datasets"].items():
         dataset_report: dict[str, Any] = {
@@ -212,6 +221,52 @@ def prepare(config_path: Path) -> dict[str, Any]:
                 train_outputs[dataset] = output_path
         report["datasets"][dataset] = dataset_report
 
+    cluener_protocol = config["cluener_protocol"]
+    cluener_source = train_outputs["cluener"]
+    partition = partition_record_ids(
+        cluener_source,
+        tune_fraction=float(cluener_protocol["tune_fraction"]),
+        seed=int(cluener_protocol["seed"]),
+    )
+    cluener_pool = data_root / cluener_protocol["pool_output"]
+    cluener_tune = data_root / cluener_protocol["tune_output"]
+    pool_counts = write_jsonl_atomic(
+        cluener_pool, iter_selected_records(cluener_source, partition.pool_ids)
+    )
+    tune_counts = write_jsonl_atomic(
+        cluener_tune, iter_selected_records(cluener_source, partition.tune_ids)
+    )
+    source_counts = validate_jsonl(cluener_source)
+    if pool_counts["records"] + tune_counts["records"] != source_counts["records"]:
+        raise AssertionError("CLUENER pool and tune partitions do not cover official train")
+    pool_types = _entity_type_counts(cluener_pool)
+    tune_types = _entity_type_counts(cluener_tune)
+    if set(pool_types) != set(tune_types):
+        raise AssertionError("CLUENER pool and tune partitions have different type coverage")
+    report["cluener_protocol"] = {
+        "evaluation_file": str(data_root / cluener_protocol["evaluation_output"]),
+        "evaluation_role": "frozen_official_dev",
+        "seed": partition.seed,
+        "tune_fraction": partition.tune_fraction,
+        "pool": {
+            "path": str(cluener_pool),
+            "sha256": sha256_file(cluener_pool),
+            "bytes": cluener_pool.stat().st_size,
+            "counts": pool_counts,
+            "entity_type_counts": pool_types,
+        },
+        "tune": {
+            "path": str(cluener_tune),
+            "sha256": sha256_file(cluener_tune),
+            "bytes": cluener_tune.stat().st_size,
+            "counts": tune_counts,
+            "entity_type_counts": tune_types,
+        },
+        "disjoint_cover": True,
+    }
+    train_outputs["cluener"] = cluener_pool
+    derived_outputs.extend([cluener_pool, cluener_tune])
+
     for dataset, train_path in sorted(train_outputs.items()):
         report["support"][dataset] = {}
         for k in config["shots"]:
@@ -254,11 +309,15 @@ def prepare(config_path: Path) -> dict[str, Any]:
             "cluener_test_unlabeled.jsonl",
             "duie_test_unlabeled.jsonl",
         ],
+        "cluener_evaluation_file": cluener_protocol["evaluation_output"],
+        "cluener_support_pool": cluener_protocol["pool_output"],
+        "cluener_tuning_file": cluener_protocol["tune_output"],
+        "cluener_protocol_disjoint": True,
     }
     report_path = report_root / "conversion_report.json"
     _write_json_atomic(report_path, report)
 
-    manifest_paths = official_outputs + [
+    manifest_paths = official_outputs + derived_outputs + [
         Path(item["path"])
         for dataset_support in report["support"].values()
         for item in dataset_support.values()
