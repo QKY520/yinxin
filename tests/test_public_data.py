@@ -98,6 +98,27 @@ class PublicDataConverterTest(unittest.TestCase):
         )
         validate_record(value)
 
+    def test_duie_empty_spo_is_rejected_with_audit_record(self) -> None:
+        raw = {
+            "text": "甲导演乙",
+            "spo_list": [
+                {
+                    "subject": "",
+                    "subject_type": "人物",
+                    "predicate": "饰演",
+                    "object": {"@value": ""},
+                    "object_type": {"@value": "人物"},
+                }
+            ],
+        }
+        audit = ConversionAudit()
+        value = duie_row_to_record(raw, "duie-train-bad", audit=audit)
+        self.assertEqual(value["entities"], [])
+        self.assertEqual(value["relations"], [])
+        self.assertEqual(audit.counters["rejected_object_values"], 1)
+        self.assertEqual(audit.issues[0]["code"], "malformed_subject_metadata")
+        validate_record(value)
+
     def test_cmnee_preserves_trigger_argument_and_coreference(self) -> None:
         raw = {
             "id": "7",

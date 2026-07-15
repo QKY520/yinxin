@@ -21,12 +21,20 @@ class ConversionAudit:
     """Mutable counters populated while a converter is consumed."""
 
     counters: Counter[str] = field(default_factory=Counter)
+    issues: list[dict[str, Any]] = field(default_factory=list)
 
     def bump(self, key: str, amount: int = 1) -> None:
         self.counters[key] += amount
 
-    def to_dict(self) -> dict[str, int]:
-        return dict(sorted(self.counters.items()))
+    def issue(self, code: str, **details: Any) -> None:
+        self.counters[f"issues:{code}"] += 1
+        self.issues.append({"code": code, **details})
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "counters": dict(sorted(self.counters.items())),
+            "issues": self.issues,
+        }
 
 
 class _RecordBuilder:
@@ -276,35 +284,95 @@ def duie_row_to_record(
         predicate = spo.get("predicate")
         objects = spo.get("object")
         object_types = spo.get("object_type")
-        if not all(isinstance(value, str) and value for value in (subject, subject_type, predicate)):
-            raise ConversionError(f"{record_id}: SPO {spo_index} has malformed subject metadata")
+        source_object_count = len(objects) if isinstance(objects, dict) else 1
+        audit.bump("source_object_values", source_object_count)
+        if not all(
+            isinstance(value, str) and value
+            for value in (subject, subject_type, predicate)
+        ):
+            audit.bump("rejected_object_values", source_object_count)
+            audit.issue(
+                "malformed_subject_metadata",
+                record_id=record_id,
+                spo_index=spo_index,
+                subject=subject,
+                subject_type=subject_type,
+                predicate=predicate,
+            )
+            continue
         if not isinstance(objects, dict):
-            raise ConversionError(f"{record_id}: SPO {spo_index} object must be an object")
+            audit.bump("rejected_object_values")
+            audit.issue(
+                "malformed_object_container",
+                record_id=record_id,
+                spo_index=spo_index,
+                predicate=predicate,
+            )
+            continue
         if isinstance(object_types, str):
             object_types = {"@value": object_types}
         if not isinstance(object_types, dict):
-            raise ConversionError(f"{record_id}: SPO {spo_index} object_type is malformed")
+            audit.bump("rejected_object_values", len(objects))
+            audit.issue(
+                "malformed_object_type_container",
+                record_id=record_id,
+                spo_index=spo_index,
+                predicate=predicate,
+            )
+            continue
 
         subject_positions = _find_occurrences(text, subject)
         if not subject_positions:
-            raise ConversionError(
-                f"{record_id}: SPO {spo_index} subject {subject!r} is absent from text"
+            audit.bump("rejected_object_values", len(objects))
+            audit.issue(
+                "subject_absent_from_text",
+                record_id=record_id,
+                spo_index=spo_index,
+                predicate=predicate,
+                subject=subject,
             )
+            continue
         if len(subject_positions) > 1:
             audit.bump("ambiguous_subject_surfaces")
         for object_key, object_surface in objects.items():
-            if not isinstance(object_key, str) or not isinstance(object_surface, str) or not object_surface:
-                raise ConversionError(f"{record_id}: SPO {spo_index} has malformed object value")
+            if (
+                not isinstance(object_key, str)
+                or not isinstance(object_surface, str)
+                or not object_surface
+            ):
+                audit.bump("rejected_object_values")
+                audit.issue(
+                    "malformed_object_value",
+                    record_id=record_id,
+                    spo_index=spo_index,
+                    predicate=predicate,
+                    object_key=object_key,
+                    object_surface=object_surface,
+                )
+                continue
             object_type = object_types.get(object_key)
             if not isinstance(object_type, str) or not object_type:
-                raise ConversionError(
-                    f"{record_id}: SPO {spo_index} lacks type for object key {object_key}"
+                audit.bump("rejected_object_values")
+                audit.issue(
+                    "missing_object_type",
+                    record_id=record_id,
+                    spo_index=spo_index,
+                    predicate=predicate,
+                    object_key=object_key,
                 )
+                continue
             object_positions = _find_occurrences(text, object_surface)
             if not object_positions:
-                raise ConversionError(
-                    f"{record_id}: SPO {spo_index} object {object_surface!r} is absent from text"
+                audit.bump("rejected_object_values")
+                audit.issue(
+                    "object_absent_from_text",
+                    record_id=record_id,
+                    spo_index=spo_index,
+                    predicate=predicate,
+                    object_key=object_key,
+                    object_surface=object_surface,
                 )
+                continue
             if len(object_positions) > 1:
                 audit.bump("ambiguous_object_surfaces")
             subject_span, object_span = _choose_mention_pair(
@@ -314,7 +382,7 @@ def duie_row_to_record(
             tail = builder.entity(object_span[0], object_span[1], object_type)
             relation_type = predicate if object_key == "@value" else f"{predicate}:{object_key}"
             builder.relation(head, tail, relation_type)
-            audit.bump("source_relations")
+            audit.bump("normalized_object_values")
     return builder.build()
 
 
