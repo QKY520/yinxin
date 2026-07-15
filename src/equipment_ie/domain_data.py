@@ -266,6 +266,7 @@ def cmnee_candidates(
                     "source_url": "https://www.modelscope.cn/datasets/mzzzhu/CMNEE",
                     "source_revision": revision,
                     "source_license": "Apache-2.0",
+                    "title": f"CMNEE document {raw.get('id')}",
                     "selection_score": score,
                     "content_sha256": text_sha256(text),
                 }
