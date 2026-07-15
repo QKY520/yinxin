@@ -10,11 +10,11 @@ and aggregation. Use a paid GPU boot only for model inference or training.
 After every GPU phase: verify outputs, back up, sync lightweight artifacts to
 `D:\yinsir`, report cost, and remind the human to shut down the instance.
 
-**CURRENT GATE**: AutoDL SSH is configured and verified in GPU-free mode. The
-project environment has not been installed. Do not install dependencies,
-download models, or enable the paid GPU until the human explicitly confirms
-Step 3. The real host and port live only in the user's local SSH config; use the
-non-secret alias `autodl-paper` in project files and commands.
+**CURRENT GATE**: P0 environment setup is complete in AutoDL GPU-free mode. The
+human must save the instance image in the AutoDL web UI and explicitly confirm
+Step 4 before any P1 dataset work begins. Do not enable the paid GPU. The real
+host and port live only in the user's local SSH config; use the non-secret alias
+`autodl-paper` in project files and commands.
 
 ## Execution Authority
 
@@ -143,23 +143,36 @@ a reproducible ablation matrix, not a single attractive run.
 
 ## Current Priority And State
 
-Current step: **Step 2 complete - AutoDL instance and secure SSH verified**.
+Current step: **Step 3 agent work complete - P0 awaiting human image save and
+approval to proceed**.
 
 - Local workspace: `D:\yinsir`.
 - Git repository: `main` initialized and tracking `origin/main`.
-- GitHub remote: initial project foundation pushed and hash-verified.
+- GitHub remote: P0 project state pushed and hash-verified.
 - AutoDL instance: reachable in GPU-free mode.
 - SSH alias: `autodl-paper`; dedicated ED25519 key authentication verified.
+- GitHub deploy key: read-only access verified from AutoDL over SSH port 443.
 - Base image: Ubuntu 22.04.4, Python 3.12.3, PyTorch 2.5.1+cu124.
-- Remote project environment: not installed; `~/venv` does not exist yet.
-- Storage: 30 GB system disk and 120 GB data disk at `/root/autodl-tmp`.
-- Datasets/models: not downloaded.
+- Project environment: `/root/autodl-tmp/venvs/equipment-ie`, linked as
+  `~/venv`; imports and `pip check` pass with the versions in
+  `requirements.lock.txt`.
+- Models: all four fixed model directories downloaded and structurally checked;
+  65 retained files are recorded in the P0 SHA256 manifest. The redundant
+  BGE-M3 ONNX export was removed with human approval.
+- Storage: 30 GB system disk and 120 GB data disk at `/root/autodl-tmp`; about
+  80 GB was free after P0 cleanup.
+- Remote code: `/root/project` tracks the same `main` commit as GitHub.
+- P0 backup: remote metadata and logs are under
+  `/root/autodl-tmp/backup/p0`; the verified lightweight copy is under
+  `D:\yinsir\backups\P0`.
+- Datasets: not downloaded; P1 has not started.
 - Domain schema: default proposal only; human approval is required at P2 Pause A.
 - Test set: not created and therefore not frozen.
 - GPU spend: 0 CNY recorded; only GPU-free mode has been used. GPU-free hourly
   price and elapsed platform charge still require the human's billing record.
 
-Do not start P0 remote installation until the human confirms Step 3.
+Do not start P1 dataset work until the human saves the AutoDL image and confirms
+Step 4.
 
 ## Fixed Technology Decisions
 
@@ -549,7 +562,7 @@ the host, port, passwords, and private keys out of this file and out of Git.
 | Data disk | 120 GB mounted at `/root/autodl-tmp` |
 | Remote code | `/root/project` |
 | Remote data | `/root/autodl-tmp` |
-| Project Python | planned `~/venv`; not created yet |
+| Project Python | `~/venv` -> `/root/autodl-tmp/venvs/equipment-ie` |
 | Long jobs | use one named tmux/screen session per run |
 | Code sync | Git push locally, Git pull remotely |
 
