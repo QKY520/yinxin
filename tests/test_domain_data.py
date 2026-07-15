@@ -12,6 +12,7 @@ sys.path.insert(0, str(PROJECT_ROOT / "src"))
 from equipment_ie.domain_data import (  # noqa: E402
     chunk_text,
     extract_seed_terms,
+    iter_json_object_values,
     match_seed_entities,
     ngram_containment,
     normalized_ngrams,
@@ -64,6 +65,14 @@ class DomainDataTest(unittest.TestCase):
             terms = extract_seed_terms(path, "revision")
         self.assertEqual(len(terms), 1)
         self.assertEqual(terms[0]["term"], "雷达甲")
+
+    def test_json_object_values_supports_patent_test_format(self) -> None:
+        value = {"CN1": {"body": {"title": "甲"}}, "CN2": {"body": {"title": "乙"}}}
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "test.json"
+            path.write_text(json.dumps(value, ensure_ascii=False), encoding="utf-8")
+            rows = list(iter_json_object_values(path))
+        self.assertEqual([row["body"]["title"] for row in rows], ["甲", "乙"])
 
     def test_seed_matching_prefers_longest_nonoverlap(self) -> None:
         entities = match_seed_entities("歼-20战斗机采用雷达。", ["歼-20", "战斗机", "歼-20战斗机"])

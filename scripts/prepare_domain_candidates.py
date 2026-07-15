@@ -103,6 +103,7 @@ def prepare(config_path: Path) -> dict[str, Any]:
         timeout_seconds=int(baike_config["timeout_seconds"]),
         delay_seconds=float(baike_config["request_delay_seconds"]),
         user_agent=baike_config["user_agent"],
+        network_enabled=bool(baike_config["network_enabled"]),
     )
     patent_pool = patent_candidates(
         patent_files,
@@ -179,6 +180,8 @@ def prepare(config_path: Path) -> dict[str, Any]:
             "attempts": baike.attempts,
             "cache_hits": baike.cache_hits,
             "failures": baike.failures,
+            "network_enabled": bool(baike_config["network_enabled"]),
+            "network_disabled_reason": baike_config.get("network_disabled_reason"),
         },
         "candidates": {
             "path": str(candidate_path),

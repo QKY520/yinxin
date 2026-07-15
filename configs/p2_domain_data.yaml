@@ -14,14 +14,16 @@ deduplication:
   normalize_whitespace: true
 
 source_quotas:
-  baidu_baike: 100
-  patent: 120
-  cmnee: 180
+  baidu_baike: 8
+  patent: 152
+  cmnee: 240
 
 baidu_baike:
   cache_path: /root/autodl-tmp/data/p2/cache/baike_descriptions.jsonl
-  max_attempts: 360
-  pool_target: 160
+  network_enabled: false
+  network_disabled_reason: Baidu returned HTTP 403 after the initial nine cached public pages; no bypass attempted.
+  max_attempts: 6000
+  pool_target: 8
   request_delay_seconds: 0.25
   timeout_seconds: 20
   user_agent: Mozilla/5.0 (compatible; equipment-ie-research/0.1)
@@ -86,12 +88,15 @@ sources:
     license_sha256: fa2d0182559f0d02a4eab1f0dc57ff014adc7ba38100515176181da94a48c786
     files:
       - split: train
+        format: jsonl
         path: /root/autodl-tmp/data/p2/sources/KPPatent-ZH/data/original_data/train.jsonl
         sha256: 4ecb0753706deecb8cbe25b4f18581ff83c68f63566158c6851d7076b9b218e7
       - split: dev
+        format: jsonl
         path: /root/autodl-tmp/data/p2/sources/KPPatent-ZH/data/original_data/dev.jsonl
         sha256: 9d250ae296bee69e5e4bd3ee927682c4de8ab6385966873a93edf35801735629
       - split: test
+        format: json_object
         path: /root/autodl-tmp/data/p2/sources/KPPatent-ZH/data/original_data/test.json
         sha256: 589a501b2aaaf4efaa87ed9cdc5286538dd43b79b0f9d297b6ebc035450bf3ad
   cmnee:

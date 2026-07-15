@@ -125,6 +125,17 @@ def iter_objects_jsonl(path: Path | str) -> Iterator[dict[str, Any]]:
             yield value
 
 
+def iter_json_object_values(path: Path | str) -> Iterator[dict[str, Any]]:
+    source = Path(path)
+    value = json.loads(source.read_text(encoding="utf-8"))
+    if not isinstance(value, dict):
+        raise ValueError(f"{source}: expected a top-level JSON object")
+    for key, row in value.items():
+        if not isinstance(row, dict):
+            raise ValueError(f"{source}: value for {key!r} is not an object")
+        yield row
+
+
 def extract_seed_terms(path: Path | str, revision: str) -> list[dict[str, Any]]:
     """Extract exact equipment names from QAonMilitaryKG's Mongo JSON dump."""
 
@@ -170,7 +181,14 @@ def patent_candidates(
     candidates: list[dict[str, Any]] = []
     for file_spec in files:
         split = str(file_spec["split"])
-        for row_index, raw in enumerate(iter_objects_jsonl(file_spec["path"])):
+        source_format = file_spec.get("format", "jsonl")
+        if source_format == "jsonl":
+            rows = iter_objects_jsonl(file_spec["path"])
+        elif source_format == "json_object":
+            rows = iter_json_object_values(file_spec["path"])
+        else:
+            raise ValueError(f"unsupported patent source format: {source_format}")
+        for row_index, raw in enumerate(rows):
             body = raw.get("body")
             if not isinstance(body, dict):
                 continue
@@ -301,6 +319,7 @@ def collect_baike_candidates(
     timeout_seconds: int,
     delay_seconds: float,
     user_agent: str,
+    network_enabled: bool,
 ) -> BaikeCollection:
     import numpy as np
 
@@ -324,6 +343,8 @@ def collect_baike_candidates(
             cache_hits += 1
             page = cached_page
         else:
+            if not network_enabled:
+                continue
             url = f"https://baike.baidu.com/item/{quote(term, safe='')}"
             request = Request(url, headers={"User-Agent": user_agent})
             try:
