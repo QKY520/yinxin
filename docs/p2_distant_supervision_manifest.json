@@ -1,0 +1,71 @@
+{
+  "phase": "P2",
+  "stage": "distant_supervision_prelabel",
+  "status": "completed_and_backed_up",
+  "generated_at": "2026-07-16T10:55:09+08:00",
+  "generation_commit": "269cc5384a17490284796802bb3e18c9ef50c3e1",
+  "verification_commit": "ea6c36fdf5a0504a7b11ffc6aa2fad4fdad38740",
+  "statistics": {
+    "candidate_records": 400,
+    "matched_records": 15,
+    "unmatched_records": 385,
+    "match_coverage": 0.0375,
+    "proposed_entities": 23,
+    "proposed_relations": 0,
+    "unique_matched_spans": 17,
+    "source_records": {
+      "baidu_baike": 7,
+      "cmnee": 309,
+      "patent": 84
+    },
+    "source_matched_records": {
+      "baidu_baike": 5,
+      "cmnee": 10,
+      "patent": 0
+    }
+  },
+  "artifacts": {
+    "proposals_jsonl": {
+      "records": 400,
+      "bytes": 283945,
+      "sha256": "b40e9d5c34c27d22b699d758af79c88705e4e4637184458aaae04bbaa05af96b"
+    },
+    "review_jsonl": {
+      "records": 400,
+      "bytes": 597326,
+      "sha256": "47ed7376af38e0909739e7d1f1f4faa8189b1c900b7fa241f0479c75a7f87993"
+    },
+    "review_csv": {
+      "records": 400,
+      "bytes": 681271,
+      "sha256": "c6cc5f34c0deccb4c6dbc113b63cd9fc6682ea0161272fa4c0e129daee766cbe"
+    },
+    "report": {
+      "bytes": 2720,
+      "sha256": "2fbf5cd839b5b1998db198364f462e8a03091f1866029c303f729c31a81c3c23"
+    },
+    "log": {
+      "bytes": 943,
+      "sha256": "53a3b19087bfb548fd3901a5a5d313eeb0624967f342e60970a50c595d1acf5c"
+    }
+  },
+  "backup": {
+    "remote_path": "/root/autodl-tmp/backup/p2/p2_distant_supervision_20260716.tar.gz",
+    "local_path": "D:\\yinsir\\backups\\P2\\p2_distant_supervision_20260716.tar.gz",
+    "bytes": 413471,
+    "entries": 11,
+    "sha256": "15908dca3bb768f9175fac62c9d04e2f0dc5762423563f1d61029d21c4d24701",
+    "remote_gzip_test": "passed",
+    "remote_sha256_check": "passed",
+    "local_sha256_check": "passed"
+  },
+  "guards": {
+    "gpu_device_present": false,
+    "paid_gpu_used": false,
+    "llm_used": false,
+    "llm_disagreement_computed": false,
+    "human_annotation_started": false,
+    "dataset_split_or_frozen": false
+  },
+  "next_gate": "explicit_14b_and_budget_approval"
+}

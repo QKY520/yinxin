@@ -74,6 +74,28 @@ class P2SchemaDraftTest(unittest.TestCase):
             "6879810924e417f58b6c2ef32932a526c39c7da74f4dedbf849c0d202afa26ce",
         )
 
+    def test_distant_supervision_manifest_stops_before_llm_and_human_work(self) -> None:
+        manifest_path = PROJECT_ROOT / "docs" / "p2_distant_supervision_manifest.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual(manifest["status"], "completed_and_backed_up")
+        self.assertEqual(manifest["statistics"]["candidate_records"], 400)
+        self.assertEqual(manifest["statistics"]["matched_records"], 15)
+        self.assertEqual(manifest["statistics"]["match_coverage"], 0.0375)
+        self.assertEqual(manifest["statistics"]["proposed_entities"], 23)
+        self.assertEqual(manifest["statistics"]["proposed_relations"], 0)
+        self.assertEqual(
+            manifest["guards"],
+            {
+                "gpu_device_present": False,
+                "paid_gpu_used": False,
+                "llm_used": False,
+                "llm_disagreement_computed": False,
+                "human_annotation_started": False,
+                "dataset_split_or_frozen": False,
+            },
+        )
+        self.assertEqual(manifest["next_gate"], "explicit_14b_and_budget_approval")
+
 
 if __name__ == "__main__":
     unittest.main()

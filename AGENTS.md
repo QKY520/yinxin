@@ -10,13 +10,13 @@ and aggregation. Use a paid GPU boot only for model inference or training.
 After every GPU phase: verify outputs, back up, sync lightweight artifacts to
 `D:\yinsir`, report cost, and remind the human to shut down the instance.
 
-**CURRENT GATE**: The human approved `p2-schema-draft-v1` on 2026-07-16 and
-authorized only GPU-free distant-supervision prelabeling plus creation of an
-unstarted review sheet. Do not begin human or LLM annotation, split/freeze the
-domain dataset, or use paid GPU resources until the human explicitly approves
-the relevant next step. The real host and port live only in the user's local
-SSH config; use the non-secret alias `autodl-paper` in project files and
-commands.
+**CURRENT GATE**: GPU-free distant-supervision prelabeling and review-sheet
+export completed and were backed up on 2026-07-16. Stop before Qwen2.5-14B-AWQ
+assisted refinement, human annotation, splitting/freezing, or paid GPU use.
+Each requires the applicable explicit human approval; 14B also requires a
+runtime/cost proposal before the human switches AutoDL to paid GPU mode. The
+real host and port live only in the user's local SSH config; use the non-secret
+alias `autodl-paper` in project files and commands.
 
 ## Execution Authority
 
@@ -145,8 +145,8 @@ a reproducible ablation matrix, not a single attractive run.
 
 ## Current Priority And State
 
-Current step: **Step 5 in progress - P2 schema approved; GPU-free deterministic
-prelabeling and unstarted review-sheet export authorized**.
+Current step: **Step 5 in progress - P2 deterministic prelabeling and review
+sheet completed; awaiting explicit 14B assistance and budget approval**.
 
 - Local workspace: `D:\yinsir`.
 - Git repository: `main` initialized and tracking `origin/main`.
@@ -191,12 +191,20 @@ prelabeling and unstarted review-sheet export authorized**.
 - Domain schema: the human approved `p2-schema-draft-v1` and its 10 synthetic
   examples on 2026-07-16. Only deterministic QAonMilitaryKG exact-match
   proposals are authorized; these are machine suggestions, not gold labels.
+- P2 distant supervision: all 400 candidates were processed in GPU-free mode;
+  15 records matched 23 EQUIPMENT suggestions (3.75% record coverage), with 0
+  relations. The low coverage is preserved without fuzzy matching or glossary
+  expansion. JSONL/CSV review sheets have all human fields untouched and LLM
+  disagreement marked uncomputed.
+- P2 prelabel backup: the 413,471-byte private archive is stored under
+  `/root/autodl-tmp/backup/p2` and `D:\yinsir\backups\P2`; remote and local
+  SHA256 both equal `15908dca...d24701`.
 - Test set: not created and therefore not frozen.
 - GPU spend: 0 CNY recorded; only GPU-free mode has been used. GPU-free hourly
   price and elapsed platform charge still require the human's billing record.
 
-After the GPU-free proposal and review-sheet step, stop for a separate 14B
-assistance and cost approval. Human annotation and paid GPU work remain barred.
+Stop for a separate 14B assistance and cost approval. Human annotation,
+splitting/freezing, and paid GPU work remain barred.
 
 ## Fixed Technology Decisions
 

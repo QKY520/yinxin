@@ -37,3 +37,16 @@ The human authorized only GPU-free distant-supervision prelabeling and creation
 of an unstarted review sheet. The authorization explicitly excludes the 14B
 model, paid GPU work, and human annotation. After the artifacts are generated,
 the project must stop for a separate 14B assistance and budget decision.
+
+Execution result:
+
+- Exact longest-first matching completed for all 400 candidates in GPU-free
+  mode at commit `269cc53`.
+- 15 candidates matched 23 proposed EQUIPMENT entities; no relations were
+  inferred. Coverage was 3.75%, and the negative result was preserved.
+- JSONL and CSV review sheets were generated with LLM disagreement uncomputed
+  and every human annotation field untouched.
+- Independent verification, 27 tests, private backup, local synchronization,
+  and hash checks passed. Details are in
+  `docs/P2_DISTANT_SUPERVISION_REPORT.md`.
+- Current gate: stop before 14B assisted refinement and paid GPU use.
