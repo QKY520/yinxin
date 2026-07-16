@@ -12,3 +12,7 @@ and the sampling seed used by the P1 pipeline.
 provenance. `p2_distant_supervision.yaml` pins the GPU-free exact-match proposal
 run, including immutable input hashes, output paths, and guards that prohibit
 LLM use, human annotation, splitting, and freezing.
+
+`p2_llm_label_sanity.yaml` and `p2_llm_label_full.yaml` describe the independent
+14B proposal passes. Both remain `authorized: false`; GPU-free dry-runs are
+allowed, while actual API calls require a later human approval record.

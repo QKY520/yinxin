@@ -39,3 +39,18 @@ python scripts/verify_domain_prelabels.py \
 This command requires GPU-free mode. It performs exact longest-first seed-term
 matching only, infers no relations, and leaves all LLM disagreement and human
 annotation fields explicitly unstarted.
+
+P2 14B labeling preparation (GPU-free; no API call):
+
+```bash
+python scripts/run_p2_llm_labeling.py \
+  --config configs/p2_llm_label_sanity.yaml --dry-run
+python scripts/run_p2_llm_labeling.py \
+  --config configs/p2_llm_label_full.yaml --dry-run
+```
+
+Actual execution uses `--execute`, but the checked-in configurations reject it
+until `execution.authorized` and `approval_record` are changed in a separately
+approved and committed decision. Dry-run loads the tokenizer only, verifies all
+input/model metadata hashes, computes exact chat-template token counts, and
+writes a deployment manifest without loading model weights or contacting vLLM.

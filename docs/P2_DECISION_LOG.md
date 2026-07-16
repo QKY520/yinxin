@@ -50,3 +50,14 @@ Execution result:
   and hash checks passed. Details are in
   `docs/P2_DISTANT_SUPERVISION_REPORT.md`.
 - Current gate: stop before 14B assisted refinement and paid GPU use.
+
+## 2026-07-16 - GPU-free 14B preparation resumed
+
+After the distant-supervision step was paused and reported, the human asked the
+agent to continue. The agent explicitly scoped the continuation to GPU-free
+implementation, tests, token dry-runs, and a deployment/cost proposal. This did
+not authorize model inference, paid GPU mode, or human annotation.
+
+The sanity and full configurations are therefore committed with
+`execution.authorized: false`. Changing that field or launching vLLM requires a
+new explicit human approval and a live-price check.
