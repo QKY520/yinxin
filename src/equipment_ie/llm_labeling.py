@@ -211,6 +211,7 @@ def build_label_prompt(
     *,
     text: str,
     schema: Mapping[str, Any],
+    prompt_config: Mapping[str, Any],
     examples: Sequence[Mapping[str, Any]],
     prompt_version: str,
 ) -> str:
@@ -218,12 +219,20 @@ def build_label_prompt(
 
     entity_order = ("EQUIPMENT", "MODULE", "TECH_SCHEME", "METRIC")
     relation_order = ("USES", "HAS_METRIC", "PART_OF")
+    if prompt_config.get("prompt_version") != prompt_version:
+        raise SchemaError("prompt-definition version mismatch")
+    if prompt_config.get("schema_version") != schema.get("version"):
+        raise SchemaError("prompt definitions target a different schema")
+    if set(prompt_config.get("entity_types", {})) != set(entity_order):
+        raise SchemaError("prompt entity definitions differ from the schema")
+    if set(prompt_config.get("relation_types", {})) != set(relation_order):
+        raise SchemaError("prompt relation definitions differ from the schema")
     entity_lines = [
-        f"- {name}: {schema['entity_types'][name]['prompt_definition_zh']}"
+        f"- {name}: {prompt_config['entity_types'][name]}"
         for name in entity_order
     ]
     relation_lines = [
-        f"- {name}: {schema['relation_types'][name]['prompt_definition_zh']}"
+        f"- {name}: {prompt_config['relation_types'][name]}"
         for name in relation_order
     ]
     blocks = [
@@ -250,14 +259,14 @@ def build_label_prompt(
     blocks.extend(
         [
             f"待标注文本：{text}",
-            "只返回JSON,不要任何解释,不要markdown代码块",
+            prompt_config["constraints"]["output_instruction"],
         ]
     )
     return "\n\n".join(blocks)
 
 
-def build_retry_prompt(prompt: str) -> str:
-    return f"{prompt}\n只返回合法JSON"
+def build_retry_prompt(prompt: str, retry_suffix: str = "只返回合法JSON") -> str:
+    return f"{prompt}\n{retry_suffix}"
 
 
 def build_request_envelope(
@@ -267,6 +276,7 @@ def build_request_envelope(
     generation: Mapping[str, Any],
     prompt_version: str,
     schema_sha256: str,
+    prompt_config_sha256: str,
     examples_sha256: str,
 ) -> dict[str, Any]:
     payload = {
@@ -280,6 +290,7 @@ def build_request_envelope(
     return {
         "prompt_version": prompt_version,
         "schema_sha256": schema_sha256,
+        "prompt_config_sha256": prompt_config_sha256,
         "examples_sha256": examples_sha256,
         "payload": payload,
     }

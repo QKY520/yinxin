@@ -6,31 +6,24 @@ approval_gate: P2_PAUSE_A
 entity_types:
   EQUIPMENT:
     definition: A complete or independently functional equipment item, platform, system, device, weapon, or identified model.
-    prompt_definition_zh: 可独立承担功能的装备、平台、系统、装置、武器或明确型号。
   MODULE:
     definition: A physical or functional subsystem, component, unit, or payload explicitly playing a constituent role in context.
-    prompt_definition_zh: 在当前语境中明确充当组成部分的子系统、组件、单元、载荷或部件。
   TECH_SCHEME:
     definition: A non-physical technical method, architecture, operating regime, algorithm, process, or named engineering approach.
-    prompt_definition_zh: 非物理的技术方法、体系结构、工作体制、算法、流程或工程方案。
   METRIC:
     definition: A self-contained technical specification containing an attribute and its value, range, threshold, grade, or necessary local condition.
-    prompt_definition_zh: 包含指标名称及数值、范围、阈值、等级或必要局部工况的完整技术规格。
 
 relation_types:
   USES:
     definition: The head explicitly uses or adopts the tail for a function.
-    prompt_definition_zh: head 明确采用、使用或利用 tail。
     head_types: [EQUIPMENT, MODULE]
     tail_types: [MODULE, TECH_SCHEME]
   HAS_METRIC:
     definition: The metric explicitly describes the head.
-    prompt_definition_zh: tail 指标明确描述 head。
     head_types: [EQUIPMENT, MODULE]
     tail_types: [METRIC]
   PART_OF:
     definition: The head is explicitly a constituent of the tail; direction is part to whole.
-    prompt_definition_zh: head 是 tail 的组成部分，方向固定为部分到整体。
     head_types: [MODULE]
     tail_types: [EQUIPMENT, MODULE]
 

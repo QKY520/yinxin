@@ -123,6 +123,18 @@ def _load_context(config_path: Path) -> dict[str, Any]:
         raise ValueError("schema is not approved")
 
     prompt_spec = config["prompt"]
+    prompt_config_path = Path(prompt_spec["definitions_path"])
+    verify_file(prompt_config_path, prompt_spec["definitions_sha256"])
+    prompt_config = yaml.safe_load(prompt_config_path.read_text(encoding="utf-8"))
+    if prompt_config.get("prompt_version") != prompt_spec["version"]:
+        raise ValueError("prompt-definition version mismatch")
+    if prompt_config.get("schema_version") != schema_spec["version"]:
+        raise ValueError("prompt definitions target a different schema")
+    prompt_constraints = prompt_config.get("constraints", {})
+    if prompt_constraints.get("include_distant_supervision_in_prompt") is not False:
+        raise ValueError("prompt definitions expose distant supervision")
+    if prompt_constraints.get("retry_suffix") != prompt_spec["retry_suffix"]:
+        raise ValueError("prompt retry suffix mismatch")
     examples_path = Path(prompt_spec["examples_path"])
     verify_file(examples_path, prompt_spec["examples_sha256"])
     examples_by_id = {row["id"]: row for row in iter_jsonl(examples_path)}
@@ -167,6 +179,8 @@ def _load_context(config_path: Path) -> dict[str, Any]:
         "config_path": config_path,
         "schema": schema,
         "schema_path": schema_path,
+        "prompt_config": prompt_config,
+        "prompt_config_path": prompt_config_path,
         "examples": examples,
         "examples_path": examples_path,
         "selected_pairs": selected_pairs,
@@ -185,17 +199,19 @@ def _prompt_and_envelope(
     prompt = build_label_prompt(
         text=candidate["text"],
         schema=context["schema"],
+        prompt_config=context["prompt_config"],
         examples=context["examples"],
         prompt_version=config["prompt"]["version"],
     )
     if retry:
-        prompt = build_retry_prompt(prompt)
+        prompt = build_retry_prompt(prompt, config["prompt"]["retry_suffix"])
     envelope = build_request_envelope(
         prompt=prompt,
         model=config["model"]["served_model_name"],
         generation=config["generation"],
         prompt_version=config["prompt"]["version"],
         schema_sha256=config["schema"]["sha256"],
+        prompt_config_sha256=config["prompt"]["definitions_sha256"],
         examples_sha256=config["prompt"]["examples_sha256"],
     )
     return prompt, envelope
@@ -302,6 +318,7 @@ def dry_run(context: dict[str, Any]) -> dict[str, Any]:
         },
         "prompt": {
             "version": config["prompt"]["version"],
+            "definitions_sha256": config["prompt"]["definitions_sha256"],
             "examples_sha256": config["prompt"]["examples_sha256"],
             "records": prompt_rows,
             "aggregate_sha256": sha256_text(canonical_json(prompt_rows)),

@@ -64,6 +64,11 @@ class LlmLabelingTest(unittest.TestCase):
                 encoding="utf-8"
             )
         )
+        cls.prompt_config = yaml.safe_load(
+            (PROJECT_ROOT / "configs" / "p2_llm_prompt_v1.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
         cls.examples = list(
             iter_jsonl(PROJECT_ROOT / "docs" / "p2_schema_examples_draft.jsonl")
         )
@@ -115,8 +120,9 @@ class LlmLabelingTest(unittest.TestCase):
         prompt = build_label_prompt(
             text="待处理文本。",
             schema=self.schema,
+            prompt_config=self.prompt_config,
             examples=self.examples,
-            prompt_version="p2-label-v1",
+            prompt_version="p2-llm-label-v1",
         )
         self.assertIn("示例10文本", prompt)
         self.assertIn("occurrence", prompt)
@@ -142,6 +148,7 @@ class LlmLabelingTest(unittest.TestCase):
             generation={"temperature": 0, "top_p": 1, "max_tokens": 100, "seed": 42},
             prompt_version="v1",
             schema_sha256="a",
+            prompt_config_sha256="p",
             examples_sha256="b",
         )
         changed = build_request_envelope(
@@ -150,6 +157,7 @@ class LlmLabelingTest(unittest.TestCase):
             generation={"temperature": 0, "top_p": 1, "max_tokens": 101, "seed": 42},
             prompt_version="v1",
             schema_sha256="a",
+            prompt_config_sha256="p",
             examples_sha256="b",
         )
         self.assertEqual(request_hash(base), request_hash(json.loads(json.dumps(base))))
@@ -162,6 +170,7 @@ class LlmLabelingTest(unittest.TestCase):
             generation={"temperature": 0, "top_p": 1, "max_tokens": 100, "seed": 42},
             prompt_version="v1",
             schema_sha256="a",
+            prompt_config_sha256="p",
             examples_sha256="b",
         )
         response = {"choices": [{"message": {"content": '{"entities":[],"relations":[]}'}}]}

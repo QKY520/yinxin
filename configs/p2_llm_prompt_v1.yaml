@@ -1,0 +1,24 @@
+prompt_version: p2-llm-label-v1
+schema_version: p2-schema-draft-v1
+approval_basis: docs/P2_ANNOTATION_GUIDE_DRAFT.md
+
+entity_types:
+  EQUIPMENT: 可独立承担功能的装备、平台、系统、装置、武器或明确型号。
+  MODULE: 在当前语境中明确充当组成部分的子系统、组件、单元、载荷或部件。
+  TECH_SCHEME: 非物理的技术方法、体系结构、工作体制、算法、流程或工程方案。
+  METRIC: 包含指标名称及数值、范围、阈值、等级或必要局部工况的完整技术规格。
+
+relation_types:
+  USES: head 明确采用、使用或利用 tail。
+  HAS_METRIC: tail 指标明确描述 head。
+  PART_OF: head 是 tail 的组成部分，方向固定为部分到整体。
+
+constraints:
+  include_distant_supervision_in_prompt: false
+  occurrence_is_one_based: true
+  overlapping_entities_allowed: false
+  cross_sentence_relations_allowed: false
+  pronoun_coreference_relations_allowed: false
+  inferred_relations_allowed: false
+  retry_suffix: 只返回合法JSON
+  output_instruction: 只返回JSON,不要任何解释,不要markdown代码块
