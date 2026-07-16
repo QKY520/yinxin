@@ -1,0 +1,90 @@
+{
+  "phase": "P2",
+  "stage": "llm_assisted_label_deployment_readiness",
+  "recorded_date": "2026-07-16",
+  "status": "gpu_free_dry_run_complete_awaiting_sanity_only_approval",
+  "code_commit": "472711e8f1ac496e1822993fd67f096a683a2c55",
+  "immutable_inputs": {
+    "schema_sha256": "a3b2e8dcb81a6223058e028cdadcc6aecb87a10968d8ff0454aa7e535102ac56",
+    "prompt_definitions_sha256": "d1a2569ad6a93122937c493d5b5d1b66fbb216716c4e27590c7e5a5056f7c739",
+    "examples_sha256": "8e7f427fab7a0bb1586b299aeb23a6ceff43747fc2c85c213d75a6e14aaea423"
+  },
+  "guards": {
+    "execution_authorized": false,
+    "gpu_device_present": false,
+    "api_called": false,
+    "model_weights_loaded": false,
+    "paid_gpu_used": false,
+    "cache_files": 0,
+    "actual_output_files": 0,
+    "human_annotation_started": false,
+    "dataset_split_or_frozen": false
+  },
+  "active_v2": [
+    {
+      "run_id": "p2-llm-label-sanity-v2",
+      "records": 10,
+      "initial_input_tokens_total": 13758,
+      "initial_input_tokens_mean": 1375.8,
+      "initial_input_tokens_max": 1418,
+      "maximum_context_tokens": 3471,
+      "worst_case_request_count": 20,
+      "manifest": {
+        "remote_path": "/root/autodl-tmp/backup/p2/p2_llm_label_sanity_v2_dry_run.json",
+        "local_private_path": "backups/P2/p2_llm_label_sanity_v2_dry_run.json",
+        "bytes": 10116,
+        "sha256": "1c07a6fa5c0fa91ec776bb89bc7961c64d0694e843853bc239051fa04ddd6caa"
+      },
+      "log": {
+        "remote_path": "/root/project/logs/p2_llm_label_sanity_v2.jsonl",
+        "local_private_path": "backups/P2/p2_llm_label_sanity_v2.jsonl",
+        "bytes": 378,
+        "sha256": "66f4b025b723ea1dbd2fb12ef729b7771e192fe8b7a499a6da298fd2687f09e6"
+      }
+    },
+    {
+      "run_id": "p2-llm-label-full-v2",
+      "records": 400,
+      "initial_input_tokens_total": 544311,
+      "initial_input_tokens_mean": 1360.7775,
+      "initial_input_tokens_max": 1438,
+      "maximum_context_tokens": 3491,
+      "worst_case_request_count": 800,
+      "manifest": {
+        "remote_path": "/root/autodl-tmp/backup/p2/p2_llm_label_full_v2_dry_run.json",
+        "local_private_path": "backups/P2/p2_llm_label_full_v2_dry_run.json",
+        "bytes": 256692,
+        "sha256": "b8208599be36d7f334743866686da81a421d73fe9052ac8728451feb52eb7888"
+      },
+      "log": {
+        "remote_path": "/root/project/logs/p2_llm_label_full_v2.jsonl",
+        "local_private_path": "backups/P2/p2_llm_label_full_v2.jsonl",
+        "bytes": 372,
+        "sha256": "74f8df362ef2c8d72f6f58b65fa892aeabef49d289ed69f60dac988e39f9dd88"
+      }
+    }
+  ],
+  "superseded_v1": [
+    {
+      "run_id": "p2-llm-label-sanity-v1",
+      "reason": "schema_prompt_separation_correction",
+      "bytes": 10022,
+      "sha256": "47e9418c3997699cf6e3bf2c4eb9d87168b0668477d8650e92b20a975825064e"
+    },
+    {
+      "run_id": "p2-llm-label-full-v1",
+      "reason": "schema_prompt_separation_correction",
+      "bytes": 256598,
+      "sha256": "f176f2aa6e37777b3c0c869721d7886b9fc28c631a211ea15c478d1df7a9f42d"
+    }
+  ],
+  "next_gate": {
+    "scope": "fixed_10_record_sanity_only",
+    "explicit_human_approval_required": true,
+    "live_price_required": true,
+    "gpu_hour_cap": 0.25,
+    "documented_price_cny_per_hour": 2.08,
+    "estimated_cap_cny_at_documented_price": 0.52,
+    "full_run_authorized": false
+  }
+}

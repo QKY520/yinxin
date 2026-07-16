@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 import sys
 import tempfile
@@ -29,6 +30,7 @@ from equipment_ie.llm_labeling import (  # noqa: E402
     write_llm_review_csv_atomic,
 )
 from equipment_ie.schema import iter_jsonl  # noqa: E402
+from scripts import run_p2_llm_labeling as llm_runner  # noqa: E402
 
 
 def candidate(record_id: str, source_type: str, text: str) -> dict:
@@ -130,9 +132,27 @@ class LlmLabelingTest(unittest.TestCase):
         self.assertTrue(prompt.endswith("只返回JSON,不要任何解释,不要markdown代码块"))
 
     def test_checked_in_llm_configs_cannot_execute(self) -> None:
-        for name in ("p2_llm_label_sanity.yaml", "p2_llm_label_full.yaml"):
+        expected = {
+            "p2_llm_label_sanity.yaml": {
+                "run_id": "p2-llm-label-sanity-v2",
+                "config_sha256": "ee82226a975fd7bbf4eb2a7a927c6818ed18cbd8eea15b63aabd9f31a1ffb303",
+                "dry_run_name": "p2_llm_label_sanity_v2_dry_run.json",
+            },
+            "p2_llm_label_full.yaml": {
+                "run_id": "p2-llm-label-full-v2",
+                "config_sha256": "809b3183b8c9bdced5334030fe8dce866f4d4e384ded27fa5c1d09109573fdf5",
+                "dry_run_name": "p2_llm_label_full_v2_dry_run.json",
+            },
+        }
+        for name, pinned in expected.items():
+            path = PROJECT_ROOT / "configs" / name
             config = yaml.safe_load(
-                (PROJECT_ROOT / "configs" / name).read_text(encoding="utf-8")
+                path.read_text(encoding="utf-8")
+            )
+            self.assertEqual(config["run_id"], pinned["run_id"])
+            self.assertEqual(
+                hashlib.sha256(path.read_bytes()).hexdigest(),
+                pinned["config_sha256"],
             )
             self.assertFalse(config["execution"]["authorized"])
             self.assertIsNone(config["execution"]["approval_record"])
@@ -140,6 +160,89 @@ class LlmLabelingTest(unittest.TestCase):
             self.assertTrue(config["execution"]["actual_run_requires_gpu"])
             self.assertFalse(config["prompt"]["include_distant_supervision_in_prompt"])
             self.assertFalse(config["guards"]["human_annotation_allowed"])
+            self.assertFalse(config["guards"]["split_or_freeze_allowed"])
+            self.assertEqual(
+                config["schema"]["sha256"],
+                "a3b2e8dcb81a6223058e028cdadcc6aecb87a10968d8ff0454aa7e535102ac56",
+            )
+            self.assertEqual(
+                config["prompt"]["definitions_sha256"],
+                "d1a2569ad6a93122937c493d5b5d1b66fbb216716c4e27590c7e5a5056f7c739",
+            )
+            self.assertEqual(
+                Path(config["outputs"]["dry_run_manifest"]).name,
+                pinned["dry_run_name"],
+            )
+
+        sanity = yaml.safe_load(
+            (PROJECT_ROOT / "configs" / "p2_llm_label_sanity.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+        full = yaml.safe_load(
+            (PROJECT_ROOT / "configs" / "p2_llm_label_full.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertEqual(sanity["selection"]["mode"], "sanity")
+        self.assertEqual(sanity["selection"]["sample_size"], 10)
+        self.assertEqual(sanity["budget"]["sanity_gpu_hour_cap"], 0.25)
+        self.assertTrue(sanity["budget"]["live_price_required_before_launch"])
+        self.assertEqual(full["selection"]["mode"], "all")
+        self.assertIsNone(full["budget"]["full_gpu_hour_cap"])
+        self.assertTrue(full["budget"]["full_run_estimate_requires_sanity_measurement"])
+
+    def test_deployment_manifest_keeps_v2_active_and_v1_superseded(self) -> None:
+        manifest = json.loads(
+            (PROJECT_ROOT / "docs" / "p2_llm_dry_run_manifest.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertEqual(
+            manifest["status"],
+            "gpu_free_dry_run_complete_awaiting_sanity_only_approval",
+        )
+        self.assertEqual(
+            manifest["guards"],
+            {
+                "execution_authorized": False,
+                "gpu_device_present": False,
+                "api_called": False,
+                "model_weights_loaded": False,
+                "paid_gpu_used": False,
+                "cache_files": 0,
+                "actual_output_files": 0,
+                "human_annotation_started": False,
+                "dataset_split_or_frozen": False,
+            },
+        )
+        self.assertEqual(
+            [row["run_id"] for row in manifest["active_v2"]],
+            ["p2-llm-label-sanity-v2", "p2-llm-label-full-v2"],
+        )
+        self.assertEqual(
+            [row["records"] for row in manifest["active_v2"]], [10, 400]
+        )
+        self.assertEqual(
+            [row["run_id"] for row in manifest["superseded_v1"]],
+            ["p2-llm-label-sanity-v1", "p2-llm-label-full-v1"],
+        )
+        self.assertEqual(manifest["next_gate"]["scope"], "fixed_10_record_sanity_only")
+        self.assertFalse(manifest["next_gate"]["full_run_authorized"])
+
+    def test_unapproved_execute_stops_before_server_access(self) -> None:
+        context = {
+            "config": {
+                "execution": {
+                    "authorized": False,
+                    "approval_record": None,
+                }
+            }
+        }
+        with patch.object(llm_runner, "_check_server") as server_check:
+            with self.assertRaisesRegex(PermissionError, "explicit human approval"):
+                llm_runner.execute(context)
+        server_check.assert_not_called()
 
     def test_request_hash_changes_with_generation_settings(self) -> None:
         base = build_request_envelope(

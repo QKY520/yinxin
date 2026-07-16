@@ -61,3 +61,28 @@ not authorize model inference, paid GPU mode, or human annotation.
 The sanity and full configurations are therefore committed with
 `execution.authorized: false`. Changing that field or launching vLLM requires a
 new explicit human approval and a live-price check.
+
+Execution result:
+
+- Independent 14B labeling, parsing, caching, DS/LLM union, disagreement, and
+  review-sheet code was implemented without deploying the model.
+- The approved schema was restored as an immutable artifact with SHA256
+  `a3b2e8dc...102ac56`; versioned prompt wording was separated into
+  `configs/p2_llm_prompt_v1.yaml` with SHA256 `d1a2569a...f7c739`.
+- Active v2 tokenizer-only dry-runs completed for the fixed 10-record sanity set
+  and all 400 candidates. Maximum contexts were 3,471 and 3,491 tokens out of
+  8,192, respectively.
+- Both manifests record no GPU, no API call, no model-weight load, no paid GPU,
+  and no execution authorization. The P2 LLM cache and actual-output set remain
+  empty.
+- Four v2 manifests/logs were copied to the local private backup directory and
+  matched their remote SHA256 values. Earlier v1 dry-runs are preserved but
+  marked superseded because they reference the pre-correction schema hash.
+- Full details and the bounded next-step proposal are recorded in
+  `docs/P2_LLM_DEPLOYMENT_REPORT.md`.
+
+Current gate: GPU-free 14B implementation and dry-run preparation are complete.
+Stop before vLLM startup, inference, paid GPU mode, human annotation, splitting,
+or freezing. The next possible step requires explicit approval for only the
+10-record sanity run plus its budget; it does not imply approval of the
+400-record full run.

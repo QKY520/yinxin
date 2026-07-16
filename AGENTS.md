@@ -10,13 +10,13 @@ and aggregation. Use a paid GPU boot only for model inference or training.
 After every GPU phase: verify outputs, back up, sync lightweight artifacts to
 `D:\yinsir`, report cost, and remind the human to shut down the instance.
 
-**CURRENT GATE**: GPU-free distant-supervision prelabeling and review-sheet
-export completed and were backed up on 2026-07-16. Stop before Qwen2.5-14B-AWQ
-assisted refinement, human annotation, splitting/freezing, or paid GPU use.
-Each requires the applicable explicit human approval; 14B also requires a
-runtime/cost proposal before the human switches AutoDL to paid GPU mode. The
-real host and port live only in the user's local SSH config; use the non-secret
-alias `autodl-paper` in project files and commands.
+**CURRENT GATE**: GPU-free implementation and tokenizer-only dry-runs for the
+Qwen2.5-14B-AWQ P2 proposal path completed and were backed up on 2026-07-16.
+Stop before vLLM startup, model inference, human annotation, splitting/freezing,
+or paid GPU use. The next possible action requires explicit approval for only a
+fixed 10-record sanity run and its budget; it does not authorize the 400-record
+full pass. The real host and port live only in the user's local SSH config; use
+the non-secret alias `autodl-paper` in project files and commands.
 
 ## Execution Authority
 
@@ -145,12 +145,12 @@ a reproducible ablation matrix, not a single attractive run.
 
 ## Current Priority And State
 
-Current step: **Step 5 in progress - P2 deterministic prelabeling and review
-sheet completed; awaiting explicit 14B assistance and budget approval**.
+Current step: **Step 5 in progress - P2 14B implementation and GPU-free dry-run
+preparation complete; awaiting explicit sanity-only GPU and budget approval**.
 
 - Local workspace: `D:\yinsir`.
 - Git repository: `main` initialized and tracking `origin/main`.
-- GitHub remote: P1 implementation state pushed and hash-verified.
+- GitHub remote: the current implementation state is pushed and hash-verified.
 - AutoDL instance: reachable in GPU-free mode as of 2026-07-16; no GPU device or
   experiment process was present during the Pause A audit.
 - AutoDL image: the human confirmed the P0 image was saved.
@@ -199,12 +199,20 @@ sheet completed; awaiting explicit 14B assistance and budget approval**.
 - P2 prelabel backup: the 413,471-byte private archive is stored under
   `/root/autodl-tmp/backup/p2` and `D:\yinsir\backups\P2`; remote and local
   SHA256 both equal `15908dca...d24701`.
+- P2 14B preparation: independent labeling/parsing/cache/union/review code and
+  sanity/full configs are implemented. The active v2 tokenizer-only dry-runs
+  cover 10 and 400 records with maximum contexts 3,471 and 3,491 of 8,192.
+  They record no GPU, API call, model-weight load, cache entry, or paid spend.
+  Four active manifests/logs are hash-verified in the private P2 backup; the v1
+  dry-runs are retained as superseded after the schema/prompt separation.
 - Test set: not created and therefore not frozen.
 - GPU spend: 0 CNY recorded; only GPU-free mode has been used. GPU-free hourly
   price and elapsed platform charge still require the human's billing record.
 
-Stop for a separate 14B assistance and cost approval. Human annotation,
-splitting/freezing, and paid GPU work remain barred.
+Stop for explicit approval of only the fixed 10-record 14B sanity run and its
+budget. The 400-record pass, human annotation, splitting/freezing, and all paid
+GPU work without that bounded approval remain barred. See
+`docs/P2_LLM_DEPLOYMENT_REPORT.md` for the evidence and proposal.
 
 ## Fixed Technology Decisions
 
