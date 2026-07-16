@@ -32,6 +32,8 @@ cd /root/project
 source /root/venv/bin/activate
 python scripts/prepare_domain_prelabels.py \
   --config configs/p2_distant_supervision.yaml
+python scripts/verify_domain_prelabels.py \
+  --config configs/p2_distant_supervision.yaml
 ```
 
 This command requires GPU-free mode. It performs exact longest-first seed-term
