@@ -24,3 +24,16 @@ python scripts/prepare_domain_candidates.py --config configs/p2_domain_data.yaml
 
 This command collects candidates only. It does not run the distant-supervision
 prelabeler or any LLM annotation step.
+
+P2 deterministic distant-supervision proposals after schema approval:
+
+```bash
+cd /root/project
+source /root/venv/bin/activate
+python scripts/prepare_domain_prelabels.py \
+  --config configs/p2_distant_supervision.yaml
+```
+
+This command requires GPU-free mode. It performs exact longest-first seed-term
+matching only, infers no relations, and leaves all LLM disagreement and human
+annotation fields explicitly unstarted.

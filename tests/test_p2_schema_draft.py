@@ -23,10 +23,14 @@ class P2SchemaDraftTest(unittest.TestCase):
         example_path = PROJECT_ROOT / "docs" / "p2_schema_examples_draft.jsonl"
         cls.examples = list(iter_jsonl(example_path))
 
-    def test_draft_remains_at_pause_a(self) -> None:
-        self.assertEqual(self.schema["status"], "pending_human_approval")
+    def test_schema_records_pause_a_approval(self) -> None:
+        self.assertEqual(self.schema["status"], "approved")
         self.assertEqual(self.schema["approval_gate"], "P2_PAUSE_A")
-        self.assertIsNone(self.schema["approval"]["approved_by"])
+        self.assertEqual(self.schema["approval"]["approved_by"], "human_project_owner")
+        self.assertEqual(self.schema["approval"]["approved_at"], "2026-07-16")
+        self.assertEqual(
+            self.schema["approval"]["decision_record"], "docs/P2_DECISION_LOG.md"
+        )
 
     def test_expected_types_are_fixed(self) -> None:
         self.assertEqual(

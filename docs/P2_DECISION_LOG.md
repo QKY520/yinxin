@@ -21,3 +21,19 @@ Execution result:
 
 The authorization does not extend to distant-supervision prelabeling, LLM
 annotation, manual annotation, dataset splitting/freezing, or paid GPU use.
+
+## 2026-07-16 - Pause A schema approved
+
+The human approved all five decisions in `p2-schema-draft-v1`:
+
+1. The four entity definitions and context-dependent EQUIPMENT/MODULE role.
+2. The complete METRIC span policy.
+3. The relation type matrix, including `USES` with a MODULE tail.
+4. No overlapping entities, cross-sentence relations, or pronoun-coreference
+   relations in v1.
+5. Blank independent annotation for the 100-passage agreement sample.
+
+The human authorized only GPU-free distant-supervision prelabeling and creation
+of an unstarted review sheet. The authorization explicitly excludes the 14B
+model, paid GPU work, and human annotation. After the artifacts are generated,
+the project must stop for a separate 14B assistance and budget decision.

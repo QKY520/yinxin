@@ -1,0 +1,40 @@
+phase: P2
+stage: distant_supervision_prelabel
+run_id: p2-distant-supervision-v1
+seed: 42
+
+schema:
+  path: /root/project/configs/p2_schema_draft.yaml
+  id: equipment_ie_domain
+  version: p2-schema-draft-v1
+  required_status: approved
+
+inputs:
+  candidates:
+    path: /root/autodl-tmp/data/domain_candidates.jsonl
+    expected_records: 400
+    sha256: 32622228a7e0d45b31ce7ee2c0f78bcad0a5aa4a07ad8d01212bd03d3c19ee4f
+  seed_terms:
+    path: /root/autodl-tmp/data/domain_seed_terms.jsonl
+    expected_records: 5770
+    sha256: 4e65516b2aa7ebbb06377f5724a4f31ab13e11bbeaee9f4bc9f13999f6c37171
+
+method:
+  name: qaonmilitarykg_exact_longest_nonoverlap
+  minimum_term_characters: 2
+  proposed_entity_type: EQUIPMENT
+  infer_relations: false
+
+outputs:
+  proposals_jsonl: /root/autodl-tmp/data/domain_distant_supervision.jsonl
+  review_jsonl: /root/autodl-tmp/data/p2_review_sheet_distant_supervision.jsonl
+  review_csv: /root/autodl-tmp/data/p2_review_sheet_distant_supervision.csv
+  report: /root/autodl-tmp/backup/p2/distant_supervision_report.json
+  log: /root/project/logs/p2_distant_supervision.jsonl
+  overwrite: false
+
+guards:
+  require_gpu_free: true
+  llm_allowed: false
+  human_annotation_allowed: false
+  split_or_freeze_allowed: false

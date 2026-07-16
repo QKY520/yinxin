@@ -10,13 +10,13 @@ and aggregation. Use a paid GPU boot only for model inference or training.
 After every GPU phase: verify outputs, back up, sync lightweight artifacts to
 `D:\yinsir`, report cost, and remind the human to shut down the instance.
 
-**CURRENT GATE**: The human confirmed Step 5 / P2 on 2026-07-16. Existing P2
-candidate artifacts are backed up, and the project is paused at P2 Pause A for
-schema and example approval. Do not prelabel real candidates, begin human or
-LLM annotation, split/freeze the domain dataset, or use paid GPU resources
-until the human explicitly approves the relevant next step. The real host and
-port live only in the user's local SSH config; use the non-secret alias
-`autodl-paper` in project files and commands.
+**CURRENT GATE**: The human approved `p2-schema-draft-v1` on 2026-07-16 and
+authorized only GPU-free distant-supervision prelabeling plus creation of an
+unstarted review sheet. Do not begin human or LLM annotation, split/freeze the
+domain dataset, or use paid GPU resources until the human explicitly approves
+the relevant next step. The real host and port live only in the user's local
+SSH config; use the non-secret alias `autodl-paper` in project files and
+commands.
 
 ## Execution Authority
 
@@ -145,8 +145,8 @@ a reproducible ablation matrix, not a single attractive run.
 
 ## Current Priority And State
 
-Current step: **Step 5 in progress - P2 candidate collection backed up; paused
-at Pause A pending schema and example approval**.
+Current step: **Step 5 in progress - P2 schema approved; GPU-free deterministic
+prelabeling and unstarted review-sheet export authorized**.
 
 - Local workspace: `D:\yinsir`.
 - Git repository: `main` initialized and tracking `origin/main`.
@@ -188,14 +188,15 @@ at Pause A pending schema and example approval**.
 - P2 candidate backup: the 119,550,484-byte private archive is stored under
   `/root/autodl-tmp/backup/p2` and `D:\yinsir\backups\P2`; remote and local
   SHA256 both equal `68798109...afa26ce`.
-- Domain schema: `p2-schema-draft-v1` and 10 synthetic examples await human
-  approval at P2 Pause A. No real candidate may be prelabelled before approval.
+- Domain schema: the human approved `p2-schema-draft-v1` and its 10 synthetic
+  examples on 2026-07-16. Only deterministic QAonMilitaryKG exact-match
+  proposals are authorized; these are machine suggestions, not gold labels.
 - Test set: not created and therefore not frozen.
 - GPU spend: 0 CNY recorded; only GPU-free mode has been used. GPU-free hourly
   price and elapsed platform charge still require the human's billing record.
 
-Do not proceed beyond P2 Pause A until the human approves the schema and
-examples. Paid GPU work always requires a separate explicit approval.
+After the GPU-free proposal and review-sheet step, stop for a separate 14B
+assistance and cost approval. Human annotation and paid GPU work remain barred.
 
 ## Fixed Technology Decisions
 

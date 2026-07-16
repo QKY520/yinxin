@@ -1,6 +1,6 @@
 schema_id: equipment_ie_domain
 version: p2-schema-draft-v1
-status: pending_human_approval
+status: approved
 approval_gate: P2_PAUSE_A
 
 entity_types:
@@ -47,6 +47,6 @@ agreement:
   relation_agreement: report_exact_triple_f1_as_diagnostic
 
 approval:
-  approved_by: null
-  approved_at: null
-  decision_record: null
+  approved_by: human_project_owner
+  approved_at: "2026-07-16"
+  decision_record: docs/P2_DECISION_LOG.md

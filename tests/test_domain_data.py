@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 import json
 import sys
 import tempfile
@@ -10,6 +11,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from equipment_ie.domain_data import (  # noqa: E402
+    build_distant_supervision_review_row,
     chunk_text,
     extract_seed_terms,
     iter_json_object_values,
@@ -18,7 +20,11 @@ from equipment_ie.domain_data import (  # noqa: E402
     normalized_ngrams,
     prelabel_candidate,
     select_quotas_with_dedup,
+    text_sha256,
+    validate_distant_supervision_review_row,
+    write_review_csv_atomic,
 )
+from equipment_ie.schema import SchemaError  # noqa: E402
 
 
 def candidate(source_type: str, suffix: str, text: str, score: int = 1) -> dict:
@@ -85,6 +91,56 @@ class DomainDataTest(unittest.TestCase):
         row = {"id": "c1", "text": "某型雷达甲用于目标探测。"}
         record = prelabel_candidate(row, ["雷达甲"])
         self.assertEqual(record["entities"][0]["span"], "雷达甲")
+
+    def test_review_row_keeps_human_and_llm_fields_unstarted(self) -> None:
+        row = candidate("patent", "=unsafe", "某型雷达甲用于目标探测。" + "甲" * 88)
+        row["id"] = "c1"
+        row.pop("selection_score")
+        proposal = prelabel_candidate(row, ["雷达甲"])
+        review = build_distant_supervision_review_row(
+            row, proposal, schema_version="p2-schema-draft-v1"
+        )
+        self.assertEqual(review["human_annotation"]["status"], "NOT_STARTED")
+        self.assertEqual(
+            review["disagreement"]["status"], "NOT_COMPUTED_LLM_NOT_RUN"
+        )
+        self.assertEqual(review["machine_suggestion"]["relations"], [])
+
+    def test_review_validation_rejects_human_edits(self) -> None:
+        row = candidate("cmnee", "1", "某型雷达甲用于目标探测。" + "甲" * 88)
+        row["id"] = "c1"
+        row.pop("selection_score")
+        review = build_distant_supervision_review_row(
+            row,
+            prelabel_candidate(row, ["雷达甲"]),
+            schema_version="p2-schema-draft-v1",
+        )
+        review["human_annotation"]["status"] = "IN_PROGRESS"
+        with self.assertRaises(SchemaError):
+            validate_distant_supervision_review_row(review)
+
+    def test_review_csv_is_formula_safe_and_human_fields_are_blank(self) -> None:
+        row = candidate("patent", "=unsafe", "=某型雷达甲用于目标探测。" + "甲" * 87)
+        row["id"] = "c1"
+        row["source_id"] = "=unsafe"
+        row["title"] = "+unsafe"
+        row["content_sha256"] = text_sha256(row["text"])
+        row.pop("selection_score")
+        review = build_distant_supervision_review_row(
+            row,
+            prelabel_candidate(row, ["雷达甲"]),
+            schema_version="p2-schema-draft-v1",
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "review.csv"
+            write_review_csv_atomic(path, [review])
+            with path.open("r", encoding="utf-8-sig", newline="") as handle:
+                saved = list(csv.DictReader(handle))[0]
+        self.assertEqual(saved["source_id"], "'=unsafe")
+        self.assertEqual(saved["title_display"], "'+unsafe")
+        self.assertEqual(saved["text_display"], "'=某型雷达甲用于目标探测。" + "甲" * 87)
+        self.assertEqual(saved["human_review_status"], "NOT_STARTED")
+        self.assertEqual(saved["annotator_a_entities_json"], "")
 
     def test_quota_selection_is_deterministic_and_deduplicated(self) -> None:
         base = "甲" * 100

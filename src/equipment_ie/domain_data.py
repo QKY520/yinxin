@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import csv
 import hashlib
 import html
 import json
@@ -524,3 +525,213 @@ def prelabel_candidate(row: Mapping[str, Any], terms: Sequence[str]) -> dict[str
     }
     validate_record(record)
     return record
+
+
+def build_distant_supervision_review_row(
+    candidate: Mapping[str, Any],
+    proposal: Mapping[str, Any],
+    *,
+    schema_version: str,
+) -> dict[str, Any]:
+    """Build a review row without creating any human annotation."""
+
+    validate_candidate(candidate)
+    validate_record(proposal)
+    if proposal["id"] != candidate["id"] or proposal["text"] != candidate["text"]:
+        raise SchemaError("proposal id/text must match its source candidate")
+    if proposal["relations"]:
+        raise SchemaError("distant supervision must not infer relations")
+    quality_flags = [] if proposal["entities"] else ["NO_SEED_MATCH"]
+    row = {
+        "review_id": candidate["id"],
+        "candidate": {
+            "id": candidate["id"],
+            "text": candidate["text"],
+            "content_sha256": candidate["content_sha256"],
+            "source_type": candidate["source_type"],
+            "source_id": candidate["source_id"],
+            "source_split": candidate["source_split"],
+            "source_url": candidate["source_url"],
+            "source_revision": candidate["source_revision"],
+            "source_license": candidate["source_license"],
+            "title": candidate["title"],
+        },
+        "schema_version": schema_version,
+        "machine_suggestion": {
+            "stage": "distant_supervision_only",
+            "method": "qaonmilitarykg_exact_longest_nonoverlap",
+            "entities": proposal["entities"],
+            "relations": [],
+        },
+        "quality_flags": quality_flags,
+        "disagreement": {
+            "status": "NOT_COMPUTED_LLM_NOT_RUN",
+            "flags": [],
+        },
+        "human_annotation": {
+            "status": "NOT_STARTED",
+            "annotator_a": None,
+            "annotator_b": None,
+            "adjudication": None,
+        },
+    }
+    validate_distant_supervision_review_row(row)
+    return row
+
+
+def validate_distant_supervision_review_row(row: Mapping[str, Any]) -> None:
+    """Validate provenance and untouched human fields in one review row."""
+
+    required = {
+        "review_id",
+        "candidate",
+        "schema_version",
+        "machine_suggestion",
+        "quality_flags",
+        "disagreement",
+        "human_annotation",
+    }
+    if set(row) != required:
+        raise SchemaError("review row has unexpected or missing top-level fields")
+    candidate = row["candidate"]
+    suggestion = row["machine_suggestion"]
+    human = row["human_annotation"]
+    disagreement = row["disagreement"]
+    if not isinstance(candidate, Mapping) or row["review_id"] != candidate.get("id"):
+        raise SchemaError("review id must match candidate id")
+    if candidate.get("content_sha256") != text_sha256(str(candidate.get("text", ""))):
+        raise SchemaError("review candidate content hash mismatch")
+    if not isinstance(row["schema_version"], str) or not row["schema_version"]:
+        raise SchemaError("review schema version must be non-empty")
+    if not isinstance(suggestion, Mapping):
+        raise SchemaError("machine suggestion must be an object")
+    if suggestion.get("stage") != "distant_supervision_only":
+        raise SchemaError("unexpected machine suggestion stage")
+    if suggestion.get("method") != "qaonmilitarykg_exact_longest_nonoverlap":
+        raise SchemaError("unexpected machine suggestion method")
+    proposal = {
+        "id": candidate["id"],
+        "text": candidate["text"],
+        "entities": suggestion.get("entities"),
+        "relations": suggestion.get("relations"),
+    }
+    validate_record(proposal)
+    if proposal["relations"]:
+        raise SchemaError("distant-supervision review relations must be empty")
+    expected_flags = [] if proposal["entities"] else ["NO_SEED_MATCH"]
+    if row["quality_flags"] != expected_flags:
+        raise SchemaError("review quality flags do not match proposal content")
+    if disagreement != {"status": "NOT_COMPUTED_LLM_NOT_RUN", "flags": []}:
+        raise SchemaError("LLM disagreement must remain uncomputed")
+    if human != {
+        "status": "NOT_STARTED",
+        "annotator_a": None,
+        "annotator_b": None,
+        "adjudication": None,
+    }:
+        raise SchemaError("human annotation fields must remain untouched")
+
+
+def _spreadsheet_safe(value: str) -> str:
+    return f"'{value}" if value.startswith(("=", "+", "-", "@")) else value
+
+
+def write_review_csv_atomic(
+    path: Path | str, rows: Sequence[Mapping[str, Any]]
+) -> int:
+    """Write a formula-safe display CSV; the JSONL review sheet is authoritative."""
+
+    destination = Path(path)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    temporary = destination.with_name(f".{destination.name}.tmp-{os.getpid()}")
+    fields = [
+        "review_id",
+        "candidate_id",
+        "source_type",
+        "source_id",
+        "source_split",
+        "source_url",
+        "source_revision",
+        "source_license",
+        "title_display",
+        "text_display",
+        "text_json",
+        "content_sha256",
+        "schema_version",
+        "suggestion_stage",
+        "suggestion_method",
+        "proposed_entity_count",
+        "proposed_entities_json",
+        "proposed_relation_count",
+        "proposed_relations_json",
+        "quality_flags_json",
+        "disagreement_status",
+        "disagreement_flags_json",
+        "human_review_status",
+        "annotator_a_entities_json",
+        "annotator_a_relations_json",
+        "annotator_a_notes",
+        "annotator_b_entities_json",
+        "annotator_b_relations_json",
+        "annotator_b_notes",
+        "adjudicated_entities_json",
+        "adjudicated_relations_json",
+        "adjudication_notes",
+    ]
+    try:
+        with temporary.open("w", encoding="utf-8-sig", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=fields, extrasaction="raise")
+            writer.writeheader()
+            for row in rows:
+                validate_distant_supervision_review_row(row)
+                candidate = row["candidate"]
+                suggestion = row["machine_suggestion"]
+                writer.writerow(
+                    {
+                        "review_id": row["review_id"],
+                        "candidate_id": candidate["id"],
+                        "source_type": candidate["source_type"],
+                        "source_id": _spreadsheet_safe(str(candidate["source_id"])),
+                        "source_split": candidate["source_split"],
+                        "source_url": candidate["source_url"],
+                        "source_revision": candidate["source_revision"],
+                        "source_license": candidate["source_license"],
+                        "title_display": _spreadsheet_safe(str(candidate["title"])),
+                        "text_display": _spreadsheet_safe(str(candidate["text"])),
+                        "text_json": json.dumps(candidate["text"], ensure_ascii=False),
+                        "content_sha256": candidate["content_sha256"],
+                        "schema_version": row["schema_version"],
+                        "suggestion_stage": suggestion["stage"],
+                        "suggestion_method": suggestion["method"],
+                        "proposed_entity_count": len(suggestion["entities"]),
+                        "proposed_entities_json": json.dumps(
+                            suggestion["entities"], ensure_ascii=False, separators=(",", ":")
+                        ),
+                        "proposed_relation_count": len(suggestion["relations"]),
+                        "proposed_relations_json": json.dumps(
+                            suggestion["relations"], ensure_ascii=False, separators=(",", ":")
+                        ),
+                        "quality_flags_json": json.dumps(
+                            row["quality_flags"], ensure_ascii=False, separators=(",", ":")
+                        ),
+                        "disagreement_status": row["disagreement"]["status"],
+                        "disagreement_flags_json": "[]",
+                        "human_review_status": row["human_annotation"]["status"],
+                        "annotator_a_entities_json": "",
+                        "annotator_a_relations_json": "",
+                        "annotator_a_notes": "",
+                        "annotator_b_entities_json": "",
+                        "annotator_b_relations_json": "",
+                        "annotator_b_notes": "",
+                        "adjudicated_entities_json": "",
+                        "adjudicated_relations_json": "",
+                        "adjudication_notes": "",
+                    }
+                )
+            handle.flush()
+            os.fsync(handle.fileno())
+        temporary.replace(destination)
+    except BaseException:
+        temporary.unlink(missing_ok=True)
+        raise
+    return len(rows)
