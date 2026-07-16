@@ -1,0 +1,75 @@
+{
+  "phase": "P2",
+  "stage": "candidate_collection_before_pause_a",
+  "status": "backed_up",
+  "verified_at": "2026-07-16T09:12:34+08:00",
+  "boot_mode": "gpu_free",
+  "gpu_device_present": false,
+  "paid_gpu_used": false,
+  "code_commit_at_backup": "9e99cbac5d43960c87796aaf6fc5f52bb4e4369f",
+  "archive": {
+    "remote_path": "/root/autodl-tmp/backup/p2/p2_candidate_stage_20260716.tar.gz",
+    "local_path": "D:\\yinsir\\backups\\P2\\p2_candidate_stage_20260716.tar.gz",
+    "bytes": 119550484,
+    "sha256": "6879810924e417f58b6c2ef32932a526c39c7da74f4dedbf849c0d202afa26ce",
+    "entries": 373,
+    "remote_gzip_test": "passed",
+    "remote_sha256_check": "passed",
+    "local_sha256_check": "passed"
+  },
+  "artifacts": [
+    {
+      "path": "/root/autodl-tmp/data/domain_candidates.jsonl",
+      "bytes": 429919,
+      "sha256": "32622228a7e0d45b31ce7ee2c0f78bcad0a5aa4a07ad8d01212bd03d3c19ee4f"
+    },
+    {
+      "path": "/root/autodl-tmp/data/domain_seed_terms.jsonl",
+      "bytes": 1505648,
+      "sha256": "4e65516b2aa7ebbb06377f5724a4f31ab13e11bbeaee9f4bc9f13999f6c37171"
+    },
+    {
+      "path": "/root/autodl-tmp/backup/p2/candidate_dedup.json",
+      "bytes": 594,
+      "sha256": "0c288474512641ac988bf21d33c4fd43105c3e4407e66dc4208423441dbd524e"
+    },
+    {
+      "path": "/root/autodl-tmp/backup/p2/collection_report.json",
+      "bytes": 4988,
+      "sha256": "6dc9a92ef370904c2fa912876c2365e5993d6e7425da46a305cfc2fd65e93a28"
+    },
+    {
+      "path": "/root/project/logs/p2_collection.jsonl",
+      "bytes": 1705,
+      "sha256": "cd35b70066791f310ee4ea55ae7a0dbfab2cdce325e0de63d025e010e75c2906"
+    },
+    {
+      "path": "/root/project/logs/p2_collect_stdout.log",
+      "bytes": 685,
+      "sha256": "4a1bc3f7bbcb29106d6c604a640a2e13935c7a9e7c9b6a66b13da6328bcbeb02"
+    },
+    {
+      "path": "/root/project/configs/p2_domain_data.yaml",
+      "bytes": 3168,
+      "sha256": "7f1b7ce8ec6ac20a52d8c453cc8f255eccacef80b8131da716a1cee0f1f0522f"
+    }
+  ],
+  "collection": {
+    "candidate_records": 400,
+    "source_counts": {
+      "baidu_baike": 7,
+      "patent": 84,
+      "cmnee": 309
+    },
+    "candidate_stage_8gram_removals": 3,
+    "seed_terms": 5770,
+    "round_trip": true,
+    "formal_annotation_started": false
+  },
+  "license_boundaries": {
+    "kppatent_zh": "MIT",
+    "cmnee": "Apache-2.0",
+    "qaonmilitarykg": "NOASSERTION; private seed use only",
+    "baidu_baike": "private research cache; no redistribution"
+  }
+}

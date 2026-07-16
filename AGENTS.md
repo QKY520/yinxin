@@ -10,11 +10,13 @@ and aggregation. Use a paid GPU boot only for model inference or training.
 After every GPU phase: verify outputs, back up, sync lightweight artifacts to
 `D:\yinsir`, report cost, and remind the human to shut down the instance.
 
-**CURRENT GATE**: Step 4 / P1 public-data preparation passed Gate 1 in AutoDL
-GPU-free mode. Do not begin P2 domain-data collection, annotation, or paid-GPU
-work until the human explicitly confirms Step 5. The real host and port live
-only in the user's local SSH config; use the non-secret alias `autodl-paper` in
-project files and commands.
+**CURRENT GATE**: The human confirmed Step 5 / P2 on 2026-07-16. Existing P2
+candidate artifacts are backed up, and the project is paused at P2 Pause A for
+schema and example approval. Do not prelabel real candidates, begin human or
+LLM annotation, split/freeze the domain dataset, or use paid GPU resources
+until the human explicitly approves the relevant next step. The real host and
+port live only in the user's local SSH config; use the non-secret alias
+`autodl-paper` in project files and commands.
 
 ## Execution Authority
 
@@ -143,13 +145,14 @@ a reproducible ablation matrix, not a single attractive run.
 
 ## Current Priority And State
 
-Current step: **Step 4 complete - P1 public data verified and backed up; awaiting
-approval to proceed**.
+Current step: **Step 5 in progress - P2 candidate collection backed up; paused
+at Pause A pending schema and example approval**.
 
 - Local workspace: `D:\yinsir`.
 - Git repository: `main` initialized and tracking `origin/main`.
 - GitHub remote: P1 implementation state pushed and hash-verified.
-- AutoDL instance: reachable in GPU-free mode.
+- AutoDL instance: reachable in GPU-free mode as of 2026-07-16; no GPU device or
+  experiment process was present during the Pause A audit.
 - AutoDL image: the human confirmed the P0 image was saved.
 - SSH alias: `autodl-paper`; dedicated ED25519 key authentication verified.
 - GitHub deploy key: read-only access verified from AutoDL over SSH port 443.
@@ -179,12 +182,20 @@ approval to proceed**.
 - P1 backup: the 184,027,514-byte private archive is stored under
   `/root/autodl-tmp/backup/p1` and `D:\yinsir\backups\P1`; remote and local
   SHA256 both equal `e472122c...440a341`.
-- Domain schema: default proposal only; human approval is required at P2 Pause A.
+- P2 candidates: 400 public-text candidates were collected before formal
+  annotation (Baidu Baike 7, patent 84, CMNEE 309); the collection report
+  explicitly records `formal_annotation_started = false`.
+- P2 candidate backup: the 119,550,484-byte private archive is stored under
+  `/root/autodl-tmp/backup/p2` and `D:\yinsir\backups\P2`; remote and local
+  SHA256 both equal `68798109...afa26ce`.
+- Domain schema: `p2-schema-draft-v1` and 10 synthetic examples await human
+  approval at P2 Pause A. No real candidate may be prelabelled before approval.
 - Test set: not created and therefore not frozen.
 - GPU spend: 0 CNY recorded; only GPU-free mode has been used. GPU-free hourly
   price and elapsed platform charge still require the human's billing record.
 
-Do not start P2 domain-data work until the human confirms Step 5.
+Do not proceed beyond P2 Pause A until the human approves the schema and
+examples. Paid GPU work always requires a separate explicit approval.
 
 ## Fixed Technology Decisions
 
