@@ -131,18 +131,37 @@ class LlmLabelingTest(unittest.TestCase):
         self.assertNotIn("远程监督建议", prompt)
         self.assertTrue(prompt.endswith("只返回JSON,不要任何解释,不要markdown代码块"))
 
+    def test_prompt_v2_adds_relation_matrix_and_strict_json_rules(self) -> None:
+        prompt_config = yaml.safe_load(
+            (PROJECT_ROOT / "configs" / "p2_llm_prompt_v2.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+        prompt = build_label_prompt(
+            text="待处理文本。",
+            schema=self.schema,
+            prompt_config=prompt_config,
+            examples=self.examples,
+            prompt_version="p2-llm-label-v2",
+        )
+        self.assertIn("关系类型矩阵", prompt)
+        self.assertIn("每个实体对象必须且只能包含span、type、occurrence三个键", prompt)
+        self.assertIn("不要输出第二个JSON或任何多余字符", prompt)
+
     def test_checked_in_llm_configs_keep_sanity_only_gate(self) -> None:
         expected = {
             "p2_llm_label_sanity.yaml": {
-                "run_id": "p2-llm-label-sanity-v2",
-                "config_sha256": "a5e400680137c3c57e858d526cbb1a73f8cb6935f6607208432e1d645fde5741",
-                "dry_run_name": "p2_llm_label_sanity_v2_dry_run.json",
+                "run_id": "p2-llm-label-sanity-v3",
+                "config_sha256": "d4fcc5b53d4af7fac6c8bccc84802208864561c922ed43bca32a5a9b5277f67d",
+                "dry_run_name": "p2_llm_label_sanity_v3_dry_run.json",
+                "prompt_sha256": "fb85458058253a671862caa1d65725766feda0285c6e61a9574c36d3e647d153",
                 "authorized": True,
             },
             "p2_llm_label_full.yaml": {
                 "run_id": "p2-llm-label-full-v2",
                 "config_sha256": "809b3183b8c9bdced5334030fe8dce866f4d4e384ded27fa5c1d09109573fdf5",
                 "dry_run_name": "p2_llm_label_full_v2_dry_run.json",
+                "prompt_sha256": "d1a2569ad6a93122937c493d5b5d1b66fbb216716c4e27590c7e5a5056f7c739",
                 "authorized": False,
             },
         }
@@ -197,7 +216,7 @@ class LlmLabelingTest(unittest.TestCase):
             )
             self.assertEqual(
                 config["prompt"]["definitions_sha256"],
-                "d1a2569ad6a93122937c493d5b5d1b66fbb216716c4e27590c7e5a5056f7c739",
+                pinned["prompt_sha256"],
             )
             self.assertEqual(
                 Path(config["outputs"]["dry_run_manifest"]).name,

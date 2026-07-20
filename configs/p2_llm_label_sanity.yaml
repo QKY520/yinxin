@@ -1,6 +1,6 @@
 phase: P2
 stage: llm_assisted_label_sanity
-run_id: p2-llm-label-sanity-v2
+run_id: p2-llm-label-sanity-v3
 
 execution:
   authorized: true
@@ -35,9 +35,9 @@ schema:
   sha256: a3b2e8dcb81a6223058e028cdadcc6aecb87a10968d8ff0454aa7e535102ac56
 
 prompt:
-  version: p2-llm-label-v1
-  definitions_path: /root/project/configs/p2_llm_prompt_v1.yaml
-  definitions_sha256: d1a2569ad6a93122937c493d5b5d1b66fbb216716c4e27590c7e5a5056f7c739
+  version: p2-llm-label-v2
+  definitions_path: /root/project/configs/p2_llm_prompt_v2.yaml
+  definitions_sha256: fb85458058253a671862caa1d65725766feda0285c6e61a9574c36d3e647d153
   examples_path: /root/project/docs/p2_schema_examples_draft.jsonl
   examples_sha256: 8e7f427fab7a0bb1586b299aeb23a6ceff43747fc2c85c213d75a6e14aaea423
   example_ids: [synthetic-01, synthetic-02, synthetic-03, synthetic-04, synthetic-05, synthetic-06, synthetic-07, synthetic-08, synthetic-09, synthetic-10]
@@ -84,13 +84,13 @@ cache:
   directory: /root/project/cache/p2_llm_label
 
 outputs:
-  dry_run_manifest: /root/autodl-tmp/backup/p2/p2_llm_label_sanity_v2_dry_run.json
-  llm_proposals_jsonl: /root/autodl-tmp/data/p2_llm_label_sanity_v2.jsonl
-  union_proposals_jsonl: /root/autodl-tmp/data/p2_union_sanity_v2.jsonl
-  review_jsonl: /root/autodl-tmp/data/p2_review_sheet_llm_sanity_v2.jsonl
-  review_csv: /root/autodl-tmp/data/p2_review_sheet_llm_sanity_v2.csv
-  report: /root/autodl-tmp/backup/p2/p2_llm_label_sanity_v2_report.json
-  log: /root/project/logs/p2_llm_label_sanity_v2.jsonl
+  dry_run_manifest: /root/autodl-tmp/backup/p2/p2_llm_label_sanity_v3_dry_run.json
+  llm_proposals_jsonl: /root/autodl-tmp/data/p2_llm_label_sanity_v3.jsonl
+  union_proposals_jsonl: /root/autodl-tmp/data/p2_union_sanity_v3.jsonl
+  review_jsonl: /root/autodl-tmp/data/p2_review_sheet_llm_sanity_v3.jsonl
+  review_csv: /root/autodl-tmp/data/p2_review_sheet_llm_sanity_v3.csv
+  report: /root/autodl-tmp/backup/p2/p2_llm_label_sanity_v3_report.json
+  log: /root/project/logs/p2_llm_label_sanity_v3.jsonl
   overwrite: false
 
 success_gates:

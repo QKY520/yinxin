@@ -235,6 +235,8 @@ def build_label_prompt(
         f"- {name}: {prompt_config['relation_types'][name]}"
         for name in relation_order
     ]
+    constraints = prompt_config["constraints"]
+    extra_rules = constraints.get("additional_output_rules", [])
     blocks = [
         f"任务定义（{prompt_version}）：从装备领域文本中抽取实体和显式关系。",
         "实体类型：\n" + "\n".join(entity_lines),
@@ -250,6 +252,16 @@ def build_label_prompt(
             "\"tail\":1,\"type\":\"USES\"}]}。head/tail 是 entities 数组下标。"
         ),
     ]
+    if constraints.get("include_relation_type_matrix"):
+        matrix_lines = []
+        for name in relation_order:
+            relation = schema["relation_types"][name]
+            heads = "/".join(relation["head_types"])
+            tails = "/".join(relation["tail_types"])
+            matrix_lines.append(f"- {name}: head 只能是 {heads}; tail 只能是 {tails}")
+        blocks.append("关系类型矩阵：\n" + "\n".join(matrix_lines))
+    if extra_rules:
+        blocks.append("补充输出约束：\n" + "\n".join(f"- {rule}" for rule in extra_rules))
     for index, example in enumerate(examples, start=1):
         validate_record(example)
         blocks.append(

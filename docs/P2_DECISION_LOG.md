@@ -120,3 +120,22 @@ Operational adjustment:
 - Do not change prompt wording, schema, selected records, generation settings,
   model path, output paths, or any full-run authorization.
 - Reuse cached successful requests and retry the fixed 10-record sanity only.
+
+Execution result:
+
+- The retry published v2 sanity outputs, but the success gate failed with
+  4 parse failures out of 10 records.
+- Failure modes were preserved in
+  `/root/autodl-tmp/backup/p2/p2_llm_label_sanity_v2_report.json`: extra JSON
+  characters, missing `occurrence`, and schema-invalid relation directions.
+- The 400-record full pass remained unauthorized and was not launched.
+
+Follow-up fix:
+
+- Add `configs/p2_llm_prompt_v2.yaml` with explicit single-object JSON,
+  exact entity-key, occurrence, and relation-type-matrix constraints.
+- Update only the active sanity configuration to
+  `p2-llm-label-sanity-v3` and v3 output paths, preserving the failed v2
+  artifacts as a negative sanity result.
+- Do not relax relation validation, change selected records, or authorize the
+  full run.
