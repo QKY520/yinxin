@@ -178,7 +178,7 @@ class LlmLabelingTest(unittest.TestCase):
             )
         )
         prompt = build_label_prompt(
-            text="寰呭鐞嗘枃鏈€?,
+            text="dummy text",
             schema=self.schema,
             prompt_config=prompt_config,
             examples=self.examples,
