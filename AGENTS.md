@@ -15,17 +15,17 @@ applied/engineering paper: Chinese draft first, then English SCI manuscript;
 equipment-domain few-shot annotated data + reproducible IE pipeline +
 RAG/glossary/schema constraints/self-verification to reduce hallucination, with
 ablation evidence. NER is the main task; RE is auxiliary evidence. The current
-experiment gate is still P2: the 2026-07-20 v4 fixed 10-record
-Qwen2.5-14B-AWQ sanity retry was consumed. v4 removed raw JSON-format failures
-but still failed the parse/validation gate (3/10 invalid outputs: relation
-type-matrix and overlapping-entity violations), was backed up, and vLLM was
-stopped. Do not start the 400-record full pass, perform human annotation,
-split/freeze data, start P3/P4/P5, or use broad paid GPU time. A further paid
-retry, if continued, must be a bounded v5-style 10-record sanity/diagnostic
-retry with live GPU check, recorded time/cost, immediate backup, and stop.
-The user's total project budget target is 400 CNY; the last reported 4090 price
-is 2.7 CNY/hour. The real host and port live only in the user's local SSH
-config; use the non-secret alias `autodl-paper` in project files and commands.
+experiment gate is still P2: the 2026-07-20 fixed 10-record
+Qwen2.5-14B-AWQ sanity v6 passed after a deterministic, logged overlap resolver
+was enabled only for P2 LLM review-sheet proposals. vLLM was stopped and GPU
+memory returned to 0 MiB. Do not start the 400-record full pass, perform human
+annotation, split/freeze data, or start P3/P4/P5 without explicit approval. The
+next possible action is a human decision between approving the 400-record P2
+LLM proposal pass, doing a small manual audit of the v6 review sheet first, or
+stopping GPU work. The user's total project budget target is 400 CNY; the last
+reported 4090 price is 2.7 CNY/hour. The real host and port live only in the
+user's local SSH config; use the non-secret alias `autodl-paper` in project
+files and commands.
 
 ## Execution Authority
 
@@ -189,9 +189,9 @@ Paper-facing framing:
 
 ## Current Priority And State
 
-Current step: **Step 5 in progress - P2 14B sanity v4 failed the parse/validation
-gate; paper strategy is now locked; next experimental action should be a bounded
-v5-style 10-record sanity/diagnostic retry only, then stop for verification**.
+Current step: **Step 5 in progress - P2 14B fixed 10-record sanity v6 passed;
+stop for the next human gate before any 400-record full pass, human annotation,
+split/freeze, or P3/P4/P5 work**.
 
 - Local workspace: `D:\yinsir`.
 - Git repository: `main` initialized and tracking `origin/main`.
@@ -244,20 +244,30 @@ v5-style 10-record sanity/diagnostic retry only, then stop for verification**.
 - P2 prelabel backup: the 413,471-byte private archive is stored under
   `/root/autodl-tmp/backup/p2` and `D:\yinsir\backups\P2`; remote and local
   SHA256 both equal `15908dca...d24701`.
-- P2 14B preparation: independent labeling/parsing/cache/union/review code and
-  sanity/full configs are implemented. The active v2 tokenizer-only dry-runs
-  cover 10 and 400 records with maximum contexts 3,471 and 3,491 of 8,192.
-  They record no GPU, API call, model-weight load, cache entry, or paid spend.
-  Four active manifests/logs are hash-verified in the private P2 backup; the v1
-  dry-runs are retained as superseded after the schema/prompt separation.
+- P2 14B preparation and sanity: independent labeling/parsing/cache/union/review
+  code and sanity/full configs are implemented. Tokenizer-only dry-runs covered
+  10 and 400 records with maximum contexts 3,471 and 3,491 of 8,192. The paid
+  10-record sanity sequence preserved failed v2/v3/v4/v5 attempts. The latest
+  v6 run at commit `dfa7bd1` produced 10 reloadable review rows, 52 LLM entity
+  suggestions, 20 relation suggestions, 0 parse failures, and success gate
+  `passed=true`. It used cached v5 model outputs plus a deterministic logged
+  overlap resolver for review-sheet proposals only:
+  `LLM_OVERLAP_RESOLVED=1` and
+  `LLM_RELATION_DROPPED_AFTER_OVERLAP_RESOLUTION=1`.
+- P2 v6 backup: the 45,314-byte private archive is stored under
+  `/root/autodl-tmp/backup/p2` and `D:\yinsir\backups\P2` as
+  `p2_14b_sanity_v6_success_20260720_r2.tar.gz`; remote and local SHA256 both
+  equal `16cc70ea...acfaead`. The first same-name v6 backup attempt was a
+  45-byte failed tar and must not be treated as a valid backup.
 - Test set: not created and therefore not frozen.
-- GPU spend: 0 CNY recorded; only GPU-free mode has been used. GPU-free hourly
-  price and elapsed platform charge still require the human's billing record.
+- GPU spend: sanity GPU service windows have been minimized and stopped after
+  use. The v6 service window was approximately 19:46-19:52 Asia/Shanghai on
+  2026-07-20, costing about 0.27 CNY at 2.7 CNY/hour; platform billing remains
+  the authoritative spend record.
 
-Stop for explicit approval of only the fixed 10-record 14B sanity run and its
-budget. The 400-record pass, human annotation, splitting/freezing, and all paid
-GPU work without that bounded approval remain barred. See
-`docs/P2_LLM_DEPLOYMENT_REPORT.md` for the evidence and proposal.
+Stop for explicit approval before the 400-record P2 LLM proposal pass, human
+annotation, splitting/freezing, P3/P4/P5, or any broad paid GPU work. See
+`docs/P2_DECISION_LOG.md` for the exact v2-v6 sanity history.
 
 ## Fixed Technology Decisions
 

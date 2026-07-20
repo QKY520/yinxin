@@ -265,3 +265,90 @@ Explicit exclusions remain unchanged:
 - Human annotation is not yet authorized.
 - Dataset splitting/freezing is not yet authorized.
 - P3/P4/P5 are not yet authorized.
+
+## 2026-07-20 - Fixed 10-record v5 sanity executed and preserved
+
+The v5 sanity run was executed on the fixed 10-record set after the human
+approved the bounded retry.
+
+Execution result:
+
+- v5 improved over v4 but still failed the success gate with 1 invalid output
+  out of 10.
+- The remaining failure was `domain-candidate-0039`, caused by nested entity
+  overlap between `滚筒` and `滚筒外壳`.
+- Relation type-matrix failures observed in v4 were fixed by v5.
+- vLLM was stopped after v5; GPU memory returned to 0 MiB.
+- Remote/local backup:
+  `p2_14b_sanity_v5_attempt_20260720.tar.gz`, SHA256
+  `b7d93dba8910a43ffe8ab8edc191ad295bb4cbde78e85991eb7bd85f23b4cf65`.
+
+Current gate after v5: stop before the 400-record full pass, human annotation,
+splitting/freezing, or P3/P4/P5. A further retry should not spend more 14B
+tokens on prompt wording if a deterministic review-proposal-only overlap
+resolver can address the remaining failure while preserving a structured flag.
+
+## 2026-07-20 - Fixed 10-record v6 sanity passed
+
+After the user restored the balance and supplied a new AutoDL endpoint, the
+local SSH alias `autodl-paper` was updated outside Git. The new instance was
+checked before execution:
+
+- RTX 4090 visible and initially idle.
+- No existing screen session.
+- `/root/project` existed and pulled commit `dfa7bd1`.
+- `/root/autodl-tmp/data`, `/root/autodl-tmp/models`, and
+  `/root/autodl-tmp/backup/p2` existed.
+- Remote unit tests passed: `python -m unittest tests.test_llm_labeling`
+  reported 16 tests OK.
+
+Implementation change:
+
+- `parse_model_label_output` remains strict by default and still rejects
+  overlapping entities for evaluation.
+- P2 LLM review-sheet proposal generation now explicitly enables a
+  deterministic overlap resolver:
+  keep the longest non-overlapping entity proposal, log
+  `LLM_OVERLAP_RESOLVED`, and drop/log any relation that references a removed
+  entity.
+- A unit test covers the real `滚筒` versus `滚筒外壳` failure shape.
+
+Execution result:
+
+- Run ID: `p2-llm-label-sanity-v6`.
+- Commit: `dfa7bd1e22cc02a4e583ef34fe368d5368b72961`.
+- Fixed records: 10.
+- Parse/validation failures: 0.
+- Success gate: passed.
+- Request attempts: 12, all cache hits.
+- LLM proposals: 52 entities and 20 relations.
+- Logged flags:
+  `ENTITY_ONLY_DISTANT=5`, `ENTITY_ONLY_LLM=50`,
+  `ENTITY_OVERLAP_CONFLICT=1`, `LLM_OVERLAP_RESOLVED=1`,
+  `LLM_RELATION_DROPPED_AFTER_OVERLAP_RESOLUTION=1`.
+- vLLM was stopped after execution; `nvidia-smi` returned to 0 MiB used.
+- v6 service window was approximately 19:46-19:52 Asia/Shanghai; at
+  2.7 CNY/hour this is about 0.27 CNY. AutoDL billing remains the authoritative
+  cost record.
+
+Artifacts:
+
+- Remote report:
+  `/root/autodl-tmp/backup/p2/p2_llm_label_sanity_v6_report.json`.
+- Local verification copies:
+  `D:\yinsir\backups\P2\v6_verify\`.
+- Valid remote/local backup:
+  `p2_14b_sanity_v6_success_20260720_r2.tar.gz`, 45,314 bytes, SHA256
+  `16cc70ea99cd88a337a102683cd166461f520ca9761c0e9a2f0dff560acfaead`.
+- The first `p2_14b_sanity_v6_success_20260720.tar.gz` attempt was a 45-byte
+  failed tar caused by an incorrect working directory and must not be treated
+  as a valid backup.
+
+Current gate:
+
+- Stop before the 400-record P2 LLM proposal pass.
+- Stop before human annotation, split/freeze, P3/P4/P5, or optional P7.
+- The next decision should be either:
+  1. approve a bounded 400-record P2 LLM proposal pass,
+  2. manually audit the 10-row v6 review sheet first, or
+  3. keep the work GPU-free and prepare annotation operations.

@@ -40,36 +40,37 @@ NER is the main task. RE is auxiliary.
 - P2 deterministic distant supervision: complete but low coverage.
 - P2 schema and 10 examples: approved.
 - P2 14B assisted labeling implementation: complete.
-- P2 14B sanity v2/v3/v4: executed and preserved as negative/failed sanity
+- P2 14B sanity v2/v3/v4/v5: executed and preserved as negative/failed sanity
   attempts.
-- Latest v4 result: 10 fixed records, 3 invalid outputs.
-  - JSON trailing-format failures were fixed.
-  - Remaining failures are relation type-matrix violations and overlapping
-    entity violations.
-- vLLM was stopped after v4; GPU memory returned to 0 MiB.
-- Latest known remote/local v4 backup:
-  `p2_14b_sanity_v4_attempt_20260720.tar.gz`
+- Latest successful run: `p2-llm-label-sanity-v6`, commit `dfa7bd1`.
+  - Fixed 10 records.
+  - 0 parse/validation failures.
+  - Success gate passed.
+  - 52 LLM entity suggestions and 20 relation suggestions.
+  - One nested-overlap case was resolved by a deterministic review-proposal-only
+    rule, logged as `LLM_OVERLAP_RESOLVED=1`; one relation referencing the
+    removed entity was dropped and logged.
+  - The final evaluation parser remains strict by default; only P2 LLM
+    proposal generation enables this resolver.
+- vLLM was stopped after v6; GPU memory returned to 0 MiB.
+- Latest remote/local v6 backup:
+  `p2_14b_sanity_v6_success_20260720_r2.tar.gz`
   with SHA256
-  `5953d1d8047ac28fcfe514611b1ea528053dd1ae47cfa9ba12c06919c51ea51c`.
+  `16cc70ea99cd88a337a102683cd166461f520ca9761c0e9a2f0dff560acfaead`.
+  The earlier same-name v6 tar without `_r2` was a failed 45-byte backup
+  attempt and must not be treated as valid.
 
 ## Recommended next action
 
-Do not jump to the 400-record pass.
+Do not jump automatically to the 400-record pass. The next action requires a
+separate human decision. Safe options are:
 
-The next safe experimental step is a bounded v5-style 10-record sanity retry:
-
-1. Diagnose the 3 v4 invalid outputs from raw logs.
-2. Tighten prompt/schema post-processing only for:
-   - relation type matrix;
-   - overlap rejection;
-   - no unsupported relation directions.
-3. Keep the same fixed 10 sanity records.
-4. Run only the 10-record sanity retry on 4090.
-5. Success gate: 0 parse/validation failures out of 10.
-6. Stop, back up, hash-verify, report time/cost.
-
-Only after sanity passes should a separate decision be made about the 400-record
-P2 full pass.
+1. Approve the 400-record P2 LLM proposal pass with a fixed budget cap and the
+   same review-sheet-only overlap resolver.
+2. First manually audit the 10-row v6 review sheet to check whether the 14B
+   proposals are useful enough for human annotation.
+3. Stop paid GPU work and proceed with human guideline review or other
+   GPU-free preparation.
 
 ## Paper strategy
 
@@ -81,4 +82,3 @@ The manuscript should emphasize:
 2. engineering simplicity and reproducible pipeline;
 3. hallucination reduction as the core measurable benefit;
 4. clean ablations, not cherry-picked single runs.
-

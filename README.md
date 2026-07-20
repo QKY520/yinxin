@@ -15,6 +15,14 @@ self-verification to measure both extraction F1 and hallucination reduction.
 - `docs/CONTINUATION_HANDOFF.md`: compact handoff for a new conversation after context compression.
 - `docs/P2_DECISION_LOG.md`: gate history and latest approval state.
 
+## Current Status
+
+As of 2026-07-20, P0 and P1 are complete. P2 14B-assisted labeling has passed
+the fixed 10-record sanity v6 gate with 0 parse failures. The project is stopped
+before the 400-record P2 full pass, human annotation, split/freeze, P3/P4/P5,
+and optional QLoRA until the human explicitly approves the next gate. See
+`docs/CONTINUATION_HANDOFF.md` and `docs/P2_DECISION_LOG.md` before continuing.
+
 ## Layout
 
 - `configs/`: one YAML configuration per experimental run.
