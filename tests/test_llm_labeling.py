@@ -175,10 +175,10 @@ class LlmLabelingTest(unittest.TestCase):
         expected = {
             "p2_llm_label_sanity.yaml": {
                 "run_id": "p2-llm-label-sanity-v4",
-                "config_sha256": "c0714c7e3ff947995bc9ad8954f305ba7fa156eab75bfb653d3cf9a41686b240",
+                "config_sha256": "894a2b331c04b5df751aa1630459981795b285a456aab6814e52aae25918928b",
                 "dry_run_name": "p2_llm_label_sanity_v4_dry_run.json",
                 "prompt_sha256": "88fcc316de7b093feeda864b8425f12472fbdba23ad88a27a079040a053d7683",
-                "authorized": True,
+                "authorized": False,
                 "approval_status": "fixed_10_record_sanity_v4_retry_only",
             },
             "p2_llm_label_full.yaml": {

@@ -201,3 +201,19 @@ The human approved continuation after being asked to approve only the v4 fixed
 
 The 400-record full pass, human annotation, splitting/freezing, and P3/P4/P5
 remain unauthorized.
+
+Execution result:
+
+- v4 executed the same fixed 10 selected records and published v4 outputs.
+- The JSON-format failures from v3 were removed, but the success gate still
+  failed with 3 parse failures out of 10: two relation type-matrix violations
+  and one overlapping-entity violation.
+- vLLM was stopped immediately after the run; GPU memory returned to 0 MiB.
+- Remote backup:
+  `/root/autodl-tmp/backup/p2/p2_14b_sanity_v4_attempt_20260720.tar.gz`,
+  SHA256 `5953d1d8047ac28fcfe514611b1ea528053dd1ae47cfa9ba12c06919c51ea51c`.
+- Local backup:
+  `D:\yinsir\backups\P2\p2_14b_sanity_v4_attempt_20260720.tar.gz`, same SHA256.
+
+Current gate: stop before any additional sanity retry or paid GPU use. The full
+400-record pass remains unauthorized.
