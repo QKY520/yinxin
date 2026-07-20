@@ -53,6 +53,35 @@ def strip_code_fences(value: str) -> str:
     return "\n".join(lines).strip()
 
 
+def extract_first_json_object(value: str) -> str:
+    stripped = strip_code_fences(value)
+    start = stripped.find("{")
+    if start < 0:
+        return stripped
+    in_string = False
+    escaped = False
+    depth = 0
+    for index, char in enumerate(stripped[start:], start=start):
+        if escaped:
+            escaped = False
+            continue
+        if char == "\\" and in_string:
+            escaped = True
+            continue
+        if char == '"':
+            in_string = not in_string
+            continue
+        if in_string:
+            continue
+        if char == "{":
+            depth += 1
+        elif char == "}":
+            depth -= 1
+            if depth == 0:
+                return stripped[start : index + 1]
+    return stripped
+
+
 def _occurrence_starts(text: str, span: str) -> list[int]:
     starts: list[int] = []
     cursor = 0
@@ -82,7 +111,7 @@ def parse_model_label_output(
     """Parse occurrence-based model JSON into the unified exact-offset contract."""
 
     try:
-        value = json.loads(strip_code_fences(raw_output))
+        value = json.loads(extract_first_json_object(raw_output))
     except json.JSONDecodeError as exc:
         raise LabelParseError(f"invalid JSON: {exc}") from exc
     if not isinstance(value, dict) or set(value) != {"entities", "relations"}:

@@ -22,6 +22,7 @@ from equipment_ie.llm_labeling import (  # noqa: E402
     build_request_envelope,
     canonical_json,
     chat_with_cache,
+    extract_first_json_object,
     merge_distant_and_llm,
     parse_model_label_output,
     request_hash,
@@ -86,6 +87,12 @@ class LlmLabelingTest(unittest.TestCase):
         self.assertEqual(strip_code_fences(raw)[0], "{")
         self.assertEqual([entity["span"] for entity in parsed["entities"]], ["雷达甲", "惯性导航"])
         self.assertEqual(parsed["relations"], [{"head": 0, "tail": 1, "type": "USES"}])
+
+    def test_extract_first_json_object_ignores_extra_closing_brace(self) -> None:
+        raw = '{"entities":[],"relations":[]}}'
+        self.assertEqual(extract_first_json_object(raw), '{"entities":[],"relations":[]}')
+        parsed = parse_model_label_output(raw, record_id="r1", text="无实体。", schema=self.schema)
+        self.assertEqual(parsed["entities"], [])
 
     def test_parser_rejects_overlap_and_invalid_type_matrix(self) -> None:
         overlap = canonical_json(
