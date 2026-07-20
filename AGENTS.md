@@ -13,7 +13,8 @@ After every GPU phase: verify outputs, back up, sync lightweight artifacts to
 **CURRENT GATE**: The 2026-07-20 fixed 10-record Qwen2.5-14B-AWQ P2 sanity
 approval was consumed. v2 and v3 sanity attempts produced outputs but failed
 the parse-failure gate (4/10 parse failures), were backed up, and vLLM was
-stopped. Do not rerun sanity, start the 400-record full pass, perform human
+stopped. A GPU-free v4 retry configuration and parser fix are prepared but not
+authorized. Do not rerun sanity, start the 400-record full pass, perform human
 annotation, split/freeze data, start P3/P4/P5, or use more paid GPU time until
 the human explicitly approves the next bounded retry and budget. The real host
 and port live only in the user's local SSH config; use the non-secret alias
@@ -146,8 +147,8 @@ a reproducible ablation matrix, not a single attractive run.
 
 ## Current Priority And State
 
-Current step: **Step 5 in progress - P2 14B sanity attempted and failed the
-parse gate; stopped for retry/budget approval**.
+Current step: **Step 5 in progress - P2 14B sanity v4 retry prepared; stopped
+for retry/budget approval**.
 
 - Local workspace: `D:\yinsir`.
 - Git repository: `main` initialized and tracking `origin/main`.

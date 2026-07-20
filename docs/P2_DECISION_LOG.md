@@ -163,3 +163,29 @@ Current gate:
 - A prepared parser fix at commit `dee5e26` can recover extra trailing JSON
   braces while preserving schema validation, but a new v4 sanity retry requires
   explicit human approval and budget.
+
+## 2026-07-20 - GPU-free v4 retry prepared
+
+The human asked the agent to continue and questioned whether the experiment can
+be completed reliably. The agent did not restart vLLM or make further paid GPU
+calls. Instead, it prepared the next bounded retry in GPU-free mode.
+
+Analysis from cached v3 outputs:
+
+- The parser fix recovers three v3 failures caused by a valid JSON object
+  followed by an extra closing brace.
+- The remaining observed failure is a schema-invalid relation direction on
+  `domain-candidate-0099`.
+
+Prepared changes:
+
+- `configs/p2_llm_prompt_v3.yaml` adds stricter relation constraints, including
+  explicit rules that two EQUIPMENT entities must not receive `PART_OF`, and
+  that firing, testing, deployment, integration, or capability statements are
+  not composition relations.
+- `configs/p2_llm_label_sanity.yaml` now points to
+  `p2-llm-label-sanity-v4` output paths and prompt v3.
+- `execution.authorized` remains `false` and `approval_record` is `null`.
+
+Current gate: v4 is prepared only. Do not launch vLLM or execute the v4 sanity
+retry until the human approves a new bounded retry budget.

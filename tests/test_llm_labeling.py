@@ -155,15 +155,31 @@ class LlmLabelingTest(unittest.TestCase):
         self.assertIn("每个实体对象必须且只能包含span、type、occurrence三个键", prompt)
         self.assertIn("不要输出第二个JSON或任何多余字符", prompt)
 
+    def test_prompt_v3_adds_negative_relation_event_rules(self) -> None:
+        prompt_config = yaml.safe_load(
+            (PROJECT_ROOT / "configs" / "p2_llm_prompt_v3.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+        prompt = build_label_prompt(
+            text="待处理文本。",
+            schema=self.schema,
+            prompt_config=prompt_config,
+            examples=self.examples,
+            prompt_version="p2-llm-label-v3",
+        )
+        self.assertIn("两个EQUIPMENT之间不要输出PART_OF", prompt)
+        self.assertIn("发射、试射、部署、验证、集成、提供能力、奠定基础不是组成关系", prompt)
+
     def test_checked_in_llm_configs_keep_sanity_only_gate(self) -> None:
         expected = {
             "p2_llm_label_sanity.yaml": {
-                "run_id": "p2-llm-label-sanity-v3",
-                "config_sha256": "2fbd6dd244c956d240aaf4f2bafdd6402452050626f83c5adf0df6b83a559dcb",
-                "dry_run_name": "p2_llm_label_sanity_v3_dry_run.json",
-                "prompt_sha256": "fb85458058253a671862caa1d65725766feda0285c6e61a9574c36d3e647d153",
+                "run_id": "p2-llm-label-sanity-v4",
+                "config_sha256": "b7c289942bbee004b43b1a58b011f006df35e5ad2db39887db4a228d2c575948",
+                "dry_run_name": "p2_llm_label_sanity_v4_dry_run.json",
+                "prompt_sha256": "88fcc316de7b093feeda864b8425f12472fbdba23ad88a27a079040a053d7683",
                 "authorized": False,
-                "approval_status": "consumed_failed_sanity_gate",
+                "approval_status": None,
             },
             "p2_llm_label_full.yaml": {
                 "run_id": "p2-llm-label-full-v2",
