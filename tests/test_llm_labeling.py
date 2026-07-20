@@ -159,10 +159,11 @@ class LlmLabelingTest(unittest.TestCase):
         expected = {
             "p2_llm_label_sanity.yaml": {
                 "run_id": "p2-llm-label-sanity-v3",
-                "config_sha256": "7b1a8f2b5a8be9ba4acf8ec86731ed7272a5405559868a322338c5b02cf7edd7",
+                "config_sha256": "2fbd6dd244c956d240aaf4f2bafdd6402452050626f83c5adf0df6b83a559dcb",
                 "dry_run_name": "p2_llm_label_sanity_v3_dry_run.json",
                 "prompt_sha256": "fb85458058253a671862caa1d65725766feda0285c6e61a9574c36d3e647d153",
-                "authorized": True,
+                "authorized": False,
+                "approval_status": "consumed_failed_sanity_gate",
             },
             "p2_llm_label_full.yaml": {
                 "run_id": "p2-llm-label-full-v2",
@@ -170,6 +171,7 @@ class LlmLabelingTest(unittest.TestCase):
                 "dry_run_name": "p2_llm_label_full_v2_dry_run.json",
                 "prompt_sha256": "d1a2569ad6a93122937c493d5b5d1b66fbb216716c4e27590c7e5a5056f7c739",
                 "authorized": False,
+                "approval_status": None,
             },
         }
         for name, pinned in expected.items():
@@ -183,10 +185,14 @@ class LlmLabelingTest(unittest.TestCase):
                 pinned["config_sha256"],
             )
             self.assertEqual(config["execution"]["authorized"], pinned["authorized"])
-            if pinned["authorized"]:
+            if pinned["approval_status"]:
                 self.assertEqual(
                     config["execution"]["approval_record"]["scope"],
                     "fixed_10_record_sanity_only",
+                )
+                self.assertEqual(
+                    config["execution"]["approval_record"]["status"],
+                    pinned["approval_status"],
                 )
                 self.assertFalse(
                     config["execution"]["approval_record"]["full_run_authorized"]

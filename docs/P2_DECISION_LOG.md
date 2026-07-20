@@ -141,3 +141,25 @@ Follow-up fix:
   runner's prompt-consistency guard passes before any request is sent.
 - Do not relax relation validation, change selected records, or authorize the
   full run.
+
+Execution result:
+
+- v3 sanity executed the same fixed 10 selected records and published v3
+  outputs, but the success gate still failed with 4 parse failures out of 10.
+- vLLM was stopped after the cap was consumed; GPU memory returned to 0 MiB.
+- The measured service window was approximately 09:49:22 to 10:20:00
+  Asia/Shanghai. At 2.7 CNY/hour, the estimated GPU cost is about 1.38 CNY.
+- Remote backup:
+  `/root/autodl-tmp/backup/p2/p2_14b_sanity_attempts_20260720.tar.gz`,
+  SHA256 `72a74abd319f23fb5197cd8741622d44bf7a64717aee22f7542001b293cac528`.
+- Local backup:
+  `D:\yinsir\backups\P2\p2_14b_sanity_attempts_20260720.tar.gz`, same SHA256.
+
+Current gate:
+
+- Stop before any additional sanity retry or paid GPU use.
+- The full 400-record pass, human annotation, splitting/freezing, and P3/P4/P5
+  remain unauthorized.
+- A prepared parser fix at commit `dee5e26` can recover extra trailing JSON
+  braces while preserving schema validation, but a new v4 sanity retry requires
+  explicit human approval and budget.

@@ -3,11 +3,13 @@ stage: llm_assisted_label_sanity
 run_id: p2-llm-label-sanity-v3
 
 execution:
-  authorized: true
+  authorized: false
   approval_record:
     id: p2-14b-sanity-approval-2026-07-20
     approved_by: human
     approved_at: 2026-07-20T09:41:52+08:00
+    status: consumed_failed_sanity_gate
+    consumed_at: 2026-07-20T10:20:00+08:00
     scope: fixed_10_record_sanity_only
     live_gpu_price_cny_per_hour: 2.7
     gpu_hour_cap: 0.25

@@ -10,15 +10,14 @@ and aggregation. Use a paid GPU boot only for model inference or training.
 After every GPU phase: verify outputs, back up, sync lightweight artifacts to
 `D:\yinsir`, report cost, and remind the human to shut down the instance.
 
-**CURRENT GATE**: GPU-free implementation and tokenizer-only dry-runs for the
-Qwen2.5-14B-AWQ P2 proposal path completed and were backed up on 2026-07-16.
-On 2026-07-20 the human approved only the fixed 10-record Qwen2.5-14B-AWQ
-sanity run at a reported live RTX 4090 price of 2.7 CNY/hour with a 0.25
-GPU-hour cap. Stop after this sanity run is verified and backed up. This does
-not authorize the 400-record full pass, human annotation, splitting/freezing,
-P3/P4/P5, or any other paid GPU work. The real host and port live only in the
-user's local SSH config; use the non-secret alias `autodl-paper` in project
-files and commands.
+**CURRENT GATE**: The 2026-07-20 fixed 10-record Qwen2.5-14B-AWQ P2 sanity
+approval was consumed. v2 and v3 sanity attempts produced outputs but failed
+the parse-failure gate (4/10 parse failures), were backed up, and vLLM was
+stopped. Do not rerun sanity, start the 400-record full pass, perform human
+annotation, split/freeze data, start P3/P4/P5, or use more paid GPU time until
+the human explicitly approves the next bounded retry and budget. The real host
+and port live only in the user's local SSH config; use the non-secret alias
+`autodl-paper` in project files and commands.
 
 ## Execution Authority
 
@@ -147,8 +146,8 @@ a reproducible ablation matrix, not a single attractive run.
 
 ## Current Priority And State
 
-Current step: **Step 5 in progress - fixed 10-record P2 14B sanity run approved;
-stop after sanity verification and backup before any full pass decision**.
+Current step: **Step 5 in progress - P2 14B sanity attempted and failed the
+parse gate; stopped for retry/budget approval**.
 
 - Local workspace: `D:\yinsir`.
 - Git repository: `main` initialized and tracking `origin/main`.
