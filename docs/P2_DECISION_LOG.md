@@ -352,3 +352,21 @@ Current gate:
   1. approve a bounded 400-record P2 LLM proposal pass,
   2. manually audit the 10-row v6 review sheet first, or
   3. keep the work GPU-free and prepare annotation operations.
+
+## 2026-07-20 - Prepared full-v6 config in GPU-free mode
+
+After the instance was confirmed to be in GPU-free mode, a full-pass
+configuration was prepared for the next possible P2 LLM proposal run:
+
+- Added `configs/p2_llm_label_full_v6.yaml`.
+- The config mirrors the successful sanity v6 prompt path:
+  `p2-llm-label-v4`, retry suffix, request timeout, and conservative
+  `max_concurrency=2`.
+- The run remains unauthorized:
+  `execution.authorized=false`, `approval_record=null`,
+  `human_annotation_allowed=false`, and `split_or_freeze_allowed=false`.
+- Output paths use the `_full_v6` suffix so old dry-runs and failed attempts are
+  not overwritten.
+
+This change only prepares a reproducible dry-run/execution config. It does not
+authorize or launch the 400-record paid GPU pass.

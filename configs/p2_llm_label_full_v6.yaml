@@ -1,0 +1,94 @@
+phase: P2
+stage: llm_assisted_label_full
+run_id: p2-llm-label-full-v6
+
+execution:
+  authorized: false
+  approval_record: null
+  dry_run_requires_gpu_free: true
+  actual_run_requires_gpu: true
+
+inputs:
+  candidates:
+    path: /root/autodl-tmp/data/domain_candidates.jsonl
+    expected_records: 400
+    sha256: 32622228a7e0d45b31ce7ee2c0f78bcad0a5aa4a07ad8d01212bd03d3c19ee4f
+  distant_supervision:
+    path: /root/autodl-tmp/data/domain_distant_supervision.jsonl
+    expected_records: 400
+    sha256: b40e9d5c34c27d22b699d758af79c88705e4e4637184458aaae04bbaa05af96b
+
+schema:
+  path: /root/project/configs/p2_schema_draft.yaml
+  version: p2-schema-draft-v1
+  required_status: approved
+  sha256: a3b2e8dcb81a6223058e028cdadcc6aecb87a10968d8ff0454aa7e535102ac56
+
+prompt:
+  version: p2-llm-label-v4
+  definitions_path: /root/project/configs/p2_llm_prompt_v4.yaml
+  definitions_sha256: 75993fba42169fe0670c5148a4d075184d1cd1a8d8b5fff49c248a8633deee72
+  examples_path: /root/project/docs/p2_schema_examples_draft.jsonl
+  examples_sha256: 8e7f427fab7a0bb1586b299aeb23a6ceff43747fc2c85c213d75a6e14aaea423
+  example_ids: [synthetic-01, synthetic-02, synthetic-03, synthetic-04, synthetic-05, synthetic-06, synthetic-07, synthetic-08, synthetic-09, synthetic-10]
+  include_distant_supervision_in_prompt: false
+  retry_suffix: 只返回一个合法JSON对象；不要解释；不要markdown；删除任何违反关系类型矩阵的关系；删除任何重叠实体，只保留更长且语义完整的实体；每个实体必须且只能包含span、type、occurrence。
+
+selection:
+  mode: all
+
+model:
+  path: /root/autodl-tmp/models/qwen2.5-14b-awq
+  served_model_name: qwen2.5-14b-awq
+  quantization: awq
+  max_model_len: 8192
+  gpu_memory_utilization: 0.90
+  required_files:
+    config.json: 0c174aa8d52f5dec4c2e0d4b3ec4b1ff261d16bb80b58f03c1c06528e6ed6640
+    model.safetensors.index.json: ffa9ad9dba1428d7e924ab03ab51b28865ddfad58b60f4d3d786f4f811a723cc
+    tokenizer.json: c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539
+    tokenizer_config.json: 5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583
+  p0_manifest:
+    path: /root/autodl-tmp/backup/p0/model_files.sha256
+    sha256: 8df4badf7649609ece84a7f35555101c2f9d28537f74b418db819d32b6c5bd63
+
+server:
+  base_url: http://127.0.0.1:8000
+  api_key_env: VLLM_API_KEY
+  request_timeout_seconds: 300
+  launch_command: vllm serve /root/autodl-tmp/models/qwen2.5-14b-awq --served-model-name qwen2.5-14b-awq --quantization awq --max-model-len 8192 --gpu-memory-utilization 0.90 --port 8000
+
+generation:
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 2048
+  seed: 42
+  max_concurrency: 2
+
+cache:
+  directory: /root/project/cache/p2_llm_label
+
+outputs:
+  dry_run_manifest: /root/autodl-tmp/backup/p2/p2_llm_label_full_v6_dry_run.json
+  llm_proposals_jsonl: /root/autodl-tmp/data/p2_llm_label_full_v6.jsonl
+  union_proposals_jsonl: /root/autodl-tmp/data/p2_union_full_v6.jsonl
+  review_jsonl: /root/autodl-tmp/data/p2_review_sheet_llm_full_v6.jsonl
+  review_csv: /root/autodl-tmp/data/p2_review_sheet_llm_full_v6.csv
+  report: /root/autodl-tmp/backup/p2/p2_llm_label_full_v6_report.json
+  log: /root/project/logs/p2_llm_label_full_v6.jsonl
+  overwrite: false
+
+success_gates:
+  maximum_parse_failure_rate: 0.05
+  require_reloadable_rows: true
+  require_human_fields_unstarted: true
+
+budget:
+  full_gpu_hour_cap: null
+  live_price_required_before_launch: true
+  full_run_estimate_requires_sanity_measurement: true
+
+guards:
+  llm_must_not_see_distant_supervision: true
+  human_annotation_allowed: false
+  split_or_freeze_allowed: false
