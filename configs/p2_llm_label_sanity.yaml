@@ -70,7 +70,7 @@ model:
 server:
   base_url: http://127.0.0.1:8000
   api_key_env: VLLM_API_KEY
-  request_timeout_seconds: 120
+  request_timeout_seconds: 300
   launch_command: vllm serve /root/autodl-tmp/models/qwen2.5-14b-awq --served-model-name qwen2.5-14b-awq --quantization awq --max-model-len 8192 --gpu-memory-utilization 0.90 --port 8000
 
 generation:

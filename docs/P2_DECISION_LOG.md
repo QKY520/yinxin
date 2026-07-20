@@ -105,3 +105,18 @@ Explicit exclusions:
 - Human annotation remains unauthorized.
 - Dataset splitting/freezing remains unauthorized.
 - P3/P4/P5 experiments remain unauthorized until the P2 gates are completed.
+
+## 2026-07-20 - Sanity timeout guard adjusted
+
+The first sanity execution attempt reached the old 120-second client timeout
+before publishing final outputs. The atomic output guard left the final JSONL,
+CSV, and report paths empty; partial successful calls remained only in the
+prompt-hash cache.
+
+Operational adjustment:
+
+- Increase only `configs/p2_llm_label_sanity.yaml` server
+  `request_timeout_seconds` from 120 to 300.
+- Do not change prompt wording, schema, selected records, generation settings,
+  model path, output paths, or any full-run authorization.
+- Reuse cached successful requests and retry the fixed 10-record sanity only.

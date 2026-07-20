@@ -135,7 +135,7 @@ class LlmLabelingTest(unittest.TestCase):
         expected = {
             "p2_llm_label_sanity.yaml": {
                 "run_id": "p2-llm-label-sanity-v2",
-                "config_sha256": "f6cccfc50c17e49e3b49a3aae42252ac7a24226659410b54fb946737fb0d9530",
+                "config_sha256": "a5e400680137c3c57e858d526cbb1a73f8cb6935f6607208432e1d645fde5741",
                 "dry_run_name": "p2_llm_label_sanity_v2_dry_run.json",
                 "authorized": True,
             },
@@ -216,6 +216,7 @@ class LlmLabelingTest(unittest.TestCase):
         )
         self.assertEqual(sanity["selection"]["mode"], "sanity")
         self.assertEqual(sanity["selection"]["sample_size"], 10)
+        self.assertEqual(sanity["server"]["request_timeout_seconds"], 300)
         self.assertEqual(sanity["budget"]["sanity_gpu_hour_cap"], 0.25)
         self.assertTrue(sanity["budget"]["live_price_required_before_launch"])
         self.assertEqual(full["selection"]["mode"], "all")
