@@ -184,7 +184,7 @@ class LlmLabelingTest(unittest.TestCase):
             examples=self.examples,
             prompt_version="p2-llm-label-v4",
         )
-        self.assertIn("删除任何重叠实体", prompt)
+        self.assertIn("删除所有重叠实体", prompt)
         self.assertIn("PART_OF的head必须是MODULE", prompt)
         self.assertIn("两个EQUIPMENT之间绝对不要输出PART_OF", prompt)
 
