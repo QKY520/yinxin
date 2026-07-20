@@ -42,7 +42,7 @@ prompt:
   examples_sha256: 8e7f427fab7a0bb1586b299aeb23a6ceff43747fc2c85c213d75a6e14aaea423
   example_ids: [synthetic-01, synthetic-02, synthetic-03, synthetic-04, synthetic-05, synthetic-06, synthetic-07, synthetic-08, synthetic-09, synthetic-10]
   include_distant_supervision_in_prompt: false
-  retry_suffix: 只返回合法JSON
+  retry_suffix: 只返回一个合法JSON对象；不要解释；不要markdown；每个实体必须且只能包含span、type、occurrence；不要输出schema外关系。
 
 selection:
   mode: sanity

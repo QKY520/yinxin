@@ -137,5 +137,7 @@ Follow-up fix:
 - Update only the active sanity configuration to
   `p2-llm-label-sanity-v3` and v3 output paths, preserving the failed v2
   artifacts as a negative sanity result.
+- Keep the config-level retry suffix synchronized with prompt v2 so the
+  runner's prompt-consistency guard passes before any request is sent.
 - Do not relax relation validation, change selected records, or authorize the
   full run.
