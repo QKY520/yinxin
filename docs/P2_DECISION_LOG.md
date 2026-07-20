@@ -370,3 +370,25 @@ configuration was prepared for the next possible P2 LLM proposal run:
 
 This change only prepares a reproducible dry-run/execution config. It does not
 authorize or launch the 400-record paid GPU pass.
+
+GPU-free dry-run result:
+
+- Command:
+  `python scripts/run_p2_llm_labeling.py --config configs/p2_llm_label_full_v6.yaml --dry-run`.
+- Remote commit: `25d83d8fbdcaf02882b7c135b819d192f6a1bd3c`.
+- API/model calls: none; `api_called=false`, `model_weights_loaded=false`,
+  `gpu_device_present=false`.
+- Selected records: 400 total, with source counts Baidu Baike 7, patent 84,
+  CMNEE 309.
+- Distant-supervision coverage in selected records: 15 matched, 385 unmatched.
+- Prompt/token budget:
+  initial input tokens min/mean/max = 1678 / 1770.7775 / 1848;
+  maximum context tokens = 3946 of 8192;
+  worst-case request count = 800 including one retry for every record.
+- Remote and local dry-run manifest SHA256:
+  `78f0e94bbc6b188ba34d480dbc619bc407c9461249fc2e6e96fd4b0918cc6bce`.
+- Remote and local dry-run log SHA256:
+  `0212b2be4ca7b8a063578ba634c4d27297a9b1bfb7e859e70cb90479780f1c59`.
+
+The full-v6 pass is technically preflighted but remains blocked on explicit
+human approval, live GPU price confirmation, and a CNY/GPU-hour cap.
