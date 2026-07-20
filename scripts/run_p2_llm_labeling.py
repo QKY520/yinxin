@@ -104,6 +104,13 @@ def _validate_guards(config: dict[str, Any]) -> None:
         raise ValueError("retry suffix differs from the fixed parsing ladder")
 
 
+def _gpu_device_present(device_root: Path = Path("/dev")) -> bool:
+    return any(
+        path.name.startswith("nvidia") and path.name[len("nvidia") :].isdigit()
+        for path in device_root.glob("nvidia*")
+    )
+
+
 def _load_context(config_path: Path) -> dict[str, Any]:
     config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
     if config.get("phase") != "P2" or config.get("stage") not in {
@@ -231,7 +238,7 @@ def dry_run(context: dict[str, Any]) -> dict[str, Any]:
     execution = config["execution"]
     if execution.get("dry_run_requires_gpu_free") is not True:
         raise ValueError("dry-run GPU-free guard is missing")
-    if Path("/dev/nvidia0").exists():
+    if _gpu_device_present():
         raise RuntimeError("P2 LLM dry-run must use GPU-free mode")
     destination = Path(config["outputs"]["dry_run_manifest"])
     if destination.exists():
@@ -450,7 +457,7 @@ def execute(context: dict[str, Any]) -> dict[str, Any]:
     execution = config["execution"]
     if execution.get("authorized") is not True or not execution.get("approval_record"):
         raise PermissionError("actual P2 LLM execution lacks explicit human approval")
-    if execution.get("actual_run_requires_gpu") is not True or not Path("/dev/nvidia0").exists():
+    if execution.get("actual_run_requires_gpu") is not True or not _gpu_device_present():
         raise RuntimeError("actual P2 LLM execution requires paid GPU mode")
     _check_server(config)
     final_paths = {

@@ -274,6 +274,15 @@ class LlmLabelingTest(unittest.TestCase):
                 llm_runner.execute(context)
         server_check.assert_not_called()
 
+    def test_gpu_guard_accepts_nonzero_device_index(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            device_root = Path(directory)
+            (device_root / "nvidiactl").touch()
+            (device_root / "nvidia-uvm").touch()
+            self.assertFalse(llm_runner._gpu_device_present(device_root))
+            (device_root / "nvidia4").touch()
+            self.assertTrue(llm_runner._gpu_device_present(device_root))
+
     def test_request_hash_changes_with_generation_settings(self) -> None:
         base = build_request_envelope(
             prompt="prompt",
