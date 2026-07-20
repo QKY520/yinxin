@@ -380,6 +380,7 @@ def _process_one(
     attempts: list[dict[str, Any]] = []
     llm_proposal: dict[str, Any] | None = None
     llm_error: str | None = None
+    resolution_flags: list[dict[str, Any]] = []
     for attempt_number, retry in ((1, False), (2, True)):
         prompt, envelope = _prompt_and_envelope(context, candidate, retry=retry)
         chat = chat_with_cache(
@@ -391,12 +392,16 @@ def _process_one(
         )
         parse_error: str | None = None
         try:
+            attempt_resolution_flags: list[dict[str, Any]] = []
             llm_proposal = parse_model_label_output(
                 chat.content,
                 record_id=candidate["id"],
                 text=candidate["text"],
                 schema=context["schema"],
+                resolve_overlaps=True,
+                resolution_flags=attempt_resolution_flags,
             )
+            resolution_flags = attempt_resolution_flags
         except LabelParseError as exc:
             parse_error = str(exc)
             llm_error = parse_error
@@ -416,6 +421,7 @@ def _process_one(
     union, provenance, flags = merge_distant_and_llm(
         distant, llm_proposal, llm_error=llm_error
     )
+    flags.extend(resolution_flags)
     review = build_llm_review_row(
         candidate=candidate,
         distant=distant,

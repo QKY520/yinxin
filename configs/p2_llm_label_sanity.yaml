@@ -1,16 +1,16 @@
 phase: P2
 stage: llm_assisted_label_sanity
-run_id: p2-llm-label-sanity-v5
+run_id: p2-llm-label-sanity-v6
 
 execution:
   authorized: true
   approval_record:
-    id: p2-14b-sanity-v5-approval-2026-07-20
+    id: p2-14b-sanity-v6-approval-2026-07-20
     approved_by: human
     approved_at: 2026-07-20T15:50:00+08:00
     status: approved_pending_execution
     consumed_at: null
-    scope: fixed_10_record_sanity_v5_retry_only
+    scope: fixed_10_record_sanity_v6_overlap_resolver_sanity_only
     live_gpu_price_cny_per_hour: 2.7
     gpu_hour_cap: 0.25
     cost_cap_cny: 0.675
@@ -86,13 +86,13 @@ cache:
   directory: /root/project/cache/p2_llm_label
 
 outputs:
-  dry_run_manifest: /root/autodl-tmp/backup/p2/p2_llm_label_sanity_v5_dry_run.json
-  llm_proposals_jsonl: /root/autodl-tmp/data/p2_llm_label_sanity_v5.jsonl
-  union_proposals_jsonl: /root/autodl-tmp/data/p2_union_sanity_v5.jsonl
-  review_jsonl: /root/autodl-tmp/data/p2_review_sheet_llm_sanity_v5.jsonl
-  review_csv: /root/autodl-tmp/data/p2_review_sheet_llm_sanity_v5.csv
-  report: /root/autodl-tmp/backup/p2/p2_llm_label_sanity_v5_report.json
-  log: /root/project/logs/p2_llm_label_sanity_v5.jsonl
+  dry_run_manifest: /root/autodl-tmp/backup/p2/p2_llm_label_sanity_v6_dry_run.json
+  llm_proposals_jsonl: /root/autodl-tmp/data/p2_llm_label_sanity_v6.jsonl
+  union_proposals_jsonl: /root/autodl-tmp/data/p2_union_sanity_v6.jsonl
+  review_jsonl: /root/autodl-tmp/data/p2_review_sheet_llm_sanity_v6.jsonl
+  review_csv: /root/autodl-tmp/data/p2_review_sheet_llm_sanity_v6.csv
+  report: /root/autodl-tmp/backup/p2/p2_llm_label_sanity_v6_report.json
+  log: /root/project/logs/p2_llm_label_sanity_v6.jsonl
   overwrite: false
 
 success_gates:

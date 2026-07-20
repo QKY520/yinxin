@@ -125,6 +125,29 @@ class LlmLabelingTest(unittest.TestCase):
                 schema=self.schema,
             )
 
+    def test_p2_parser_can_resolve_logged_nested_overlap_for_review(self) -> None:
+        text = "滚筒外壳用于保护滚筒。"
+        raw = canonical_json(
+            {
+                "entities": [
+                    {"span": "滚筒", "type": "MODULE", "occurrence": 1},
+                    {"span": "滚筒外壳", "type": "MODULE", "occurrence": 1},
+                ],
+                "relations": [],
+            }
+        )
+        flags: list[dict] = []
+        parsed = parse_model_label_output(
+            raw,
+            record_id="domain-candidate-0039",
+            text=text,
+            schema=self.schema,
+            resolve_overlaps=True,
+            resolution_flags=flags,
+        )
+        self.assertEqual([entity["span"] for entity in parsed["entities"]], ["滚筒外壳"])
+        self.assertTrue(any(flag["kind"] == "LLM_OVERLAP_RESOLVED" for flag in flags))
+
     def test_prompt_uses_approved_examples_without_distant_suggestions(self) -> None:
         prompt = build_label_prompt(
             text="待处理文本。",
@@ -191,12 +214,12 @@ class LlmLabelingTest(unittest.TestCase):
     def test_checked_in_llm_configs_keep_sanity_only_gate(self) -> None:
         expected = {
             "p2_llm_label_sanity.yaml": {
-                "run_id": "p2-llm-label-sanity-v5",
-                "config_sha256": "a6367a671b21ef7c94ade908806d300c88b421a92bef7f275f8460ea03b23d0c",
-                "dry_run_name": "p2_llm_label_sanity_v5_dry_run.json",
+                "run_id": "p2-llm-label-sanity-v6",
+                "config_sha256": "6e721811c76e6eeeb0efc5d336dad90e8604ec0463168f62d8031f039d66c8c6",
+                "dry_run_name": "p2_llm_label_sanity_v6_dry_run.json",
                 "prompt_sha256": "75993fba42169fe0670c5148a4d075184d1cd1a8d8b5fff49c248a8633deee72",
                 "authorized": True,
-                "approval_status": "fixed_10_record_sanity_v5_retry_only",
+                "approval_status": "fixed_10_record_sanity_v6_overlap_resolver_sanity_only",
             },
             "p2_llm_label_full.yaml": {
                 "run_id": "p2-llm-label-full-v2",

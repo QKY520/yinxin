@@ -101,12 +101,62 @@ def _allowed_schema_types(schema: Mapping[str, Any]) -> tuple[set[str], Mapping[
     return set(entity_types), relation_types
 
 
+def _entities_overlap(left: Mapping[str, Any], right: Mapping[str, Any]) -> bool:
+    return int(left["start"]) < int(right["end"]) and int(right["start"]) < int(
+        left["end"]
+    )
+
+
+def _resolve_overlapping_entities(
+    entities: Sequence[Mapping[str, Any]],
+) -> tuple[set[int], list[dict[str, Any]]]:
+    """Keep the longest non-overlapping entity proposals and report removals."""
+
+    keep_order = sorted(
+        range(len(entities)),
+        key=lambda index: (
+            -(int(entities[index]["end"]) - int(entities[index]["start"])),
+            int(entities[index]["start"]),
+            int(entities[index]["end"]),
+            str(entities[index]["type"]),
+            index,
+        ),
+    )
+    kept: list[int] = []
+    removed: list[int] = []
+    for index in keep_order:
+        entity = entities[index]
+        if any(_entities_overlap(entity, entities[kept_index]) for kept_index in kept):
+            removed.append(index)
+        else:
+            kept.append(index)
+    flags: list[dict[str, Any]] = []
+    if removed:
+        flags.append(
+            {
+                "kind": "LLM_OVERLAP_RESOLVED",
+                "policy": "keep_longest_non_overlapping_entity",
+                "kept_raw_entity_indices": sorted(kept),
+                "removed_raw_entity_indices": sorted(removed),
+                "kept_entities": [
+                    dict(entities[index]) for index in sorted(kept)
+                ],
+                "removed_entities": [
+                    dict(entities[index]) for index in sorted(removed)
+                ],
+            }
+        )
+    return set(kept), flags
+
+
 def parse_model_label_output(
     raw_output: str,
     *,
     record_id: str,
     text: str,
     schema: Mapping[str, Any],
+    resolve_overlaps: bool = False,
+    resolution_flags: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Parse occurrence-based model JSON into the unified exact-offset contract."""
 
@@ -153,7 +203,7 @@ def parse_model_label_output(
             {"start": start, "end": end, "type": entity_type, "span": span}
         )
 
-    order = sorted(
+    full_order = sorted(
         range(len(original_entities)),
         key=lambda index: (
             original_entities[index]["start"],
@@ -161,6 +211,13 @@ def parse_model_label_output(
             original_entities[index]["type"],
         ),
     )
+    if resolve_overlaps:
+        kept_indices, flags = _resolve_overlapping_entities(original_entities)
+        if resolution_flags is not None:
+            resolution_flags.extend(flags)
+    else:
+        kept_indices = set(full_order)
+    order = [index for index in full_order if index in kept_indices]
     remap = {old_index: new_index for new_index, old_index in enumerate(order)}
     entities = [original_entities[index] for index in order]
     for previous, current in zip(entities, entities[1:]):
@@ -200,6 +257,18 @@ def parse_model_label_output(
             raise LabelParseError(
                 f"relation {index} violates the {relation_type} type matrix"
             )
+        if head not in remap or tail not in remap:
+            if resolution_flags is not None:
+                resolution_flags.append(
+                    {
+                        "kind": "LLM_RELATION_DROPPED_AFTER_OVERLAP_RESOLUTION",
+                        "relation_raw_index": index,
+                        "head_raw_entity": head,
+                        "tail_raw_entity": tail,
+                        "type": relation_type,
+                    }
+                )
+            continue
         relation_key = (remap[head], remap[tail], relation_type)
         if relation_key in seen_relations:
             raise LabelParseError(f"relation {index} duplicates {relation_key}")
