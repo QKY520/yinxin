@@ -217,3 +217,51 @@ Execution result:
 
 Current gate: stop before any additional sanity retry or paid GPU use. The full
 400-record pass remains unauthorized.
+
+## 2026-07-20 - Paper route and continuation policy locked
+
+The human clarified the final publication objective:
+
+- Target: SCI Q4.
+- Timeline target: within one month.
+- Budget target: 400 CNY unless separately approved.
+- Topic must remain equipment-domain information extraction.
+- The original route is retained: equipment-domain small annotated dataset,
+  reproducible experiment workflow, RAG/rule/schema/verification mechanisms to
+  reduce hallucination, and ablation evidence.
+- Chinese draft first, then English SCI manuscript.
+- NER is the main evidence line; RE is auxiliary.
+- Human annotators/reviewers and external commercial LLM APIs may be used as
+  auxiliary support, with provenance recorded.
+
+Operational policy after this decision:
+
+- The paper strategy is locked, but this does not retroactively authorize the
+  400-record full pass, human annotation, splitting/freezing, P3/P4/P5, or
+  optional QLoRA.
+- The next recommended experimental action is a bounded v5-style fixed
+  10-record sanity/diagnostic retry that specifically addresses the v4
+  relation type-matrix and overlapping-entity failures.
+- After that retry, stop, back up, hash-verify, report time/cost, and request
+  the next gate decision.
+
+## 2026-07-20 - Fixed 10-record v5 sanity retry prepared
+
+The project is now prepared for a bounded v5 retry only, with the updated
+paper strategy locked and the previous v4 failure modes explicitly targeted.
+
+Prepared scope:
+
+- Execute only `p2-llm-label-sanity-v5`.
+- Keep the fixed 10-record sanity selection unchanged.
+- Use the new `p2-llm-label-v4` prompt file, which tightens overlap rejection
+  and explicitly rejects invalid PART_OF configurations.
+- GPU-hour cap: 0.25 hours.
+- Cost cap: 0.675 CNY at the user-reported 2.7 CNY/hour live 4090 price.
+
+Explicit exclusions remain unchanged:
+
+- The 400-record full pass is not yet authorized.
+- Human annotation is not yet authorized.
+- Dataset splitting/freezing is not yet authorized.
+- P3/P4/P5 are not yet authorized.

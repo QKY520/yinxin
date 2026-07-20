@@ -10,14 +10,22 @@ and aggregation. Use a paid GPU boot only for model inference or training.
 After every GPU phase: verify outputs, back up, sync lightweight artifacts to
 `D:\yinsir`, report cost, and remind the human to shut down the instance.
 
-**CURRENT GATE**: The 2026-07-20 v4 fixed 10-record Qwen2.5-14B-AWQ P2 sanity
-retry was consumed. v4 reduced failures but still failed the parse-failure gate
-(3/10 parse failures), was backed up, and vLLM was stopped. Do not rerun
-sanity, start the 400-record full pass, perform human annotation, split/freeze
-data, start P3/P4/P5, or use more paid GPU time until the human explicitly
-approves the next bounded retry and budget. The real host and port live only in
-the user's local SSH config; use the non-secret alias `autodl-paper` in project
-files and commands.
+**CURRENT GATE**: The paper route is locked as a one-month SCI-Q4-oriented
+applied/engineering paper: Chinese draft first, then English SCI manuscript;
+equipment-domain few-shot annotated data + reproducible IE pipeline +
+RAG/glossary/schema constraints/self-verification to reduce hallucination, with
+ablation evidence. NER is the main task; RE is auxiliary evidence. The current
+experiment gate is still P2: the 2026-07-20 v4 fixed 10-record
+Qwen2.5-14B-AWQ sanity retry was consumed. v4 removed raw JSON-format failures
+but still failed the parse/validation gate (3/10 invalid outputs: relation
+type-matrix and overlapping-entity violations), was backed up, and vLLM was
+stopped. Do not start the 400-record full pass, perform human annotation,
+split/freeze data, start P3/P4/P5, or use broad paid GPU time. A further paid
+retry, if continued, must be a bounded v5-style 10-record sanity/diagnostic
+retry with live GPU check, recorded time/cost, immediate backup, and stop.
+The user's total project budget target is 400 CNY; the last reported 4090 price
+is 2.7 CNY/hour. The real host and port live only in the user's local SSH
+config; use the non-secret alias `autodl-paper` in project files and commands.
 
 ## Execution Authority
 
@@ -124,6 +132,41 @@ reduce unsupported entity/relation predictions in a low-label professional
 domain while preserving or improving extraction F1. The final evidence must be
 a reproducible ablation matrix, not a single attractive run.
 
+## Paper Strategy Lock - 2026-07-20
+
+The user clarified and approved the publication target and practical objective:
+
+- Target: SCI Q4 is acceptable; the practical goal is a publishable paper, not
+  a top-tier novelty claim.
+- Timeline: within one month if possible.
+- Budget target: 400 CNY total project spend unless separately approved.
+- Topic must remain equipment-domain information extraction.
+- Route must remain the original one: self-built small equipment-domain
+  annotation set, reproducible few-shot IE workflow, and RAG/rule/verification
+  mechanisms to reduce hallucination, demonstrated by ablations.
+- Manuscript language workflow: write the Chinese technical draft first, then
+  convert to an English SCI manuscript.
+- NER is the main evidence line; RE remains auxiliary and should not endanger
+  the paper if relation quality is weaker.
+- External commercial LLM APIs may be used only as auxiliary tools for label
+  suggestion, QA, review, or writing polish, with provenance recorded. They do
+  not replace the reproducible local-model experiment claims unless a later
+  decision explicitly changes the claim.
+
+Paper-facing framing:
+
+1. Dataset contribution: a small, quality-controlled public-equipment-domain
+   Chinese NER/RE dataset with annotation guideline, agreement report, frozen
+   splits, and deduplication records.
+2. Engineering method contribution: a reproducible few-shot extraction pipeline
+   combining kNN demonstrations, domain glossary/schema constraints, RAG
+   evidence, and atomic self-verification.
+3. Evidence contribution: clean ablations showing which module improves NER F1
+   and which module reduces entity-level false-discovery-style hallucination.
+4. Practical limitation: the work is positioned as low-label domain IE, not as
+   supervised SOTA, and RE may be reported as supporting evidence if its results
+   are weaker.
+
 ## Key Research Context
 
 - **Primary language/domain**: Chinese equipment and military-technology text.
@@ -146,8 +189,9 @@ a reproducible ablation matrix, not a single attractive run.
 
 ## Current Priority And State
 
-Current step: **Step 5 in progress - P2 14B sanity v4 failed the parse gate;
-stopped for diagnosis and next retry approval**.
+Current step: **Step 5 in progress - P2 14B sanity v4 failed the parse/validation
+gate; paper strategy is now locked; next experimental action should be a bounded
+v5-style 10-record sanity/diagnostic retry only, then stop for verification**.
 
 - Local workspace: `D:\yinsir`.
 - Git repository: `main` initialized and tracking `origin/main`.

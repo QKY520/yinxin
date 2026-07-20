@@ -1,19 +1,19 @@
 phase: P2
 stage: llm_assisted_label_sanity
-run_id: p2-llm-label-sanity-v4
+run_id: p2-llm-label-sanity-v5
 
 execution:
-  authorized: false
+  authorized: true
   approval_record:
-    id: p2-14b-sanity-v4-approval-2026-07-20
+    id: p2-14b-sanity-v5-approval-2026-07-20
     approved_by: human
-    approved_at: 2026-07-20T10:30:00+08:00
-    status: consumed_failed_sanity_gate
-    consumed_at: 2026-07-20T15:25:00+08:00
-    scope: fixed_10_record_sanity_v4_retry_only
+    approved_at: 2026-07-20T15:50:00+08:00
+    status: approved_pending_execution
+    consumed_at: null
+    scope: fixed_10_record_sanity_v5_retry_only
     live_gpu_price_cny_per_hour: 2.7
-    gpu_hour_cap: 0.15
-    cost_cap_cny: 0.405
+    gpu_hour_cap: 0.25
+    cost_cap_cny: 0.675
     full_run_authorized: false
     human_annotation_authorized: false
     split_or_freeze_authorized: false
@@ -37,14 +37,14 @@ schema:
   sha256: a3b2e8dcb81a6223058e028cdadcc6aecb87a10968d8ff0454aa7e535102ac56
 
 prompt:
-  version: p2-llm-label-v3
-  definitions_path: /root/project/configs/p2_llm_prompt_v3.yaml
-  definitions_sha256: 88fcc316de7b093feeda864b8425f12472fbdba23ad88a27a079040a053d7683
+  version: p2-llm-label-v4
+  definitions_path: /root/project/configs/p2_llm_prompt_v4.yaml
+  definitions_sha256: 75993fba42169fe0670c5148a4d075184d1cd1a8d8b5fff49c248a8633deee72
   examples_path: /root/project/docs/p2_schema_examples_draft.jsonl
   examples_sha256: 8e7f427fab7a0bb1586b299aeb23a6ceff43747fc2c85c213d75a6e14aaea423
   example_ids: [synthetic-01, synthetic-02, synthetic-03, synthetic-04, synthetic-05, synthetic-06, synthetic-07, synthetic-08, synthetic-09, synthetic-10]
   include_distant_supervision_in_prompt: false
-  retry_suffix: 只返回一个合法JSON对象；不要解释；不要markdown；删除任何违反关系类型矩阵的关系；每个实体必须且只能包含span、type、occurrence。
+  retry_suffix: 只返回一个合法JSON对象；不要解释；不要markdown；删除任何违反关系类型矩阵的关系；删除任何重叠实体，只保留更长且语义完整的实体；每个实体必须且只能包含span、type、occurrence。
 
 selection:
   mode: sanity
@@ -86,13 +86,13 @@ cache:
   directory: /root/project/cache/p2_llm_label
 
 outputs:
-  dry_run_manifest: /root/autodl-tmp/backup/p2/p2_llm_label_sanity_v4_dry_run.json
-  llm_proposals_jsonl: /root/autodl-tmp/data/p2_llm_label_sanity_v4.jsonl
-  union_proposals_jsonl: /root/autodl-tmp/data/p2_union_sanity_v4.jsonl
-  review_jsonl: /root/autodl-tmp/data/p2_review_sheet_llm_sanity_v4.jsonl
-  review_csv: /root/autodl-tmp/data/p2_review_sheet_llm_sanity_v4.csv
-  report: /root/autodl-tmp/backup/p2/p2_llm_label_sanity_v4_report.json
-  log: /root/project/logs/p2_llm_label_sanity_v4.jsonl
+  dry_run_manifest: /root/autodl-tmp/backup/p2/p2_llm_label_sanity_v5_dry_run.json
+  llm_proposals_jsonl: /root/autodl-tmp/data/p2_llm_label_sanity_v5.jsonl
+  union_proposals_jsonl: /root/autodl-tmp/data/p2_union_sanity_v5.jsonl
+  review_jsonl: /root/autodl-tmp/data/p2_review_sheet_llm_sanity_v5.jsonl
+  review_csv: /root/autodl-tmp/data/p2_review_sheet_llm_sanity_v5.csv
+  report: /root/autodl-tmp/backup/p2/p2_llm_label_sanity_v5_report.json
+  log: /root/project/logs/p2_llm_label_sanity_v5.jsonl
   overwrite: false
 
 success_gates:

@@ -11,6 +11,9 @@ self-verification to measure both extraction F1 and hallucination reduction.
 - `AGENT_PLAYBOOK.md`: authoritative phase-by-phase execution contract.
 - `实验实施指导文档_综合版.md`: human-facing research and implementation guide.
 - `AGENTS.md`: durable repository instructions for Codex.
+- `docs/PROJECT_ROUTE_AND_SCI_Q4_PLAN.md`: locked paper route, contribution list, and one-month SCI Q4 framing.
+- `docs/CONTINUATION_HANDOFF.md`: compact handoff for a new conversation after context compression.
+- `docs/P2_DECISION_LOG.md`: gate history and latest approval state.
 
 ## Layout
 

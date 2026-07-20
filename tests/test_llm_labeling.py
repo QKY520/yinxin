@@ -171,15 +171,32 @@ class LlmLabelingTest(unittest.TestCase):
         self.assertIn("两个EQUIPMENT之间不要输出PART_OF", prompt)
         self.assertIn("发射、试射、部署、验证、集成、提供能力、奠定基础不是组成关系", prompt)
 
+    def test_prompt_v4_tightens_overlap_and_part_of_rules(self) -> None:
+        prompt_config = yaml.safe_load(
+            (PROJECT_ROOT / "configs" / "p2_llm_prompt_v4.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+        prompt = build_label_prompt(
+            text="寰呭鐞嗘枃鏈€?,
+            schema=self.schema,
+            prompt_config=prompt_config,
+            examples=self.examples,
+            prompt_version="p2-llm-label-v4",
+        )
+        self.assertIn("删除任何重叠实体", prompt)
+        self.assertIn("PART_OF的head必须是MODULE", prompt)
+        self.assertIn("两个EQUIPMENT之间绝对不要输出PART_OF", prompt)
+
     def test_checked_in_llm_configs_keep_sanity_only_gate(self) -> None:
         expected = {
             "p2_llm_label_sanity.yaml": {
-                "run_id": "p2-llm-label-sanity-v4",
-                "config_sha256": "894a2b331c04b5df751aa1630459981795b285a456aab6814e52aae25918928b",
-                "dry_run_name": "p2_llm_label_sanity_v4_dry_run.json",
-                "prompt_sha256": "88fcc316de7b093feeda864b8425f12472fbdba23ad88a27a079040a053d7683",
-                "authorized": False,
-                "approval_status": "fixed_10_record_sanity_v4_retry_only",
+                "run_id": "p2-llm-label-sanity-v5",
+                "config_sha256": "a6367a671b21ef7c94ade908806d300c88b421a92bef7f275f8460ea03b23d0c",
+                "dry_run_name": "p2_llm_label_sanity_v5_dry_run.json",
+                "prompt_sha256": "75993fba42169fe0670c5148a4d075184d1cd1a8d8b5fff49c248a8633deee72",
+                "authorized": True,
+                "approval_status": "fixed_10_record_sanity_v5_retry_only",
             },
             "p2_llm_label_full.yaml": {
                 "run_id": "p2-llm-label-full-v2",
@@ -226,7 +243,7 @@ class LlmLabelingTest(unittest.TestCase):
                     2.7,
                 )
                 self.assertEqual(
-                    config["execution"]["approval_record"]["gpu_hour_cap"], 0.15
+                    config["execution"]["approval_record"]["gpu_hour_cap"], 0.25
                 )
             else:
                 self.assertIsNone(config["execution"]["approval_record"])

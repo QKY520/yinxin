@@ -3,6 +3,8 @@
 > ROLE: You are a coding agent executing this project end-to-end on an AutoDL cloud Linux instance.
 > READ ONCE, THEN EXECUTE PHASE BY PHASE. This file is self-contained — all selection decisions are final; do not re-research or substitute components unless a FALLBACK rule fires.
 > PROJECT GOAL: Few-shot NER + RE on equipment-domain documents using locally deployed open-source LLMs, with RAG + self-verification (CoVe) to suppress hallucination. Final deliverable: ablation matrix proving each module's F1 gain and hallucination-rate reduction.
+>
+> PAPER STRATEGY UPDATE (2026-07-20): The project is now framed for a practical SCI-Q4 submission within roughly one month and a 400 CNY target budget. The original route is retained: equipment-domain small annotated dataset + reproducible few-shot IE pipeline + RAG/glossary/schema constraints + verification to reduce hallucination + ablation evidence. Draft Chinese first, then produce the English SCI manuscript. NER is the main evidence line; RE is auxiliary.
 
 ---
 
