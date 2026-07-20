@@ -175,11 +175,11 @@ class LlmLabelingTest(unittest.TestCase):
         expected = {
             "p2_llm_label_sanity.yaml": {
                 "run_id": "p2-llm-label-sanity-v4",
-                "config_sha256": "b7c289942bbee004b43b1a58b011f006df35e5ad2db39887db4a228d2c575948",
+                "config_sha256": "c0714c7e3ff947995bc9ad8954f305ba7fa156eab75bfb653d3cf9a41686b240",
                 "dry_run_name": "p2_llm_label_sanity_v4_dry_run.json",
                 "prompt_sha256": "88fcc316de7b093feeda864b8425f12472fbdba23ad88a27a079040a053d7683",
-                "authorized": False,
-                "approval_status": None,
+                "authorized": True,
+                "approval_status": "fixed_10_record_sanity_v4_retry_only",
             },
             "p2_llm_label_full.yaml": {
                 "run_id": "p2-llm-label-full-v2",
@@ -204,10 +204,6 @@ class LlmLabelingTest(unittest.TestCase):
             if pinned["approval_status"]:
                 self.assertEqual(
                     config["execution"]["approval_record"]["scope"],
-                    "fixed_10_record_sanity_only",
-                )
-                self.assertEqual(
-                    config["execution"]["approval_record"]["status"],
                     pinned["approval_status"],
                 )
                 self.assertFalse(
@@ -230,7 +226,7 @@ class LlmLabelingTest(unittest.TestCase):
                     2.7,
                 )
                 self.assertEqual(
-                    config["execution"]["approval_record"]["gpu_hour_cap"], 0.25
+                    config["execution"]["approval_record"]["gpu_hour_cap"], 0.15
                 )
             else:
                 self.assertIsNone(config["execution"]["approval_record"])

@@ -189,3 +189,15 @@ Prepared changes:
 
 Current gate: v4 is prepared only. Do not launch vLLM or execute the v4 sanity
 retry until the human approves a new bounded retry budget.
+
+## 2026-07-20 - Fixed 10-record v4 sanity retry approved
+
+The human approved continuation after being asked to approve only the v4 fixed
+10-record sanity retry. The approved retry scope is:
+
+- Execute only `p2-llm-label-sanity-v4`.
+- GPU-hour cap: 0.15 hours, cost cap: 0.405 CNY at 2.7 CNY/hour.
+- Stop after verification and backup.
+
+The 400-record full pass, human annotation, splitting/freezing, and P3/P4/P5
+remain unauthorized.
