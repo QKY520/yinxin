@@ -12,11 +12,13 @@ After every GPU phase: verify outputs, back up, sync lightweight artifacts to
 
 **CURRENT GATE**: GPU-free implementation and tokenizer-only dry-runs for the
 Qwen2.5-14B-AWQ P2 proposal path completed and were backed up on 2026-07-16.
-Stop before vLLM startup, model inference, human annotation, splitting/freezing,
-or paid GPU use. The next possible action requires explicit approval for only a
-fixed 10-record sanity run and its budget; it does not authorize the 400-record
-full pass. The real host and port live only in the user's local SSH config; use
-the non-secret alias `autodl-paper` in project files and commands.
+On 2026-07-20 the human approved only the fixed 10-record Qwen2.5-14B-AWQ
+sanity run at a reported live RTX 4090 price of 2.7 CNY/hour with a 0.25
+GPU-hour cap. Stop after this sanity run is verified and backed up. This does
+not authorize the 400-record full pass, human annotation, splitting/freezing,
+P3/P4/P5, or any other paid GPU work. The real host and port live only in the
+user's local SSH config; use the non-secret alias `autodl-paper` in project
+files and commands.
 
 ## Execution Authority
 
@@ -145,8 +147,8 @@ a reproducible ablation matrix, not a single attractive run.
 
 ## Current Priority And State
 
-Current step: **Step 5 in progress - P2 14B implementation and GPU-free dry-run
-preparation complete; awaiting explicit sanity-only GPU and budget approval**.
+Current step: **Step 5 in progress - fixed 10-record P2 14B sanity run approved;
+stop after sanity verification and backup before any full pass decision**.
 
 - Local workspace: `D:\yinsir`.
 - Git repository: `main` initialized and tracking `origin/main`.

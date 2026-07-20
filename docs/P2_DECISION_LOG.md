@@ -86,3 +86,22 @@ Stop before vLLM startup, inference, paid GPU mode, human annotation, splitting,
 or freezing. The next possible step requires explicit approval for only the
 10-record sanity run plus its budget; it does not imply approval of the
 400-record full run.
+
+## 2026-07-20 - Fixed 10-record 14B sanity approved
+
+The human reported the live RTX 4090 price as 2.7 CNY/hour and approved only
+the fixed 10-record Qwen2.5-14B-AWQ P2 sanity run.
+
+Approved scope:
+
+- Authorize only `configs/p2_llm_label_sanity.yaml` for actual execution.
+- GPU-hour cap: 0.25 hours, cost cap: 0.675 CNY at the reported live price.
+- Launch vLLM only for the sanity run, then verify, back up, report measured
+  time/cost, and stop.
+
+Explicit exclusions:
+
+- The 400-record full pass remains unauthorized.
+- Human annotation remains unauthorized.
+- Dataset splitting/freezing remains unauthorized.
+- P3/P4/P5 experiments remain unauthorized until the P2 gates are completed.

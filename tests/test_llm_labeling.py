@@ -131,17 +131,19 @@ class LlmLabelingTest(unittest.TestCase):
         self.assertNotIn("远程监督建议", prompt)
         self.assertTrue(prompt.endswith("只返回JSON,不要任何解释,不要markdown代码块"))
 
-    def test_checked_in_llm_configs_cannot_execute(self) -> None:
+    def test_checked_in_llm_configs_keep_sanity_only_gate(self) -> None:
         expected = {
             "p2_llm_label_sanity.yaml": {
                 "run_id": "p2-llm-label-sanity-v2",
-                "config_sha256": "ee82226a975fd7bbf4eb2a7a927c6818ed18cbd8eea15b63aabd9f31a1ffb303",
+                "config_sha256": "f6cccfc50c17e49e3b49a3aae42252ac7a24226659410b54fb946737fb0d9530",
                 "dry_run_name": "p2_llm_label_sanity_v2_dry_run.json",
+                "authorized": True,
             },
             "p2_llm_label_full.yaml": {
                 "run_id": "p2-llm-label-full-v2",
                 "config_sha256": "809b3183b8c9bdced5334030fe8dce866f4d4e384ded27fa5c1d09109573fdf5",
                 "dry_run_name": "p2_llm_label_full_v2_dry_run.json",
+                "authorized": False,
             },
         }
         for name, pinned in expected.items():
@@ -154,8 +156,36 @@ class LlmLabelingTest(unittest.TestCase):
                 hashlib.sha256(path.read_bytes()).hexdigest(),
                 pinned["config_sha256"],
             )
-            self.assertFalse(config["execution"]["authorized"])
-            self.assertIsNone(config["execution"]["approval_record"])
+            self.assertEqual(config["execution"]["authorized"], pinned["authorized"])
+            if pinned["authorized"]:
+                self.assertEqual(
+                    config["execution"]["approval_record"]["scope"],
+                    "fixed_10_record_sanity_only",
+                )
+                self.assertFalse(
+                    config["execution"]["approval_record"]["full_run_authorized"]
+                )
+                self.assertFalse(
+                    config["execution"]["approval_record"][
+                        "human_annotation_authorized"
+                    ]
+                )
+                self.assertFalse(
+                    config["execution"]["approval_record"][
+                        "split_or_freeze_authorized"
+                    ]
+                )
+                self.assertEqual(
+                    config["execution"]["approval_record"][
+                        "live_gpu_price_cny_per_hour"
+                    ],
+                    2.7,
+                )
+                self.assertEqual(
+                    config["execution"]["approval_record"]["gpu_hour_cap"], 0.25
+                )
+            else:
+                self.assertIsNone(config["execution"]["approval_record"])
             self.assertTrue(config["execution"]["dry_run_requires_gpu_free"])
             self.assertTrue(config["execution"]["actual_run_requires_gpu"])
             self.assertFalse(config["prompt"]["include_distant_supervision_in_prompt"])
