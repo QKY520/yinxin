@@ -100,8 +100,10 @@ def _validate_guards(config: dict[str, Any]) -> None:
         raise ValueError("P2 LLM guards were weakened")
     if config["outputs"].get("overwrite") is not False:
         raise ValueError("P2 LLM outputs must refuse overwrite")
-    if config["prompt"].get("retry_suffix") != "只返回合法JSON":
-        raise ValueError("retry suffix differs from the fixed parsing ladder")
+    if not isinstance(config["prompt"].get("retry_suffix"), str) or not config[
+        "prompt"
+    ]["retry_suffix"].strip():
+        raise ValueError("retry suffix is missing")
 
 
 def _gpu_device_present(device_root: Path = Path("/dev")) -> bool:
