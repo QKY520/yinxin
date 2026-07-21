@@ -446,3 +446,40 @@ GPU-free dry-run after final authorization:
   `c1c72ddd7e93dbd4bfb6f3ee33629e172a6ed56af9954487ebd48c5c9b712e84`.
 - Remote/local dry-run log SHA256:
   `9df2d4ac3de6a2af9164b1b3a06a032eb806b011fd9ca95a0142dc30fca7019d`.
+
+## 2026-07-21 - 250-record v1 failed gate; cache-only v2 reparse passed
+
+The first bounded 250-record run completed but failed the configured quality
+gate:
+
+- Run ID: `p2-llm-label-250-v1`.
+- Commit: `61688ce058267e279cfd1d1b0aed1599761b21c7`.
+- Records: 250.
+- Parse failures: 35/250.
+- Parse failure rate: 14.0%, above the 5% gate.
+- Main cause: invalid LLM relations caused whole-record rejection, especially
+  `USES`, `HAS_METRIC`, and `PART_OF` type-matrix violations.
+
+Human instruction after restart: clear erroneous experiment data and keep only
+an explanation of what was wrong. The project therefore keeps a non-row-level
+error record in `docs/P2_250_ERROR_RECORD.md`; failed v1 row-level artifacts
+are removed from active experiment storage.
+
+Corrective action:
+
+- Commit: `30b783ea003d9a55e6dff28fffb7e1a2d7a99bce`.
+- Added a P2 proposal-only parser mode that drops invalid relations while
+  keeping entity parsing strict and final evaluation parsing strict by default.
+- Added `--execute-from-cache` so cached outputs can be re-parsed in GPU-free
+  mode without additional LLM calls.
+- New run ID: `p2-llm-label-250-v2-cache-reparse`.
+- New model calls: 0.
+- Cache hits: 263.
+- Records: 250.
+- Parse failures: 7/250.
+- Parse failure rate: 2.8%.
+- Invalid relations dropped and logged: 125.
+- Success gate: passed.
+
+Current gate remains P2. Human annotation, split/freeze, P3/P4/P5, and the
+400-record full pass remain unauthorized.
