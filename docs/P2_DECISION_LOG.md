@@ -574,3 +574,46 @@ Decision:
 Detailed audit record:
 
 - `docs/P2_ANNOTATION_COMPLETION_AUDIT_20260721.md`.
+
+## 2026-07-21 - EQUIPMENT-to-EQUIPMENT carrying versus composition rule added
+
+The human identified a systematic relation error: for
+`EQUIPMENT -> EQUIPMENT`, the LLM often labels carrying or mounting as
+`PART_OF`. The corrected adjudication rule is:
+
+- `搭载`, `部署`, `挂载`, `装备`, `配装`, `携带`, `装载`, and `加装` indicate `USES`.
+- `组成`, `包括`, `包含`, `构成`, `是...的一部分`, `归属`, `隶属`, `下辖`, and
+  `由...组成` indicate `PART_OF`.
+- If no explicit evidence appears, do not infer the relation from common sense;
+  flag it for adjudication.
+
+The user-reported audit found this issue in about 51% of 147
+`EQUIPMENT -> EQUIPMENT PART_OF` labels. Therefore P2 must not proceed directly
+to split/freeze from raw A/B annotations. The next GPU-free step is to recompute
+agreement and generate an adjudication sheet containing both A/B disagreements
+and `EQUIPMENT -> EQUIPMENT PART_OF` trigger-audit rows.
+
+Implementation record:
+
+- Added `docs/P2_EQUIP_EQUIP_RELATION_RULE_20260721.md`.
+- Updated `configs/p2_schema_draft_v3.yaml` and
+  `configs/p2_llm_prompt_v6.yaml`.
+- Added `scripts/evaluate_p2_annotation_agreement.py` for GPU-free agreement
+  recomputation and trigger-audit adjudication-sheet generation.
+
+GPU-free execution result:
+
+- Entity exact span+type agreement F1: `0.9909` on 100 agreement passages.
+- Relation exact-triple F1: `0.9649` as diagnostic evidence only.
+- Validation errors: `7`; these block split/freeze until adjudicated.
+- Annotator A has `147` `EQUIPMENT -> EQUIPMENT PART_OF` relations across 250
+  rows. The trigger audit marked `109` relation instances as needing
+  adjudication; this collapsed into `46` trigger-audit rows.
+- Generated `data/annotation/adjudication_sheet.csv` with `51` rows, SHA256
+  `601ec1e8e4951c87c679074f42495092db0a082361540898fe6a82c639773938`.
+- Generated `logs/p2_annotation_agreement_report.json`, SHA256
+  `23db71bc64a3f92d6a9f47088600714c136ce8ad53dc3652b5c4a372026d3706`.
+- Summary report: `docs/P2_ADJUDICATION_PREP_20260721.md`.
+
+Current gate: agreement threshold is passed, but P2 is not ready to freeze.
+The required next step is human adjudication of the 51-row sheet.

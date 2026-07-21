@@ -15,7 +15,7 @@ entity_types:
 
 relation_types:
   USES:
-    definition: The head explicitly uses, adopts, carries, mounts, or deploys the tail for a function; do not reverse control or scheduling semantics to force a USES relation.
+    definition: The head explicitly uses, adopts, carries, mounts, deploys, equips, installs, or configures the tail for a function. For EQUIPMENT-to-EQUIPMENT relations, carrying/mounting/deployment wording such as 搭载/部署/挂载/装备/配装 is USES, not PART_OF. Do not reverse control or scheduling semantics to force a USES relation.
     head_types: [EQUIPMENT, MODULE]
     tail_types: [EQUIPMENT, MODULE, TECH_SCHEME]
   HAS_METRIC:
@@ -23,7 +23,7 @@ relation_types:
     head_types: [EQUIPMENT, MODULE]
     tail_types: [METRIC, TECH_SCHEME]
   PART_OF:
-    definition: The head is explicitly a constituent of the tail; direction is part to whole. The head must be the smaller component or member and the tail must be the larger whole, system, platform, or assembly.
+    definition: The head is explicitly a constituent of the tail; direction is part to whole. For EQUIPMENT-to-EQUIPMENT relations, PART_OF requires explicit composition wording such as 组成/包括/是...的一部分/归属. The head must be the smaller component or member and the tail must be the larger whole, system, platform, or assembly.
     head_types: [EQUIPMENT, MODULE]
     tail_types: [EQUIPMENT, MODULE]
 

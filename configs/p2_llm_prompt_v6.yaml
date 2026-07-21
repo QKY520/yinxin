@@ -10,9 +10,9 @@ entity_types:
   METRIC: A measurable technical specification or parameter value, usually containing an attribute name plus value, range, threshold, grade, unit, or local condition.
 
 relation_types:
-  USES: The head explicitly uses, adopts, carries, mounts, deploys, or relies on the tail for a function. Do not reverse control or scheduling semantics.
+  USES: The head explicitly uses, adopts, carries, mounts, deploys, equips, installs, configures, or relies on the tail for a function. EQUIPMENT-to-EQUIPMENT carrying or mounting language is USES, not PART_OF.
   HAS_METRIC: The tail explicitly describes a specification, capability, parameter concept, or measurable technical attribute of the head.
-  PART_OF: The head is a constituent of the tail. Direction is fixed as smaller part to larger whole.
+  PART_OF: The head is a constituent of the tail. Direction is fixed as smaller part to larger whole. EQUIPMENT-to-EQUIPMENT PART_OF requires explicit composition language.
 
 constraints:
   include_distant_supervision_in_prompt: false
@@ -36,4 +36,6 @@ constraints:
     - USES may connect EQUIPMENT or MODULE to EQUIPMENT, MODULE, or TECH_SCHEME when the same sentence explicitly states use, adoption, carrying, mounting, deployment, or reliance.
     - HAS_METRIC may connect EQUIPMENT or MODULE to METRIC or TECH_SCHEME when the tail is a measurable capability or parameter concept.
     - PART_OF direction is always smaller part to larger whole; for example, gun PART_OF tank is valid, but tank PART_OF gun is invalid.
+    - For EQUIPMENT-to-EQUIPMENT relations, 搭载, 部署, 挂载, 装备, 配装, 携带, 装载, and 加装 indicate USES unless the same sentence also explicitly says a composition relation.
+    - For EQUIPMENT-to-EQUIPMENT relations, only 组成, 包括, 包含, 构成, 是...的一部分, 归属, 隶属, 下辖, or 由...组成 supports PART_OF.
     - Only output relations explicitly supported in the same sentence; do not use pronouns, common sense, transitive closure, or reverse relations to complete missing relations.
