@@ -617,3 +617,40 @@ GPU-free execution result:
 
 Current gate: agreement threshold is passed, but P2 is not ready to freeze.
 The required next step is human adjudication of the 51-row sheet.
+
+## 2026-07-21 - P2 adjudication sheet repaired and validated
+
+The human authorized the agent to make the remaining adjudication decisions and
+to remove old/generated versions that could confuse the workflow.
+
+Actions:
+
+- Deleted obsolete/generated adjudication helpers:
+  `scripts/p2_adjudicate.py`, `scripts/p2_annotate.py`,
+  `scripts/p2_annotate_v2.py`, and the one-shot temporary fixer after use.
+- Added `scripts/validate_p2_adjudication.py` as the retained validation script.
+- Applied conservative adjudication repair to
+  `data/annotation/adjudication_sheet.csv`:
+  - changed `6` carrying-trigger `EQUIPMENT -> EQUIPMENT PART_OF` relations to
+    `USES`;
+  - dropped `18` `EQUIPMENT -> EQUIPMENT PART_OF` relations without explicit
+    composition evidence;
+  - kept `16` explicit-composition `EQUIPMENT -> EQUIPMENT PART_OF` relations.
+
+Final GPU-free validation:
+
+- Rows: `100`
+- Errors: `0`
+- Warnings: `0`
+- Entities: `607`
+- Relations: `259`
+- `USES=102`, `PART_OF=147`, `HAS_METRIC=10`
+- Final adjudication sheet SHA256:
+  `9d277bf918a74aa07f94f12917e5d9d9787e819b667f838fb778c6316042b1c1`
+- Validation report SHA256:
+  `f26160fc29dc9920dbd8d4fa71c2bf1b9771aca3f1380f09615f281fd4c1896d`
+- Fix report SHA256:
+  `9285195236245feb94a9f1c715ae8ca67fea3dc5aa33bf0816bebf73423bf56a`
+
+Current gate: adjudication validation passes. Do not start split/freeze until
+the next explicit human confirmation.
