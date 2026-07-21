@@ -428,3 +428,21 @@ Checkpoint/resume policy:
   cached requests and only calls the model for missing hashes.
 - Existing output paths are protected by `overwrite: false`; partial final
   outputs are written atomically only after the run completes.
+
+GPU-free dry-run after final authorization:
+
+- Remote/local commit: `5f59bbaae2af0d4888f8628ad84bfb26dc056cfd`.
+- Config SHA256:
+  `fd0dca453fd69018b597a00956aae6c500dcb91ca6f6492fa36a06222f7c88d8`.
+- API/model calls: none; `api_called=false`, `model_weights_loaded=false`,
+  `gpu_device_present=false`.
+- Selected records: 250.
+- Source counts: Baidu Baike 7, patent 66, CMNEE 177.
+- Selection excludes damaged `patent` `source_split: test` candidates; the
+  audited bad row `domain-candidate-0028` is not selected.
+- Maximum context tokens: 3956 of 8192.
+- Worst-case request count: 500 including one retry for every selected record.
+- Remote/local dry-run manifest SHA256:
+  `c1c72ddd7e93dbd4bfb6f3ee33629e172a6ed56af9954487ebd48c5c9b712e84`.
+- Remote/local dry-run log SHA256:
+  `9df2d4ac3de6a2af9164b1b3a06a032eb806b011fd9ca95a0142dc30fca7019d`.
