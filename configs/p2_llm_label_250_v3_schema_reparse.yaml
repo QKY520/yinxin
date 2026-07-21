@@ -1,0 +1,125 @@
+phase: P2
+stage: llm_assisted_label_250
+run_id: p2-llm-label-250-v3-schema-reparse
+
+execution:
+  authorized: true
+  approval_record:
+    id: p2-250-v3-schema-reparse-approval-2026-07-21
+    approved_by: human_project_owner
+    approved_at: 2026-07-21T00:00:00+08:00
+    status: approved
+    scope: cache_only_reparse_of_fixed_250_record_llm_proposal_with_v3_relation_matrix
+    records_authorized: 250
+    live_gpu_price_cny_per_hour: 2.7
+    gpu_hour_cap: 3.0
+    cost_cap_cny: 8.1
+    full_400_run_authorized: false
+    human_annotation_authorized: false
+    split_or_freeze_authorized: false
+  dry_run_requires_gpu_free: true
+  actual_run_requires_gpu: true
+  cache_only_reparse_requires_gpu_free: true
+
+inputs:
+  candidates:
+    path: /root/autodl-tmp/data/domain_candidates.jsonl
+    expected_records: 400
+    sha256: 32622228a7e0d45b31ce7ee2c0f78bcad0a5aa4a07ad8d01212bd03d3c19ee4f
+  distant_supervision:
+    path: /root/autodl-tmp/data/domain_distant_supervision.jsonl
+    expected_records: 400
+    sha256: b40e9d5c34c27d22b699d758af79c88705e4e4637184458aaae04bbaa05af96b
+
+schema:
+  path: /root/project/configs/p2_schema_draft_v2.yaml
+  version: p2-schema-draft-v2
+  required_status: approved
+  sha256: fd34f0228d4a03e71408fb1dc7b1f5a426ca59b260be991258f1907d2d9e58b2
+
+parse_schema:
+  path: /root/project/configs/p2_schema_draft_v3.yaml
+  version: p2-schema-draft-v3
+  required_status: approved
+  sha256: e207d7e0621cf1d329f8345d118b7fa9fba8c6926c97f4a78a255da7bc2c2a6e
+
+prompt:
+  version: p2-llm-label-v5
+  definitions_path: /root/project/configs/p2_llm_prompt_v5.yaml
+  definitions_sha256: 25a45c882d1facdfa4902e4b4b2740aa26d4c8c9ded6e6e88870f886b1df1088
+  examples_path: /root/project/docs/p2_schema_examples_draft_v2.jsonl
+  examples_sha256: 7e18922b475c8d122ed7444a0d179d23e95ef1cb2adecf2f58e35bc986acf146
+  example_ids: [synthetic-v2-01, synthetic-v2-02, synthetic-v2-03, synthetic-v2-04, synthetic-v2-05]
+  include_distant_supervision_in_prompt: false
+  retry_suffix: 只返回一个合法JSON对象；不要解释；不要markdown；删除任何违反关系类型矩阵的关系；删除任何重叠实体，只保留更长且语义完整的实体；若文本明显损坏且无法可靠判断，则返回空entities和空relations。
+
+selection:
+  mode: first_n
+  sample_size: 250
+  quality_filters:
+    exclude_source_splits:
+      - source_type: patent
+        source_split: test
+    max_consecutive_digits: 5
+
+model:
+  path: /root/autodl-tmp/models/qwen2.5-14b-awq
+  served_model_name: qwen2.5-14b-awq
+  quantization: awq
+  max_model_len: 8192
+  gpu_memory_utilization: 0.90
+  required_files:
+    config.json: 0c174aa8d52f5dec4c2e0d4b3ec4b1ff261d16bb80b58f03c1c06528e6ed6640
+    model.safetensors.index.json: ffa9ad9dba1428d7e924ab03ab51b28865ddfad58b60f4d3d786f4f811a723cc
+    tokenizer.json: c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539
+    tokenizer_config.json: 5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583
+  p0_manifest:
+    path: /root/autodl-tmp/backup/p0/model_files.sha256
+    sha256: 8df4badf7649609ece84a7f35555101c2f9d28537f74b418db819d32b6c5bd63
+
+server:
+  base_url: http://127.0.0.1:8000
+  api_key_env: VLLM_API_KEY
+  request_timeout_seconds: 300
+  launch_command: vllm serve /root/autodl-tmp/models/qwen2.5-14b-awq --served-model-name qwen2.5-14b-awq --quantization awq --max-model-len 8192 --gpu-memory-utilization 0.90 --port 8000
+
+generation:
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 2048
+  seed: 42
+  max_concurrency: 2
+
+cache:
+  directory: /root/project/cache/p2_llm_label
+
+outputs:
+  dry_run_manifest: /root/autodl-tmp/backup/p2/p2_llm_label_250_v3_schema_reparse_dry_run.json
+  llm_proposals_jsonl: /root/autodl-tmp/data/p2_llm_label_250_v3_schema_reparse.jsonl
+  union_proposals_jsonl: /root/autodl-tmp/data/p2_union_250_v3_schema_reparse.jsonl
+  review_jsonl: /root/autodl-tmp/data/p2_review_sheet_llm_250_v3_schema_reparse.jsonl
+  review_csv: /root/autodl-tmp/data/p2_review_sheet_llm_250_v3_schema_reparse.csv
+  report: /root/autodl-tmp/backup/p2/p2_llm_label_250_v3_schema_reparse_report.json
+  log: /root/project/logs/p2_llm_label_250_v3_schema_reparse.jsonl
+  overwrite: false
+  mark_parse_failures_for_human_review: true
+
+success_gates:
+  maximum_parse_failure_rate: 0.05
+  require_reloadable_rows: true
+  require_human_fields_unstarted: true
+
+budget:
+  proposal_record_count: 250
+  live_price_required_before_launch: true
+  gpu_hour_cap_required_before_launch: true
+  cost_cap_required_before_launch: true
+  live_gpu_price_cny_per_hour: 2.7
+  gpu_hour_cap: 3.0
+  cost_cap_cny: 8.1
+  full_run_estimate_requires_dry_run: true
+
+guards:
+  llm_must_not_see_distant_supervision: true
+  human_annotation_allowed: false
+  split_or_freeze_allowed: false

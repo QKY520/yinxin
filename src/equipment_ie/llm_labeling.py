@@ -800,6 +800,7 @@ def build_llm_review_row(
     attempts: Sequence[Mapping[str, Any]],
     prompt_version: str,
     llm_error: str | None,
+    human_status: str = "NOT_STARTED",
 ) -> dict[str, Any]:
     validate_candidate(candidate)
     for record in (distant, union):
@@ -843,7 +844,7 @@ def build_llm_review_row(
             "attempts": list(attempts),
         },
         "human_annotation": {
-            "status": "NOT_STARTED",
+            "status": human_status,
             "annotator_a": None,
             "annotator_b": None,
             "adjudication": None,
@@ -877,8 +878,16 @@ def validate_llm_review_row(row: Mapping[str, Any]) -> None:
         validate_record(row[name])
     if row["llm_proposal"] is not None:
         validate_record(row["llm_proposal"])
-    if row["human_annotation"] != {
-        "status": "NOT_STARTED",
+    human_annotation = row["human_annotation"]
+    if not isinstance(human_annotation, Mapping):
+        raise SchemaError("LLM review human annotation must be an object")
+    if human_annotation.get("status") not in {"NOT_STARTED", "LLM_FAILED"}:
+        raise SchemaError("LLM review human status is unsupported")
+    if {
+        "annotator_a": human_annotation.get("annotator_a"),
+        "annotator_b": human_annotation.get("annotator_b"),
+        "adjudication": human_annotation.get("adjudication"),
+    } != {
         "annotator_a": None,
         "annotator_b": None,
         "adjudication": None,

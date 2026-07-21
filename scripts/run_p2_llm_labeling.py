@@ -131,6 +131,19 @@ def _load_context(config_path: Path) -> dict[str, Any]:
         raise ValueError("schema version mismatch")
     if schema.get("status") != schema_spec["required_status"]:
         raise ValueError("schema is not approved")
+    parse_schema = schema
+    parse_schema_artifact: dict[str, Any] | None = None
+    parse_schema_spec = config.get("parse_schema")
+    if parse_schema_spec is not None:
+        parse_schema_path = Path(parse_schema_spec["path"])
+        parse_schema_artifact = verify_file(
+            parse_schema_path, parse_schema_spec["sha256"]
+        )
+        parse_schema = yaml.safe_load(parse_schema_path.read_text(encoding="utf-8"))
+        if parse_schema.get("version") != parse_schema_spec["version"]:
+            raise ValueError("parse schema version mismatch")
+        if parse_schema.get("status") != parse_schema_spec["required_status"]:
+            raise ValueError("parse schema is not approved")
 
     prompt_spec = config["prompt"]
     prompt_config_path = Path(prompt_spec["definitions_path"])
@@ -189,6 +202,8 @@ def _load_context(config_path: Path) -> dict[str, Any]:
         "config_path": config_path,
         "schema": schema,
         "schema_path": schema_path,
+        "parse_schema": parse_schema,
+        "parse_schema_artifact": parse_schema_artifact,
         "prompt_config": prompt_config,
         "prompt_config_path": prompt_config_path,
         "examples": examples,
@@ -404,7 +419,7 @@ def _process_one(
                 chat.content,
                 record_id=candidate["id"],
                 text=candidate["text"],
-                schema=context["schema"],
+                schema=context["parse_schema"],
                 resolve_overlaps=True,
                 drop_invalid_relations=True,
                 resolution_flags=attempt_resolution_flags,
@@ -440,6 +455,12 @@ def _process_one(
         attempts=attempts,
         prompt_version=config["prompt"]["version"],
         llm_error=llm_error,
+        human_status=(
+            "LLM_FAILED"
+            if llm_proposal is None
+            and config["outputs"].get("mark_parse_failures_for_human_review")
+            else "NOT_STARTED"
+        ),
     )
     llm_output = llm_proposal or {
         "id": candidate["id"],
@@ -462,7 +483,7 @@ def _validate_review_csv(path: Path, expected_records: int) -> None:
         raise AssertionError("LLM review CSV count mismatch")
     human_fields = [name for name in rows[0] if name.startswith("annotator_") or name.startswith("adjudicat")]
     for row in rows:
-        if row["human_review_status"] != "NOT_STARTED":
+        if row["human_review_status"] not in {"NOT_STARTED", "LLM_FAILED"}:
             raise AssertionError("LLM review CSV starts human annotation")
         if any(row[name] for name in human_fields):
             raise AssertionError("LLM review CSV contains human annotation content")
@@ -564,6 +585,7 @@ def execute(context: dict[str, Any], *, cache_only: bool = False) -> dict[str, A
             "config_sha256": sha256_file(context["config_path"]),
             "duration_seconds": round(time.monotonic() - started, 3),
             "input_artifacts": context["input_artifacts"],
+            "parse_schema_artifact": context.get("parse_schema_artifact"),
             "selection": {
                 "records": len(reviews),
                 "ids": [row["review_id"] for row in reviews],

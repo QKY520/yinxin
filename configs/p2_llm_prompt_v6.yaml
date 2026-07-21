@@ -1,0 +1,39 @@
+﻿prompt_version: p2-llm-label-v6
+schema_version: p2-schema-draft-v3
+approval_basis: docs/P2_REVIEW_AUDIT_FIXES_20260721.md
+revision_reason: tighten_annotation_boundaries_after_v2_review_sheet_audit
+
+entity_types:
+  EQUIPMENT: Complete or independently functional equipment, platform, system, device, weapon, or identified model. Do not label organizations, countries, force names, locations, or deployment modes as equipment.
+  MODULE: A physical or functional subsystem, component, unit, payload, munition, warhead, launcher, shell, gun, magazine, charge, or part that is explicitly a constituent in the current context.
+  TECH_SCHEME: A non-physical technical method, architecture, operating mode, algorithm, process, information state, parameter concept, capability concept, or named engineering approach.
+  METRIC: A measurable technical specification or parameter value, usually containing an attribute name plus value, range, threshold, grade, unit, or local condition.
+
+relation_types:
+  USES: The head explicitly uses, adopts, carries, mounts, deploys, or relies on the tail for a function. Do not reverse control or scheduling semantics.
+  HAS_METRIC: The tail explicitly describes a specification, capability, parameter concept, or measurable technical attribute of the head.
+  PART_OF: The head is a constituent of the tail. Direction is fixed as smaller part to larger whole.
+
+constraints:
+  include_distant_supervision_in_prompt: false
+  include_relation_type_matrix: true
+  occurrence_is_one_based: true
+  overlapping_entities_allowed: false
+  cross_sentence_relations_allowed: false
+  pronoun_coreference_relations_allowed: false
+  inferred_relations_allowed: false
+  retry_suffix: Return exactly one valid JSON object; no explanation; no markdown; remove overlapping entities; remove relations whose direction is uncertain; if the source text is damaged and cannot be judged reliably, return empty entities and empty relations.
+  output_instruction: Return JSON only, with no explanation and no markdown code block.
+  additional_output_rules:
+    - Each entity object must contain only span, type, and occurrence.
+    - occurrence is one-based and must point to an exact occurrence of the span in the source text.
+    - Do not rewrite, normalize, translate, abbreviate, or expand entity names; span must be copied exactly from the source text.
+    - Keep only the longest self-contained non-overlapping entity span.
+    - Numeric weapon components such as warheads, charges, launchers, shells, guns, payloads, and magazines are MODULE even when their names contain weight, caliber, or count values; do not label them as METRIC.
+    - METRIC is only for measurable specifications or parameter values such as range, weight, caliber, frequency, speed, accuracy, threshold, and operating temperature; a product or component name containing a number is not automatically METRIC.
+    - Organization names, force names, country lists, location names, and deployment modes such as shore-based, shipborne, airborne, or vehicle-mounted are outside this schema unless the text names a concrete equipment platform; do not force them into EQUIPMENT.
+    - EQUIPMENT versus MODULE depends on the current sentence. Label an item as MODULE when it is explicitly a component, payload, subsystem, mounted part, or carried munition of a larger platform, even if the same term can be independent equipment elsewhere.
+    - USES may connect EQUIPMENT or MODULE to EQUIPMENT, MODULE, or TECH_SCHEME when the same sentence explicitly states use, adoption, carrying, mounting, deployment, or reliance.
+    - HAS_METRIC may connect EQUIPMENT or MODULE to METRIC or TECH_SCHEME when the tail is a measurable capability or parameter concept.
+    - PART_OF direction is always smaller part to larger whole; for example, gun PART_OF tank is valid, but tank PART_OF gun is invalid.
+    - Only output relations explicitly supported in the same sentence; do not use pronouns, common sense, transitive closure, or reverse relations to complete missing relations.

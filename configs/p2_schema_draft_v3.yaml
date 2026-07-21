@@ -1,0 +1,53 @@
+schema_id: equipment_ie_domain
+version: p2-schema-draft-v3
+status: approved
+approval_gate: P2_V2_REVIEW_AUDIT_2026_07_21
+
+entity_types:
+  EQUIPMENT:
+    definition: A complete or independently functional equipment item, platform, system, device, weapon, or identified model. Organization, location, deployment mode, and country or force names are not equipment.
+  MODULE:
+    definition: A physical or functional subsystem, component, unit, payload, munition, warhead, launcher, or part explicitly playing a constituent role in context. A term that can be independent equipment may be MODULE when the current sentence presents it as a component of a larger platform.
+  TECH_SCHEME:
+    definition: A non-physical technical method, architecture, operating regime, algorithm, process, information state, parameter concept, capability concept, or named engineering approach.
+  METRIC:
+    definition: A self-contained technical specification containing an attribute and its value, range, threshold, grade, or necessary local condition. Numeric weapon components such as warheads or charges are MODULE, not METRIC.
+
+relation_types:
+  USES:
+    definition: The head explicitly uses, adopts, carries, mounts, or deploys the tail for a function; do not reverse control or scheduling semantics to force a USES relation.
+    head_types: [EQUIPMENT, MODULE]
+    tail_types: [EQUIPMENT, MODULE, TECH_SCHEME]
+  HAS_METRIC:
+    definition: The tail explicitly describes a specification, capability, parameter concept, or measurable technical attribute of the head.
+    head_types: [EQUIPMENT, MODULE]
+    tail_types: [METRIC, TECH_SCHEME]
+  PART_OF:
+    definition: The head is explicitly a constituent of the tail; direction is part to whole. The head must be the smaller component or member and the tail must be the larger whole, system, platform, or assembly.
+    head_types: [EQUIPMENT, MODULE]
+    tail_types: [EQUIPMENT, MODULE]
+
+annotation_constraints:
+  offsets: python_character_offsets
+  end_offset: exclusive
+  entity_order: [start, end, type]
+  overlap_policy: one_longest_self_contained_span
+  relation_scope: explicit_same_sentence_only
+  coreference_relations: false
+  inferred_relations: false
+  negated_or_hypothetical_relations: false
+  candidate_text_mutation: forbidden
+  organization_location_deployment_mode: do_not_annotate
+  unresolved_case_action: flag_for_adjudication
+
+agreement:
+  primary_unit: exact_span_and_type_entity
+  aggregation: micro_f1
+  minimum_f1: 0.80
+  double_annotation_passages: 100
+  relation_agreement: report_exact_triple_f1_as_diagnostic
+
+approval:
+  approved_by: human_project_owner
+  approved_at: "2026-07-21"
+  decision_record: docs/P2_REVIEW_AUDIT_FIXES_20260721.md

@@ -77,6 +77,11 @@ class LlmLabelingTest(unittest.TestCase):
                 encoding="utf-8"
             )
         )
+        cls.schema_v3 = yaml.safe_load(
+            (PROJECT_ROOT / "configs" / "p2_schema_draft_v3.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
         cls.examples = list(
             iter_jsonl(PROJECT_ROOT / "docs" / "p2_schema_examples_draft.jsonl")
         )
@@ -266,6 +271,37 @@ class LlmLabelingTest(unittest.TestCase):
             parsed["relations"], [{"head": 1, "tail": 0, "type": "PART_OF"}]
         )
 
+    def test_schema_v3_allows_review_audit_relation_matrix(self) -> None:
+        text = "drone carries gps weapon and radar has tracking capability"
+        raw = canonical_json(
+            {
+                "entities": [
+                    {"span": "drone", "type": "EQUIPMENT", "occurrence": 1},
+                    {"span": "gps weapon", "type": "EQUIPMENT", "occurrence": 1},
+                    {"span": "radar", "type": "MODULE", "occurrence": 1},
+                    {
+                        "span": "tracking capability",
+                        "type": "TECH_SCHEME",
+                        "occurrence": 1,
+                    },
+                ],
+                "relations": [
+                    {"head": 0, "tail": 1, "type": "USES"},
+                    {"head": 2, "tail": 3, "type": "HAS_METRIC"},
+                ],
+            }
+        )
+        parsed = parse_model_label_output(
+            raw, record_id="r-v3", text=text, schema=self.schema_v3
+        )
+        self.assertEqual(
+            parsed["relations"],
+            [
+                {"head": 0, "tail": 1, "type": "USES"},
+                {"head": 2, "tail": 3, "type": "HAS_METRIC"},
+            ],
+        )
+
     def test_prompt_v5_adds_direction_and_quality_rules(self) -> None:
         prompt_config = yaml.safe_load(
             (PROJECT_ROOT / "configs" / "p2_llm_prompt_v5.yaml").read_text(
@@ -283,6 +319,23 @@ class LlmLabelingTest(unittest.TestCase):
         self.assertIn("不要反向输出“装备 USES 子系统”", prompt)
         self.assertIn("复杂嵌套结构按最近的显式局部结构判断", prompt)
         self.assertIn("连续数字噪声", prompt)
+
+    def test_prompt_v6_adds_review_audit_boundary_rules(self) -> None:
+        prompt_config = yaml.safe_load(
+            (PROJECT_ROOT / "configs" / "p2_llm_prompt_v6.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+        prompt = build_label_prompt(
+            text="dummy text",
+            schema=self.schema_v3,
+            prompt_config=prompt_config,
+            examples=self.examples_v2,
+            prompt_version="p2-llm-label-v6",
+        )
+        self.assertIn("warheads, charges, launchers", prompt)
+        self.assertIn("deployment modes", prompt)
+        self.assertIn("smaller part to larger whole", prompt)
 
     def test_checked_in_llm_configs_keep_sanity_only_gate(self) -> None:
         expected = {
@@ -606,6 +659,44 @@ class LlmLabelingTest(unittest.TestCase):
             with path.open("r", encoding="utf-8-sig", newline="") as handle:
                 saved = list(csv.DictReader(handle))[0]
         self.assertEqual(saved["human_review_status"], "NOT_STARTED")
+        self.assertEqual(saved["annotator_a_entities_json"], "")
+
+    def test_llm_failed_status_keeps_annotation_fields_blank(self) -> None:
+        text = "plain text " * 20
+        distant = record("r-failed", text)
+        union, provenance, flags = merge_distant_and_llm(
+            distant, None, llm_error="entity 0 occurrence 1 not found"
+        )
+        row = build_llm_review_row(
+            candidate=candidate("r-failed", "cmnee", text),
+            distant=distant,
+            llm=None,
+            union=union,
+            provenance=provenance,
+            disagreement_flags=flags,
+            attempts=[
+                {
+                    "attempt": 1,
+                    "prompt_hash": "p",
+                    "request_hash": "r",
+                    "raw_output_hash": "o",
+                    "cache_hit": True,
+                    "latency_ms": 0.0,
+                    "parse_error": "entity 0 occurrence 1 not found",
+                }
+            ],
+            prompt_version="v1",
+            llm_error="entity 0 occurrence 1 not found",
+            human_status="LLM_FAILED",
+        )
+        self.assertEqual(row["human_annotation"]["status"], "LLM_FAILED")
+        self.assertIsNone(row["human_annotation"]["annotator_a"])
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "review.csv"
+            write_llm_review_csv_atomic(path, [row])
+            with path.open("r", encoding="utf-8-sig", newline="") as handle:
+                saved = list(csv.DictReader(handle))[0]
+        self.assertEqual(saved["human_review_status"], "LLM_FAILED")
         self.assertEqual(saved["annotator_a_entities_json"], "")
 
 

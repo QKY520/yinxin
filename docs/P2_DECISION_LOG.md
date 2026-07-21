@@ -483,3 +483,36 @@ Corrective action:
 
 Current gate remains P2. Human annotation, split/freeze, P3/P4/P5, and the
 400-record full pass remain unauthorized.
+
+## 2026-07-21 - Applied review-sheet audit suggestions before annotation prep
+
+The human audited the v2 250-row review CSV and provided
+`docs/问题建议1.md`. The audit judged entity proposals broadly usable for
+annotation preparation but identified systematic relation loss and several
+annotation-boundary rules that should be fixed first.
+
+Implemented without any new GPU use:
+
+- Added `configs/p2_schema_draft_v3.yaml`.
+- Widened the proposal-stage relation matrix:
+  - `USES`: `EQUIPMENT|MODULE -> EQUIPMENT|MODULE|TECH_SCHEME`.
+  - `HAS_METRIC`: `EQUIPMENT|MODULE -> METRIC|TECH_SCHEME`.
+  - `PART_OF`: `EQUIPMENT|MODULE -> EQUIPMENT|MODULE`, still explicitly
+    part-to-whole.
+- Added `configs/p2_llm_prompt_v6.yaml` for future LLM proposal runs, including
+  rules for numeric weapon components, organization/deployment-mode exclusion,
+  `EQUIPMENT` versus `MODULE`, exact span copying, and `PART_OF` direction.
+- Added `configs/p2_llm_label_250_v3_schema_reparse.yaml`, which reuses the
+  old v2/v5 request hashes for cache hits but parses cached model outputs with
+  the v3 schema through an explicit `parse_schema` override.
+- Updated `docs/P2_ANNOTATION_GUIDE_DRAFT.md` with the human-audit annotation
+  rules.
+- Added `docs/P2_REVIEW_AUDIT_FIXES_20260721.md` as the ASCII-path structured
+  record for these changes.
+
+Deferred:
+
+- Fuzzy span matching is not implemented at this step. The remaining exact-span
+  failures are marked for from-zero human annotation instead.
+- No 400-record run, human annotation, split/freeze, P3/P4/P5, or paid GPU work
+  is authorized by this record.
