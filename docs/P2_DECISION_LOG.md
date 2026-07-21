@@ -516,3 +516,26 @@ Deferred:
   failures are marked for from-zero human annotation instead.
 - No 400-record run, human annotation, split/freeze, P3/P4/P5, or paid GPU work
   is authorized by this record.
+
+Cache-only v3 reparse result:
+
+- Command: `python scripts/run_p2_llm_labeling.py --config configs/p2_llm_label_250_v3_schema_reparse.yaml --execute-from-cache`.
+- GPU use: none; executed in GPU-free mode.
+- New model calls: 0.
+- Cache hits: 263.
+- Records: 250.
+- Parse failures: 7/250.
+- Parse failure rate: 2.8%; success gate passed.
+- LLM entities: 1451.
+- LLM relations: 668, increased from v2's 610.
+- Dropped invalid-schema relations: 67, reduced from v2's 125.
+- Relation distribution: `USES=214`, `PART_OF=433`, `HAS_METRIC=21`.
+- CSV human-review status: `NOT_STARTED=243`, `LLM_FAILED=7`; annotator and
+  adjudication fields remain blank.
+- Remote/local backup:
+  `p2_llm_label_250_v3_schema_reparse_success_20260721.tar.gz`.
+- SHA256:
+  `2ef64602fb77ed137769d4f06b30e8d5877308ebf0b4de80d3e66d6a7b3bd883`.
+
+The active 250-row review sheet for the next human-facing step is
+`p2_review_sheet_llm_250_v3_schema_reparse.csv`.
