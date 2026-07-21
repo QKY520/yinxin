@@ -3,7 +3,7 @@ stage: llm_assisted_label_250
 run_id: p2-llm-label-250-v1
 
 execution:
-  authorized: false
+  authorized: true
   approval_record:
     id: p2-250-proposal-approval-2026-07-21
     approved_by: human_project_owner
