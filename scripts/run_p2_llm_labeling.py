@@ -375,7 +375,11 @@ def _check_server(config: dict[str, Any]) -> None:
 
 
 def _process_one(
-    context: dict[str, Any], pair: tuple[dict[str, Any], dict[str, Any]], api_key: str
+    context: dict[str, Any],
+    pair: tuple[dict[str, Any], dict[str, Any]],
+    api_key: str,
+    *,
+    cache_only: bool = False,
 ) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     config = context["config"]
     candidate, distant = pair
@@ -391,6 +395,7 @@ def _process_one(
             base_url=config["server"]["base_url"],
             timeout_seconds=int(config["server"]["request_timeout_seconds"]),
             api_key=api_key,
+            cache_only=cache_only,
         )
         parse_error: str | None = None
         try:
@@ -401,6 +406,7 @@ def _process_one(
                 text=candidate["text"],
                 schema=context["schema"],
                 resolve_overlaps=True,
+                drop_invalid_relations=True,
                 resolution_flags=attempt_resolution_flags,
             )
             resolution_flags = attempt_resolution_flags
@@ -462,14 +468,18 @@ def _validate_review_csv(path: Path, expected_records: int) -> None:
             raise AssertionError("LLM review CSV contains human annotation content")
 
 
-def execute(context: dict[str, Any]) -> dict[str, Any]:
+def execute(context: dict[str, Any], *, cache_only: bool = False) -> dict[str, Any]:
     config = context["config"]
     execution = config["execution"]
     if execution.get("authorized") is not True or not execution.get("approval_record"):
         raise PermissionError("actual P2 LLM execution lacks explicit human approval")
-    if execution.get("actual_run_requires_gpu") is not True or not _gpu_device_present():
+    if cache_only:
+        if _gpu_device_present():
+            raise RuntimeError("cache-only P2 LLM reparse must use GPU-free mode")
+    elif execution.get("actual_run_requires_gpu") is not True or not _gpu_device_present():
         raise RuntimeError("actual P2 LLM execution requires paid GPU mode")
-    _check_server(config)
+    if not cache_only:
+        _check_server(config)
     final_paths = {
         name: Path(config["outputs"][name])
         for name in (
@@ -488,7 +498,7 @@ def execute(context: dict[str, Any]) -> dict[str, Any]:
     with ThreadPoolExecutor(max_workers=int(config["generation"]["max_concurrency"])) as pool:
         results = list(
             pool.map(
-                lambda pair: _process_one(context, pair, api_key),
+                lambda pair: _process_one(context, pair, api_key, cache_only=cache_only),
                 context["selected_pairs"],
             )
         )
@@ -605,6 +615,7 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--dry-run", action="store_true")
     mode.add_argument("--execute", action="store_true")
+    mode.add_argument("--execute-from-cache", action="store_true")
     args = parser.parse_args()
     config_path = args.config.resolve()
     config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
@@ -613,14 +624,23 @@ def main() -> int:
         "phase": "P2",
         "stage": config.get("stage"),
         "run_id": config.get("run_id"),
-        "mode": "dry_run" if args.dry_run else "execute",
+        "mode": (
+            "dry_run"
+            if args.dry_run
+            else "execute_from_cache"
+            if args.execute_from_cache
+            else "execute"
+        ),
         "started_at": datetime.now(timezone.utc).isoformat(),
         "config_sha256": sha256_file(config_path),
     }
     started = time.monotonic()
     try:
         context = _load_context(config_path)
-        result = dry_run(context) if args.dry_run else execute(context)
+        if args.dry_run:
+            result = dry_run(context)
+        else:
+            result = execute(context, cache_only=args.execute_from_cache)
         event.update(
             {
                 "status": "ok",

@@ -133,6 +133,35 @@ class LlmLabelingTest(unittest.TestCase):
                 schema=self.schema,
             )
 
+    def test_p2_parser_can_drop_invalid_relations_for_review(self) -> None:
+        text = "missile uses GPS with 100km range"
+        raw = canonical_json(
+            {
+                "entities": [
+                    {"span": "missile", "type": "EQUIPMENT", "occurrence": 1},
+                    {"span": "GPS", "type": "TECH_SCHEME", "occurrence": 1},
+                    {"span": "100km", "type": "METRIC", "occurrence": 1},
+                ],
+                "relations": [
+                    {"head": 2, "tail": 1, "type": "USES"},
+                    {"head": 0, "tail": 1, "type": "USES"},
+                ],
+            }
+        )
+        flags: list[dict] = []
+        parsed = parse_model_label_output(
+            raw,
+            record_id="r-review",
+            text=text,
+            schema=self.schema,
+            drop_invalid_relations=True,
+            resolution_flags=flags,
+        )
+        self.assertEqual(parsed["relations"], [{"head": 0, "tail": 1, "type": "USES"}])
+        self.assertTrue(
+            any(flag["kind"] == "LLM_RELATION_DROPPED_INVALID_SCHEMA" for flag in flags)
+        )
+
     def test_p2_parser_can_resolve_logged_nested_overlap_for_review(self) -> None:
         text = "滚筒外壳用于保护滚筒。"
         raw = canonical_json(

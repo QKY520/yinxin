@@ -157,6 +157,7 @@ def parse_model_label_output(
     text: str,
     schema: Mapping[str, Any],
     resolve_overlaps: bool = False,
+    drop_invalid_relations: bool = False,
     resolution_flags: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Parse occurrence-based model JSON into the unified exact-offset contract."""
@@ -230,9 +231,29 @@ def parse_model_label_output(
 
     relations: list[dict[str, Any]] = []
     seen_relations: set[tuple[int, int, str]] = set()
+
+    def drop_or_raise_relation(
+        index: int, raw: Any, reason: str, **extra: Any
+    ) -> bool:
+        if not drop_invalid_relations:
+            raise LabelParseError(reason)
+        if resolution_flags is not None:
+            flag = {
+                "kind": "LLM_RELATION_DROPPED_INVALID_SCHEMA",
+                "relation_raw_index": index,
+                "reason": reason,
+                "raw_relation": raw,
+            }
+            flag.update(extra)
+            resolution_flags.append(flag)
+        return True
+
     for index, raw in enumerate(raw_relations):
         if not isinstance(raw, dict) or set(raw) != {"head", "tail", "type"}:
-            raise LabelParseError(f"relation {index} must contain head/tail/type only")
+            drop_or_raise_relation(
+                index, raw, f"relation {index} must contain head/tail/type only"
+            )
+            continue
         head = raw["head"]
         tail = raw["tail"]
         relation_type = raw["type"]
@@ -244,20 +265,50 @@ def parse_model_label_output(
             or not 0 <= head < len(original_entities)
             or not 0 <= tail < len(original_entities)
         ):
-            raise LabelParseError(f"relation {index} references a missing entity")
+            drop_or_raise_relation(
+                index,
+                raw,
+                f"relation {index} references a missing entity",
+                head=head,
+                tail=tail,
+                type=relation_type,
+            )
+            continue
         if head == tail:
-            raise LabelParseError(f"relation {index} is self-referential")
+            drop_or_raise_relation(
+                index,
+                raw,
+                f"relation {index} is self-referential",
+                head=head,
+                tail=tail,
+                type=relation_type,
+            )
+            continue
         rule = relation_types.get(relation_type)
         if not isinstance(rule, Mapping):
-            raise LabelParseError(
-                f"relation {index} has unsupported type {relation_type!r}"
+            drop_or_raise_relation(
+                index,
+                raw,
+                f"relation {index} has unsupported type {relation_type!r}",
+                head=head,
+                tail=tail,
+                type=relation_type,
             )
+            continue
         head_type = original_entities[head]["type"]
         tail_type = original_entities[tail]["type"]
         if head_type not in rule["head_types"] or tail_type not in rule["tail_types"]:
-            raise LabelParseError(
-                f"relation {index} violates the {relation_type} type matrix"
+            drop_or_raise_relation(
+                index,
+                raw,
+                f"relation {index} violates the {relation_type} type matrix",
+                head=head,
+                tail=tail,
+                type=relation_type,
+                head_type=head_type,
+                tail_type=tail_type,
             )
+            continue
         if head not in remap or tail not in remap:
             if resolution_flags is not None:
                 resolution_flags.append(
@@ -272,7 +323,15 @@ def parse_model_label_output(
             continue
         relation_key = (remap[head], remap[tail], relation_type)
         if relation_key in seen_relations:
-            raise LabelParseError(f"relation {index} duplicates {relation_key}")
+            drop_or_raise_relation(
+                index,
+                raw,
+                f"relation {index} duplicates {relation_key}",
+                head=head,
+                tail=tail,
+                type=relation_type,
+            )
+            continue
         seen_relations.add(relation_key)
         relations.append(
             {"head": remap[head], "tail": remap[tail], "type": relation_type}
@@ -478,6 +537,7 @@ def chat_with_cache(
     base_url: str,
     timeout_seconds: int,
     api_key: str,
+    cache_only: bool = False,
 ) -> ChatResult:
     digest = request_hash(envelope)
     path = _cache_path(cache_dir, digest)
@@ -495,6 +555,8 @@ def chat_with_cache(
             cache_hit=True,
             latency_ms=float(cached.get("latency_ms", 0.0)),
         )
+    if cache_only:
+        raise RuntimeError(f"cache-only request is missing cached response: {digest}")
     response, latency_ms = _post_chat_completion(
         base_url=base_url,
         payload=envelope["payload"],
