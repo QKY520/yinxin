@@ -6,6 +6,7 @@ import csv
 import hashlib
 import json
 import os
+import re
 import time
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
@@ -526,7 +527,7 @@ def select_candidates(
     distant_records: Sequence[Mapping[str, Any]],
     selection: Mapping[str, Any],
 ) -> list[dict[str, Any]]:
-    """Select all records or a deterministic source/match-diverse sanity set."""
+    """Select records with optional deterministic quality filtering."""
 
     if len(candidates) != len(distant_records):
         raise ValueError("candidate and distant-supervision counts differ")
@@ -537,8 +538,21 @@ def select_candidates(
         if candidate["id"] != distant["id"] or candidate["text"] != distant["text"]:
             raise ValueError("candidate and distant-supervision rows differ")
         paired.append((dict(candidate), bool(distant["entities"])))
+    filtered = [
+        (candidate, matched)
+        for candidate, matched in paired
+        if _candidate_quality_rejection(candidate, selection) is None
+    ]
     if selection["mode"] == "all":
-        return [candidate for candidate, _ in paired]
+        return [candidate for candidate, _ in filtered]
+    if selection["mode"] == "first_n":
+        sample_size = int(selection["sample_size"])
+        if len(filtered) < sample_size:
+            raise ValueError(
+                f"only {len(filtered)} candidates remain after quality filters; "
+                f"need {sample_size}"
+            )
+        return [candidate for candidate, _ in filtered[:sample_size]]
     if selection["mode"] != "sanity":
         raise ValueError("unsupported selection mode")
 
@@ -548,7 +562,7 @@ def select_candidates(
     minimum_unmatched = int(selection["minimum_ds_unmatched"])
     seed = int(selection["seed"])
     ranked = sorted(
-        paired,
+        filtered,
         key=lambda item: sha256_text(f"{seed}:{item[0]['id']}"),
     )
     selected_ids: set[str] = set()
@@ -561,7 +575,7 @@ def select_candidates(
     def selected_count(match_state: bool) -> int:
         return sum(
             candidate["id"] in selected_ids and matched == match_state
-            for candidate, matched in paired
+            for candidate, matched in filtered
         )
 
     for desired, minimum in ((True, minimum_matched), (False, minimum_unmatched)):
@@ -578,7 +592,34 @@ def select_candidates(
         raise ValueError("sanity selection did not reach the requested size")
     if selected_count(True) < minimum_matched or selected_count(False) < minimum_unmatched:
         raise ValueError("sanity selection did not satisfy match diversity")
-    return [candidate for candidate, _ in paired if candidate["id"] in selected_ids]
+    return [candidate for candidate, _ in filtered if candidate["id"] in selected_ids]
+
+
+def _candidate_quality_rejection(
+    candidate: Mapping[str, Any], selection: Mapping[str, Any]
+) -> str | None:
+    quality = selection.get("quality_filters", {})
+    if not isinstance(quality, Mapping):
+        raise ValueError("selection.quality_filters must be an object when present")
+    for rule in quality.get("exclude_source_splits", []):
+        if not isinstance(rule, Mapping):
+            raise ValueError("exclude_source_splits entries must be objects")
+        source_type = rule.get("source_type")
+        source_split = rule.get("source_split")
+        if (
+            source_type is not None
+            and candidate.get("source_type") == source_type
+            and candidate.get("source_split") == source_split
+        ):
+            return f"excluded_source_split:{source_type}:{source_split}"
+    max_digits = quality.get("max_consecutive_digits")
+    if max_digits is not None:
+        max_digits = int(max_digits)
+        if max_digits < 1:
+            raise ValueError("max_consecutive_digits must be positive")
+        if re.search(rf"\d{{{max_digits + 1},}}", str(candidate.get("text", ""))):
+            return f"max_consecutive_digits>{max_digits}"
+    return None
 
 
 def _entity_key(entity: Mapping[str, Any]) -> tuple[int, int, str, str]:

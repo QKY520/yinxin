@@ -1,0 +1,37 @@
+prompt_version: p2-llm-label-v5
+schema_version: p2-schema-draft-v2
+approval_basis: docs/错误清单.md
+revision_reason: address_human_audit_findings_for_250_record_proposal_pass
+
+entity_types:
+  EQUIPMENT: 可独立承担功能的装备、平台、系统、装置、武器或明确型号。
+  MODULE: 在当前语境中明确充当组成部分的子系统、组件、单元、载荷或部件。
+  TECH_SCHEME: 非物理的技术方法、体系结构、工作体制、算法、流程或工程方案。
+  METRIC: 包含指标名称及数值、范围、阈值、等级或必要局部工况的完整技术规格。
+relation_types:
+  USES: head 明确主动采用、使用或利用 tail 完成功能；不要把“被调度/被控制/被服务对象”反向写成 USES。
+  HAS_METRIC: tail 指标明确描述 head。
+  PART_OF: head 是 tail 的组成部分，方向固定为部分到整体；当原文明确说明一个装备是更大系统/平台/装备的组成部分时，允许 EQUIPMENT 到 EQUIPMENT。
+constraints:
+  include_distant_supervision_in_prompt: false
+  include_relation_type_matrix: true
+  occurrence_is_one_based: true
+  overlapping_entities_allowed: false
+  cross_sentence_relations_allowed: false
+  pronoun_coreference_relations_allowed: false
+  inferred_relations_allowed: false
+  retry_suffix: 只返回一个合法JSON对象；不要解释；不要markdown；删除任何违反关系类型矩阵的关系；删除任何重叠实体，只保留更长且语义完整的实体；若文本明显损坏且无法可靠判断，则返回空entities和空relations。
+  output_instruction: 只返回一个合法JSON对象；不要任何解释；不要markdown代码块；最外层只能包含entities和relations两个键；不要输出第二个JSON或任何多余字符。
+  additional_output_rules:
+    - 每个实体对象必须且只能包含span、type、occurrence三个键。
+    - occurrence必须是从1开始的整数；如果同一片段多次出现，只标注与关系或指标相关的必要出现，不要机械列出全部重复出现。
+    - 实体之间绝对不能重叠；如果一个候选实体包含另一个候选实体，只保留更长且语义完整的实体。
+    - HAS_METRIC的tail必须是METRIC。
+    - PART_OF的head只能是EQUIPMENT或MODULE；tail只能是EQUIPMENT或MODULE。
+    - 两个EQUIPMENT之间只有在原文明确表达“组成、包括、配备、下辖、集成到系统/平台、作为系统部件”时才输出PART_OF。发射、试验、验证、部署、命名、生产、提供能力都不是PART_OF。
+    - 复杂嵌套结构按最近的显式局部结构判断。若原文写“A包括B，B包括C”，则输出C PART_OF B，不要把C直接挂到A；若后半句写“第二升降杆底部设有刮板”，刮板属于第二升降杆，不属于上文最近出现的其他部件。
+    - USES的head只能是EQUIPMENT或MODULE；tail只能是MODULE或TECH_SCHEME。head必须是主动使用者、承载平台或采用方，tail是被使用、被采用、被搭载的模块或技术方案。
+    - 如果原文表达“子系统调度/控制/操作装备”，且没有合适的关系类型表达控制语义，不要反向输出“装备 USES 子系统”。
+    - 只输出原文同一句中显式支持的关系；不通过代词、常识、跨句共指、传递关系或反向关系补全。
+    - 如果文本有明显OCR/拼接损坏、连续数字噪声或语义无法稳定判断，宁可少输出或输出空结果，也不要猜测实体和关系。
+    - 输出前自检：删除所有违反类型矩阵的关系，删除所有重叠实体；宁可少输出关系，也不要输出非法或方向不确定的关系。

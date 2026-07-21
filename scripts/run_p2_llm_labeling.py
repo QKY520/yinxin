@@ -118,6 +118,7 @@ def _load_context(config_path: Path) -> dict[str, Any]:
     if config.get("phase") != "P2" or config.get("stage") not in {
         "llm_assisted_label_sanity",
         "llm_assisted_label_full",
+        "llm_assisted_label_250",
     }:
         raise ValueError("unexpected P2 LLM configuration")
     _validate_guards(config)
@@ -319,6 +320,7 @@ def dry_run(context: dict[str, Any]) -> dict[str, Any]:
         "inputs": context["input_artifacts"],
         "model_artifacts": context["model_artifacts"],
         "selection": {
+            "config": config["selection"],
             "record_count": record_count,
             "source_counts": dict(sorted(source_counts.items())),
             "distant_supervision_matched": matched_count,

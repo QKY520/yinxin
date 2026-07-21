@@ -1,0 +1,52 @@
+schema_id: equipment_ie_domain
+version: p2-schema-draft-v2
+status: approved
+approval_gate: P2_ERROR_AUDIT_2026_07_21
+
+entity_types:
+  EQUIPMENT:
+    definition: A complete or independently functional equipment item, platform, system, device, weapon, or identified model.
+  MODULE:
+    definition: A physical or functional subsystem, component, unit, or payload explicitly playing a constituent role in context.
+  TECH_SCHEME:
+    definition: A non-physical technical method, architecture, operating regime, algorithm, process, or named engineering approach.
+  METRIC:
+    definition: A self-contained technical specification containing an attribute and its value, range, threshold, grade, or necessary local condition.
+
+relation_types:
+  USES:
+    definition: The head explicitly uses or adopts the tail for a function; do not reverse control or scheduling semantics to force a USES relation.
+    head_types: [EQUIPMENT, MODULE]
+    tail_types: [MODULE, TECH_SCHEME]
+  HAS_METRIC:
+    definition: The metric explicitly describes the head.
+    head_types: [EQUIPMENT, MODULE]
+    tail_types: [METRIC]
+  PART_OF:
+    definition: The head is explicitly a constituent of the tail; direction is part to whole. Equipment-to-equipment is allowed only when the text states that one named equipment item is a component/subsystem/member of a larger system or platform.
+    head_types: [EQUIPMENT, MODULE]
+    tail_types: [EQUIPMENT, MODULE]
+
+annotation_constraints:
+  offsets: python_character_offsets
+  end_offset: exclusive
+  entity_order: [start, end, type]
+  overlap_policy: one_longest_self_contained_span
+  relation_scope: explicit_same_sentence_only
+  coreference_relations: false
+  inferred_relations: false
+  negated_or_hypothetical_relations: false
+  candidate_text_mutation: forbidden
+  unresolved_case_action: flag_for_adjudication
+
+agreement:
+  primary_unit: exact_span_and_type_entity
+  aggregation: micro_f1
+  minimum_f1: 0.80
+  double_annotation_passages: 100
+  relation_agreement: report_exact_triple_f1_as_diagnostic
+
+approval:
+  approved_by: human_project_owner
+  approved_at: "2026-07-21"
+  decision_record: docs/错误清单.md

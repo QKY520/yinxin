@@ -72,8 +72,16 @@ class LlmLabelingTest(unittest.TestCase):
                 encoding="utf-8"
             )
         )
+        cls.schema_v2 = yaml.safe_load(
+            (PROJECT_ROOT / "configs" / "p2_schema_draft_v2.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
         cls.examples = list(
             iter_jsonl(PROJECT_ROOT / "docs" / "p2_schema_examples_draft.jsonl")
+        )
+        cls.examples_v2 = list(
+            iter_jsonl(PROJECT_ROOT / "docs" / "p2_schema_examples_draft_v2.jsonl")
         )
 
     def test_strip_fences_and_parse_occurrence_output(self) -> None:
@@ -210,6 +218,42 @@ class LlmLabelingTest(unittest.TestCase):
         self.assertIn("删除所有重叠实体", prompt)
         self.assertIn("PART_OF的head必须是MODULE", prompt)
         self.assertIn("两个EQUIPMENT之间绝对不要输出PART_OF", prompt)
+
+    def test_schema_v2_allows_equipment_part_of_larger_equipment(self) -> None:
+        text = "海拉姆反舰导弹防御系统包括海拉姆导弹。"
+        raw = canonical_json(
+            {
+                "entities": [
+                    {"span": "海拉姆反舰导弹防御系统", "type": "EQUIPMENT", "occurrence": 1},
+                    {"span": "海拉姆导弹", "type": "EQUIPMENT", "occurrence": 1},
+                ],
+                "relations": [{"head": 1, "tail": 0, "type": "PART_OF"}],
+            }
+        )
+        parsed = parse_model_label_output(
+            raw, record_id="r-v2", text=text, schema=self.schema_v2
+        )
+        self.assertEqual(
+            parsed["relations"], [{"head": 1, "tail": 0, "type": "PART_OF"}]
+        )
+
+    def test_prompt_v5_adds_direction_and_quality_rules(self) -> None:
+        prompt_config = yaml.safe_load(
+            (PROJECT_ROOT / "configs" / "p2_llm_prompt_v5.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+        prompt = build_label_prompt(
+            text="操作子系统用于调度无人飞行器。",
+            schema=self.schema_v2,
+            prompt_config=prompt_config,
+            examples=self.examples_v2,
+            prompt_version="p2-llm-label-v5",
+        )
+        self.assertIn("允许 EQUIPMENT 到 EQUIPMENT", prompt)
+        self.assertIn("不要反向输出“装备 USES 子系统”", prompt)
+        self.assertIn("复杂嵌套结构按最近的显式局部结构判断", prompt)
+        self.assertIn("连续数字噪声", prompt)
 
     def test_checked_in_llm_configs_keep_sanity_only_gate(self) -> None:
         expected = {
@@ -458,6 +502,33 @@ class LlmLabelingTest(unittest.TestCase):
         match_by_id = {row["id"]: bool(row["entities"]) for row in distant}
         self.assertGreaterEqual(sum(match_by_id[row_id] for row_id in selected_ids), 2)
         self.assertGreaterEqual(sum(not match_by_id[row_id] for row_id in selected_ids), 2)
+
+    def test_first_n_selection_applies_quality_filters(self) -> None:
+        candidates = [
+            candidate("r1", "patent", "正常无人机文本" + "甲" * 100),
+            {
+                **candidate("r2", "patent", "400损坏文本410410" + "乙" * 100),
+                "source_split": "test",
+            },
+            candidate("r3", "cmnee", "雷达系统文本" + "丙" * 100),
+            candidate("r4", "patent", "通信系统文本" + "丁" * 100),
+        ]
+        distant = [record(row["id"], row["text"]) for row in candidates]
+        selected = select_candidates(
+            candidates,
+            distant,
+            {
+                "mode": "first_n",
+                "sample_size": 3,
+                "quality_filters": {
+                    "exclude_source_splits": [
+                        {"source_type": "patent", "source_split": "test"}
+                    ],
+                    "max_consecutive_digits": 5,
+                },
+            },
+        )
+        self.assertEqual([row["id"] for row in selected], ["r1", "r3", "r4"])
 
     def test_merge_and_review_preserve_disagreement_and_blank_human_fields(self) -> None:
         text = "雷达甲采用惯性导航。" + "甲" * 100
