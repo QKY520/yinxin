@@ -392,3 +392,39 @@ GPU-free dry-run result:
 
 The full-v6 pass is technically preflighted but remains blocked on explicit
 human approval, live GPU price confirmation, and a CNY/GPU-hour cap.
+
+## 2026-07-21 - Human approved bounded 250-record P2 LLM proposal pass
+
+The human reviewed the v6 sanity issues in `docs/错误清单.md` and approved a
+bounded 250-record LLM proposal pass rather than the full 400 records.
+
+Fixes prepared before launch:
+
+- Added `p2-schema-draft-v2`, allowing `EQUIPMENT -> EQUIPMENT` `PART_OF` only
+  for explicit component/system cases.
+- Added `p2-llm-label-v5`, clarifying `USES` direction, complex nested
+  component attachment, and damaged-text behavior.
+- Added `docs/p2_schema_examples_draft_v2.jsonl` with compact examples for
+  equipment-to-equipment `PART_OF`, nested component structure, and a negative
+  control/scheduling case.
+- Added quality filtering for proposal selection: skip patent `source_split:
+  test` candidates and reject obvious long digit-noise spans.
+- Added `configs/p2_llm_label_250_v1.yaml` with `_250_v1` output paths.
+
+Approval scope:
+
+- Records authorized: 250.
+- Live 4090 price recorded by the human: 2.7 CNY/hour.
+- GPU-hour cap: 3.0 hours.
+- Cost cap: 8.1 CNY.
+- Full 400-record pass remains unauthorized.
+- Human annotation, split/freeze, P3/P4/P5 remain unauthorized.
+
+Checkpoint/resume policy:
+
+- Every request is cached under `/root/project/cache/p2_llm_label` by full
+  request hash.
+- If the job is paused or interrupted, rerunning the same config resumes from
+  cached requests and only calls the model for missing hashes.
+- Existing output paths are protected by `overwrite: false`; partial final
+  outputs are written atomically only after the run completes.

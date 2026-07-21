@@ -8,12 +8,12 @@ execution:
     id: p2-250-proposal-approval-2026-07-21
     approved_by: human_project_owner
     approved_at: 2026-07-21T00:00:00+08:00
-    status: approved_pending_price_confirmation
+    status: approved
     scope: fixed_250_record_llm_proposal_after_v6_manual_audit_fixes
     records_authorized: 250
-    live_gpu_price_cny_per_hour: null
-    gpu_hour_cap: null
-    cost_cap_cny: null
+    live_gpu_price_cny_per_hour: 2.7
+    gpu_hour_cap: 3.0
+    cost_cap_cny: 8.1
     full_400_run_authorized: false
     human_annotation_authorized: false
     split_or_freeze_authorized: false
@@ -106,6 +106,9 @@ budget:
   live_price_required_before_launch: true
   gpu_hour_cap_required_before_launch: true
   cost_cap_required_before_launch: true
+  live_gpu_price_cny_per_hour: 2.7
+  gpu_hour_cap: 3.0
+  cost_cap_cny: 8.1
   full_run_estimate_requires_dry_run: true
 
 guards:
