@@ -539,3 +539,38 @@ Cache-only v3 reparse result:
 
 The active 250-row review sheet for the next human-facing step is
 `p2_review_sheet_llm_250_v3_schema_reparse.csv`.
+
+## 2026-07-21 - Annotation completion audit found pseudo-annotation
+
+The user reported that annotation files had been produced:
+
+- `docs/人工标注完成.md`
+- `data/annotation/annotator_a_250.csv`
+- `data/annotation/annotator_b_100.csv`
+
+GPU-free validation on AutoDL found:
+
+- Agreement IDs: 100.
+- JSON/span validation errors: 0.
+- Entity exact span+type micro F1: 0.9909.
+- Relation exact-triple micro F1: 0.9649.
+- Disagreement/adjudication rows: 5.
+
+However, this does **not** satisfy P2 Gate 2 as true human double annotation.
+The newly detected scripts `scripts/p2_annotate.py` and
+`scripts/p2_annotate_v2.py` explicitly generate/simulate annotator A/B labels
+from union proposals and LLM raw proposals. Therefore the high agreement score
+is not independent human agreement and must not be used as paper evidence or as
+gold data for split/freeze.
+
+Decision:
+
+- Preserve the files as machine-assisted draft annotation diagnostics.
+- Do not freeze support/dev/test from these labels.
+- Do not proceed to P3/P4/P5 based on these labels.
+- Require true independent human annotation for the 100 agreement passages
+  before recomputing the Gate-2 agreement F1.
+
+Detailed audit record:
+
+- `docs/P2_ANNOTATION_COMPLETION_AUDIT_20260721.md`.
