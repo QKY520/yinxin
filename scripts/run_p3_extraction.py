@@ -201,6 +201,8 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
     api_key = config["model"].get("api_key", "EMPTY")
     timeout_seconds = int(config["model"]["timeout_seconds"])
     retry_suffix = config["prompt"].get("retry_suffix", "只返回合法JSON")
+    parsing = config.get("parsing", {})
+    drop_invalid_entities = bool(parsing.get("drop_invalid_entities", False))
 
     rows: list[dict[str, Any]] = []
     predictions: list[dict[str, Any]] = []
@@ -218,6 +220,7 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
         parse_error: str | None = None
         raw_output_hash = ""
         total_latency = 0.0
+        sanitization_flags: list[dict[str, Any]] = []
         attempt_prompt = prompt
         for attempt_number in (1, 2):
             envelope = build_request_envelope(
@@ -242,6 +245,8 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
                     record_id=record["id"],
                     text=record["text"],
                     entity_types=entity_types,
+                    drop_invalid_entities=drop_invalid_entities,
+                    sanitization_flags=sanitization_flags,
                 )
                 parse_error = None
             except Exception as exc:  # preserve exact parser message in row logs
@@ -282,6 +287,7 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
                 "raw_llm_output_hash": raw_output_hash,
                 "prompt_hash": prompt_hash(prompt),
                 "attempts": attempts,
+                "sanitization_flags": sanitization_flags,
             }
         )
 
@@ -299,6 +305,7 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
         "elapsed_seconds": round(time.monotonic() - started, 3),
         "parse_failures": parse_failures,
         "parse_failure_rate": parse_failures / len(rows) if rows else 0.0,
+        "sanitized_unit_events": sum(len(row["sanitization_flags"]) for row in rows),
         "entity_micro": counts.report(),
         "per_query": outputs["per_query"],
         "per_query_sha256": sha256_file(outputs["per_query"]),

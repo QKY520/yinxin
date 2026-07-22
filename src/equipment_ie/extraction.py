@@ -152,6 +152,8 @@ def parse_extraction_output(
     text: str,
     entity_types: set[str],
     relation_types: Mapping[str, Mapping[str, Sequence[str]]] | None = None,
+    drop_invalid_entities: bool = False,
+    sanitization_flags: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Parse occurrence-based extraction JSON into the unified schema."""
 
@@ -166,41 +168,90 @@ def parse_extraction_output(
     if not isinstance(raw_entities, list) or not isinstance(raw_relations, list):
         raise ExtractionParseError("entities and relations must be lists")
 
-    parsed_entities: list[dict[str, Any]] = []
+    def flag(kind: str, **details: Any) -> None:
+        if sanitization_flags is not None:
+            sanitization_flags.append({"kind": kind, **details})
+
+    def drop_or_raise_entity(index: int, reason: str, raw: Any) -> bool:
+        if not drop_invalid_entities:
+            raise ExtractionParseError(reason)
+        flag(
+            "ENTITY_DROPPED_INVALID_UNIT",
+            entity_raw_index=index,
+            reason=reason,
+            raw_entity=raw,
+        )
+        return True
+
+    parsed_entities: list[tuple[int, dict[str, Any]]] = []
     seen_entities: set[tuple[int, int, str]] = set()
     for index, raw in enumerate(raw_entities):
         if not isinstance(raw, dict) or set(raw) != {"span", "type", "occurrence"}:
-            raise ExtractionParseError(f"entity {index} must contain span/type/occurrence only")
+            if drop_or_raise_entity(index, f"entity {index} must contain span/type/occurrence only", raw):
+                continue
         span = raw["span"]
         entity_type = raw["type"]
         occurrence = raw["occurrence"]
         if not isinstance(span, str) or not span:
-            raise ExtractionParseError(f"entity {index} span must be non-empty")
+            if drop_or_raise_entity(index, f"entity {index} span must be non-empty", raw):
+                continue
         if entity_type not in entity_types:
-            raise ExtractionParseError(f"entity {index} has unsupported type {entity_type!r}")
+            if drop_or_raise_entity(index, f"entity {index} has unsupported type {entity_type!r}", raw):
+                continue
         if not isinstance(occurrence, int) or isinstance(occurrence, bool) or occurrence < 1:
-            raise ExtractionParseError(f"entity {index} occurrence must be a positive integer")
+            if drop_or_raise_entity(index, f"entity {index} occurrence must be a positive integer", raw):
+                continue
         starts = _occurrence_starts(text, span)
         if occurrence > len(starts):
-            raise ExtractionParseError(f"entity {index} occurrence not found for {span!r}")
+            if drop_or_raise_entity(index, f"entity {index} occurrence not found for {span!r}", raw):
+                continue
         start = starts[occurrence - 1]
         end = start + len(span)
         key = (start, end, entity_type)
         if key in seen_entities:
-            raise ExtractionParseError(f"entity {index} duplicates {key}")
+            if drop_or_raise_entity(index, f"entity {index} duplicates {key}", raw):
+                continue
         seen_entities.add(key)
-        parsed_entities.append({"start": start, "end": end, "type": entity_type, "span": span})
+        parsed_entities.append((index, {"start": start, "end": end, "type": entity_type, "span": span}))
+
+    if drop_invalid_entities:
+        kept: list[tuple[int, dict[str, Any]]] = []
+        for raw_index, entity in sorted(
+            parsed_entities,
+            key=lambda item: (
+                -(item[1]["end"] - item[1]["start"]),
+                item[1]["start"],
+                item[1]["end"],
+                item[1]["type"],
+            ),
+        ):
+            if any(
+                entity["start"] < kept_entity["end"] and kept_entity["start"] < entity["end"]
+                for _, kept_entity in kept
+            ):
+                flag(
+                    "ENTITY_DROPPED_OVERLAP",
+                    entity_raw_index=raw_index,
+                    reason="overlapping entities are forbidden",
+                    entity=entity,
+                )
+                continue
+            kept.append((raw_index, entity))
+        parsed_entities = kept
 
     sort_order = sorted(
         range(len(parsed_entities)),
         key=lambda index: (
-            parsed_entities[index]["start"],
-            parsed_entities[index]["end"],
-            parsed_entities[index]["type"],
+            parsed_entities[index][1]["start"],
+            parsed_entities[index][1]["end"],
+            parsed_entities[index][1]["type"],
         ),
     )
-    raw_index_to_sorted = {raw_index: sorted_index for sorted_index, raw_index in enumerate(sort_order)}
-    entities = [parsed_entities[index] for index in sort_order]
+    raw_index_to_sorted = {
+        parsed_entities[raw_position][0]: sorted_index
+        for sorted_index, raw_position in enumerate(sort_order)
+    }
+    entities = [parsed_entities[index][1] for index in sort_order]
     for previous, current in zip(entities, entities[1:]):
         if current["start"] < previous["end"]:
             raise ExtractionParseError("overlapping entities are forbidden")
@@ -209,7 +260,15 @@ def parse_extraction_output(
     relations: list[dict[str, Any]] = []
     seen_relations: set[tuple[int, int, str]] = set()
     if raw_relations and not relation_rules:
-        raise ExtractionParseError("relations are not enabled for this config")
+        if drop_invalid_entities:
+            flag(
+                "RELATIONS_DROPPED_DISABLED_FOR_CONFIG",
+                count=len(raw_relations),
+                reason="relations are not enabled for this config",
+            )
+            raw_relations = []
+        else:
+            raise ExtractionParseError("relations are not enabled for this config")
     for index, raw in enumerate(raw_relations):
         if not isinstance(raw, dict) or set(raw) != {"head", "tail", "type"}:
             raise ExtractionParseError(f"relation {index} must contain head/tail/type only")
@@ -221,13 +280,23 @@ def parse_extraction_output(
             or isinstance(head, bool)
             or not isinstance(tail, int)
             or isinstance(tail, bool)
-            or not 0 <= head < len(parsed_entities)
-            or not 0 <= tail < len(parsed_entities)
+            or not 0 <= head < len(raw_entities)
+            or not 0 <= tail < len(raw_entities)
         ):
             raise ExtractionParseError(f"relation {index} references a missing entity")
         rule = relation_rules.get(relation_type)
         if rule is None:
             raise ExtractionParseError(f"relation {index} has unsupported type {relation_type!r}")
+        if head not in raw_index_to_sorted or tail not in raw_index_to_sorted:
+            if drop_invalid_entities:
+                flag(
+                    "RELATION_DROPPED_REMOVED_ENTITY",
+                    relation_raw_index=index,
+                    reason="relation endpoint was removed during entity sanitization",
+                    raw_relation=raw,
+                )
+                continue
+            raise ExtractionParseError(f"relation {index} references a removed entity")
         sorted_head = raw_index_to_sorted[head]
         sorted_tail = raw_index_to_sorted[tail]
         head_type = entities[sorted_head]["type"]

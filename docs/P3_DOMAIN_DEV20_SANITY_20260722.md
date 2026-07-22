@@ -121,3 +121,68 @@ The next step should be GPU-free:
 
 Do not run domain test, P4, P5, or the full ablation grid until a domain P3
 sanity passes.
+
+## Sanitized Proposal-Stage Retry
+
+After the unsanitized domain_dev20 sanity failed, the human asked the agent to
+accelerate while the GPU was still available. The agent implemented a
+proposal-stage sanitization layer:
+
+- strict JSON parsing remains required;
+- invalid entity units can be dropped with explicit flags;
+- unsupported types, exact-span misses, duplicate entities, overlap/nesting,
+  and disabled relations are logged as sanitization events;
+- final evaluation semantics are not changed unless separately approved.
+
+Config:
+
+- `configs/p3_domain_dev20_a_k5_sanity_sanitize.yaml`
+
+Result:
+
+- run ID: `p3-domain-dev20-a-k5-seed42-sanity-sanitize`
+- query records: `20`
+- parse failures: `0`
+- parse-failure rate: `0.0%`
+- sanitized unit events: `25`
+- entity micro precision: `0.5594`
+- entity micro recall: `0.6202`
+- entity micro F1: `0.5882`
+- predicted entities: `143`
+- type counts:
+  - `EQUIPMENT=59`
+  - `MODULE=74`
+  - `METRIC=8`
+  - `TECH_SCHEME=2`
+- max predicted type share: `0.5175`
+- per-query SHA256:
+  `db465375a281129f0cdeee42a6f69244cd4e322e20f8b6078b57d25ae7992b8c`
+
+Gate status:
+
+- F1 is nonzero.
+- parse-failure rate is below 5 percent.
+- no single predicted type exceeds 90 percent.
+- per-query JSONL reload/type-distribution verification passed.
+
+Therefore the domain_dev20 P3 small sanity passes under the documented
+proposal-stage sanitization mode.
+
+Backup:
+
+- Remote:
+  `/root/autodl-tmp/backup/p3/p3_domain_dev20_sanity_sanitize_20260722.tar.gz`
+- Local:
+  `D:\yinsir\backups\P3\p3_domain_dev20_sanity_sanitize_20260722.tar.gz`
+- bytes: `41763`
+- SHA256:
+  `b6b434fdec08d0dda03e1a70a5d9732377d5a5b76d7f9c77baf49b236f9e2be3`
+
+Updated recommendation:
+
+- stop paid GPU now;
+- next work should be GPU-free:
+  - document sanitize semantics clearly;
+  - inspect sampled sanitization flags;
+  - prepare the next domain_dev/full-dev config only after human approval;
+  - do not touch domain_test, P4, or P5 yet.

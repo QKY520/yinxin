@@ -367,27 +367,51 @@ P3 sanity:
 - Report:
   `docs/P3_DOMAIN_DEV20_SANITY_20260722.md`.
 
+After that failure, the agent implemented and ran a proposal-stage sanitization
+retry on the same domain_dev20 subset:
+
+- Config:
+  `configs/p3_domain_dev20_a_k5_sanity_sanitize.yaml`.
+- Sanitization policy:
+  strict JSON parsing remains required, but invalid proposed entity units can
+  be dropped with explicit flags instead of failing the entire record.
+- Result:
+  - F1: `0.5882`;
+  - precision: `0.5594`;
+  - recall: `0.6202`;
+  - parse failures: `0/20 = 0.0%`;
+  - sanitized unit events: `25`;
+  - predicted entities: `143`;
+  - max predicted type share: `0.5175`;
+  - gate: passed for this documented proposal-stage sanitization mode.
+- Verification:
+  `scripts/verify_p3_sanity_result.py` passed on the per-query JSONL.
+- Backup:
+  `p3_domain_dev20_sanity_sanitize_20260722.tar.gz`, SHA256
+  `b6b434fdec08d0dda03e1a70a5d9732377d5a5b76d7f9c77baf49b236f9e2be3`.
+- vLLM was stopped; GPU memory returned to 0 MiB.
+
 ## 6. Current Blocker
 
-P2 gold split/freeze is complete. P3 GPU-free preparation is complete. P3
-domain_dev20 paid-GPU sanity failed the strict parse-failure gate.
+P2 gold split/freeze is complete. P3 GPU-free preparation is complete.
+P3 domain_dev20 small sanity passes only under the documented proposal-stage
+sanitization mode.
 
-The next blocker is technical and procedural: do not continue paid GPU, domain
-test, full dev, P4, or P5. First design a GPU-free proposal-stage sanitization
-or invalid-unit logging strategy, because prompt-only retry still leaves too
-many whole-record parse failures on equipment text.
+The next blocker is procedural: do not continue paid GPU, domain test, full
+dev, P4, or P5 until the human explicitly approves the next gate. Before a
+larger run, inspect sanitization flags in GPU-free mode and decide whether the
+proposal-stage sanitization semantics are acceptable for P3.
 
 ## 7. Immediate Next Plan
 
-1. Commit and push the domain_dev20 sanity config/report/handoff update and
-   runner fixes.
+1. Commit and push the domain_dev20 sanitize sanity config/report/handoff
+   update, runner fixes, and verification helper.
 2. Ask the human to shut down or return the instance to GPU-free mode.
 3. Next work should be GPU-free only:
-   - design deterministic invalid-unit dropping or logging;
-   - preserve strict final evaluation semantics;
-   - dry-run revised domain config;
-   - ask before any paid-GPU retry.
-4. Do not run P4/P5 or the full ablation grid until P3 sanity passes and the
+   - inspect sampled sanitization flags;
+   - document whether sanitize semantics are acceptable for P3;
+   - prepare a bounded next domain_dev config only after human approval.
+4. Do not run domain test, P4/P5, or the full ablation grid until the human
    human approves another gate.
 
 ## 8. Useful Commands
