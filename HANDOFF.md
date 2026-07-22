@@ -445,24 +445,103 @@ The agent then prepared and ran a GPU-free full-dev dry-run:
 - Report:
   `docs/P3_DOMAIN_DEV50_DRYRUN_20260722.md`.
 
+The human then switched to paid GPU mode and explicitly approved one bounded
+P3 domain_dev full-50 config A run with proposal-stage sanitization only.
+
+Pre-run GPU check:
+
+- GPU: NVIDIA GeForce RTX 4090;
+- memory before vLLM: 0 MiB / 24564 MiB;
+- no conflicting compute process.
+
+The agent created and used:
+
+- `configs/p3_domain_dev50_a_k5_sanity_sanitize.yaml`.
+
+Run result:
+
+- Query rows: 50;
+- Model: `/root/autodl-tmp/models/qwen2.5-7b` via vLLM;
+- Config A: fixed-random K=5 seed 42, no glossary/RAG/verification;
+- Sanitization: proposal-stage invalid-unit dropping;
+- Parse failures: 0/50 = 0.0%;
+- Entity micro precision: 0.49137931034482757;
+- Entity micro recall: 0.5570032573289903;
+- Entity micro F1: 0.5221374045801527;
+- TP/FP/FN: 171 / 177 / 136;
+- Sanitized unit events: 49;
+- Sanitization flags:
+  - `ENTITY_DROPPED_INVALID_UNIT`: 37;
+  - `ENTITY_DROPPED_OVERLAP`: 12;
+- Predicted entities: 348;
+- Type counts:
+  - EQUIPMENT: 182;
+  - MODULE: 138;
+  - METRIC: 17;
+  - TECH_SCHEME: 11;
+- Max type share: 0.5229885057471264;
+- Run elapsed seconds: 130.383.
+
+Verification:
+
+- `python scripts/verify_p3_sanity_result.py --per-query results/p3/p3_domain_dev50_a_k5_sanity_sanitize_per_query.jsonl --expected-rows 50`
+- Result: `status=ok`, 50 rows, 0 parse failures, non-degenerate type distribution.
+
+Hashes:
+
+- Config:
+  `670159b046adba0f26bb27c88b45b2b1398b35aa1c7992e567e9fa23995a827a`;
+- Summary:
+  `8413e37c23816379517b73f46d1ad96d76f363a7f445e46ff3b53535926c3e2b`;
+- Per-query:
+  `b1b352ce080e593cc06499bd5704c4425060452aeefcb5e88095873c3a4e23f0`;
+- vLLM log:
+  `2499a8d5182715a8f068c37ba06660c9fcbecfbc308be8cb44c92ae2497a2b2a`.
+
+Backup:
+
+- Remote archive:
+  `/root/autodl-tmp/backup/p3/p3_domain_dev50_sanity_sanitize_20260722.tar.gz`;
+- Local archive:
+  `D:\yinsir\backups\P3\p3_domain_dev50_sanity_sanitize_20260722.tar.gz`;
+- Remote/local SHA256:
+  `3b26fbd36e0614e1dbc440cbab47c9eb05c750b6e135dc9595c0860a3f91bfac`.
+
+vLLM cleanup:
+
+- PID `1914` was killed after the run;
+- GPU memory returned to 0 MiB / 24564 MiB.
+
+Cost estimate:
+
+- Agent-managed paid GPU window was approximately 20:12-20:21 Asia/Shanghai on
+  2026-07-22;
+- At the user-reported 2.7 CNY/hour, estimated cost is roughly 0.4 CNY;
+- AutoDL platform billing remains authoritative.
+
+Report:
+
+- `docs/P3_DOMAIN_DEV50_SANITY_20260722.md`.
+
 ## 6. Current Blocker
 
 P2 gold split/freeze is complete. P3 GPU-free preparation is complete.
-P3 domain_dev20 small sanity passes under the documented proposal-stage
-sanitization mode, and the domain_dev full-50 A+sanitize dry-run has passed in
-GPU-free mode.
+P3 domain_dev20 small sanity and P3 domain_dev full-50 sanity both pass under
+the documented proposal-stage sanitization mode. The full-50 run was performed
+only on `domain_dev`, not `domain_test`.
 
-The next blocker is procedural: do not continue paid GPU, domain test, P4, or
-P5 until the human explicitly approves the next gate. The next bounded paid
-step would be domain_dev full-50 config A with proposal-stage sanitization.
+The next blocker is procedural and quality-related: stop for human audit of the
+domain_dev50 result and sanitization flags. Do not continue paid GPU,
+`domain_test`, P4, P5, or the full ablation grid until the human explicitly
+approves the next gate.
 
 ## 7. Immediate Next Plan
 
-1. Commit and push the dev50 dry-run config/report/handoff update.
-2. Stop and ask the human whether to approve one paid-GPU execution of
-   domain_dev full-50 config A with proposal-stage sanitization.
-3. If approved, first verify GPU mode, GPU model/memory, and no conflicting
-   process, then launch only that bounded run.
+1. Commit and push the dev50 execution config/report/handoff update.
+2. Tell the human to shut down or switch back to GPU-free mode because vLLM is
+   stopped and GPU memory is 0 MiB.
+3. Ask the human to audit the dev50 summary/per-query rows and 49 sanitization
+   flags.
 4. Do not run domain test, P4/P5, or the full ablation grid until the human
    approves another gate.
 
