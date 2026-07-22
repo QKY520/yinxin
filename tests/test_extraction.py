@@ -12,6 +12,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from equipment_ie.extraction import (  # noqa: E402
+    build_error_retry_prompt,
     build_ner_prompt,
     entity_micro_counts,
     parse_extraction_output,
@@ -72,6 +73,16 @@ class ExtractionTest(unittest.TestCase):
         )
         self.assertEqual(parsed["entities"][0]["start"], 4)
         self.assertEqual(parsed["entities"][0]["span"], "北京")
+
+    def test_error_retry_prompt_includes_parser_error(self) -> None:
+        retry = build_error_retry_prompt(
+            base_prompt="BASE_PROMPT",
+            parse_error="ExtractionParseError: unsupported type 'event'",
+        )
+        self.assertIn("BASE_PROMPT", retry)
+        self.assertIn("unsupported type", retry)
+        self.assertIn("type必须来自Schema", retry)
+        self.assertTrue(retry.endswith("只返回合法JSON"))
 
     def test_fixed_random_examples_are_deterministic(self) -> None:
         rows = [

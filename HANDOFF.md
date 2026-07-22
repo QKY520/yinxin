@@ -309,26 +309,40 @@ P3 small paid-GPU sanity was attempted on 2026-07-22 after human approval:
 - Estimated agent-managed paid-GPU window: about 09:26-09:44 Asia/Shanghai,
   roughly 0.81 CNY at 2.7 CNY/hour. AutoDL billing is authoritative.
 
+After the human shut down the paid GPU instance, the next GPU-free retry step
+was prepared locally only:
+
+- `src/equipment_ie/extraction.py` now has `build_error_retry_prompt`.
+- `scripts/run_p3_extraction.py` now uses the concrete parser error in the
+  second attempt prompt instead of only appending `只返回合法JSON`.
+- `tests/test_extraction.py` includes a retry-prompt unit test.
+- `configs/p3_cluener_dev20_a_k5_sanity_v4_error_retry.yaml` was added with
+  `execution.authorized=false`, `model_calls_allowed=false`, and
+  `human_gate=null`.
+- `docs/P3_SMALL_SANITY_20260722.md` records this as post-shutdown
+  preparation.
+
+This v4 preparation has not yet been tested on AutoDL because the instance was
+shut down. Do not claim it passed until GPU-free remote tests and dry-run are
+executed.
+
 ## 6. Current Blocker
 
 P2 gold split/freeze is complete. P3 GPU-free preparation is complete. P3
 small paid-GPU sanity did not pass the strict parse-failure gate.
 
 The next blocker is technical and procedural: do not continue paid GPU, full
-CLUENER dev, P4, or P5. First implement an error-aware retry prompt in
-GPU-free mode and request explicit human approval before another small GPU
-retry.
+CLUENER dev, P4, or P5. First test the locally prepared error-aware retry
+prompt in GPU-free mode and request explicit human approval before another
+small GPU retry.
 
 ## 7. Immediate Next Plan
 
-1. Commit and push the P3 small sanity configs/report/handoff update.
-2. Ask the human to shut down or return the instance to GPU-free mode if no
-   immediate follow-up is approved.
-3. Next recommended work is GPU-free only:
-   - add parser-error-aware retry wording;
-   - keep strict evaluation parser semantics;
-   - dry-run the revised prompt/config;
-   - then ask the human before any paid-GPU retry.
+1. Commit and push the P3 small sanity configs/report/handoff update plus the
+   local v4 error-aware retry preparation.
+2. When the human next boots AutoDL GPU-free mode, run remote tests for the v4
+   error-aware retry code and then run only a v4 dry-run.
+3. Ask for explicit human approval before any paid-GPU v4 retry.
 4. Do not run P4/P5 or the full ablation grid until P3 sanity passes and the
    human approves another gate.
 

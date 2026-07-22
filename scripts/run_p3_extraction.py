@@ -21,6 +21,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from equipment_ie.extraction import (
+    build_error_retry_prompt,
     build_ner_prompt,
     build_request_envelope,
     entity_micro_counts,
@@ -28,12 +29,7 @@ from equipment_ie.extraction import (
     prompt_hash,
     select_fixed_random_examples,
 )
-from equipment_ie.llm_labeling import (
-    build_retry_prompt,
-    chat_with_cache,
-    request_hash,
-    sha256_text,
-)
+from equipment_ie.llm_labeling import chat_with_cache, request_hash
 from equipment_ie.schema import iter_jsonl, sha256_file, validate_record
 
 
@@ -219,9 +215,8 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
         parse_error: str | None = None
         raw_output_hash = ""
         total_latency = 0.0
-        for attempt_number, attempt_prompt in enumerate(
-            [prompt, build_retry_prompt(prompt, retry_suffix)], start=1
-        ):
+        attempt_prompt = prompt
+        for attempt_number in (1, 2):
             envelope = build_request_envelope(
                 prompt=attempt_prompt,
                 model=config["model"]["name"],
@@ -260,6 +255,12 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
             )
             if pred is not None:
                 break
+            if attempt_number == 1 and parse_error is not None:
+                attempt_prompt = build_error_retry_prompt(
+                    base_prompt=prompt,
+                    parse_error=parse_error,
+                    retry_suffix=retry_suffix,
+                )
         if pred is None:
             pred = empty_prediction(record)
         predictions.append(pred)

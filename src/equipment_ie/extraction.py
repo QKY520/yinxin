@@ -297,6 +297,24 @@ def prompt_hash(prompt: str) -> str:
     return sha256_text(prompt)
 
 
+def build_error_retry_prompt(
+    *,
+    base_prompt: str,
+    parse_error: str,
+    retry_suffix: str = "只返回合法JSON",
+) -> str:
+    """Ask the model to fix a concrete parser failure without changing task scope."""
+
+    return (
+        f"{base_prompt}\n\n"
+        f"上次输出未通过解析，错误是：{parse_error}\n"
+        "请只修正这个错误：不要增加解释，不要输出markdown代码块；"
+        "实体span必须逐字来自原文，type必须来自Schema，occurrence必须有效，"
+        "实体之间不得重叠或嵌套。\n"
+        f"{retry_suffix}"
+    )
+
+
 def _occurrence_starts(text: str, span: str) -> list[int]:
     starts: list[int] = []
     cursor = 0

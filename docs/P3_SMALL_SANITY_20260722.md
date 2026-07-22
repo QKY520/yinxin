@@ -133,3 +133,28 @@ Recommended next step in GPU-free mode:
 - preserve strict parser semantics for evaluation;
 - rerun only a dry-run/preflight first;
 - request explicit approval before another small paid-GPU sanity retry.
+
+## Post-Shutdown Preparation
+
+After the human shut down the paid GPU instance, the next GPU-free retry
+preparation was implemented locally only:
+
+- added parser-error-aware retry prompt construction;
+- updated the P3 runner so the second attempt includes the concrete parser
+  error instead of only appending `只返回合法JSON`;
+- added a unit test for the retry prompt;
+- added `configs/p3_cluener_dev20_a_k5_sanity_v4_error_retry.yaml`.
+
+This v4 config is intentionally unauthorized:
+
+- `execution.authorized=false`;
+- `model_calls_allowed=false`;
+- `human_gate=null`.
+
+Pending before any further GPU use:
+
+- boot AutoDL GPU-free mode;
+- run the remote tests;
+- run v4 dry-run;
+- report dry-run hashes;
+- ask for explicit approval before any paid-GPU v4 retry.
