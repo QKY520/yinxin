@@ -151,10 +151,36 @@ This v4 config is intentionally unauthorized:
 - `model_calls_allowed=false`;
 - `human_gate=null`.
 
+Remote GPU-free validation after reboot:
+
+- AutoDL was booted in GPU-free mode.
+- Remote tests passed:
+  `python -m unittest tests.test_extraction tests.test_schema tests.test_llm_labeling tests.test_public_data tests.test_domain_data`
+  reported 52 tests OK.
+- v4 dry-run passed with:
+  - query records: `20`;
+  - model calls: `0`;
+  - GPU device present: `false`;
+  - max prompt chars: `1981`;
+  - config SHA256:
+    `c5919803c9a8b14f96bae06ea73d02db28a88395ed004337d9f5b7878f990481`;
+  - prompt manifest SHA256:
+    `f995a43846151f18560dad9b00716f835b81898d2baac8f49cf20555f4620380`.
+
+Local dry-run backup:
+
+- `D:\yinsir\backups\P3\p3_cluener_dev20_v4_error_retry_dryrun_20260722\`
+
+Remote/local tar backup:
+
+- Remote:
+  `/root/autodl-tmp/backup/p3/p3_cluener_dev20_v4_error_retry_dryrun_20260722.tar.gz`
+- Local:
+  `D:\yinsir\backups\P3\p3_cluener_dev20_v4_error_retry_dryrun_20260722.tar.gz`
+- bytes: `3582`
+- SHA256:
+  `92962e68a45ee92b1368e3b3f5ecc3cdf53664e83bdd282c1be257f96f7a4a00`
+
 Pending before any further GPU use:
 
-- boot AutoDL GPU-free mode;
-- run the remote tests;
-- run v4 dry-run;
-- report dry-run hashes;
-- ask for explicit approval before any paid-GPU v4 retry.
+- ask for explicit human approval before any paid-GPU v4 retry.

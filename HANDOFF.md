@@ -322,9 +322,20 @@ was prepared locally only:
 - `docs/P3_SMALL_SANITY_20260722.md` records this as post-shutdown
   preparation.
 
-This v4 preparation has not yet been tested on AutoDL because the instance was
-shut down. Do not claim it passed until GPU-free remote tests and dry-run are
-executed.
+The human later booted AutoDL in GPU-free mode, and v4 validation passed:
+
+- Remote tests:
+  `python -m unittest tests.test_extraction tests.test_schema tests.test_llm_labeling tests.test_public_data tests.test_domain_data`
+  reported 52 tests OK.
+- v4 dry-run:
+  `python scripts/run_p3_extraction.py --config configs/p3_cluener_dev20_a_k5_sanity_v4_error_retry.yaml --dry-run`
+  passed with 20 queries, 0 model calls, `gpu_device_present=false`, max prompt
+  chars 1981.
+- v4 dry-run prompt SHA256:
+  `f995a43846151f18560dad9b00716f835b81898d2baac8f49cf20555f4620380`.
+- Remote/local v4 dry-run backup:
+  `p3_cluener_dev20_v4_error_retry_dryrun_20260722.tar.gz`, SHA256
+  `92962e68a45ee92b1368e3b3f5ecc3cdf53664e83bdd282c1be257f96f7a4a00`.
 
 ## 6. Current Blocker
 
@@ -338,12 +349,9 @@ small GPU retry.
 
 ## 7. Immediate Next Plan
 
-1. Commit and push the P3 small sanity configs/report/handoff update plus the
-   local v4 error-aware retry preparation.
-2. When the human next boots AutoDL GPU-free mode, run remote tests for the v4
-   error-aware retry code and then run only a v4 dry-run.
-3. Ask for explicit human approval before any paid-GPU v4 retry.
-4. Do not run P4/P5 or the full ablation grid until P3 sanity passes and the
+1. Commit and push the v4 dry-run validation report/handoff update.
+2. Ask for explicit human approval before any paid-GPU v4 retry.
+3. Do not run P4/P5 or the full ablation grid until P3 sanity passes and the
    human approves another gate.
 
 ## 8. Useful Commands
