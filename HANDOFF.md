@@ -523,26 +523,151 @@ Report:
 
 - `docs/P3_DOMAIN_DEV50_SANITY_20260722.md`.
 
+The human manually audited A in
+`docs/P3_DOMAIN_DEV50_SANITIZE_AUDIT_20260722.md`:
+
+- 49 sanitizer flags had 0 sanitizer misdrops;
+- the 4 regrettable drops were caused by model occurrence mistakes, not
+  sanitizer bugs;
+- prediction quality was acceptable for config A baseline;
+- the human approved only the next small step: fix flag detail and run
+  B(kNN) domain_dev sanity; do not enter P5.
+
+The agent then implemented the B(kNN) path and extra flag details:
+
+- `ENTITY_DROPPED_INVALID_UNIT` occurrence drops now record
+  `occurrence_requested`, `occurrence_available`, and `occurrence_starts`;
+- duplicate drops now record `duplicate_key`;
+- `scripts/run_p3_extraction.py` supports `examples.mode: knn_retrieval`;
+- kNN uses BGE-M3 dense embeddings, normalized vectors, and FAISS
+  `IndexFlatIP`;
+- dry-run and per-query execution rows record `example_ids`;
+- `embedding.device: cpu` now enforces `CUDA_VISIBLE_DEVICES=""` before
+  importing FlagEmbedding, preventing BGE-M3 from competing with vLLM for GPU
+  memory.
+
+Remote tests:
+
+- `python -m unittest tests.test_extraction tests.test_schema tests.test_llm_labeling tests.test_public_data tests.test_domain_data`
+- Result: 54 tests OK before B execution.
+- After CPU-embedding fix:
+  `python -m unittest tests.test_extraction tests.test_schema` passed with 13
+  tests OK, and B dry-run left GPU memory at 0 MiB.
+
+B dry-run:
+
+- Config:
+  `configs/p3_domain_dev50_b_knn_k5_sanity_sanitize_dryrun.yaml`;
+- Query rows: 50;
+- Model calls: 0;
+- BGE-M3 device: CPU;
+- FAISS index: `IndexFlatIP`;
+- support candidates: 30;
+- max prompt chars: 4,459;
+- config SHA256:
+  `c9c0e728b0c1097bf0e08793d0c1d7ce3b4588794117d991ee59c014d40e819b`;
+- dry-run prompt SHA256:
+  `e661c0fd2801e42e494033a036ef19099a4a16b0c5503415f25c9496975ff5c1`.
+
+B execution:
+
+- Config:
+  `configs/p3_domain_dev50_b_knn_k5_sanity_sanitize.yaml`;
+- Query rows: 50;
+- Model: `/root/autodl-tmp/models/qwen2.5-7b` via vLLM;
+- Config B: kNN K=5, no glossary/RAG/verification;
+- Parse failures: 0/50 = 0.0%;
+- Entity micro precision: 0.47674418604651164;
+- Entity micro recall: 0.5342019543973942;
+- Entity micro F1: 0.5038402457757296;
+- TP/FP/FN: 164 / 180 / 143;
+- Sanitized unit events: 32;
+- Sanitization flags:
+  - `ENTITY_DROPPED_INVALID_UNIT`: 27;
+  - `ENTITY_DROPPED_OVERLAP`: 5;
+- Predicted entities: 344;
+- Type counts:
+  - EQUIPMENT: 172;
+  - MODULE: 116;
+  - METRIC: 34;
+  - TECH_SCHEME: 22;
+- Max type share: 0.5;
+- Run elapsed seconds: 194.088.
+
+B comparison to A:
+
+- A F1: 0.5221374045801527;
+- B F1: 0.5038402457757296;
+- B is lower by about 0.0183 F1.
+- Preserve this as a negative result. Do not hide or overwrite it.
+
+B runtime issues preserved:
+
+1. Reusing an old vLLM process caused an HTTP timeout because the port was
+   alive while GPU memory was 0 MiB. The stale process was killed and vLLM was
+   restarted.
+2. FlagEmbedding initially attempted to use CUDA and caused OOM against vLLM.
+   The successful run used CPU embedding, and the code was patched to enforce
+   this for `embedding.device: cpu`.
+
+Verification:
+
+- `python scripts/verify_p3_sanity_result.py --per-query results/p3/p3_domain_dev50_b_knn_k5_sanity_sanitize_per_query.jsonl --expected-rows 50`
+- Result: `status=ok`, 50 rows, 0 parse failures, non-degenerate type
+  distribution.
+
+Hashes:
+
+- Config:
+  `8d543db693749144eec99e8b60d8fca211e8e977ff16e2d14c2a3f89e67b9d8f`;
+- Summary:
+  `91055b38375f5691a732cb5a13078ac038c9812ff31abb25224239d6a799133e`;
+- Per-query:
+  `4c3b3741e67dc64f47ff0eba0e761b7817fe15af55541b169c208de8fb1d09e4`;
+- vLLM log:
+  `b934f80534cf461ca1e9369e96ab971c71c2d58d6d7ea28d5eb0c226b7f9358d`.
+
+Backup:
+
+- Remote archive:
+  `/root/autodl-tmp/backup/p3/p3_domain_dev50_b_knn_sanity_sanitize_20260722.tar.gz`;
+- Local archive:
+  `D:\yinsir\backups\P3\p3_domain_dev50_b_knn_sanity_sanitize_20260722.tar.gz`;
+- Remote/local SHA256:
+  `53ac62255488fb9ca9269d9c789141dffec1d5729b2e6a75c99c519f0d3348db`.
+
+vLLM cleanup:
+
+- vLLM was stopped after the successful B run;
+- GPU memory returned to 0 MiB / 24564 MiB.
+
+Report:
+
+- `docs/P3_DOMAIN_DEV50_B_KNN_SANITY_20260722.md`.
+
 ## 6. Current Blocker
 
 P2 gold split/freeze is complete. P3 GPU-free preparation is complete.
-P3 domain_dev20 small sanity and P3 domain_dev full-50 sanity both pass under
-the documented proposal-stage sanitization mode. The full-50 run was performed
-only on `domain_dev`, not `domain_test`.
+P3 domain_dev20 small sanity and P3 domain_dev full-50 A sanity both pass under
+the documented proposal-stage sanitization mode. The full-50 B(kNN) sanity also
+passes structurally, but B underperforms A on F1 and is recorded as a negative
+result. All full-50 runs were performed only on `domain_dev`, not
+`domain_test`.
 
 The next blocker is procedural and quality-related: stop for human audit of the
-domain_dev50 result and sanitization flags. Do not continue paid GPU,
-`domain_test`, P4, P5, or the full ablation grid until the human explicitly
-approves the next gate.
+domain_dev50 B result, especially kNN example choices and why B underperformed
+A. Do not continue paid GPU, `domain_test`, C/P4/P5, or the full ablation grid
+until the human explicitly approves the next gate.
 
 ## 7. Immediate Next Plan
 
-1. Commit and push the dev50 execution config/report/handoff update.
+1. Commit and push the B implementation/config/report/handoff update plus the
+   human A-audit document.
 2. Tell the human to shut down or switch back to GPU-free mode because vLLM is
    stopped and GPU memory is 0 MiB.
-3. Ask the human to audit the dev50 summary/per-query rows and 49 sanitization
-   flags.
-4. Do not run domain test, P4/P5, or the full ablation grid until the human
+3. Ask the human to audit the B per-query rows, kNN example IDs, and B-vs-A
+   drop.
+4. Do not run domain test, C/P4/P5, or the full ablation grid until the human
    approves another gate.
 
 ## 8. Useful Commands

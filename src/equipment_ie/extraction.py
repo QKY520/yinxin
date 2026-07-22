@@ -172,7 +172,7 @@ def parse_extraction_output(
         if sanitization_flags is not None:
             sanitization_flags.append({"kind": kind, **details})
 
-    def drop_or_raise_entity(index: int, reason: str, raw: Any) -> bool:
+    def drop_or_raise_entity(index: int, reason: str, raw: Any, **details: Any) -> bool:
         if not drop_invalid_entities:
             raise ExtractionParseError(reason)
         flag(
@@ -182,6 +182,7 @@ def parse_extraction_output(
             detail=reason,
             entity=raw if isinstance(raw, dict) else None,
             raw_entity=raw,
+            **details,
         )
         return True
 
@@ -205,13 +206,20 @@ def parse_extraction_output(
                 continue
         starts = _occurrence_starts(text, span)
         if occurrence > len(starts):
-            if drop_or_raise_entity(index, f"entity {index} occurrence not found for {span!r}", raw):
+            if drop_or_raise_entity(
+                index,
+                f"entity {index} occurrence not found for {span!r}",
+                raw,
+                occurrence_requested=occurrence,
+                occurrence_available=len(starts),
+                occurrence_starts=starts,
+            ):
                 continue
         start = starts[occurrence - 1]
         end = start + len(span)
         key = (start, end, entity_type)
         if key in seen_entities:
-            if drop_or_raise_entity(index, f"entity {index} duplicates {key}", raw):
+            if drop_or_raise_entity(index, f"entity {index} duplicates {key}", raw, duplicate_key=key):
                 continue
         seen_entities.add(key)
         parsed_entities.append((index, {"start": start, "end": end, "type": entity_type, "span": span}))

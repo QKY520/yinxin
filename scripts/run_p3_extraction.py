@@ -14,6 +14,7 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+from collections.abc import Callable
 from typing import Any
 
 
@@ -95,30 +96,111 @@ def empty_prediction(gold: dict[str, Any]) -> dict[str, Any]:
     return {"id": gold["id"], "text": gold["text"], "entities": [], "relations": []}
 
 
+def support_candidates(records: list[dict[str, Any]], *, k: int) -> list[dict[str, Any]]:
+    candidates = [dict(record) for record in records if record.get("entities")]
+    if len(candidates) < k:
+        raise ValueError(f"need at least {k} support records with entities")
+    return candidates
+
+
+def build_knn_selector(
+    *,
+    config: dict[str, Any],
+    support_records: list[dict[str, Any]],
+) -> tuple[Callable[[dict[str, Any]], list[dict[str, Any]]], dict[str, Any]]:
+    example_config = config["examples"]
+    k = int(example_config["k"])
+    embedding_config = config.get("embedding", {})
+    model_path = embedding_config.get("model_path", "/root/autodl-tmp/models/bge-m3")
+    batch_size = int(embedding_config.get("batch_size", 8))
+    max_length = int(embedding_config.get("max_length", 512))
+    device = embedding_config.get("device", "cpu")
+    use_fp16 = bool(embedding_config.get("use_fp16", False))
+    if device == "cpu":
+        os.environ["CUDA_VISIBLE_DEVICES"] = ""
+    try:
+        import faiss
+        import numpy as np
+        from FlagEmbedding import BGEM3FlagModel
+    except ImportError as exc:
+        raise RuntimeError("knn_retrieval requires faiss, numpy, and FlagEmbedding") from exc
+
+    candidates = support_candidates(support_records, k=k)
+
+    model = BGEM3FlagModel(model_path, use_fp16=use_fp16, device=device)
+
+    def encode(texts: list[str]) -> Any:
+        output = model.encode(texts, batch_size=batch_size, max_length=max_length)
+        dense = output["dense_vecs"] if isinstance(output, dict) else output
+        vectors = np.asarray(dense, dtype="float32")
+        if vectors.ndim == 1:
+            vectors = vectors.reshape(1, -1)
+        norms = np.linalg.norm(vectors, axis=1, keepdims=True)
+        if np.any(norms == 0):
+            raise ValueError("BGE-M3 produced a zero embedding")
+        return vectors / norms
+
+    support_vectors = encode([str(record["text"]) for record in candidates])
+    index = faiss.IndexFlatIP(support_vectors.shape[1])
+    index.add(support_vectors)
+
+    def select(record: dict[str, Any]) -> list[dict[str, Any]]:
+        query_vector = encode([str(record["text"])])
+        _, indices = index.search(query_vector, k)
+        return [dict(candidates[int(index_)]) for index_ in indices[0] if int(index_) >= 0]
+
+    metadata = {
+        "mode": "knn_retrieval",
+        "k": k,
+        "support_candidates": len(candidates),
+        "embedding_model_path": model_path,
+        "embedding_device": device,
+        "embedding_max_length": max_length,
+        "faiss_index": "IndexFlatIP",
+    }
+    return select, metadata
+
+
 def build_query_plan(
     *,
     config: dict[str, Any],
     config_path: Path,
     dry_run: bool,
-) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], str]:
+) -> tuple[
+    list[dict[str, Any]],
+    list[dict[str, Any]],
+    Callable[[dict[str, Any]], list[dict[str, Any]]],
+    str,
+    dict[str, Any],
+]:
     support_records = load_records(config["data"]["support_path"])
     query_records = load_records(config["data"]["query_path"])
     if dry_run:
         max_queries = int(config.get("dry_run", {}).get("max_queries", len(query_records)))
         query_records = query_records[:max_queries]
     example_config = config["examples"]
-    if example_config["mode"] != "fixed_random":
-        raise ValueError("only fixed_random is implemented for P3-A dry-run")
-    examples = select_fixed_random_examples(
-        support_records,
-        k=int(example_config["k"]),
-        seed=int(example_config["seed"]),
-    )
-    return support_records, query_records, examples, sha256_file(config_path)
+    if example_config["mode"] == "fixed_random":
+        examples = select_fixed_random_examples(
+            support_records,
+            k=int(example_config["k"]),
+            seed=int(example_config["seed"]),
+        )
+        fixed_examples = [dict(record) for record in examples]
+        metadata = {
+            "mode": "fixed_random",
+            "k": int(example_config["k"]),
+            "seed": int(example_config["seed"]),
+            "example_ids": [record["id"] for record in fixed_examples],
+        }
+        return support_records, query_records, lambda _record: fixed_examples, sha256_file(config_path), metadata
+    if example_config["mode"] == "knn_retrieval":
+        selector, metadata = build_knn_selector(config=config, support_records=support_records)
+        return support_records, query_records, selector, sha256_file(config_path), metadata
+    raise ValueError(f"unsupported example selection mode {example_config['mode']!r}")
 
 
 def run_dry(config: dict[str, Any], config_path: Path) -> int:
-    _, query_records, examples, config_hash = build_query_plan(
+    _, query_records, select_examples, config_hash, example_metadata = build_query_plan(
         config=config, config_path=config_path, dry_run=True
     )
     entity_types = config["schema"]["entity_types"]
@@ -126,6 +208,7 @@ def run_dry(config: dict[str, Any], config_path: Path) -> int:
     prompt_rows: list[dict[str, Any]] = []
     max_prompt_chars = 0
     for record in query_records:
+        examples = select_examples(record)
         prompt = build_ner_prompt(
             query_text=record["text"],
             entity_types=entity_types,
@@ -148,6 +231,7 @@ def run_dry(config: dict[str, Any], config_path: Path) -> int:
                 "request_hash": request_hash(envelope),
                 "prompt_chars": len(prompt),
                 "gold_entities": len(record["entities"]),
+                "example_ids": [example["id"] for example in examples],
             }
         )
 
@@ -164,7 +248,7 @@ def run_dry(config: dict[str, Any], config_path: Path) -> int:
         "query_path": config["data"]["query_path"],
         "support_path": config["data"]["support_path"],
         "query_records": len(query_records),
-        "examples": [record["id"] for record in examples],
+        "example_selection": example_metadata,
         "model_calls": 0,
         "api_called": False,
         "model_weights_loaded": False,
@@ -190,7 +274,7 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
     if not gpu_visible():
         raise RuntimeError("GPU is not visible; refusing non-dry execution")
 
-    _, query_records, examples, config_hash = build_query_plan(
+    _, query_records, select_examples, config_hash, example_metadata = build_query_plan(
         config=config, config_path=config_path, dry_run=False
     )
     entity_types = set(config["schema"]["entity_types"])
@@ -208,6 +292,7 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
     predictions: list[dict[str, Any]] = []
     started = time.monotonic()
     for record in query_records:
+        examples = select_examples(record)
         prompt = build_ner_prompt(
             query_text=record["text"],
             entity_types=config["schema"]["entity_types"],
@@ -286,6 +371,7 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
                 "parse_failure": parse_error is not None,
                 "raw_llm_output_hash": raw_output_hash,
                 "prompt_hash": prompt_hash(prompt),
+                "example_ids": [example["id"] for example in examples],
                 "attempts": attempts,
                 "sanitization_flags": sanitization_flags,
             }
@@ -301,7 +387,7 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "config_sha256": config_hash,
         "query_records": len(query_records),
-        "examples": [record["id"] for record in examples],
+        "example_selection": example_metadata,
         "elapsed_seconds": round(time.monotonic() - started, 3),
         "parse_failures": parse_failures,
         "parse_failure_rate": parse_failures / len(rows) if rows else 0.0,

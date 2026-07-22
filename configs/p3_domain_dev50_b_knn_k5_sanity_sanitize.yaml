@@ -1,0 +1,75 @@
+run_id: p3-domain-dev50-b-knn-k5-seed42-sanity-sanitize
+config_name: B_knn_domain_proposal_stage_sanitize
+
+execution:
+  phase: P3_GPU_SANITY
+  authorized: true
+  human_gate: P3_DOMAIN_SANITY_APPROVED
+  approval_record: "2026-07-22 human approved next small step B(kNN) domain_dev sanity after auditing A baseline; no domain_test/P4/P5/full ablation."
+  gpu_hour_cap: 0.5
+  cost_cap_cny: 1.35
+  model_calls_allowed: true
+  gpu_required: true
+  explicit_exclusions:
+    - CLUENER_current_sanity
+    - P4
+    - P5
+    - full_ablation_grid
+    - domain_test
+
+data:
+  dataset: domain_dev50
+  support_path: /root/autodl-tmp/data/domain_support.jsonl
+  query_path: /root/autodl-tmp/data/domain_dev.jsonl
+
+schema:
+  task: ner
+  entity_types:
+    EQUIPMENT: 完整装备、武器平台、系统或型号名称。
+    MODULE: 装备的部件、组件、子系统、传感器、载荷或功能模块。
+    TECH_SCHEME: 技术体制、制导方式、作战/测试/改进方案或能力方案。
+    METRIC: 数值指标、性能参数、射程、速度、重量、时间或数量表达。
+  relation_types: {}
+
+examples:
+  mode: knn_retrieval
+  k: 5
+  seed: 42
+
+embedding:
+  model_path: /root/autodl-tmp/models/bge-m3
+  device: cpu
+  use_fp16: false
+  batch_size: 8
+  max_length: 512
+
+prompt:
+  output_instruction: "只返回JSON,不要任何解释,不要markdown代码块"
+  retry_suffix: "只返回合法JSON"
+  retry_mode: parser_error_aware
+
+parsing:
+  drop_invalid_entities: true
+  mode: proposal_stage_sanitize
+  note: "Drop invalid proposed units with flags for P3 sanity; final evaluation semantics remain strict unless separately approved."
+
+model:
+  name: /root/autodl-tmp/models/qwen2.5-7b
+  base_url: http://127.0.0.1:8000
+  timeout_seconds: 300
+  api_key: EMPTY
+
+generation:
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 768
+  seed: 42
+
+cache:
+  dir: /root/project/cache/p3_extraction
+
+outputs:
+  dry_run_prompts: /root/project/logs/p3_domain_dev50_b_knn_k5_sanity_sanitize_prompts.jsonl
+  manifest: /root/project/logs/p3_domain_dev50_b_knn_k5_sanity_sanitize_manifest.json
+  per_query: /root/project/results/p3/p3_domain_dev50_b_knn_k5_sanity_sanitize_per_query.jsonl
+  summary: /root/project/results/p3/p3_domain_dev50_b_knn_k5_sanity_sanitize_summary.json
