@@ -252,18 +252,55 @@ Backup:
 - Local expanded verification copy:
   `D:\yinsir\backups\P2\domain_gold_freeze_20260721\`
 
+P3 GPU-free preparation completed on 2026-07-22:
+
+- Added generic P3 extraction helpers:
+  `src/equipment_ie/extraction.py`.
+- Added P3 runner:
+  `scripts/run_p3_extraction.py`.
+- Added dry-run config:
+  `configs/p3_cluener_dev_a_k5_dryrun.yaml`.
+- Added tests:
+  `tests/test_extraction.py`.
+- Added report:
+  `docs/P3_GPU_FREE_PREP_20260722.md`.
+- Remote GPU-free tests passed:
+  `python -m unittest tests.test_extraction tests.test_schema tests.test_llm_labeling tests.test_public_data tests.test_domain_data`
+  reported 51 tests OK.
+- Dry-run command:
+  `python scripts/run_p3_extraction.py --config configs/p3_cluener_dev_a_k5_dryrun.yaml --dry-run`.
+- Dry-run result:
+  - query records: 20 CLUENER dev rows;
+  - fixed examples:
+    `cluener-train-10227`, `cluener-train-1774`,
+    `cluener-train-3916`, `cluener-train-510`,
+    `cluener-train-8450`;
+  - max prompt chars: 1781;
+  - model calls: 0;
+  - model weights loaded: false;
+  - GPU device present: false;
+  - dry-run prompt SHA256:
+    `9cb95dcc5845c741d9ee7715539335981171367b8eb38554de1004a6c903c904`.
+- Local dry-run backup:
+  `D:\yinsir\backups\P3\p3_cluener_dev_a_k5_dryrun_20260722\`.
+
 ## 6. Current Blocker
 
-There is no technical blocker for P2 gold split/freeze. The next blocker is a
-human gate: do not start P3/P4/P5 or any paid GPU work until explicitly
-approved.
+There is no technical blocker for P2 gold split/freeze or P3 GPU-free
+preparation. The next blocker is a human gate: do not start paid GPU, vLLM,
+P3 model inference, P4, or P5 until explicitly approved.
 
 ## 7. Immediate Next Plan
 
-1. Commit and push the P2 gold/freeze code, tests, report, decision log,
-   `data/FROZEN`, and handoff update if not already done.
-2. Stop at the gate and report P2 Gate 2 status.
-3. Wait for explicit human approval before P3/P4/P5.
+1. Commit and push the P3 GPU-free prep code/config/tests/report and updated
+   handoff.
+2. Stop at the gate.
+3. If the human approves the next gate, run only a bounded paid-GPU P3 sanity:
+   Qwen2.5-7B, CLUENER dev, config A, K=5, seed=42.
+4. Before that GPU run, verify live 4090 price, GPU model/free memory, and no
+   conflicting process; set an explicit GPU-hour/CNY cap.
+5. Do not run P4/P5 or the full ablation grid until P3 sanity passes and the
+   human approves another gate.
 
 ## 8. Useful Commands
 
@@ -278,12 +315,19 @@ Remote tests:
 ```bash
 ssh autodl-paper 'cd /root/project; . /root/autodl-tmp/venvs/equipment-ie/bin/activate; python -m unittest tests.test_build_p2_domain_gold'
 ssh autodl-paper 'cd /root/project; . /root/autodl-tmp/venvs/equipment-ie/bin/activate; python -m unittest tests.test_schema tests.test_domain_data'
+ssh autodl-paper 'cd /root/project; . /root/autodl-tmp/venvs/equipment-ie/bin/activate; python -m unittest tests.test_extraction tests.test_schema tests.test_llm_labeling tests.test_public_data tests.test_domain_data'
 ```
 
 Actual build command:
 
 ```bash
 ssh autodl-paper 'cd /root/project; . /root/autodl-tmp/venvs/equipment-ie/bin/activate; python scripts/build_p2_domain_gold.py'
+```
+
+P3 GPU-free dry-run command:
+
+```bash
+ssh autodl-paper 'cd /root/project; /root/autodl-tmp/venvs/equipment-ie/bin/python scripts/run_p3_extraction.py --config configs/p3_cluener_dev_a_k5_dryrun.yaml --dry-run'
 ```
 
 Current relevant remote files:
