@@ -409,25 +409,62 @@ retry on the same domain_dev20 subset:
   `b6b434fdec08d0dda03e1a70a5d9732377d5a5b76d7f9c77baf49b236f9e2be3`.
 - vLLM was stopped; GPU memory returned to 0 MiB.
 
+The human then booted AutoDL in GPU-free mode and approved continuing with the
+next non-GPU step. The agent synchronized `/root/project` to GitHub commit
+`2038d1d`, stashing the two duplicated pre-sync dirty files under
+`stash@{0}: codex-sync-before-2038d1d`, and confirmed the remote working tree
+was clean at that commit. Remote GPU-free tests passed:
+
+- `python -m unittest tests.test_extraction tests.test_schema tests.test_llm_labeling tests.test_public_data tests.test_domain_data`
+- Result: 53 tests OK.
+
+The agent then prepared and ran a GPU-free full-dev dry-run:
+
+- Config:
+  `configs/p3_domain_dev50_a_k5_sanity_sanitize_dryrun.yaml`.
+- Query set:
+  `/root/autodl-tmp/data/domain_dev.jsonl` full 50 rows.
+- Support:
+  `/root/autodl-tmp/data/domain_support.jsonl`.
+- Config A: fixed-random K=5 seed 42, no glossary/RAG/verification.
+- Sanitization: same documented proposal-stage sanitization mode as the
+  passed dev20 sanity.
+- Result:
+  - query records: 50;
+  - model calls: 0;
+  - API called: false;
+  - model weights loaded: false;
+  - GPU visible: false;
+  - max prompt chars: 3,953;
+  - config SHA256:
+    `ed53bfb602ac736e6d1042f1a66cad37ec092109559b226b2bdbcda6189b65e8`;
+  - dry-run prompt SHA256:
+    `fa80e30942902e7a2dc27288c9a71b91a00169aba14a75f9cbee6ebb43f73b52`.
+- Local backup:
+  `D:\yinsir\backups\P3\p3_domain_dev50_sanitize_dryrun_20260722\`.
+- Report:
+  `docs/P3_DOMAIN_DEV50_DRYRUN_20260722.md`.
+
 ## 6. Current Blocker
 
 P2 gold split/freeze is complete. P3 GPU-free preparation is complete.
-P3 domain_dev20 small sanity passes only under the documented proposal-stage
-sanitization mode.
+P3 domain_dev20 small sanity passes under the documented proposal-stage
+sanitization mode, and the domain_dev full-50 A+sanitize dry-run has passed in
+GPU-free mode.
 
-The next blocker is procedural: do not continue paid GPU, domain test, full
-dev, P4, or P5 until the human explicitly approves the next gate. Before a
-larger run, inspect sanitization flags in GPU-free mode and decide whether the
-proposal-stage sanitization semantics are acceptable for P3.
+The next blocker is procedural: do not continue paid GPU, domain test, P4, or
+P5 until the human explicitly approves the next gate. The next bounded paid
+step would be domain_dev full-50 config A with proposal-stage sanitization.
 
 ## 7. Immediate Next Plan
 
-1. Commit and push the post-audit flag-detail fix and handoff/report update.
-2. Ask the human to shut down or return the instance to GPU-free mode.
-3. Next possible work, after explicit approval, is domain dev full 50 config A
-   with proposal-stage sanitization.
+1. Commit and push the dev50 dry-run config/report/handoff update.
+2. Stop and ask the human whether to approve one paid-GPU execution of
+   domain_dev full-50 config A with proposal-stage sanitization.
+3. If approved, first verify GPU mode, GPU model/memory, and no conflicting
+   process, then launch only that bounded run.
 4. Do not run domain test, P4/P5, or the full ablation grid until the human
-   human approves another gate.
+   approves another gate.
 
 ## 8. Useful Commands
 
