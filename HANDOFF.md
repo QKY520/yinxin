@@ -361,6 +361,24 @@ P3 sanity:
   overlapping/nested entities, exact-span mismatches, duplicate entities,
   unsupported `ORG`, and punctuation-normalized spans.
 - vLLM was stopped; GPU memory returned to 0 MiB.
+
+The human then audited the sanitize run in
+`docs/P3_DOMAIN_DEV20_SANITY_AUDIT_20260722.md` and judged the results good:
+
+- all 25 dropped units were considered correct drops;
+- sanitize semantics were judged reasonable for proposal-stage cleaning;
+- next possible scale-up is domain dev full 50 only, not test/P4/P5;
+- a code-quality issue was identified: invalid-unit flags needed explicit
+  `entity` and `detail` fields.
+
+The agent fixed that issue:
+
+- `ENTITY_DROPPED_INVALID_UNIT` now records `entity`, `detail`, `raw_entity`,
+  and `reason`;
+- `tests/test_extraction.py` includes a unit test for this flag detail;
+- remote tests `tests.test_extraction tests.test_schema` passed with 12 tests
+  OK;
+- previous sanity result artifacts were not overwritten.
 - Backup:
   `p3_domain_dev20_sanity_20260722.tar.gz`, SHA256
   `775955d7b3c099ff63f1d70e384401e349363b3a74aae405cf01ada1f7ce35b6`.
@@ -404,13 +422,10 @@ proposal-stage sanitization semantics are acceptable for P3.
 
 ## 7. Immediate Next Plan
 
-1. Commit and push the domain_dev20 sanitize sanity config/report/handoff
-   update, runner fixes, and verification helper.
+1. Commit and push the post-audit flag-detail fix and handoff/report update.
 2. Ask the human to shut down or return the instance to GPU-free mode.
-3. Next work should be GPU-free only:
-   - inspect sampled sanitization flags;
-   - document whether sanitize semantics are acceptable for P3;
-   - prepare a bounded next domain_dev config only after human approval.
+3. Next possible work, after explicit approval, is domain dev full 50 config A
+   with proposal-stage sanitization.
 4. Do not run domain test, P4/P5, or the full ablation grid until the human
    human approves another gate.
 

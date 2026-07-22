@@ -74,6 +74,27 @@ class ExtractionTest(unittest.TestCase):
         self.assertEqual(parsed["entities"][0]["start"], 4)
         self.assertEqual(parsed["entities"][0]["span"], "北京")
 
+    def test_sanitization_flag_records_entity_and_detail(self) -> None:
+        flags: list[dict] = []
+        parsed = parse_extraction_output(
+            json.dumps(
+                {
+                    "entities": [{"span": "北京", "type": "ORG", "occurrence": 1}],
+                    "relations": [],
+                },
+                ensure_ascii=False,
+            ),
+            record_id="q1",
+            text="北京欢迎你。",
+            entity_types={"address"},
+            drop_invalid_entities=True,
+            sanitization_flags=flags,
+        )
+        self.assertEqual(parsed["entities"], [])
+        self.assertEqual(flags[0]["kind"], "ENTITY_DROPPED_INVALID_UNIT")
+        self.assertEqual(flags[0]["entity"]["type"], "ORG")
+        self.assertIn("unsupported type", flags[0]["detail"])
+
     def test_error_retry_prompt_includes_parser_error(self) -> None:
         retry = build_error_retry_prompt(
             base_prompt="BASE_PROMPT",

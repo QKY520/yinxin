@@ -186,3 +186,35 @@ Updated recommendation:
   - inspect sampled sanitization flags;
   - prepare the next domain_dev/full-dev config only after human approval;
   - do not touch domain_test, P4, or P5 yet.
+
+## Post-Audit Fix
+
+The human audited the sanitize run in
+`docs/P3_DOMAIN_DEV20_SANITY_AUDIT_20260722.md` and judged the 25 dropped units
+reasonable. One code-quality issue was identified: invalid-unit flags should
+record the dropped entity and detail field explicitly.
+
+Fix applied:
+
+- `ENTITY_DROPPED_INVALID_UNIT` now includes:
+  - `entity`;
+  - `detail`;
+  - the original `raw_entity`;
+  - the original `reason`.
+- Added a unit test covering unsupported-type sanitization flags.
+
+Remote test:
+
+```text
+python -m unittest tests.test_extraction tests.test_schema
+```
+
+Result:
+
+```text
+Ran 12 tests
+OK
+```
+
+The previous sanity result files were not overwritten by this documentation
+fix.

@@ -179,6 +179,8 @@ def parse_extraction_output(
             "ENTITY_DROPPED_INVALID_UNIT",
             entity_raw_index=index,
             reason=reason,
+            detail=reason,
+            entity=raw if isinstance(raw, dict) else None,
             raw_entity=raw,
         )
         return True
