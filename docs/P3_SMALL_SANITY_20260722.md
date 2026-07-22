@@ -184,3 +184,77 @@ Remote/local tar backup:
 Pending before any further GPU use:
 
 - ask for explicit human approval before any paid-GPU v4 retry.
+
+## Cloned-Instance v4 GPU Retry
+
+The original 4090 instance disconnected. The human cloned the instance and
+explicitly approved only the paid-GPU v4 small retry on the new endpoint.
+
+New endpoint handling:
+
+- the real host and port were written only to the local SSH config for the
+  `autodl-paper` alias;
+- no real host, port, password, or key was written to project files.
+
+Pre-run checks:
+
+- GPU: RTX 4090;
+- memory before vLLM: `0 MiB / 24564 MiB`;
+- conflicting GPU processes: none;
+- code commit on remote before run: `9e48f16`;
+- `p3_cluener_dev20_seed42.jsonl`: 20 rows present;
+- 7B model directory present.
+
+Operational note:
+
+- The cloned instance exposes `/dev/nvidia7` rather than `/dev/nvidia0`.
+- `scripts/run_p3_extraction.py` was updated to detect any
+  `/dev/nvidia[0-9]*` device.
+
+v4 GPU retry result:
+
+- run ID: `p3-cluener-dev20-a-k5-seed42-sanity-v4-gpu`
+- query records: `20`
+- parse failures: `2`
+- parse-failure rate: `10.0%`
+- entity micro precision: `0.3636`
+- entity micro recall: `0.4348`
+- entity micro F1: `0.3960`
+- per-query SHA256:
+  `c1bec9fc9f8f6528a6360e95ea423a2d5e5cbd8dbdd992695336c085c4cc0d8c`
+
+Failure diagnosis:
+
+- `cluener-dev-11`: overlapping entities remained unresolved.
+- `cluener-dev-15`: model output span `《爱情公寓》`, which does not occur
+  exactly in the text.
+
+GPU cleanup:
+
+- vLLM was stopped after the retry.
+- GPU memory returned to `0 MiB`.
+
+Backup:
+
+- Remote:
+  `/root/autodl-tmp/backup/p3/p3_cluener_dev20_v4_gpu_retry_20260722.tar.gz`
+- Local:
+  `D:\yinsir\backups\P3\p3_cluener_dev20_v4_gpu_retry_20260722.tar.gz`
+- bytes: `19157`
+- SHA256:
+  `162185f8dcb28500fe7852cc65019ea4d617edc1b4a4ef0aff8cf48eb459c810`
+
+Estimated cloned-instance paid-GPU window managed by the agent was roughly
+14:29-14:38 Asia/Shanghai, about 9 minutes. At 2.7 CNY/hour this is about
+`0.41 CNY`. Platform billing is authoritative.
+
+Gate status after v4:
+
+- P3 small sanity still fails the strict parse-failure gate.
+- Do not continue GPU retries, full CLUENER dev, P4, or P5 without a new
+  decision.
+- The likely next fix should be GPU-free and deterministic: either make the
+  parser record-level tolerant by dropping invalid entities with explicit flags
+  for sanity only, or add a post-parser validator that counts invalid units
+  without failing the whole record. This needs a documented decision because it
+  changes parse-failure semantics.

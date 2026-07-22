@@ -337,21 +337,57 @@ The human later booted AutoDL in GPU-free mode, and v4 validation passed:
   `p3_cluener_dev20_v4_error_retry_dryrun_20260722.tar.gz`, SHA256
   `92962e68a45ee92b1368e3b3f5ecc3cdf53664e83bdd282c1be257f96f7a4a00`.
 
+The human then rejected CLUENER-focused sanity for the current paper route and
+requested equipment-domain sanity only. The agent ran a bounded domain_dev20
+P3 sanity:
+
+- Config:
+  `configs/p3_domain_dev20_a_k5_sanity.yaml`.
+- Query subset:
+  first 20 rows of `/root/autodl-tmp/data/domain_dev.jsonl`, stored as
+  `/root/project/cache/p3_domain_dev20_seed42.jsonl`.
+- Support:
+  `/root/autodl-tmp/data/domain_support.jsonl`.
+- Model: Qwen2.5-7B.
+- Config A: fixed-random K=5, no glossary/RAG/verification.
+- No domain test, P4, P5, or ablation grid.
+- Result:
+  - F1: `0.4749`;
+  - precision: `0.5778`;
+  - recall: `0.4031`;
+  - parse failures: `9/20 = 45.0%`;
+  - gate: failed.
+- Main failure modes:
+  overlapping/nested entities, exact-span mismatches, duplicate entities,
+  unsupported `ORG`, and punctuation-normalized spans.
+- vLLM was stopped; GPU memory returned to 0 MiB.
+- Backup:
+  `p3_domain_dev20_sanity_20260722.tar.gz`, SHA256
+  `775955d7b3c099ff63f1d70e384401e349363b3a74aae405cf01ada1f7ce35b6`.
+- Report:
+  `docs/P3_DOMAIN_DEV20_SANITY_20260722.md`.
+
 ## 6. Current Blocker
 
 P2 gold split/freeze is complete. P3 GPU-free preparation is complete. P3
-small paid-GPU sanity did not pass the strict parse-failure gate.
+domain_dev20 paid-GPU sanity failed the strict parse-failure gate.
 
-The next blocker is technical and procedural: do not continue paid GPU, full
-CLUENER dev, P4, or P5. First test the locally prepared error-aware retry
-prompt in GPU-free mode and request explicit human approval before another
-small GPU retry.
+The next blocker is technical and procedural: do not continue paid GPU, domain
+test, full dev, P4, or P5. First design a GPU-free proposal-stage sanitization
+or invalid-unit logging strategy, because prompt-only retry still leaves too
+many whole-record parse failures on equipment text.
 
 ## 7. Immediate Next Plan
 
-1. Commit and push the v4 dry-run validation report/handoff update.
-2. Ask for explicit human approval before any paid-GPU v4 retry.
-3. Do not run P4/P5 or the full ablation grid until P3 sanity passes and the
+1. Commit and push the domain_dev20 sanity config/report/handoff update and
+   runner fixes.
+2. Ask the human to shut down or return the instance to GPU-free mode.
+3. Next work should be GPU-free only:
+   - design deterministic invalid-unit dropping or logging;
+   - preserve strict final evaluation semantics;
+   - dry-run revised domain config;
+   - ask before any paid-GPU retry.
+4. Do not run P4/P5 or the full ablation grid until P3 sanity passes and the
    human approves another gate.
 
 ## 8. Useful Commands

@@ -84,7 +84,7 @@ def write_jsonl_atomic(path: Path, rows: list[dict[str, Any]]) -> int:
 
 
 def gpu_visible() -> bool:
-    return Path("/dev/nvidia0").exists()
+    return any(Path("/dev").glob("nvidia[0-9]*"))
 
 
 def load_records(path: str) -> list[dict[str, Any]]:
@@ -182,7 +182,10 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
     execution = config.get("execution", {})
     if execution.get("authorized") is not True:
         raise RuntimeError("config execution.authorized must be true for model calls")
-    if execution.get("human_gate") != "P3_GPU_SANITY_APPROVED":
+    if execution.get("human_gate") not in {
+        "P3_GPU_SANITY_APPROVED",
+        "P3_DOMAIN_SANITY_APPROVED",
+    }:
         raise RuntimeError("P3 GPU sanity human gate is not approved in config")
     if not gpu_visible():
         raise RuntimeError("GPU is not visible; refusing non-dry execution")
