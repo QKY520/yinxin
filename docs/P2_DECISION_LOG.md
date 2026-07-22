@@ -654,3 +654,63 @@ Final GPU-free validation:
 
 Current gate: adjudication validation passes. Do not start split/freeze until
 the next explicit human confirmation.
+
+## 2026-07-22 - P2 domain gold split and freeze completed
+
+After the human confirmed AutoDL GPU-free mode and approved continuation from
+the handoff, the agent completed only the P2 gold build/split/freeze work. No
+paid GPU, vLLM, P3, P4, or P5 work was started.
+
+Structural audit and repair:
+
+- All 250 source rows were audited before final build.
+- Exactly one row required repair: `domain-candidate-0123`.
+- Repair was limited to a single-annotator A row.
+- Dropped nested entity: `攻击艇` `[93,96)` `EQUIPMENT`.
+- Kept containing entity:
+  `快速攻击艇打击武器项目` `[91,102)` `TECH_SCHEME`.
+- Dropped one `PART_OF` relation whose endpoint referenced the removed entity.
+- Repair log SHA256:
+  `4861bdfe2320b64d36bafff84d4887c684eea37d2f6dcd63cdad06525d841de8`.
+
+Remote GPU-free verification:
+
+- `python -m unittest tests.test_build_p2_domain_gold` passed.
+- `python -m unittest tests.test_schema tests.test_domain_data` passed.
+- `python scripts/verify_p2_domain_gold_freeze.py` passed with
+  `status=ok`.
+
+Generated split counts:
+
+- `domain_gold_250.jsonl`: 250 records, 1444 entities, 634 relations.
+- `domain_support.jsonl`: 30 records, 183 entities, 74 relations.
+- `domain_dev.jsonl`: 50 records, 307 entities, 133 relations.
+- `domain_test.jsonl`: 170 records, 954 entities, 427 relations.
+
+Deduplication:
+
+- Fixed 8-gram containment against frozen test, threshold `0.80`.
+- 400 candidates checked.
+- 170 candidates removed from the RAG corpus due to test overlap.
+- 230 RAG corpus rows retained.
+- Dedup log SHA256:
+  `ebc0a79dbe5167f0e7daa0523242f99889e0280383981470de09ff9154c54768`.
+
+Backup:
+
+- Remote archive:
+  `/root/autodl-tmp/backup/p2/p2_domain_gold_freeze_20260722.tar.gz`.
+- Local archive:
+  `D:\yinsir\backups\P2\p2_domain_gold_freeze_20260722.tar.gz`.
+- Remote/local archive SHA256:
+  `a3711e2af4179d8398d8d497827ff703b1cfa4a8b0c05ea4de47837b9329ec3f`.
+
+Detailed report:
+
+- `docs/P2_DOMAIN_GOLD_FREEZE_20260722.md`.
+
+Current gate:
+
+- P2 domain gold split/freeze data conditions are satisfied.
+- Stop before P3/P4/P5 or any paid GPU work until the human explicitly
+  approves the next gate.
