@@ -1,0 +1,67 @@
+run_id: p3-cluener-dev20-a-k5-seed42-sanity-v3
+config_name: A_fixed_random_no_glossary_no_rag_no_verification_prompt_v3
+
+execution:
+  phase: P3_GPU_SANITY
+  authorized: true
+  human_gate: P3_GPU_SANITY_APPROVED
+  approval_record: "2026-07-22 human approved P3 small sanity only at 2.7 CNY/hour; v3 retry stays on the same 20-row subset after v2 overlap parse failure."
+  gpu_hour_cap: 0.5
+  cost_cap_cny: 1.35
+  model_calls_allowed: true
+  gpu_required: true
+  explicit_exclusions:
+    - P4
+    - P5
+    - full_ablation_grid
+    - full_cluener_dev_gate
+
+data:
+  dataset: cluener_dev20
+  support_path: /root/autodl-tmp/data/cluener_support_k5_seed42.jsonl
+  query_path: /root/project/cache/p3_cluener_dev20_seed42.jsonl
+
+schema:
+  task: ner
+  entity_types:
+    address: 地址、地点或具体位置。
+    book: 图书、作品或出版物名称。
+    company: 公司、企业或商业组织名称。
+    game: 游戏名称。
+    government: 政府机构或行政机关名称。
+    movie: 电影、影视作品名称。
+    name: 人名。
+    organization: 组织、机构、团体名称。
+    position: 职位、职务或身份称谓。
+    scene: 景点、景区或场景名称。
+  relation_types: {}
+
+examples:
+  mode: fixed_random
+  k: 5
+  seed: 42
+
+prompt:
+  output_instruction: "只返回JSON,不要任何解释,不要markdown代码块"
+  retry_suffix: "只返回合法JSON"
+
+model:
+  name: /root/autodl-tmp/models/qwen2.5-7b
+  base_url: http://127.0.0.1:8000
+  timeout_seconds: 300
+  api_key: EMPTY
+
+generation:
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 768
+  seed: 42
+
+cache:
+  dir: /root/project/cache/p3_extraction
+
+outputs:
+  dry_run_prompts: /root/project/logs/p3_cluener_dev20_a_k5_sanity_v3_prompts.jsonl
+  manifest: /root/project/logs/p3_cluener_dev20_a_k5_sanity_v3_manifest.json
+  per_query: /root/project/results/p3/p3_cluener_dev20_a_k5_sanity_v3_per_query.jsonl
+  summary: /root/project/results/p3/p3_cluener_dev20_a_k5_sanity_v3_summary.json

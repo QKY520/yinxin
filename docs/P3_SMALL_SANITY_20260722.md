@@ -1,0 +1,135 @@
+# P3 Small GPU Sanity Report - 2026-07-22
+
+## Scope
+
+The human approved only a small P3 sanity run after switching AutoDL to paid
+GPU mode.
+
+Approved live price:
+
+- RTX 4090: `2.7 CNY/hour`
+
+Bounded scope:
+
+- model: Qwen2.5-7B
+- dataset: first 20 rows of CLUENER dev
+- config family: A
+- examples: fixed random
+- K: 5
+- seed: 42
+- no glossary
+- no RAG
+- no self-verification
+- no P4/P5
+- no full CLUENER dev gate
+- no full ablation grid
+
+## GPU Status
+
+Before vLLM startup:
+
+- GPU: NVIDIA GeForce RTX 4090
+- memory: `0 MiB / 24564 MiB`
+- running GPU processes: none
+
+After every vLLM attempt, the server was stopped and GPU memory returned to
+`0 MiB`.
+
+## Inputs
+
+The 20-row sanity subset was created from CLUENER dev:
+
+```text
+head -n 20 /root/autodl-tmp/data/cluener_dev.jsonl > /root/project/cache/p3_cluener_dev20_seed42.jsonl
+```
+
+Fixed K-shot examples:
+
+- `cluener-train-10227`
+- `cluener-train-1774`
+- `cluener-train-3916`
+- `cluener-train-510`
+- `cluener-train-8450`
+
+## Results
+
+| Run | Prompt change | Parse failures | Parse rate | Precision | Recall | F1 | Gate |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | --- |
+| v1 | initial P3 prompt | 2/20 | 10.0% | 0.4032 | 0.5435 | 0.4630 | failed |
+| v2 | forbid unsupported schema types and occurrence overflow | 1/20 | 5.0% | 0.4259 | 0.5000 | 0.4600 | failed by strict `<5%` |
+| v3 | additionally forbid overlap/nesting and title+name whole spans | 2/20 | 10.0% | 0.3636 | 0.4348 | 0.3960 | failed |
+
+The best run was v2, but it still does not satisfy the P3 parse-failure gate
+because the gate requires parse failures below 5 percent, not equal to 5
+percent.
+
+## Failure Diagnosis
+
+v1 failures:
+
+- `cluener-dev-4`: occurrence overflow for `牛奶海`.
+- `cluener-dev-9`: unsupported entity type `event`.
+
+v2 failure:
+
+- `cluener-dev-11`: overlapping entities, likely a title/name boundary issue.
+
+v3 failures:
+
+- `cluener-dev-9`: unsupported entity type `event` returned again.
+- `cluener-dev-11`: overlapping entities returned again.
+
+Interpretation:
+
+- The model can produce nonzero NER signal on the 20-row sanity subset.
+- Prompt-only tightening is unstable on this small subset.
+- The current retry prompt is too generic because it appends only
+  `只返回合法JSON`; it does not feed the parser error back to the model.
+
+## Artifacts
+
+Remote files are backed up under:
+
+- `/root/autodl-tmp/backup/p3/p3_cluener_dev20_sanity_attempts_20260722.tar.gz`
+
+Local backup:
+
+- `D:\yinsir\backups\P3\p3_cluener_dev20_sanity_attempts_20260722.tar.gz`
+
+Archive size:
+
+- `48277` bytes
+
+Remote/local archive SHA256:
+
+- `111f72dead0c77904ec350cdefe6bfd5106e1c9915fcb32c4ab5daa4c7317df4`
+
+Important per-query files inside the archive:
+
+- `results/p3/p3_cluener_dev20_a_k5_sanity_per_query.jsonl`
+- `results/p3/p3_cluener_dev20_a_k5_sanity_v2_per_query.jsonl`
+- `results/p3/p3_cluener_dev20_a_k5_sanity_v3_per_query.jsonl`
+
+## Cost Estimate
+
+Observed agent-managed paid-GPU window was approximately 09:26-09:44
+Asia/Shanghai on 2026-07-22, about 18 minutes.
+
+At 2.7 CNY/hour, the estimated cost is:
+
+- `0.30 hours * 2.7 = 0.81 CNY`
+
+AutoDL billing is the authoritative cost record.
+
+## Gate Status
+
+P3 small sanity did not pass the strict parse-failure gate.
+
+Do not proceed to full CLUENER dev, P4, P5, or the ablation grid.
+
+Recommended next step in GPU-free mode:
+
+- implement an error-aware retry prompt that includes the parser error;
+- preserve strict parser semantics for evaluation;
+- rerun only a dry-run/preflight first;
+- request explicit approval before another small paid-GPU sanity retry.

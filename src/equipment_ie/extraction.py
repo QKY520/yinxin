@@ -129,6 +129,13 @@ def build_ner_prompt(
         '"relations":[]}'
         "。occurrence 表示该完全相同片段在原文中从左到右第几次出现，从1开始。"
     )
+    blocks.append(
+        "硬性输出约束：type 必须逐字等于 Schema 中列出的英文类型之一；禁止输出"
+        " Schema 之外的类型，例如 event、person、location、ORG、PER；如果没有"
+        "把握或片段不在原文中，宁可不输出；occurrence 不能超过该片段在原文中"
+        "实际出现的次数；禁止重叠或嵌套实体；当职位/身份词和人名相邻时，"
+        "分别输出 position 与 name，不要输出包含两者的整体片段。"
+    )
     for index, example in enumerate(examples, start=1):
         blocks.append(
             f"示例{index}文本：{example['text']}\n示例{index}输出："

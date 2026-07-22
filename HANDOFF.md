@@ -284,22 +284,52 @@ P3 GPU-free preparation completed on 2026-07-22:
 - Local dry-run backup:
   `D:\yinsir\backups\P3\p3_cluener_dev_a_k5_dryrun_20260722\`.
 
+P3 small paid-GPU sanity was attempted on 2026-07-22 after human approval:
+
+- Approved scope: Qwen2.5-7B, CLUENER dev 20-row subset, config A,
+  fixed-random K=5 seed=42, no glossary/RAG/verification, no P4/P5.
+- Live price recorded by the human: 2.7 CNY/hour.
+- GPU was RTX 4090 with 0 MiB used before vLLM startup.
+- vLLM was stopped after each attempt; GPU memory returned to 0 MiB.
+- Three attempts were preserved:
+  - v1: parse failures 2/20, F1 0.4630, failed gate.
+  - v2: parse failures 1/20, F1 0.4600, failed strict `<5%` gate.
+  - v3: parse failures 2/20, F1 0.3960, failed gate.
+- Best attempt: v2, but it still does not satisfy the strict parse-failure
+  gate because 1/20 equals 5 percent.
+- Failure modes:
+  - occurrence overflow for `牛奶海`;
+  - unsupported type `event`;
+  - overlapping title/name-style entities.
+- Remote/local backup:
+  `p3_cluener_dev20_sanity_attempts_20260722.tar.gz`, SHA256
+  `111f72dead0c77904ec350cdefe6bfd5106e1c9915fcb32c4ab5daa4c7317df4`.
+- Report:
+  `docs/P3_SMALL_SANITY_20260722.md`.
+- Estimated agent-managed paid-GPU window: about 09:26-09:44 Asia/Shanghai,
+  roughly 0.81 CNY at 2.7 CNY/hour. AutoDL billing is authoritative.
+
 ## 6. Current Blocker
 
-There is no technical blocker for P2 gold split/freeze or P3 GPU-free
-preparation. The next blocker is a human gate: do not start paid GPU, vLLM,
-P3 model inference, P4, or P5 until explicitly approved.
+P2 gold split/freeze is complete. P3 GPU-free preparation is complete. P3
+small paid-GPU sanity did not pass the strict parse-failure gate.
+
+The next blocker is technical and procedural: do not continue paid GPU, full
+CLUENER dev, P4, or P5. First implement an error-aware retry prompt in
+GPU-free mode and request explicit human approval before another small GPU
+retry.
 
 ## 7. Immediate Next Plan
 
-1. Commit and push the P3 GPU-free prep code/config/tests/report and updated
-   handoff.
-2. Stop at the gate.
-3. If the human approves the next gate, run only a bounded paid-GPU P3 sanity:
-   Qwen2.5-7B, CLUENER dev, config A, K=5, seed=42.
-4. Before that GPU run, verify live 4090 price, GPU model/free memory, and no
-   conflicting process; set an explicit GPU-hour/CNY cap.
-5. Do not run P4/P5 or the full ablation grid until P3 sanity passes and the
+1. Commit and push the P3 small sanity configs/report/handoff update.
+2. Ask the human to shut down or return the instance to GPU-free mode if no
+   immediate follow-up is approved.
+3. Next recommended work is GPU-free only:
+   - add parser-error-aware retry wording;
+   - keep strict evaluation parser semantics;
+   - dry-run the revised prompt/config;
+   - then ask the human before any paid-GPU retry.
+4. Do not run P4/P5 or the full ablation grid until P3 sanity passes and the
    human approves another gate.
 
 ## 8. Useful Commands
