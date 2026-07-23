@@ -100,6 +100,64 @@ def select_fixed_random_examples(
     return sorted(selected, key=lambda record: str(record["id"]))
 
 
+def select_glossary_entries(
+    query_text: str,
+    glossary_records: Sequence[Mapping[str, Any]],
+    *,
+    max_entries: int = 20,
+) -> list[str]:
+    """Select query-matched glossary entries for prompt injection."""
+
+    if max_entries <= 0:
+        raise ValueError("max_entries must be positive")
+    candidates: list[tuple[int, int, int, int, str]] = []
+    seen: set[str] = set()
+    for index, raw in enumerate(glossary_records):
+        term = raw.get("term")
+        entity_type = raw.get("type")
+        if not isinstance(term, str) or not term.strip():
+            continue
+        if not isinstance(entity_type, str) or not entity_type.strip():
+            continue
+        aliases = raw.get("aliases", [])
+        if isinstance(aliases, str):
+            aliases = [aliases]
+        if not isinstance(aliases, Sequence):
+            aliases = []
+        matched_terms = [term]
+        matched_terms.extend(alias for alias in aliases if isinstance(alias, str))
+        matched = [candidate for candidate in matched_terms if candidate and candidate in query_text]
+        if not matched:
+            continue
+        display = f"{term}（{entity_type}）"
+        if display in seen:
+            continue
+        priority = raw.get("priority", 0)
+        try:
+            priority_value = int(priority)
+        except (TypeError, ValueError):
+            priority_value = 0
+        candidates.append(
+            (
+                priority_value,
+                max(len(candidate) for candidate in matched),
+                len(term),
+                index,
+                display,
+            )
+        )
+    candidates.sort(key=lambda item: (-item[0], -item[1], -item[2], item[3], item[4]))
+    selected: list[str] = []
+    for _, _, _, _, display in candidates:
+        if display in seen:
+            continue
+        seen.add(display)
+        selected.append(display)
+        if len(selected) >= max_entries:
+            break
+    return selected
+
+
 def build_ner_prompt(
     *,
     query_text: str,

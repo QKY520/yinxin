@@ -17,6 +17,7 @@ from equipment_ie.extraction import (  # noqa: E402
     entity_micro_counts,
     parse_extraction_output,
     select_fixed_random_examples,
+    select_glossary_entries,
 )
 from equipment_ie.schema import iter_jsonl  # noqa: E402
 from scripts.run_p3_extraction import main as run_main  # noqa: E402
@@ -56,6 +57,33 @@ class ExtractionTest(unittest.TestCase):
         self.assertLess(prompt.index("Schema"), prompt.index("示例1文本"))
         self.assertLess(prompt.index("示例1文本"), prompt.index("待抽取文本"))
         self.assertTrue(prompt.endswith("只返回JSON,不要任何解释,不要markdown代码块"))
+
+    def test_prompt_places_glossary_before_examples(self) -> None:
+        example = record("ex1", "歼-16战机采用后掠翼。", 0, 6, "EQUIPMENT")
+        prompt = build_ner_prompt(
+            query_text="歼-20战斗机采用隐身设计。",
+            entity_types={"EQUIPMENT": "装备", "TECH_SCHEME": "技术体制"},
+            examples=[example],
+            glossary_entries=["战斗机（EQUIPMENT）", "隐身设计（TECH_SCHEME）"],
+        )
+        self.assertLess(prompt.index("Schema"), prompt.index("领域术语表"))
+        self.assertLess(prompt.index("领域术语表"), prompt.index("示例1文本"))
+
+    def test_select_glossary_entries_matches_query_substrings(self) -> None:
+        selected = select_glossary_entries(
+            "歼-16战机的最大飞行速度和机长是多少？",
+            [
+                {"term": "雷达", "type": "MODULE", "priority": 90},
+                {"term": "歼-16战机", "type": "EQUIPMENT", "priority": 100, "aliases": ["歼16"]},
+                {"term": "最大飞行速度", "type": "METRIC", "priority": 80},
+                {"term": "机长", "type": "METRIC", "priority": 80},
+            ],
+            max_entries=3,
+        )
+        self.assertEqual(len(selected), 3)
+        self.assertIn("歼-16战机（EQUIPMENT）", selected)
+        self.assertIn("最大飞行速度（METRIC）", selected)
+        self.assertIn("机长（METRIC）", selected)
 
     def test_parse_occurrence_based_output(self) -> None:
         text = "北京欢迎北京游客。"

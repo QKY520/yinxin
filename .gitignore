@@ -43,6 +43,7 @@ Thumbs.db
 !/data/README.md
 !/data/FROZEN
 !/data/P1_VALIDATION.md
+!/data/domain_dict.jsonl
 
 # Track only paper-facing result summaries and plots.
 /results/*

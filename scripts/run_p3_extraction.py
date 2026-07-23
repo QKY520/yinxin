@@ -29,6 +29,7 @@ from equipment_ie.extraction import (
     parse_extraction_output,
     prompt_hash,
     select_fixed_random_examples,
+    select_glossary_entries,
 )
 from equipment_ie.llm_labeling import chat_with_cache, request_hash
 from equipment_ie.schema import iter_jsonl, sha256_file, validate_record
@@ -90,6 +91,21 @@ def gpu_visible() -> bool:
 
 def load_records(path: str) -> list[dict[str, Any]]:
     return [record for record in iter_jsonl(Path(path))]
+
+
+def load_glossary_records(path: str) -> list[dict[str, Any]]:
+    records: list[dict[str, Any]] = []
+    for line_number, record in enumerate(iter_jsonl(Path(path), validate=False), start=1):
+        term = record.get("term")
+        entity_type = record.get("type")
+        if not isinstance(term, str) or not term.strip():
+            raise ValueError(f"{path}:{line_number}: glossary term must be a non-empty string")
+        if not isinstance(entity_type, str) or not entity_type.strip():
+            raise ValueError(f"{path}:{line_number}: glossary type must be a non-empty string")
+        records.append(dict(record))
+    if not records:
+        raise ValueError(f"{path}: glossary must contain at least one row")
+    return records
 
 
 def empty_prediction(gold: dict[str, Any]) -> dict[str, Any]:
@@ -161,6 +177,32 @@ def build_knn_selector(
     return select, metadata
 
 
+def build_glossary_selector(
+    config: dict[str, Any],
+) -> tuple[Callable[[dict[str, Any]], list[str]], dict[str, Any]]:
+    glossary_config = config.get("glossary")
+    if not glossary_config:
+        return lambda _record: [], {"enabled": False}
+    glossary_path = glossary_config["path"]
+    max_entries = int(glossary_config.get("max_entries", 20))
+    records = load_glossary_records(glossary_path)
+
+    def select(record: dict[str, Any]) -> list[str]:
+        return select_glossary_entries(
+            str(record["text"]),
+            records,
+            max_entries=max_entries,
+        )
+
+    return select, {
+        "enabled": True,
+        "path": glossary_path,
+        "candidates": len(records),
+        "max_entries": max_entries,
+        "match_mode": "substring",
+    }
+
+
 def build_query_plan(
     *,
     config: dict[str, Any],
@@ -170,7 +212,9 @@ def build_query_plan(
     list[dict[str, Any]],
     list[dict[str, Any]],
     Callable[[dict[str, Any]], list[dict[str, Any]]],
+    Callable[[dict[str, Any]], list[str]],
     str,
+    dict[str, Any],
     dict[str, Any],
 ]:
     support_records = load_records(config["data"]["support_path"])
@@ -179,6 +223,7 @@ def build_query_plan(
         max_queries = int(config.get("dry_run", {}).get("max_queries", len(query_records)))
         query_records = query_records[:max_queries]
     example_config = config["examples"]
+    select_glossary, glossary_metadata = build_glossary_selector(config)
     if example_config["mode"] == "fixed_random":
         examples = select_fixed_random_examples(
             support_records,
@@ -192,15 +237,31 @@ def build_query_plan(
             "seed": int(example_config["seed"]),
             "example_ids": [record["id"] for record in fixed_examples],
         }
-        return support_records, query_records, lambda _record: fixed_examples, sha256_file(config_path), metadata
+        return (
+            support_records,
+            query_records,
+            lambda _record: fixed_examples,
+            select_glossary,
+            sha256_file(config_path),
+            metadata,
+            glossary_metadata,
+        )
     if example_config["mode"] == "knn_retrieval":
         selector, metadata = build_knn_selector(config=config, support_records=support_records)
-        return support_records, query_records, selector, sha256_file(config_path), metadata
+        return (
+            support_records,
+            query_records,
+            selector,
+            select_glossary,
+            sha256_file(config_path),
+            metadata,
+            glossary_metadata,
+        )
     raise ValueError(f"unsupported example selection mode {example_config['mode']!r}")
 
 
 def run_dry(config: dict[str, Any], config_path: Path) -> int:
-    _, query_records, select_examples, config_hash, example_metadata = build_query_plan(
+    _, query_records, select_examples, select_glossary, config_hash, example_metadata, glossary_metadata = build_query_plan(
         config=config, config_path=config_path, dry_run=True
     )
     entity_types = config["schema"]["entity_types"]
@@ -209,10 +270,12 @@ def run_dry(config: dict[str, Any], config_path: Path) -> int:
     max_prompt_chars = 0
     for record in query_records:
         examples = select_examples(record)
+        glossary_entries = select_glossary(record)
         prompt = build_ner_prompt(
             query_text=record["text"],
             entity_types=entity_types,
             examples=examples,
+            glossary_entries=glossary_entries,
             include_relations=False,
             output_instruction=config["prompt"]["output_instruction"],
         )
@@ -232,6 +295,7 @@ def run_dry(config: dict[str, Any], config_path: Path) -> int:
                 "prompt_chars": len(prompt),
                 "gold_entities": len(record["entities"]),
                 "example_ids": [example["id"] for example in examples],
+                "glossary_terms": glossary_entries,
             }
         )
 
@@ -249,6 +313,7 @@ def run_dry(config: dict[str, Any], config_path: Path) -> int:
         "support_path": config["data"]["support_path"],
         "query_records": len(query_records),
         "example_selection": example_metadata,
+        "glossary_selection": glossary_metadata,
         "model_calls": 0,
         "api_called": False,
         "model_weights_loaded": False,
@@ -274,7 +339,7 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
     if not gpu_visible():
         raise RuntimeError("GPU is not visible; refusing non-dry execution")
 
-    _, query_records, select_examples, config_hash, example_metadata = build_query_plan(
+    _, query_records, select_examples, select_glossary, config_hash, example_metadata, glossary_metadata = build_query_plan(
         config=config, config_path=config_path, dry_run=False
     )
     entity_types = set(config["schema"]["entity_types"])
@@ -293,10 +358,12 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
     started = time.monotonic()
     for record in query_records:
         examples = select_examples(record)
+        glossary_entries = select_glossary(record)
         prompt = build_ner_prompt(
             query_text=record["text"],
             entity_types=config["schema"]["entity_types"],
             examples=examples,
+            glossary_entries=glossary_entries,
             include_relations=False,
             output_instruction=config["prompt"]["output_instruction"],
         )
@@ -372,6 +439,7 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
                 "raw_llm_output_hash": raw_output_hash,
                 "prompt_hash": prompt_hash(prompt),
                 "example_ids": [example["id"] for example in examples],
+                "glossary_terms": glossary_entries,
                 "attempts": attempts,
                 "sanitization_flags": sanitization_flags,
             }
@@ -388,6 +456,7 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
         "config_sha256": config_hash,
         "query_records": len(query_records),
         "example_selection": example_metadata,
+        "glossary_selection": glossary_metadata,
         "elapsed_seconds": round(time.monotonic() - started, 3),
         "parse_failures": parse_failures,
         "parse_failure_rate": parse_failures / len(rows) if rows else 0.0,
