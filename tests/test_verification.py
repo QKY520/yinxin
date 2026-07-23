@@ -54,6 +54,31 @@ class VerificationDryRunTest(unittest.TestCase):
         )
         self.assertEqual([entity["span"] for entity in verified["entities"]], ["Carrier", "Carrier uses radar"])
 
+    def test_execution_requires_model_calls_allowed_gate(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            config = root / "config.yaml"
+            config.write_text(
+                "\n".join(
+                    [
+                        "run_id: unit-exec-guard",
+                        "config_name: E",
+                        "execution:",
+                        "  authorized: true",
+                        "  model_calls_allowed: false",
+                        "  human_gate: P3_VERIFICATION_SANITY_APPROVED",
+                    ]
+                ),
+                encoding="utf-8",
+            )
+            argv = sys.argv
+            sys.argv = ["run_p3_verification.py", "--config", str(config)]
+            try:
+                with self.assertRaisesRegex(RuntimeError, "model_calls_allowed"):
+                    run_main()
+            finally:
+                sys.argv = argv
+
     def test_verification_dry_run_uses_source_text_only(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

@@ -236,6 +236,8 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
     execution = config.get("execution", {})
     if execution.get("authorized") is not True:
         raise RuntimeError("config execution.authorized must be true for verifier model calls")
+    if execution.get("model_calls_allowed") is not True:
+        raise RuntimeError("config execution.model_calls_allowed must be true for verifier model calls")
     if execution.get("human_gate") != "P3_VERIFICATION_SANITY_APPROVED":
         raise RuntimeError("P3 verification human gate is not approved in config")
     if not gpu_visible():
