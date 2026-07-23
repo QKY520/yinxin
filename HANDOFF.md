@@ -398,6 +398,51 @@ Completed as one bounded paid-GPU sanity run on `domain_dev50`.
 - Report:
   `docs/P3_DOMAIN_DEV50_D_RAG_SANITY_20260723.md`
 
+### P3 D - RAG Audit
+
+Completed by the human/agent in
+`docs/P3_DOMAIN_DEV50_D_RAG_AUDIT_20260723.md`.
+
+- Conclusion: D is `acceptable positive`.
+- Audit sample: 20 rows.
+- GOOD / OK / POOR: 8 / 7 / 5.
+- D clearly better than C: 8 rows.
+- D clearly worse than C: 5 rows.
+- D roughly tied with C: 7 rows.
+- D deleted C's wrong entities in 13/20 audited rows.
+- D wrongly dropped C's correct entities in 3/20 audited rows.
+- D added wrong entities in 5/20 audited rows.
+- RAG evidence was clearly relevant in 3/20, partially relevant in 8/20, and
+  noisy in 9/20.
+- Interpretation: D's FP reduction is a real positive signal, but RAG evidence
+  noise remains. This supports preparing E/E-prime verification.
+
+### P3 E/E-prime Verification GPU-free Prep
+
+Completed in prompt-generation dry-run mode only.
+
+- Added `scripts/run_p3_verification.py`.
+- Added `tests/test_verification.py`.
+- Added E config:
+  `configs/p3_domain_dev50_e_verification_k5_sanity_dryrun.yaml`.
+- Added E-prime config:
+  `configs/p3_domain_dev50_eprime_verification_k5_sanity_dryrun.yaml`.
+- E verifies D raw predictions using D's RAG passages:
+  - input rows: 50;
+  - atomic entity units: 332;
+  - max prompt chars: 1392;
+  - model calls: 0.
+- E-prime verifies C raw predictions with source text only:
+  - input rows: 50;
+  - atomic entity units: 360;
+  - max prompt chars: 436;
+  - model calls: 0.
+- Remote dry-run tests passed:
+  `python -m unittest tests.test_verification` => 2 tests OK.
+- No verifier execution or dropping logic has been run yet.
+- Report:
+  `docs/P3_DOMAIN_DEV50_E_VERIFICATION_DRYRUN_20260723.md`.
+
 ## 6. Current Status And Blocker
 
 Current status:
@@ -412,25 +457,30 @@ Current status:
   initial preview; this has been fixed by excluding `domain_dev` IDs.
 - Final D `bge_faiss_rerank` sanity run completed and is the strongest P3
   domain-dev sanity result so far.
+- D audit accepted D as a positive result.
+- E/E-prime verification GPU-free prompt prep has completed.
 - All P3 A/B/C runs so far are dev-only, seed 42, K=5, and should not be
   reported as final paper numbers.
 - `domain_test` has not been used for tuning and must remain untouched.
 
 Current blocker:
 
-- Stop for human audit of D per-query differences against C.
-- Do not run E/E-prime, P4/P5, more seeds, `domain_test`, or full ablations
-  until the human explicitly approves the next bounded gate.
+- Stop for explicit approval before implementing or running verifier execution.
+- The human should switch AutoDL back to no-card mode or shut it down if not
+  already done; the latest prep made no model calls but the instance may still
+  be in paid mode.
+- Do not run verifier model calls, E/E-prime paid sanity, P4/P5, more seeds,
+  `domain_test`, or full ablations until the human explicitly approves the next
+  bounded gate.
 
 ## 7. Immediate Next Plan
 
 Ask the human for one bounded decision:
 
-1. Audit D vs C per-query differences, focusing on FP reductions and any lost
-   correct entities.
-2. If audit is acceptable, decide whether to prepare E/E-prime verification
-   work in GPU-free mode.
-3. Or request more dev-only analysis of D before adding verification.
+1. Approve GPU-free implementation of verifier execution and verified-output
+   assembly.
+2. Or audit the generated E/E-prime verification prompts before implementation.
+3. Or stop verification work and preserve D as the current positive result.
 
 Do not jump directly to P5.
 
@@ -455,6 +505,8 @@ Current P3 reports:
 - `docs/P3_DOMAIN_DEV50_D_RAG_DRYRUN_20260723.md`
 - `docs/P3_DOMAIN_DEV50_D_RAG_RELEVANCE_AUDIT_20260723.md`
 - `docs/P3_DOMAIN_DEV50_D_RAG_SANITY_20260723.md`
+- `docs/P3_DOMAIN_DEV50_D_RAG_AUDIT_20260723.md`
+- `docs/P3_DOMAIN_DEV50_E_VERIFICATION_DRYRUN_20260723.md`
 
 Current P3 configs:
 
@@ -464,6 +516,8 @@ Current P3 configs:
 - `configs/p3_domain_dev50_c_glossary_k5_sanity_sanitize_dryrun.yaml`
 - `configs/p3_domain_dev50_d_rag_k5_sanity_sanitize_dryrun.yaml`
 - `configs/p3_domain_dev50_d_rag_k5_sanity_sanitize.yaml`
+- `configs/p3_domain_dev50_e_verification_k5_sanity_dryrun.yaml`
+- `configs/p3_domain_dev50_eprime_verification_k5_sanity_dryrun.yaml`
 
 Current P3 outputs:
 
