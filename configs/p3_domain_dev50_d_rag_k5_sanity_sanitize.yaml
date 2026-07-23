@@ -3,12 +3,12 @@ config_name: D_knn_glossary_rag_domain_proposal_stage_sanitize
 
 execution:
   phase: P3_DOMAIN_DEV50_D_RAG_SANITY
-  authorized: false
-  human_gate: null
-  approval_record: "Prepared after D relevance audit. Pending explicit paid-GPU approval for one bounded D sanity run only; do not execute while authorized=false."
+  authorized: true
+  human_gate: P3_D_SANITY_APPROVED
+  approval_record: "2026-07-23 human confirmed paid GPU is enabled and approved one bounded P3 D(RAG) domain_dev50 K=5 seed=42 sanity run only; no domain_test/P5/full ablation."
   gpu_hour_cap: 0.5
   cost_cap_cny: 1.35
-  model_calls_allowed: false
+  model_calls_allowed: true
   gpu_required: true
   explicit_exclusions:
     - CLUENER_current_sanity
