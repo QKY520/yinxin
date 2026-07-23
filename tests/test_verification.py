@@ -13,6 +13,10 @@ sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from equipment_ie.schema import iter_jsonl  # noqa: E402
 from scripts.run_p3_verification import main as run_main  # noqa: E402
+from scripts.run_p3_verification import (  # noqa: E402
+    drop_entities_by_unit_decisions,
+    parse_verifier_answer,
+)
 
 
 def write_jsonl(path: Path, rows: list[dict]) -> None:
@@ -22,6 +26,34 @@ def write_jsonl(path: Path, rows: list[dict]) -> None:
 
 
 class VerificationDryRunTest(unittest.TestCase):
+    def test_parse_verifier_answer_accepts_only_atomic_yes_no(self) -> None:
+        self.assertEqual(parse_verifier_answer("yes"), "yes")
+        self.assertEqual(parse_verifier_answer("No."), "no")
+        self.assertEqual(parse_verifier_answer("是。"), "yes")
+        self.assertEqual(parse_verifier_answer("否"), "no")
+        self.assertEqual(parse_verifier_answer("yes, because evidence supports it"), "invalid")
+
+    def test_drop_entities_by_unit_decisions_keeps_yes_and_invalid(self) -> None:
+        pred_raw = {
+            "id": "q1",
+            "text": "Carrier uses radar.",
+            "entities": [
+                {"start": 0, "end": 7, "type": "EQUIPMENT", "span": "Carrier"},
+                {"start": 13, "end": 18, "type": "MODULE", "span": "radar"},
+                {"start": 0, "end": 18, "type": "TECH_SCHEME", "span": "Carrier uses radar"},
+            ],
+            "relations": [],
+        }
+        verified = drop_entities_by_unit_decisions(
+            pred_raw,
+            decisions=[
+                {"entity_index": 0, "decision": "yes", "valid_answer": True},
+                {"entity_index": 1, "decision": "no", "valid_answer": True},
+                {"entity_index": 2, "decision": "invalid", "valid_answer": False},
+            ],
+        )
+        self.assertEqual([entity["span"] for entity in verified["entities"]], ["Carrier", "Carrier uses radar"])
+
     def test_verification_dry_run_uses_source_text_only(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

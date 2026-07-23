@@ -16,7 +16,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from equipment_ie.extraction import build_request_envelope, prompt_hash
-from equipment_ie.llm_labeling import request_hash
+from equipment_ie.llm_labeling import chat_with_cache, request_hash
 from equipment_ie.schema import iter_jsonl, sha256_file
 
 
@@ -72,6 +72,15 @@ def write_jsonl_atomic(path: Path, rows: list[dict[str, Any]]) -> int:
 
 def gpu_visible() -> bool:
     return any(Path("/dev").glob("nvidia[0-9]*"))
+
+
+def parse_verifier_answer(content: str) -> str:
+    normalized = content.strip().lower()
+    if normalized in {"yes", "yes.", "是", "是。"}:
+        return "yes"
+    if normalized in {"no", "no.", "否", "否。"}:
+        return "no"
+    return "invalid"
 
 
 def load_per_query_rows(path: str, *, expected_rows: int | None) -> list[dict[str, Any]]:
@@ -200,13 +209,154 @@ def run_dry(config: dict[str, Any], config_path: Path) -> int:
     return 0
 
 
+def drop_entities_by_unit_decisions(
+    pred_raw: dict[str, Any],
+    *,
+    decisions: list[dict[str, Any]],
+) -> dict[str, Any]:
+    drop_indices = {
+        int(decision["entity_index"])
+        for decision in decisions
+        if decision["decision"] == "no" and decision["valid_answer"]
+    }
+    entities = [
+        dict(entity)
+        for index, entity in enumerate(pred_raw["entities"])
+        if index not in drop_indices
+    ]
+    return {
+        "id": pred_raw["id"],
+        "text": pred_raw["text"],
+        "entities": entities,
+        "relations": [],
+    }
+
+
+def run_execute(config: dict[str, Any], config_path: Path) -> int:
+    execution = config.get("execution", {})
+    if execution.get("authorized") is not True:
+        raise RuntimeError("config execution.authorized must be true for verifier model calls")
+    if execution.get("human_gate") != "P3_VERIFICATION_SANITY_APPROVED":
+        raise RuntimeError("P3 verification human gate is not approved in config")
+    if not gpu_visible():
+        raise RuntimeError("GPU is not visible; refusing verifier execution")
+
+    input_config = config["input"]
+    rows = load_per_query_rows(
+        input_config["per_query_path"],
+        expected_rows=input_config.get("expected_rows"),
+    )
+    evidence_config = config.get("evidence", {"mode": "source_text_only"})
+    output_instruction = config["prompt"].get("output_instruction", "只回答yes或no")
+    generation = config["generation"]
+    config_hash = sha256_file(config_path)
+    outputs = config["outputs"]
+    cache_dir = Path(config["cache"]["dir"])
+    base_url = config["model"]["base_url"]
+    api_key = config["model"].get("api_key", "EMPTY")
+    timeout_seconds = int(config["model"]["timeout_seconds"])
+
+    per_query_rows: list[dict[str, Any]] = []
+    total_units = 0
+    dropped_units = 0
+    invalid_units = 0
+    for row in rows:
+        pred_raw = row["pred_raw"]
+        evidence_passages = select_evidence(row, evidence_config)
+        decisions: list[dict[str, Any]] = []
+        for index, entity in enumerate(pred_raw["entities"]):
+            prompt = build_entity_verification_prompt(
+                text=str(pred_raw["text"]),
+                entity=entity,
+                evidence_passages=evidence_passages,
+                output_instruction=output_instruction,
+            )
+            envelope = build_request_envelope(
+                prompt=prompt,
+                model=config["model"]["name"],
+                generation=generation,
+                run_id=config["run_id"],
+                config_hash=config_hash,
+            )
+            result = chat_with_cache(
+                envelope=envelope,
+                cache_dir=cache_dir,
+                base_url=base_url,
+                timeout_seconds=timeout_seconds,
+                api_key=api_key,
+            )
+            decision = parse_verifier_answer(result.content)
+            valid_answer = decision in {"yes", "no"}
+            total_units += 1
+            if decision == "no":
+                dropped_units += 1
+            if not valid_answer:
+                invalid_units += 1
+            decisions.append(
+                {
+                    "unit_id": f"{row['id']}::entity::{index}",
+                    "unit_kind": "entity",
+                    "entity_index": index,
+                    "span": entity["span"],
+                    "type": entity["type"],
+                    "decision": decision,
+                    "valid_answer": valid_answer,
+                    "raw_output_hash": result.raw_output_hash,
+                    "request_hash": result.request_hash,
+                    "cache_hit": result.cache_hit,
+                    "latency_ms": round(result.latency_ms, 3),
+                    "prompt_hash": prompt_hash(prompt),
+                    "evidence_mode": evidence_config.get("mode", "source_text_only"),
+                    "evidence_count": len(evidence_passages),
+                }
+            )
+        pred_verified = drop_entities_by_unit_decisions(pred_raw, decisions=decisions)
+        per_query_rows.append(
+            {
+                "id": row["id"],
+                "dataset": row.get("dataset"),
+                "config": config["config_name"],
+                "k": row.get("k"),
+                "seed": row.get("seed"),
+                "gold": row.get("gold"),
+                "pred_raw": pred_raw,
+                "pred_verified": pred_verified,
+                "verifier_decisions": decisions,
+                "source_prompt_hash": row.get("prompt_hash"),
+                "source_raw_llm_output_hash": row.get("raw_llm_output_hash"),
+            }
+        )
+
+    write_jsonl_atomic(Path(outputs["per_query"]), per_query_rows)
+    summary = {
+        "phase": "P3",
+        "stage": "verification_execution",
+        "run_id": config["run_id"],
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "config_sha256": config_hash,
+        "source_config": config["config_name"],
+        "input_per_query_path": input_config["per_query_path"],
+        "input_per_query_sha256": sha256_file(input_config["per_query_path"]),
+        "query_rows": len(rows),
+        "atomic_units": total_units,
+        "dropped_units": dropped_units,
+        "invalid_units": invalid_units,
+        "evidence": evidence_config,
+        "per_query": outputs["per_query"],
+        "per_query_sha256": sha256_file(outputs["per_query"]),
+    }
+    write_json_atomic(Path(outputs["summary"]), summary)
+    print(json.dumps(summary, ensure_ascii=False, sort_keys=True))
+    return 0
+
+
 def main() -> int:
     args = parse_args()
     config_path = Path(args.config)
     config = load_yaml(config_path)
     if args.dry_run:
         return run_dry(config, config_path)
-    raise RuntimeError("verification execution is not implemented in GPU-free prep")
+    return run_execute(config, config_path)
 
 
 if __name__ == "__main__":

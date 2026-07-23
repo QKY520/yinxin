@@ -419,7 +419,7 @@ Completed by the human/agent in
 
 ### P3 E/E-prime Verification GPU-free Prep
 
-Completed in prompt-generation dry-run mode only.
+Completed in prompt-generation dry-run mode and execution-prep mode.
 
 - Added `scripts/run_p3_verification.py`.
 - Added `tests/test_verification.py`.
@@ -437,11 +437,44 @@ Completed in prompt-generation dry-run mode only.
   - atomic entity units: 360;
   - max prompt chars: 436;
   - model calls: 0.
-- Remote dry-run tests passed:
+- Remote dry-run tests passed initially:
   `python -m unittest tests.test_verification` => 2 tests OK.
-- No verifier execution or dropping logic has been run yet.
 - Report:
   `docs/P3_DOMAIN_DEV50_E_VERIFICATION_DRYRUN_20260723.md`.
+
+### P3 E/E-prime Verification Execution Prep
+
+Completed in GPU-free mode only.
+
+- Implemented guarded verifier execution in `scripts/run_p3_verification.py`.
+- Added atomic answer parsing:
+  - valid `yes` / `no` are accepted;
+  - longer or ambiguous verifier outputs are treated as `invalid`.
+- Implemented `pred_verified` assembly:
+  - drop only entity units receiving a valid `no`;
+  - keep valid `yes` and invalid verifier outputs for audit.
+- Added execution safety checks:
+  - `execution.authorized` must be `true`;
+  - `execution.human_gate` must equal `P3_VERIFICATION_SANITY_APPROVED`;
+  - GPU device must be visible.
+- Added guarded paid-sanity config templates, both intentionally unauthorized:
+  - `configs/p3_domain_dev50_e_verification_k5_sanity.yaml`;
+  - `configs/p3_domain_dev50_eprime_verification_k5_sanity.yaml`.
+- Remote GPU-free tests passed:
+  `python -m unittest tests.test_verification` => 4 tests OK.
+- Unauthorized execution check passed:
+  - command tried to run E config without `--dry-run`;
+  - it refused with
+    `config execution.authorized must be true for verifier model calls`;
+  - exit status was nonzero.
+- Formal config dry-runs passed:
+  - E: 50 rows, 332 atomic entity units, max prompt 1392 chars,
+    `api_called=false`;
+  - E-prime: 50 rows, 360 atomic entity units, max prompt 436 chars,
+    `api_called=false`.
+- AutoDL remained in `GPU_FREE_MODE`.
+- Report:
+  `docs/P3_DOMAIN_DEV50_E_VERIFICATION_EXEC_PREP_20260723.md`.
 
 ## 6. Current Status And Blocker
 
@@ -465,10 +498,9 @@ Current status:
 
 Current blocker:
 
-- Stop for explicit approval before implementing or running verifier execution.
-- The human should switch AutoDL back to no-card mode or shut it down if not
-  already done; the latest prep made no model calls but the instance may still
-  be in paid mode.
+- Stop for explicit approval before running verifier model calls or any paid
+  E/E-prime sanity.
+- AutoDL has been observed in `GPU_FREE_MODE` after the execution-prep checks.
 - Do not run verifier model calls, E/E-prime paid sanity, P4/P5, more seeds,
   `domain_test`, or full ablations until the human explicitly approves the next
   bounded gate.
@@ -477,10 +509,10 @@ Current blocker:
 
 Ask the human for one bounded decision:
 
-1. Approve GPU-free implementation of verifier execution and verified-output
-   assembly.
-2. Or audit the generated E/E-prime verification prompts before implementation.
-3. Or stop verification work and preserve D as the current positive result.
+1. Approve one bounded paid-GPU E verifier sanity on `domain_dev50`.
+2. Or approve one bounded paid-GPU E-prime verifier sanity on `domain_dev50`.
+3. Or audit the generated E/E-prime verification prompts before paid execution.
+4. Or stop verification work and preserve D as the current positive result.
 
 Do not jump directly to P5.
 

@@ -1,0 +1,53 @@
+run_id: p3-domain-dev50-eprime-verification-k5-seed42-sanity
+config_name: Eprime_knn_glossary_verification_domain_proposal_stage
+
+execution:
+  phase: P3_VERIFICATION_SANITY
+  authorized: false
+  human_gate: null
+  approval_record: "Prepared after E-prime GPU-free verification prep. Pending explicit paid-GPU approval for one bounded E-prime verifier sanity only; do not execute while authorized=false."
+  gpu_hour_cap: 0.5
+  cost_cap_cny: 1.35
+  model_calls_allowed: false
+  gpu_required: true
+  explicit_exclusions:
+    - paid_gpu_verification_run
+    - domain_test
+    - P5
+    - full_ablation_grid
+
+input:
+  source_config: C_knn_glossary_domain_proposal_stage_sanitize
+  per_query_path: /root/project/results/p3/p3_domain_dev50_c_glossary_k5_sanity_sanitize_per_query.jsonl
+  expected_rows: 50
+  source_note: "E-prime verifies C raw predictions. Extraction prompt has glossary but no RAG block."
+
+evidence:
+  mode: source_text_only
+  max_passages: 0
+  source_note: "No external RAG passages are injected for E-prime prep so E-prime remains verification-without-extraction-RAG."
+
+prompt:
+  output_instruction: "只回答yes或no"
+  decision_policy: "Drop only valid no answers; keep yes and invalid verifier outputs for audit unless later config says otherwise."
+
+model:
+  name: /root/autodl-tmp/models/qwen2.5-7b
+  base_url: http://127.0.0.1:8000
+  timeout_seconds: 300
+  api_key: EMPTY
+
+generation:
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 8
+  seed: 42
+
+cache:
+  dir: /root/project/cache/p3_verification
+
+outputs:
+  dry_run_prompts: /root/project/logs/p3_domain_dev50_eprime_verification_k5_sanity_prompts.jsonl
+  manifest: /root/project/logs/p3_domain_dev50_eprime_verification_k5_sanity_manifest.json
+  per_query: /root/project/results/p3/p3_domain_dev50_eprime_verification_k5_sanity_per_query.jsonl
+  summary: /root/project/results/p3/p3_domain_dev50_eprime_verification_k5_sanity_summary.json
