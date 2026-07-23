@@ -1,0 +1,54 @@
+run_id: p3-domain-dev50-e-rag-verification-v2-k5-seed42-sanity-approved-20260723
+config_name: E_knn_glossary_rag_verification_domain_proposal_stage_v2
+
+execution:
+  phase: P3_VERIFICATION_SANITY
+  authorized: true
+  human_gate: P3_VERIFICATION_SANITY_APPROVED
+  approval_record: "Human approval in chat on 2026-07-23: card/GPU mode is enabled, continue. Scope: run only bounded E v2 verifier sanity on domain_dev50; do not run E-prime, P5, more seeds, or domain_test."
+  gpu_hour_cap: 0.5
+  cost_cap_cny: 1.35
+  model_calls_allowed: true
+  gpu_required: true
+  explicit_exclusions:
+    - Eprime_paid_gpu_verification_run
+    - domain_test
+    - P5
+    - full_ablation_grid
+
+input:
+  source_config: D_knn_glossary_rag_domain_proposal_stage_sanitize
+  per_query_path: /root/project/results/p3/p3_domain_dev50_d_rag_k5_sanity_sanitize_per_query.jsonl
+  expected_rows: 50
+  source_note: "E v2 verifies D raw predictions. D extraction already used RAG evidence in the prompt."
+
+evidence:
+  mode: use_extraction_rag_passages
+  max_passages: 3
+  source_note: "RAG passages are secondary context only; source text is primary for v2 verification."
+
+prompt:
+  version: source_first_type_defined_conservative_keep_v2
+  output_instruction: "\u53ea\u56de\u7b54yes\u6216no"
+  decision_policy: "Drop only valid no answers. V2 prompt instructs yes when uncertain to avoid overkill."
+
+model:
+  name: /root/autodl-tmp/models/qwen2.5-7b
+  base_url: http://127.0.0.1:8000
+  timeout_seconds: 300
+  api_key: EMPTY
+
+generation:
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 8
+  seed: 42
+
+cache:
+  dir: /root/project/cache/p3_verification
+
+outputs:
+  dry_run_prompts: /root/project/logs/p3_domain_dev50_e_verification_v2_k5_sanity_approved_20260723_prompts.jsonl
+  manifest: /root/project/logs/p3_domain_dev50_e_verification_v2_k5_sanity_approved_20260723_manifest.json
+  per_query: /root/project/results/p3/p3_domain_dev50_e_verification_v2_k5_sanity_approved_20260723_per_query.jsonl
+  summary: /root/project/results/p3/p3_domain_dev50_e_verification_v2_k5_sanity_approved_20260723_summary.json
