@@ -613,6 +613,41 @@ Completed as one bounded paid-GPU sanity run on `domain_dev50`.
 - Dropped-unit audit sheet:
   `docs/P3_DOMAIN_DEV50_E_V2_VERIFICATION_DROPPED_AUDIT_20260723.md`.
 
+### P3 E v2 Audit And E v3 GPU-free Prep
+
+Completed in GPU-free mode after the human E v2 audit.
+
+- Human verdict file:
+  `docs/P3_DOMAIN_DEV50_E_V2_VERIFICATION_VERDICT_20260723.md`.
+- Audit result:
+  - wrong_drop: 7/13;
+  - correct_drop: 5/13;
+  - unclear: 1/13.
+- Interpretation: E v2 improved over E v1 but still overkills valid entities.
+  The correct drops show location/organization filtering is useful, but the
+  wrong drops show systematic bias against military formation/group entities
+  and basic component/carried-weapon entities.
+- Decision: verification is not worth further paid-GPU runs in the current
+  form. D(RAG) remains the current best domain-dev sanity result.
+- Implemented prompt-version routing in `scripts/run_p3_verification.py`:
+  - `rag_primary_v1`;
+  - `source_first_type_defined_conservative_keep_v2`;
+  - `source_first_type_defined_candidate_preserve_v3`.
+- Added v1 prompt-version markers to old E/E-prime configs for reproducibility.
+- Added configs:
+  - `configs/p3_domain_dev50_e_verification_k5_sanity_v3_dryrun.yaml`;
+  - `configs/p3_domain_dev50_e_verification_k5_sanity_v3.yaml`.
+- The v3 non-dry-run config remains unauthorized:
+  - `execution.authorized: false`;
+  - `execution.model_calls_allowed: false`;
+  - `execution.human_gate: null`.
+- Remote GPU-free checks passed:
+  - `python -m unittest tests.test_verification` => 7 tests OK;
+  - v3 dry-run => 50 rows, 332 atomic units, max prompt 1921 chars,
+    `api_called=false`, GPU device absent.
+- Report:
+  `docs/P3_DOMAIN_DEV50_E_VERIFICATION_V3_DRYRUN_20260723.md`.
+
 ## 6. Current Status And Blocker
 
 Current status:
@@ -635,6 +670,8 @@ Current status:
 - Human audit confirmed the overkill diagnosis, and E verifier prompt v2 has
   been prepared and executed as one bounded paid sanity. E v2 fixed most
   overkill but still did not beat D.
+- E v3 candidate-preserving prompt has been prepared in GPU-free mode only; it
+  is not authorized for paid execution.
 - All P3 sanity runs so far are dev-only, seed 42, K=5, and should not be
   reported as final paper numbers.
 - `domain_test` has not been used for tuning and must remain untouched.
@@ -642,8 +679,8 @@ Current status:
 Current blocker:
 
 - Stop for a human decision before any further verifier work.
-- Do not run E-prime from the current verifier approach because E v2 did not
-  produce a positive result.
+- Do not run E v3, E-prime, P5, more seeds, or `domain_test` unless the human
+  explicitly overrides the current recommendation.
 - Do not run P5, more seeds, `domain_test`, or full ablations until the human
   explicitly approves the next bounded gate.
 
@@ -652,10 +689,10 @@ Current blocker:
 Ask the human for one bounded decision:
 
 1. Stop paid verifier work and preserve D as the current positive result.
-2. Or approve GPU-free redesign of verification into a stricter
-   candidate-only rule/audit stage.
-3. Or explicitly approve another bounded verifier experiment with a new prompt
-   rationale.
+2. Or explicitly approve another bounded verifier experiment with the v3 prompt
+   despite the current recommendation.
+3. Or pivot to GPU-free summary/decision logging for the P3 domain-dev sanity
+   sequence.
 
 Do not jump directly to P5.
 
