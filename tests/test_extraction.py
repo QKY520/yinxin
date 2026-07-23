@@ -237,6 +237,107 @@ class ExtractionTest(unittest.TestCase):
             self.assertFalse(saved_manifest["api_called"])
             self.assertEqual(len(list(iter_jsonl(prompt_rows, validate=False))), 2)
 
+    def test_p3_runner_dry_run_replays_knn_examples_and_glossary(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            support = root / "support.jsonl"
+            query = root / "query.jsonl"
+            replay = root / "replay.jsonl"
+            glossary = root / "glossary.jsonl"
+            prompt_rows = root / "prompts.jsonl"
+            manifest = root / "manifest.json"
+            write_jsonl(
+                support,
+                [
+                    record("s1", "歼-20战斗机采用隐身设计。", 0, 7, "EQUIPMENT"),
+                    record("s2", "雷达系统完成目标探测。", 0, 4, "MODULE"),
+                    record("s3", "后掠翼提升高速性能。", 0, 3, "TECH_SCHEME"),
+                ],
+            )
+            write_jsonl(
+                query,
+                [
+                    record("q1", "歼-16战机采用后掠翼。", 0, 6, "EQUIPMENT"),
+                    record("q2", "雷达系统的最大探测距离提升。", 0, 4, "MODULE"),
+                ],
+            )
+            write_jsonl(
+                replay,
+                [
+                    {"id": "q1", "example_ids": ["s2", "s1"]},
+                    {"id": "q2", "example_ids": ["s1", "s3"]},
+                ],
+            )
+            write_jsonl(
+                glossary,
+                [
+                    {"term": "歼-16战机", "type": "EQUIPMENT", "priority": 100},
+                    {"term": "后掠翼", "type": "TECH_SCHEME", "priority": 90},
+                    {"term": "雷达系统", "type": "MODULE", "priority": 100},
+                ],
+            )
+            config = root / "config.yaml"
+            config.write_text(
+                "\n".join(
+                    [
+                        "run_id: unit-p3-c-dry",
+                        "config_name: C",
+                        "data:",
+                        "  dataset: unit",
+                        f"  support_path: {support.as_posix()}",
+                        f"  query_path: {query.as_posix()}",
+                        "schema:",
+                        "  entity_types:",
+                        "    EQUIPMENT: 装备",
+                        "    MODULE: 部件",
+                        "    TECH_SCHEME: 技术体制",
+                        "  relation_types: {}",
+                        "examples:",
+                        "  mode: knn_replay",
+                        "  k: 2",
+                        "  seed: 42",
+                        f"  source_per_query_path: {replay.as_posix()}",
+                        "glossary:",
+                        f"  path: {glossary.as_posix()}",
+                        "  max_entries: 2",
+                        "prompt:",
+                        "  output_instruction: 只返回JSON,不要任何解释,不要markdown代码块",
+                        "model:",
+                        "  name: unit-model",
+                        "  base_url: http://127.0.0.1:8000",
+                        "  timeout_seconds: 1",
+                        "generation:",
+                        "  temperature: 0.0",
+                        "  top_p: 1.0",
+                        "  max_tokens: 64",
+                        "  seed: 42",
+                        "cache:",
+                        f"  dir: {(root / 'cache').as_posix()}",
+                        "outputs:",
+                        f"  dry_run_prompts: {prompt_rows.as_posix()}",
+                        f"  manifest: {manifest.as_posix()}",
+                        f"  per_query: {(root / 'per_query.jsonl').as_posix()}",
+                        f"  summary: {(root / 'summary.json').as_posix()}",
+                    ]
+                ),
+                encoding="utf-8",
+            )
+
+            argv = sys.argv
+            sys.argv = ["run_p3_extraction.py", "--config", str(config), "--dry-run"]
+            try:
+                self.assertEqual(run_main(), 0)
+            finally:
+                sys.argv = argv
+
+            saved_manifest = json.loads(manifest.read_text(encoding="utf-8"))
+            self.assertEqual(saved_manifest["example_selection"]["mode"], "knn_replay")
+            self.assertTrue(saved_manifest["glossary_selection"]["enabled"])
+            saved_prompts = list(iter_jsonl(prompt_rows, validate=False))
+            self.assertEqual(saved_prompts[0]["example_ids"], ["s2", "s1"])
+            self.assertIn("歼-16战机（EQUIPMENT）", saved_prompts[0]["glossary_terms"])
+            self.assertIn("后掠翼（TECH_SCHEME）", saved_prompts[0]["glossary_terms"])
+
 
 if __name__ == "__main__":
     unittest.main()

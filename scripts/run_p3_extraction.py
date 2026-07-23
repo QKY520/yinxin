@@ -177,6 +177,47 @@ def build_knn_selector(
     return select, metadata
 
 
+def build_knn_replay_selector(
+    *,
+    config: dict[str, Any],
+    support_records: list[dict[str, Any]],
+) -> tuple[Callable[[dict[str, Any]], list[dict[str, Any]]], dict[str, Any]]:
+    example_config = config["examples"]
+    k = int(example_config["k"])
+    source_path = example_config["source_per_query_path"]
+    support_by_id = {str(record["id"]): dict(record) for record in support_records}
+    example_ids_by_query: dict[str, list[str]] = {}
+    for line_number, row in enumerate(iter_jsonl(Path(source_path), validate=False), start=1):
+        query_id = row.get("id")
+        example_ids = row.get("example_ids")
+        if not isinstance(query_id, str) or not query_id:
+            raise ValueError(f"{source_path}:{line_number}: replay row id must be a non-empty string")
+        if not isinstance(example_ids, list) or len(example_ids) < k:
+            raise ValueError(f"{source_path}:{line_number}: replay row must contain at least {k} example_ids")
+        normalized_ids = [str(example_id) for example_id in example_ids[:k]]
+        missing = [example_id for example_id in normalized_ids if example_id not in support_by_id]
+        if missing:
+            raise ValueError(f"{source_path}:{line_number}: replay example ids missing from support: {missing}")
+        example_ids_by_query[query_id] = normalized_ids
+
+    def select(record: dict[str, Any]) -> list[dict[str, Any]]:
+        query_id = str(record["id"])
+        example_ids = example_ids_by_query.get(query_id)
+        if example_ids is None:
+            raise ValueError(f"{source_path}: no replay example_ids for query {query_id}")
+        return [dict(support_by_id[example_id]) for example_id in example_ids]
+
+    metadata = {
+        "mode": "knn_replay",
+        "source_mode": "knn_retrieval",
+        "source_per_query_path": source_path,
+        "k": k,
+        "seed": int(example_config["seed"]),
+        "query_replay_rows": len(example_ids_by_query),
+    }
+    return select, metadata
+
+
 def build_glossary_selector(
     config: dict[str, Any],
 ) -> tuple[Callable[[dict[str, Any]], list[str]], dict[str, Any]]:
@@ -248,6 +289,17 @@ def build_query_plan(
         )
     if example_config["mode"] == "knn_retrieval":
         selector, metadata = build_knn_selector(config=config, support_records=support_records)
+        return (
+            support_records,
+            query_records,
+            selector,
+            select_glossary,
+            sha256_file(config_path),
+            metadata,
+            glossary_metadata,
+        )
+    if example_config["mode"] == "knn_replay":
+        selector, metadata = build_knn_replay_selector(config=config, support_records=support_records)
         return (
             support_records,
             query_records,

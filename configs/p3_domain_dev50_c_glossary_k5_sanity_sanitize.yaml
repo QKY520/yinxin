@@ -32,16 +32,11 @@ schema:
   relation_types: {}
 
 examples:
-  mode: knn_retrieval
+  mode: knn_replay
   k: 5
   seed: 42
-
-embedding:
-  model_path: /root/autodl-tmp/models/bge-m3
-  device: cpu
-  use_fp16: false
-  batch_size: 8
-  max_length: 512
+  source_per_query_path: /root/project/results/p3/p3_domain_dev50_b_knn_k5_sanity_sanitize_per_query.jsonl
+  source_note: "Replay B(kNN) example_ids to isolate C-B as glossary-only and avoid BGE CPU loading in 2GB no-card mode."
 
 glossary:
   path: /root/project/data/domain_dict.jsonl
