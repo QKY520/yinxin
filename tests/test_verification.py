@@ -14,6 +14,7 @@ sys.path.insert(0, str(PROJECT_ROOT / "src"))
 from equipment_ie.schema import iter_jsonl  # noqa: E402
 from scripts.run_p3_verification import main as run_main  # noqa: E402
 from scripts.run_p3_verification import (  # noqa: E402
+    build_entity_verification_prompt,
     drop_entities_by_unit_decisions,
     parse_verifier_answer,
 )
@@ -78,6 +79,18 @@ class VerificationDryRunTest(unittest.TestCase):
                     run_main()
             finally:
                 sys.argv = argv
+
+    def test_entity_verification_prompt_is_source_first(self) -> None:
+        prompt = build_entity_verification_prompt(
+            text="P-8A海神海上巡逻机配备声纳系统。",
+            entity={"start": 0, "end": 10, "type": "EQUIPMENT", "span": "P-8A海神海上巡逻机"},
+            evidence_passages=["参考资料没有该实体。"],
+            output_instruction="只回答yes或no",
+        )
+        self.assertIn("最终判断以原文为准", prompt)
+        self.assertIn("不要因为参考资料没有提到它就回答 no", prompt)
+        self.assertIn("如果有任何不确定，回答 yes", prompt)
+        self.assertIn("EQUIPMENT", prompt)
 
     def test_verification_dry_run_uses_source_text_only(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

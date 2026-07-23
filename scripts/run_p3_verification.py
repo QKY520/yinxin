@@ -74,6 +74,14 @@ def gpu_visible() -> bool:
     return any(Path("/dev").glob("nvidia[0-9]*"))
 
 
+ENTITY_TYPE_DEFINITIONS = {
+    "EQUIPMENT": "完整装备、武器平台、系统或型号名称；组织、国家、军队名称不是装备。",
+    "MODULE": "装备的部件、组件、子系统、传感器、载荷或功能模块。",
+    "TECH_SCHEME": "技术体制、制导方式、作战/测试/改进方案或能力方案。",
+    "METRIC": "数值指标、性能参数、射程、速度、重量、时间或数量表达。",
+}
+
+
 def parse_verifier_answer(content: str) -> str:
     normalized = content.strip().lower()
     if normalized in {"yes", "yes.", "是", "是。"}:
@@ -98,13 +106,20 @@ def build_entity_verification_prompt(
     output_instruction: str,
 ) -> str:
     evidence_block = "\n".join(f"- {passage}" for passage in evidence_passages) if evidence_passages else "无"
+    type_block = "\n".join(f"- {name}: {definition}" for name, definition in ENTITY_TYPE_DEFINITIONS.items())
     return "\n\n".join(
         [
-            "任务：判断候选实体是否被原文支持。只判断给定实体，不要新增实体。",
+            "任务：判断候选实体是否应当保留。只判断给定实体，不要新增实体。",
             f"原文：{text}",
+            f"参考资料（仅供参考，最终判断以原文为准）：\n{evidence_block}",
             f"候选实体：{entity['span']}（{entity['type']}）",
-            f"参考资料：\n{evidence_block}",
-            "判断标准：如果该 span 在原文中存在，且类型与上下文一致，回答 yes；否则回答 no。",
+            f"实体类型定义：\n{type_block}",
+            "规则：\n"
+            f"1. 首先在原文中确认“{entity['span']}”是否存在；不要因为参考资料没有提到它就回答 no。\n"
+            "2. 如果原文中存在，再判断类型是否符合上面的定义。\n"
+            "3. 参考资料只是辅助线索，不是主要裁决依据；原文支持优先。\n"
+            "4. 仅当实体明确不在原文中，或类型明显违反定义时，才回答 no。\n"
+            "5. 如果有任何不确定，回答 yes，宁可保留给后续人工/规则处理，也不要误删。",
             output_instruction,
         ]
     )
