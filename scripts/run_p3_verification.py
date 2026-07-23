@@ -104,9 +104,41 @@ def build_entity_verification_prompt(
     entity: dict[str, Any],
     evidence_passages: list[str],
     output_instruction: str,
+    prompt_version: str = "source_first_type_defined_conservative_keep_v2",
 ) -> str:
     evidence_block = "\n".join(f"- {passage}" for passage in evidence_passages) if evidence_passages else "无"
+    if prompt_version == "rag_primary_v1":
+        return "\n\n".join(
+            [
+                "任务：判断候选实体是否被原文支持。只判断给定实体，不要新增实体。",
+                f"原文：{text}",
+                f"候选实体：{entity['span']}（{entity['type']}）",
+                f"参考资料：\n{evidence_block}",
+                "判断标准：如果该 span 在原文中存在，且类型与上下文一致，回答 yes；否则回答 no。",
+                output_instruction,
+            ]
+        )
     type_block = "\n".join(f"- {name}: {definition}" for name, definition in ENTITY_TYPE_DEFINITIONS.items())
+    if prompt_version == "source_first_type_defined_candidate_preserve_v3":
+        return "\n\n".join(
+            [
+                "任务：判断候选实体是否应当保留。只判断给定实体，不要新增实体。",
+                f"原文：{text}",
+                f"参考资料（仅供参考，最终判断以原文为准；参考资料没有提到候选实体时，不能因此回答 no）：\n{evidence_block}",
+                f"候选实体：{entity['span']}（{entity['type']}）",
+                f"实体类型定义：\n{type_block}",
+                "保留保护规则：\n"
+                "1. 如果候选 span 能在原文中逐字定位，且类型不是明显错误，回答 yes。\n"
+                "2. 军事装备编组或平台群体名称，如打击群、战斗群、作战群、编队，只要原文将其作为装备域目标/对象描述，按 EQUIPMENT 倾向保留；国家、地名、军队或机构名仍回答 no。\n"
+                "3. 基础组件、壳体件、发动机、天线、传感器、载荷、舰载/机载武器等，只要原文定位且属于装备组成或携载对象，按 MODULE 倾向保留。\n"
+                "4. 只有当候选 span 不在原文中，或类型明显违反定义（例如地名/组织被标为 EQUIPMENT）时，才回答 no。\n"
+                "5. 如果 RAG 无证据但原文可定位，回答 yes。RAG 只能帮助发现明显错误，不能推翻原文中的合法实体。\n"
+                "6. 如果有任何不确定，回答 yes，宁可保留给后续人工/规则处理，也不要误删。",
+                output_instruction,
+            ]
+        )
+    if prompt_version != "source_first_type_defined_conservative_keep_v2":
+        raise ValueError(f"unsupported verification prompt version {prompt_version!r}")
     return "\n\n".join(
         [
             "任务：判断候选实体是否应当保留。只判断给定实体，不要新增实体。",
@@ -145,7 +177,9 @@ def run_dry(config: dict[str, Any], config_path: Path) -> int:
         expected_rows=input_config.get("expected_rows"),
     )
     evidence_config = config.get("evidence", {"mode": "source_text_only"})
-    output_instruction = config["prompt"].get("output_instruction", "只回答yes或no")
+    prompt_config = config["prompt"]
+    output_instruction = prompt_config.get("output_instruction", "只回答yes或no")
+    prompt_version = prompt_config.get("version", "source_first_type_defined_conservative_keep_v2")
     generation = config["generation"]
     config_hash = sha256_file(config_path)
 
@@ -170,6 +204,7 @@ def run_dry(config: dict[str, Any], config_path: Path) -> int:
                 entity=entity,
                 evidence_passages=evidence_passages,
                 output_instruction=output_instruction,
+                prompt_version=prompt_version,
             )
             max_prompt_chars = max(max_prompt_chars, len(prompt))
             envelope = build_request_envelope(
@@ -193,6 +228,7 @@ def run_dry(config: dict[str, Any], config_path: Path) -> int:
                     "prompt_chars": len(prompt),
                     "evidence_mode": evidence_config.get("mode", "source_text_only"),
                     "evidence_count": len(evidence_passages),
+                    "prompt_version": prompt_version,
                 }
             )
 
@@ -211,6 +247,7 @@ def run_dry(config: dict[str, Any], config_path: Path) -> int:
         "query_rows": len(rows),
         "atomic_units": len(prompt_rows),
         "evidence": evidence_config,
+        "prompt_version": prompt_version,
         "model_calls": 0,
         "api_called": False,
         "model_weights_loaded": False,
@@ -264,7 +301,9 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
         expected_rows=input_config.get("expected_rows"),
     )
     evidence_config = config.get("evidence", {"mode": "source_text_only"})
-    output_instruction = config["prompt"].get("output_instruction", "只回答yes或no")
+    prompt_config = config["prompt"]
+    output_instruction = prompt_config.get("output_instruction", "只回答yes或no")
+    prompt_version = prompt_config.get("version", "source_first_type_defined_conservative_keep_v2")
     generation = config["generation"]
     config_hash = sha256_file(config_path)
     outputs = config["outputs"]
@@ -287,6 +326,7 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
                 entity=entity,
                 evidence_passages=evidence_passages,
                 output_instruction=output_instruction,
+                prompt_version=prompt_version,
             )
             envelope = build_request_envelope(
                 prompt=prompt,
@@ -325,6 +365,7 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
                     "prompt_hash": prompt_hash(prompt),
                     "evidence_mode": evidence_config.get("mode", "source_text_only"),
                     "evidence_count": len(evidence_passages),
+                    "prompt_version": prompt_version,
                 }
             )
         pred_verified = drop_entities_by_unit_decisions(pred_raw, decisions=decisions)
@@ -359,6 +400,7 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
         "dropped_units": dropped_units,
         "invalid_units": invalid_units,
         "evidence": evidence_config,
+        "prompt_version": prompt_version,
         "per_query": outputs["per_query"],
         "per_query_sha256": sha256_file(outputs["per_query"]),
     }

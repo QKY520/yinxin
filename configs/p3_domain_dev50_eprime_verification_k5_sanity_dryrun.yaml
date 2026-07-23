@@ -28,6 +28,7 @@ evidence:
   source_note: "No external RAG passages are injected for E-prime prep so E-prime remains verification-without-extraction-RAG."
 
 prompt:
+  version: rag_primary_v1
   output_instruction: "只回答yes或no"
   decision_policy: "Drop only valid no answers; keep yes and invalid verifier outputs for audit unless later config says otherwise."
 

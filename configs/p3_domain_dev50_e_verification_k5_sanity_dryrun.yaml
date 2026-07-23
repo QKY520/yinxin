@@ -28,6 +28,7 @@ evidence:
   source_note: "Reuse D's query-level RAG passages for GPU-free prompt preparation. Paid verifier execution requires a separate human gate."
 
 prompt:
+  version: rag_primary_v1
   output_instruction: "只回答yes或no"
   decision_policy: "Drop only valid no answers; keep yes and invalid verifier outputs for audit unless later config says otherwise."
 

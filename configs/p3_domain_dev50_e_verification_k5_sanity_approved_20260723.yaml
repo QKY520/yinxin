@@ -28,6 +28,7 @@ evidence:
   source_note: "Reuse D's query-level RAG passages for this bounded paid verifier sanity."
 
 prompt:
+  version: rag_primary_v1
   output_instruction: "\u53ea\u56de\u7b54yes\u6216no"
   decision_policy: "Drop only valid no answers; keep yes and invalid verifier outputs for audit unless later config says otherwise."
 

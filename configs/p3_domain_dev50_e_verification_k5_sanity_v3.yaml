@@ -1,0 +1,55 @@
+run_id: p3-domain-dev50-e-rag-verification-v3-k5-seed42-sanity
+config_name: E_knn_glossary_rag_verification_domain_proposal_stage_v3
+
+execution:
+  phase: P3_VERIFICATION_SANITY
+  authorized: false
+  human_gate: null
+  approval_record: "Prepared after E v2 human audit. Pending explicit paid-GPU approval; current recommendation is no more paid verifier work unless the human explicitly wants another bounded experiment."
+  gpu_hour_cap: 0.5
+  cost_cap_cny: 1.35
+  model_calls_allowed: false
+  gpu_required: true
+  explicit_exclusions:
+    - paid_gpu_verification_run
+    - Eprime_paid_gpu_verification_run
+    - domain_test
+    - P5
+    - full_ablation_grid
+
+input:
+  source_config: D_knn_glossary_rag_domain_proposal_stage_sanitize
+  per_query_path: /root/project/results/p3/p3_domain_dev50_d_rag_k5_sanity_sanitize_per_query.jsonl
+  expected_rows: 50
+  source_note: "E v3 verifies D raw predictions. D extraction already used RAG evidence in the prompt."
+
+evidence:
+  mode: use_extraction_rag_passages
+  max_passages: 3
+  source_note: "RAG passages are secondary context only; source text and candidate-span preservation are primary for v3 verification."
+
+prompt:
+  version: source_first_type_defined_candidate_preserve_v3
+  output_instruction: "\u53ea\u56de\u7b54yes\u6216no"
+  decision_policy: "Drop only valid no answers. V3 protects source-located candidate spans, military formations, and basic components."
+
+model:
+  name: /root/autodl-tmp/models/qwen2.5-7b
+  base_url: http://127.0.0.1:8000
+  timeout_seconds: 300
+  api_key: EMPTY
+
+generation:
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 8
+  seed: 42
+
+cache:
+  dir: /root/project/cache/p3_verification
+
+outputs:
+  dry_run_prompts: /root/project/logs/p3_domain_dev50_e_verification_v3_k5_sanity_prompts.jsonl
+  manifest: /root/project/logs/p3_domain_dev50_e_verification_v3_k5_sanity_manifest.json
+  per_query: /root/project/results/p3/p3_domain_dev50_e_verification_v3_k5_sanity_per_query.jsonl
+  summary: /root/project/results/p3/p3_domain_dev50_e_verification_v3_k5_sanity_summary.json

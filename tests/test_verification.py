@@ -86,11 +86,25 @@ class VerificationDryRunTest(unittest.TestCase):
             entity={"start": 0, "end": 10, "type": "EQUIPMENT", "span": "P-8A海神海上巡逻机"},
             evidence_passages=["参考资料没有该实体。"],
             output_instruction="只回答yes或no",
+            prompt_version="source_first_type_defined_conservative_keep_v2",
         )
         self.assertIn("最终判断以原文为准", prompt)
         self.assertIn("不要因为参考资料没有提到它就回答 no", prompt)
         self.assertIn("如果有任何不确定，回答 yes", prompt)
         self.assertIn("EQUIPMENT", prompt)
+
+    def test_entity_verification_prompt_v3_protects_candidate_spans(self) -> None:
+        prompt = build_entity_verification_prompt(
+            text="航母打击群包括水面作战群和鱼雷系统。",
+            entity={"start": 0, "end": 5, "type": "EQUIPMENT", "span": "航母打击群"},
+            evidence_passages=[],
+            output_instruction="只回答yes或no",
+            prompt_version="source_first_type_defined_candidate_preserve_v3",
+        )
+        self.assertIn("如果候选 span 能在原文中逐字定位", prompt)
+        self.assertIn("打击群", prompt)
+        self.assertIn("基础组件", prompt)
+        self.assertIn("如果 RAG 无证据但原文可定位，回答 yes", prompt)
 
     def test_verification_dry_run_uses_source_text_only(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
