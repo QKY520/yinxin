@@ -562,6 +562,57 @@ Completed in GPU-free mode after the human audit.
 - Report:
   `docs/P3_DOMAIN_DEV50_E_VERIFICATION_V2_DRYRUN_20260723.md`.
 
+### P3 E v2 - Source-first Verification Paid Sanity
+
+Completed as one bounded paid-GPU sanity run on `domain_dev50`.
+
+- Human enabled paid GPU mode and approved one bounded E v2 verifier sanity.
+- Only E v2 was run; E-prime, P5, more seeds, and `domain_test` were not run.
+- Approved config:
+  `configs/p3_domain_dev50_e_verification_k5_sanity_v2_approved_20260723.yaml`.
+- Model: Qwen2.5-7B via vLLM.
+- Verifier input: D RAG raw predictions.
+- Prompt: source text primary, RAG secondary, explicit type definitions,
+  answer `yes` when uncertain.
+- Atomic verifier units: 332 entity units.
+- Verifier decisions:
+  - yes: 319;
+  - no: 13;
+  - invalid: 0.
+- Raw/D metrics:
+  - P: `0.5210843373493976`;
+  - R: `0.5635179153094463`;
+  - F1: `0.5414710485133021`;
+  - TP/FP/FN: 173 / 159 / 134;
+  - hallucination rate: `0.4789156626506024`.
+- E v2 verified metrics:
+  - P: `0.5266457680250783`;
+  - R: `0.5472312703583062`;
+  - F1: `0.5367412140575081`;
+  - TP/FP/FN: 168 / 151 / 139;
+  - hallucination rate: `0.47335423197492166`.
+- Dropped diagnostics:
+  - dropped units: 13;
+  - dropped exact gold matches: 5;
+  - dropped exact-gold-match rate: `0.38461538461538464`.
+- Interpretation: E v2 fixed catastrophic overkill but is still not positive.
+  It slightly reduces FP/hallucination rate, but F1 remains below D because it
+  still drops gold entities. Preserve as mixed/near-tie negative evidence.
+- vLLM was stopped after execution and GPU memory returned to 0 MiB / 24564 MiB.
+- Approximate model-active window was about 3 minutes, about 0.14 CNY at 2.7
+  CNY/hour. Platform billing is authoritative.
+- Backup:
+  - remote:
+    `/root/autodl-tmp/backup/p3/p3_domain_dev50_e_v2_verification_sanity_20260723.tar.gz`;
+  - local:
+    `D:\yinsir\backups\P3\p3_domain_dev50_e_v2_verification_sanity_20260723.tar.gz`;
+  - SHA256:
+    `68514392464b742586327223e476dfa9bc3e38b45905d9c33634980de92e742c`.
+- Report:
+  `docs/P3_DOMAIN_DEV50_E_V2_VERIFICATION_SANITY_20260723.md`.
+- Dropped-unit audit sheet:
+  `docs/P3_DOMAIN_DEV50_E_V2_VERIFICATION_DROPPED_AUDIT_20260723.md`.
+
 ## 6. Current Status And Blocker
 
 Current status:
@@ -582,16 +633,17 @@ Current status:
 - E paid verifier sanity completed and is negative/overkill with the current
   verifier wording.
 - Human audit confirmed the overkill diagnosis, and E verifier prompt v2 has
-  been prepared in GPU-free mode but not executed with model calls.
+  been prepared and executed as one bounded paid sanity. E v2 fixed most
+  overkill but still did not beat D.
 - All P3 sanity runs so far are dev-only, seed 42, K=5, and should not be
   reported as final paper numbers.
 - `domain_test` has not been used for tuning and must remain untouched.
 
 Current blocker:
 
-- Stop for explicit human approval before one bounded paid-GPU E v2 verifier
-  sanity.
-- Do not run E-prime until E v2 is checked because v1 already showed overkill.
+- Stop for a human decision before any further verifier work.
+- Do not run E-prime from the current verifier approach because E v2 did not
+  produce a positive result.
 - Do not run P5, more seeds, `domain_test`, or full ablations until the human
   explicitly approves the next bounded gate.
 
@@ -599,9 +651,11 @@ Current blocker:
 
 Ask the human for one bounded decision:
 
-1. Approve one bounded paid-GPU E v2 verifier sanity on `domain_dev50`.
-2. Or inspect the generated E v2 prompts before paid execution.
-3. Or stop verification work and preserve D as the current positive result.
+1. Stop paid verifier work and preserve D as the current positive result.
+2. Or approve GPU-free redesign of verification into a stricter
+   candidate-only rule/audit stage.
+3. Or explicitly approve another bounded verifier experiment with a new prompt
+   rationale.
 
 Do not jump directly to P5.
 
