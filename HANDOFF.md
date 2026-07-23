@@ -527,6 +527,41 @@ Completed as one bounded paid-GPU sanity run on `domain_dev50`.
 - Dropped-unit audit sheet:
   `docs/P3_DOMAIN_DEV50_E_VERIFICATION_DROPPED_AUDIT_20260723.md`.
 
+### P3 E - Verification Overkill Audit And V2 Prep
+
+Completed in GPU-free mode after the human audit.
+
+- Human verdict file:
+  `docs/P3_DOMAIN_DEV50_E_VERIFICATION_VERDICT_20260723.md`.
+- Audit result:
+  - wrong_drop: 18/20;
+  - correct_drop: 1/20;
+  - unclear: 1/20;
+  - verifier overkill rate: 90%.
+- Root cause: verifier prompt treated RAG evidence as primary. When RAG did not
+  mention a candidate entity, the verifier often answered `no` even when source
+  text supported the entity.
+- Implemented verifier prompt v2 in `scripts/run_p3_verification.py`:
+  - source text is primary;
+  - RAG evidence is secondary;
+  - explicit type definitions are included;
+  - answer `no` only if clearly absent from source text or clearly violates the
+    type definition;
+  - if uncertain, answer `yes`.
+- Added configs:
+  - `configs/p3_domain_dev50_e_verification_k5_sanity_v2_dryrun.yaml`;
+  - `configs/p3_domain_dev50_e_verification_k5_sanity_v2.yaml`.
+- The v2 non-dry-run config remains unauthorized:
+  - `execution.authorized: false`;
+  - `execution.model_calls_allowed: false`;
+  - `execution.human_gate: null`.
+- Remote GPU-free checks passed:
+  - `python -m unittest tests.test_verification` => 6 tests OK;
+  - v2 dry-run => 50 rows, 332 atomic units, max prompt 1722 chars,
+    `api_called=false`, GPU device absent.
+- Report:
+  `docs/P3_DOMAIN_DEV50_E_VERIFICATION_V2_DRYRUN_20260723.md`.
+
 ## 6. Current Status And Blocker
 
 Current status:
@@ -546,16 +581,17 @@ Current status:
 - E/E-prime verification GPU-free prompt prep has completed.
 - E paid verifier sanity completed and is negative/overkill with the current
   verifier wording.
+- Human audit confirmed the overkill diagnosis, and E verifier prompt v2 has
+  been prepared in GPU-free mode but not executed with model calls.
 - All P3 sanity runs so far are dev-only, seed 42, K=5, and should not be
   reported as final paper numbers.
 - `domain_test` has not been used for tuning and must remain untouched.
 
 Current blocker:
 
-- Stop for human audit and verifier prompt revision before any further paid
-  verifier run.
-- Do not run E-prime with the current verifier wording because E already showed
-  overkill.
+- Stop for explicit human approval before one bounded paid-GPU E v2 verifier
+  sanity.
+- Do not run E-prime until E v2 is checked because v1 already showed overkill.
 - Do not run P5, more seeds, `domain_test`, or full ablations until the human
   explicitly approves the next bounded gate.
 
@@ -563,9 +599,8 @@ Current blocker:
 
 Ask the human for one bounded decision:
 
-1. Audit the 20 sampled dropped E entities in
-   `docs/P3_DOMAIN_DEV50_E_VERIFICATION_DROPPED_AUDIT_20260723.md`.
-2. Or approve GPU-free verifier prompt revision based on the E overkill result.
+1. Approve one bounded paid-GPU E v2 verifier sanity on `domain_dev50`.
+2. Or inspect the generated E v2 prompts before paid execution.
 3. Or stop verification work and preserve D as the current positive result.
 
 Do not jump directly to P5.
