@@ -654,20 +654,45 @@ passes structurally, but B underperforms A on F1 and is recorded as a negative
 result. All full-50 runs were performed only on `domain_dev`, not
 `domain_test`.
 
-The next blocker is procedural and quality-related: stop for human audit of the
-domain_dev50 B result, especially kNN example choices and why B underperformed
-A. Do not continue paid GPU, `domain_test`, C/P4/P5, or the full ablation grid
-until the human explicitly approves the next gate.
+The human audited B in
+`docs/P3_DOMAIN_DEV50_B_KNN_AUDIT_20260722.md` and concluded that B is a valid
+negative result caused by support-pool and retrieval mismatch rather than a
+pipeline failure. The approved next small direction is C(glossary) on
+`domain_dev50`, still not P4/P5.
+
+C(glossary) GPU-free preparation was completed on 2026-07-23:
+
+- Added seed glossary `data/domain_dict.jsonl` with 73 query-matched equipment
+  domain entries.
+- Added C dry-run and execution-template configs.
+- Added glossary selection and `glossary_terms` logging.
+- Because the current GPU-free AutoDL cgroup memory limit is 2 GiB and BGE-M3
+  CPU loading was killed, C uses `examples.mode: knn_replay` to reuse the exact
+  B `example_ids` from the completed B per-query output. This isolates C-B as
+  a glossary-only comparison and avoids embedding recomputation.
+- Remote tests passed: 57 tests OK.
+- C dry-run passed with 50 rows, 0 model calls, `gpu_device_present=false`,
+  max prompt chars 4517, glossary coverage 45/50 rows, and average 2.78
+  glossary terms per row.
+- Report:
+  `docs/P3_DOMAIN_DEV50_C_GLOSSARY_DRYRUN_20260723.md`.
+
+The next blocker is procedural: stop before the paid-GPU C run. Do not run
+`domain_test`, P4, P5, or the full ablation grid until the human explicitly
+approves the next gate.
 
 ## 7. Immediate Next Plan
 
-1. Commit and push the B implementation/config/report/handoff update plus the
-   human A-audit document.
-2. Tell the human to shut down or switch back to GPU-free mode because vLLM is
-   stopped and GPU memory is 0 MiB.
-3. Ask the human to audit the B per-query rows, kNN example IDs, and B-vs-A
-   drop.
-4. Do not run domain test, C/P4/P5, or the full ablation grid until the human
+1. If the human approves paid GPU, run only
+   `P3 C domain_dev50 K=5 seed=42 sanity with proposal-stage sanitization`.
+2. Before that run, edit
+   `configs/p3_domain_dev50_c_glossary_k5_sanity_sanitize.yaml` to set
+   `authorized=true`, `human_gate=P3_DOMAIN_SANITY_APPROVED`, and
+   `model_calls_allowed=true`.
+3. After the C run, stop vLLM, verify GPU memory returns to 0 MiB, back up and
+   sync artifacts, write a C report, and ask the human to audit the glossary
+   effects before any P4/P5.
+4. Do not run domain test, P4/P5, or the full ablation grid until the human
    approves another gate.
 
 ## 8. Useful Commands
