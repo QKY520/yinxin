@@ -681,18 +681,65 @@ The next blocker is procedural: stop before the paid-GPU C run. Do not run
 `domain_test`, P4, P5, or the full ablation grid until the human explicitly
 approves the next gate.
 
+The human then switched to paid GPU mode and approved one bounded P3 C run.
+The C run completed on 2026-07-23:
+
+- Config:
+  `configs/p3_domain_dev50_c_glossary_k5_sanity_sanitize.yaml`.
+- Model: Qwen2.5-7B via vLLM.
+- Dataset: `domain_dev50` only, K=5 seed=42.
+- Examples: `knn_replay`, reusing B's recorded `example_ids`.
+- Glossary: enabled with 73 candidates, substring matching, max 20 entries.
+- Query rows: 50.
+- Parse failures: 0/50 = 0.0%.
+- Entity micro precision: 0.4722222222222222.
+- Entity micro recall: 0.5537459283387622.
+- Entity micro F1: 0.5097451274362819.
+- TP/FP/FN: 170 / 190 / 137.
+- Sanitized unit events: 27.
+- Sanitization flags:
+  - `ENTITY_DROPPED_INVALID_UNIT`: 20.
+  - `ENTITY_DROPPED_OVERLAP`: 7.
+- Predicted entities: 360.
+- Type counts:
+  - EQUIPMENT: 179.
+  - MODULE: 133.
+  - METRIC: 31.
+  - TECH_SCHEME: 17.
+- Max type share: 0.49722222222222223.
+- Comparison:
+  - A F1: 0.5221374045801527.
+  - B F1: 0.5038402457757296.
+  - C F1: 0.5097451274362819.
+  - C improves over B by about +0.0059 F1 but remains below A by about
+    -0.0124 F1. Preserve this as a mixed result.
+- Verification passed:
+  `python scripts/verify_p3_sanity_result.py --per-query results/p3/p3_domain_dev50_c_glossary_k5_sanity_sanitize_per_query.jsonl --expected-rows 50`
+  returned `status=ok`.
+- vLLM was stopped and GPU memory returned to 0 MiB / 24564 MiB.
+- Backup:
+  `/root/autodl-tmp/backup/p3/p3_domain_dev50_c_glossary_sanity_sanitize_20260723.tar.gz`
+  and
+  `D:\yinsir\backups\P3\p3_domain_dev50_c_glossary_sanity_sanitize_20260723.tar.gz`.
+- Backup SHA256:
+  `84febe390bf5690b80e06049dd48c9d92de5e478c7e5a914dab333a707531e58`.
+- Report:
+  `docs/P3_DOMAIN_DEV50_C_GLOSSARY_SANITY_20260723.md`.
+
+Current blocker after C: stop for human audit of C glossary effects. Do not
+run P4/P5, `domain_test`, or the full ablation grid until the human explicitly
+approves the next gate.
+
 ## 7. Immediate Next Plan
 
-1. If the human approves paid GPU, run only
-   `P3 C domain_dev50 K=5 seed=42 sanity with proposal-stage sanitization`.
-2. Before that run, edit
-   `configs/p3_domain_dev50_c_glossary_k5_sanity_sanitize.yaml` to set
-   `authorized=true`, `human_gate=P3_DOMAIN_SANITY_APPROVED`, and
-   `model_calls_allowed=true`.
-3. After the C run, stop vLLM, verify GPU memory returns to 0 MiB, back up and
-   sync artifacts, write a C report, and ask the human to audit the glossary
-   effects before any P4/P5.
-4. Do not run domain test, P4/P5, or the full ablation grid until the human
+1. Ask the human to audit C:
+   `results/p3/p3_domain_dev50_c_glossary_k5_sanity_sanitize_per_query.jsonl`
+   against B and A, focusing on `glossary_terms`, type/boundary effects, and
+   the METRIC increase.
+2. If C audit is acceptable, the next possible small step is still a bounded
+   dev-only decision: either refine glossary conservatively on public/support
+   sources, or prepare D(RAG) GPU-free. Do not jump to P5.
+3. Do not run domain test, P4/P5, or the full ablation grid until the human
    approves another gate.
 
 ## 8. Useful Commands
