@@ -3,12 +3,12 @@ config_name: C_knn_glossary_domain_proposal_stage_sanitize
 
 execution:
   phase: P3_GPU_SANITY
-  authorized: false
-  human_gate: null
-  approval_record: "Execution template prepared in GPU-free mode after B audit. Requires explicit paid-GPU approval before setting authorized=true and model_calls_allowed=true."
+  authorized: true
+  human_gate: P3_DOMAIN_SANITY_APPROVED
+  approval_record: "2026-07-23 human switched to paid GPU mode and approved one bounded P3 C(glossary) domain_dev50 K=5 seed=42 sanity run only; no domain_test/P4/P5/full ablation."
   gpu_hour_cap: 0.5
   cost_cap_cny: 1.35
-  model_calls_allowed: false
+  model_calls_allowed: true
   gpu_required: true
   explicit_exclusions:
     - CLUENER_current_sanity
