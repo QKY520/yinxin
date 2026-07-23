@@ -303,4 +303,3 @@ Do not jump directly to P5 without a human gate.
 - All negative and mixed rows are paper evidence. Do not delete or hide them.
 - Every prompt/config/glossary/RAG decision needs a Git commit or structured
   decision record.
-
