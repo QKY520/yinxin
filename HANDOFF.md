@@ -356,39 +356,81 @@ Completed in GPU-free mode only.
 - Relevance audit template:
   `docs/P3_DOMAIN_DEV50_D_RAG_RELEVANCE_AUDIT_20260723.md`
 
+### P3 D - RAG Paid Sanity
+
+Completed as one bounded paid-GPU sanity run on `domain_dev50`.
+
+- Human confirmed paid GPU was enabled and approved one bounded P3 D(RAG)
+  domain-dev sanity only.
+- Config: `configs/p3_domain_dev50_d_rag_k5_sanity_sanitize.yaml`
+- Model: Qwen2.5-7B via vLLM.
+- RAG path: BGE-M3 + FAISS top-20 + bge-reranker-v2-m3 top-3.
+- Dev SELF leakage fix active: excluded 50 `domain_dev` source IDs from RAG.
+- RAG retained chunks: 263 from 333 raw chunks.
+- Run window:
+  - vLLM health ready: `2026-07-23 15:11:44` Asia/Shanghai;
+  - extraction started: `2026-07-23 15:12:16` Asia/Shanghai;
+  - extraction ended: `2026-07-23 15:34:49` Asia/Shanghai.
+- vLLM was stopped and GPU memory returned to 0 MiB.
+- Approximate GPU service window: about 26 minutes.
+- Estimated cost at 2.7 CNY/hour: about 1.17 CNY; platform billing is
+  authoritative.
+- Metrics:
+  - P: `0.5210843373493976`;
+  - R: `0.5635179153094463`;
+  - F1: `0.5414710485133021`;
+  - TP/FP/FN: 173 / 159 / 134;
+  - parse failures: 0/50;
+  - predicted entities: 332;
+  - max type share: 0.5060.
+- Comparison:
+  - D vs C: F1 `+0.0317`, FP `-31`;
+  - D vs A: F1 `+0.0193`, FP `-18`.
+- Verification passed:
+  `python scripts/verify_p3_sanity_result.py --per-query results/p3/p3_domain_dev50_d_rag_k5_sanity_sanitize_per_query.jsonl --expected-rows 50`
+- Backup:
+  - remote:
+    `/root/autodl-tmp/backup/p3/p3_domain_dev50_d_rag_sanity_20260723.tar.gz`;
+  - local:
+    `D:\yinsir\backups\P3\p3_domain_dev50_d_rag_sanity_20260723.tar.gz`;
+  - SHA256:
+    `f449d67638ac71bd43f0ffd7fe1dc93149ac1d52b431faf358ea540c34e3f843`.
+- Report:
+  `docs/P3_DOMAIN_DEV50_D_RAG_SANITY_20260723.md`
+
 ## 6. Current Status And Blocker
 
 Current status:
 
 - P2 domain gold split/freeze is complete.
 - P3 domain-dev sanity has completed A, B, and C on `domain_dev50`.
-- A is the current strongest single sanity result.
+- D is the current strongest single sanity result.
 - B is a valid negative result.
 - C is an accepted mixed result: slight recovery over B but still below A.
 - D(RAG) GPU-free prep has completed using lexical preview only.
 - D relevance audit has completed. The main finding was dev SELF leakage in the
   initial preview; this has been fixed by excluding `domain_dev` IDs.
-- Final D `bge_faiss_rerank` config is prepared but unauthorized.
+- Final D `bge_faiss_rerank` sanity run completed and is the strongest P3
+  domain-dev sanity result so far.
 - All P3 A/B/C runs so far are dev-only, seed 42, K=5, and should not be
   reported as final paper numbers.
 - `domain_test` has not been used for tuning and must remain untouched.
 
 Current blocker:
 
-- Stop for explicit human approval before any paid-GPU D sanity run.
-- If approved, update the final D config with `execution.authorized: true` and
-  `human_gate: P3_D_SANITY_APPROVED`, then run one bounded D sanity only.
-- Do not run P4, P5, `domain_test`, or full ablations until the human explicitly
-  approves the next bounded gate.
+- Stop for human audit of D per-query differences against C.
+- Do not run E/E-prime, P4/P5, more seeds, `domain_test`, or full ablations
+  until the human explicitly approves the next bounded gate.
 
 ## 7. Immediate Next Plan
 
 Ask the human for one bounded decision:
 
-1. Approve one paid-GPU D sanity run on `domain_dev50` only, with cost cap
-   0.5 GPU-hour / 1.35 CNY at 2.7 CNY/hour.
-2. Or request more GPU-free inspection of the post-exclusion lexical preview.
-3. Or stop RAG work and preserve D prep as an engineering result.
+1. Audit D vs C per-query differences, focusing on FP reductions and any lost
+   correct entities.
+2. If audit is acceptable, decide whether to prepare E/E-prime verification
+   work in GPU-free mode.
+3. Or request more dev-only analysis of D before adding verification.
 
 Do not jump directly to P5.
 
@@ -412,6 +454,7 @@ Current P3 reports:
 - `docs/P3_DOMAIN_DEV50_C_GLOSSARY_AUDIT_20260723.md`
 - `docs/P3_DOMAIN_DEV50_D_RAG_DRYRUN_20260723.md`
 - `docs/P3_DOMAIN_DEV50_D_RAG_RELEVANCE_AUDIT_20260723.md`
+- `docs/P3_DOMAIN_DEV50_D_RAG_SANITY_20260723.md`
 
 Current P3 configs:
 
