@@ -378,6 +378,12 @@ class ExtractionTest(unittest.TestCase):
                 corpus,
                 [
                     {
+                        "id": "q1",
+                        "title": "Self leak",
+                        "source_type": "unit",
+                        "text": "Carrier strike group uses EOTS targeting system.",
+                    },
+                    {
                         "id": "p1",
                         "title": "Carrier strike group",
                         "source_type": "unit",
@@ -414,6 +420,7 @@ class ExtractionTest(unittest.TestCase):
                         "  enabled: true",
                         "  mode: lexical_preview",
                         f"  corpus_path: {corpus.as_posix()}",
+                        f"  exclude_source_ids_path: {query.as_posix()}",
                         "  top_k: 1",
                         "  retrieve_top_k: 2",
                         "  chunk_chars: 120",
@@ -451,6 +458,9 @@ class ExtractionTest(unittest.TestCase):
             saved_manifest = json.loads(manifest.read_text(encoding="utf-8"))
             self.assertTrue(saved_manifest["rag_selection"]["enabled"])
             self.assertEqual(saved_manifest["rag_selection"]["mode"], "lexical_preview")
+            self.assertEqual(saved_manifest["rag_selection"]["excluded_source_ids"], 1)
+            self.assertEqual(saved_manifest["rag_selection"]["raw_chunk_count"], 3)
+            self.assertEqual(saved_manifest["rag_selection"]["chunk_count"], 2)
             saved_prompts = list(iter_jsonl(prompt_rows, validate=False))
             self.assertEqual(saved_prompts[0]["rag_passage_ids"], ["p1#chunk-0"])
             self.assertIn("Carrier strike group", saved_prompts[0]["rag_passages"][0])

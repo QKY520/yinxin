@@ -323,25 +323,34 @@ Completed in GPU-free mode only.
   `domain_test`, no P5/full ablation.
 - Added RAG selector support in `scripts/run_p3_extraction.py`.
 - Prompt/logging now supports `rag_passages` and `rag_passage_ids`.
+- RAG selector now supports `rag.exclude_source_ids_path` /
+  `rag.exclude_source_ids_paths` to prevent dev/test SELF leakage.
 - Added D dry-run config:
   `configs/p3_domain_dev50_d_rag_k5_sanity_sanitize_dryrun.yaml`.
+- Added final D config template:
+  `configs/p3_domain_dev50_d_rag_k5_sanity_sanitize.yaml`.
 - Dry-run mode used `rag.mode: lexical_preview` only to validate prompt
-  injection and relevance-audit workflow under GPU-free constraints.
-- Important: final D must still use the fixed method path
-  `bge_faiss_rerank`: BGE-M3 embeddings, FAISS top-20, and
-  bge-reranker-v2-m3 top-3 after a separate paid-GPU approval gate.
+  injection, dev-id exclusion, and relevance-audit workflow under GPU-free
+  constraints.
+- Final D config uses the fixed method path `bge_faiss_rerank`: BGE-M3
+  embeddings, FAISS top-20, and bge-reranker-v2-m3 top-3. It is not authorized
+  for execution yet.
 - Remote GPU-free test passed:
   `python -m unittest tests.test_extraction` => 13 tests OK.
 - Remote D dry-run passed:
   `python scripts/run_p3_extraction.py --config configs/p3_domain_dev50_d_rag_k5_sanity_sanitize_dryrun.yaml --dry-run`
 - Dry-run summary:
   - query rows: 50;
-  - RAG corpus chunks: 333;
+  - raw RAG corpus chunks: 333;
+  - excluded dev source IDs: 50;
+  - retained RAG chunks after exclusion: 263;
   - injected top-k: 3;
   - model calls: 0;
   - API called: false;
   - GPU device present: false;
-  - max prompt chars: 5486.
+  - max prompt chars: 5496.
+- First 10 relevance-audit rows were spot-checked after the SELF fix; top-1 is
+  no longer the query itself in those rows.
 - Report:
   `docs/P3_DOMAIN_DEV50_D_RAG_DRYRUN_20260723.md`
 - Relevance audit template:
@@ -357,36 +366,29 @@ Current status:
 - B is a valid negative result.
 - C is an accepted mixed result: slight recovery over B but still below A.
 - D(RAG) GPU-free prep has completed using lexical preview only.
+- D relevance audit has completed. The main finding was dev SELF leakage in the
+  initial preview; this has been fixed by excluding `domain_dev` IDs.
+- Final D `bge_faiss_rerank` config is prepared but unauthorized.
 - All P3 A/B/C runs so far are dev-only, seed 42, K=5, and should not be
   reported as final paper numbers.
 - `domain_test` has not been used for tuning and must remain untouched.
 
 Current blocker:
 
-- Stop for human audit of D(RAG) relevance using
-  `docs/P3_DOMAIN_DEV50_D_RAG_RELEVANCE_AUDIT_20260723.md`.
+- Stop for explicit human approval before any paid-GPU D sanity run.
+- If approved, update the final D config with `execution.authorized: true` and
+  `human_gate: P3_D_SANITY_APPROVED`, then run one bounded D sanity only.
 - Do not run P4, P5, `domain_test`, or full ablations until the human explicitly
   approves the next bounded gate.
 
 ## 7. Immediate Next Plan
 
-Ask the human to fill or summarize the D relevance audit:
+Ask the human for one bounded decision:
 
-- Count how many sampled top-1 evidence passages are same-topic.
-- Count how many top-3 sets are useful context versus noisy.
-- Identify whether RAG evidence is likely to reduce false entities or add
-  unrelated terms.
-- Decide whether to proceed to a final D `bge_faiss_rerank` config and one
-  bounded paid-GPU D sanity run.
-
-After audit, choose only one next bounded step:
-
-1. If D relevance is acceptable: prepare final D `bge_faiss_rerank` config and
-   ask for explicit paid-GPU approval for one D sanity run only.
-2. If D relevance is mixed: inspect more dev-only rows or refine chunking/audit
-   criteria without touching `domain_test`.
-3. If D relevance is harmful: stop before paid D and diagnose corpus/chunking
-   retrieval noise.
+1. Approve one paid-GPU D sanity run on `domain_dev50` only, with cost cap
+   0.5 GPU-hour / 1.35 CNY at 2.7 CNY/hour.
+2. Or request more GPU-free inspection of the post-exclusion lexical preview.
+3. Or stop RAG work and preserve D prep as an engineering result.
 
 Do not jump directly to P5.
 
@@ -418,6 +420,7 @@ Current P3 configs:
 - `configs/p3_domain_dev50_c_glossary_k5_sanity_sanitize.yaml`
 - `configs/p3_domain_dev50_c_glossary_k5_sanity_sanitize_dryrun.yaml`
 - `configs/p3_domain_dev50_d_rag_k5_sanity_sanitize_dryrun.yaml`
+- `configs/p3_domain_dev50_d_rag_k5_sanity_sanitize.yaml`
 
 Current P3 outputs:
 

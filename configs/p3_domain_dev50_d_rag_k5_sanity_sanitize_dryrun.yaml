@@ -48,6 +48,7 @@ rag:
   enabled: true
   mode: lexical_preview
   corpus_path: /root/autodl-tmp/data/domain_rag_corpus.jsonl
+  exclude_source_ids_path: /root/autodl-tmp/data/domain_dev.jsonl
   chunk_chars: 260
   overlap_chars: 40
   retrieve_top_k: 20

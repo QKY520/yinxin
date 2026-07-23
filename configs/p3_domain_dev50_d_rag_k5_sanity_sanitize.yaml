@@ -1,0 +1,98 @@
+run_id: p3-domain-dev50-d-rag-k5-seed42-sanity-sanitize
+config_name: D_knn_glossary_rag_domain_proposal_stage_sanitize
+
+execution:
+  phase: P3_DOMAIN_DEV50_D_RAG_SANITY
+  authorized: false
+  human_gate: null
+  approval_record: "Prepared after D relevance audit. Pending explicit paid-GPU approval for one bounded D sanity run only; do not execute while authorized=false."
+  gpu_hour_cap: 0.5
+  cost_cap_cny: 1.35
+  model_calls_allowed: false
+  gpu_required: true
+  explicit_exclusions:
+    - CLUENER_current_sanity
+    - paid_gpu_d_run
+    - P5
+    - full_ablation_grid
+    - domain_test
+
+data:
+  dataset: domain_dev50
+  support_path: /root/autodl-tmp/data/domain_support.jsonl
+  query_path: /root/autodl-tmp/data/domain_dev.jsonl
+
+schema:
+  task: ner
+  entity_types:
+    EQUIPMENT: 完整装备、武器平台、系统或型号名称。
+    MODULE: 装备的部件、组件、子系统、传感器、载荷或功能模块。
+    TECH_SCHEME: 技术体制、制导方式、作战/测试/改进方案或能力方案。
+    METRIC: 数值指标、性能参数、射程、速度、重量、时间或数量表达。
+  relation_types: {}
+
+examples:
+  mode: knn_replay
+  k: 5
+  seed: 42
+  source_per_query_path: /root/project/results/p3/p3_domain_dev50_b_knn_k5_sanity_sanitize_per_query.jsonl
+  source_note: "Replay B(kNN) example_ids to isolate C-B as glossary-only and avoid BGE CPU loading in 2GB no-card mode."
+
+glossary:
+  path: /root/project/data/domain_dict.jsonl
+  max_entries: 20
+  match_mode: substring
+  source_note: "Seed glossary from QAonMilitaryKG categories/attributes plus project equipment terms; no dev/test label statistics."
+
+rag:
+  enabled: true
+  mode: bge_faiss_rerank
+  corpus_path: /root/autodl-tmp/data/domain_rag_corpus.jsonl
+  exclude_source_ids_path: /root/autodl-tmp/data/domain_dev.jsonl
+  chunk_chars: 260
+  overlap_chars: 40
+  retrieve_top_k: 20
+  top_k: 3
+  max_passage_chars: 300
+  source_note: "Final D RAG path: exclude dev IDs to avoid SELF leakage, retrieve with BGE-M3 + FAISS top-20, rerank with bge-reranker-v2-m3 top-3."
+  embedding:
+    model_path: /root/autodl-tmp/models/bge-m3
+    device: cpu
+    use_fp16: false
+    batch_size: 8
+    max_length: 512
+  reranker:
+    model_path: /root/autodl-tmp/models/bge-reranker
+    device: cpu
+    use_fp16: false
+
+prompt:
+  output_instruction: "只返回JSON,不要任何解释,不要markdown代码块"
+  retry_suffix: "只返回合法JSON"
+  retry_mode: parser_error_aware
+
+parsing:
+  drop_invalid_entities: true
+  mode: proposal_stage_sanitize
+  note: "Drop invalid proposed units with flags for P3 sanity; final evaluation semantics remain strict unless separately approved."
+
+model:
+  name: /root/autodl-tmp/models/qwen2.5-7b
+  base_url: http://127.0.0.1:8000
+  timeout_seconds: 300
+  api_key: EMPTY
+
+generation:
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 768
+  seed: 42
+
+cache:
+  dir: /root/project/cache/p3_extraction
+
+outputs:
+  dry_run_prompts: /root/project/logs/p3_domain_dev50_d_rag_k5_sanity_sanitize_prompts.jsonl
+  manifest: /root/project/logs/p3_domain_dev50_d_rag_k5_sanity_sanitize_manifest.json
+  per_query: /root/project/results/p3/p3_domain_dev50_d_rag_k5_sanity_sanitize_per_query.jsonl
+  summary: /root/project/results/p3/p3_domain_dev50_d_rag_k5_sanity_sanitize_summary.json

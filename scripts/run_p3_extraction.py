@@ -155,6 +155,29 @@ def load_rag_passages(path: str, *, chunk_chars: int, overlap_chars: int) -> lis
     return passages
 
 
+def load_rag_excluded_source_ids(rag_config: dict[str, Any]) -> set[str]:
+    paths: list[str] = []
+    single_path = rag_config.get("exclude_source_ids_path")
+    if single_path:
+        paths.append(str(single_path))
+    multiple_paths = rag_config.get("exclude_source_ids_paths", [])
+    if isinstance(multiple_paths, str):
+        paths.append(multiple_paths)
+    elif isinstance(multiple_paths, list):
+        paths.extend(str(path) for path in multiple_paths)
+    elif multiple_paths:
+        raise ValueError("rag.exclude_source_ids_paths must be a string or list")
+
+    excluded: set[str] = set()
+    for path in paths:
+        for line_number, record in enumerate(iter_jsonl(Path(path), validate=False), start=1):
+            record_id = record.get("id")
+            if not isinstance(record_id, str) or not record_id:
+                raise ValueError(f"{path}:{line_number}: exclusion row must contain non-empty id")
+            excluded.add(record_id)
+    return excluded
+
+
 def format_rag_passage(passage: dict[str, Any], *, max_chars: int) -> str:
     text = str(passage["text"])
     if len(text) > max_chars:
@@ -201,6 +224,14 @@ def build_rag_selector(
         chunk_chars=chunk_chars,
         overlap_chars=overlap_chars,
     )
+    raw_chunk_count = len(passages)
+    excluded_source_ids = load_rag_excluded_source_ids(rag_config)
+    if excluded_source_ids:
+        passages = [
+            passage for passage in passages if str(passage["source_id"]) not in excluded_source_ids
+        ]
+    if not passages:
+        raise ValueError("RAG source-id exclusion removed all passages")
     if top_k <= 0 or retrieve_top_k < top_k:
         raise ValueError("rag.top_k must be positive and rag.retrieve_top_k must be >= top_k")
 
@@ -226,6 +257,8 @@ def build_rag_selector(
             "note": "GPU-free lexical preview for prompt/evidence audit only; final D uses bge_faiss_rerank.",
             "corpus_path": corpus_path,
             "corpus_rows_sha256": sha256_file(corpus_path),
+            "excluded_source_ids": len(excluded_source_ids),
+            "raw_chunk_count": raw_chunk_count,
             "chunk_count": len(passages),
             "chunk_chars": chunk_chars,
             "overlap_chars": overlap_chars,
@@ -295,6 +328,8 @@ def build_rag_selector(
             "mode": mode,
             "corpus_path": corpus_path,
             "corpus_rows_sha256": sha256_file(corpus_path),
+            "excluded_source_ids": len(excluded_source_ids),
+            "raw_chunk_count": raw_chunk_count,
             "chunk_count": len(passages),
             "chunk_chars": chunk_chars,
             "overlap_chars": overlap_chars,
@@ -612,6 +647,7 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
     if execution.get("human_gate") not in {
         "P3_GPU_SANITY_APPROVED",
         "P3_DOMAIN_SANITY_APPROVED",
+        "P3_D_SANITY_APPROVED",
     }:
         raise RuntimeError("P3 GPU sanity human gate is not approved in config")
     if not gpu_visible():
