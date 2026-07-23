@@ -26,6 +26,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--summary-out", required=True)
     parser.add_argument("--audit-md", required=True)
     parser.add_argument("--audit-limit", type=int, default=20)
+    parser.add_argument("--source-per-query")
     return parser.parse_args()
 
 
@@ -49,11 +50,12 @@ def write_audit_md(
     path: Path,
     *,
     rows: list[dict[str, Any]],
+    source_rows: dict[str, dict[str, Any]],
     dropped_units: list[dict[str, Any]],
     limit: int,
 ) -> None:
     row_by_id = {row["id"]: row for row in rows}
-    selected = dropped_units[:limit]
+    selected = select_even_sample(dropped_units, limit)
     lines = [
         "# P3 Domain Dev50 E Verification Dropped-Unit Audit",
         "",
@@ -64,7 +66,8 @@ def write_audit_md(
     ]
     for index, unit in enumerate(selected, start=1):
         row = row_by_id[unit["id"]]
-        evidence = row.get("rag_passages") or []
+        source_row = source_rows.get(unit["id"], {})
+        evidence = row.get("rag_passages") or source_row.get("rag_passages") or []
         evidence_text = " / ".join(str(item) for item in evidence[:2])
         lines.append(
             "| {index} | `{id}` | {span} | `{type}` | {gold_match} | {text} | {evidence} |  |  |".format(
@@ -81,12 +84,28 @@ def write_audit_md(
     path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
+def select_even_sample(items: list[dict[str, Any]], limit: int) -> list[dict[str, Any]]:
+    if limit <= 0 or len(items) <= limit:
+        return items[: max(limit, 0)]
+    if limit == 1:
+        return [items[0]]
+    last = len(items) - 1
+    indices = [round(index * last / (limit - 1)) for index in range(limit)]
+    return [items[index] for index in indices]
+
+
 def main() -> int:
     args = parse_args()
     per_query = Path(args.per_query)
     rows = [dict(row) for row in iter_jsonl(per_query, validate=False)]
     if len(rows) != args.expected_rows:
         raise ValueError(f"expected {args.expected_rows} rows, got {len(rows)}")
+    source_rows: dict[str, dict[str, Any]] = {}
+    if args.source_per_query:
+        source_rows = {
+            str(row["id"]): dict(row)
+            for row in iter_jsonl(Path(args.source_per_query), validate=False)
+        }
 
     gold_records = [row["gold"] for row in rows]
     raw_records = [row["pred_raw"] for row in rows]
@@ -138,12 +157,19 @@ def main() -> int:
         "invalid_units": invalid_units,
         "type_drop_counts": dict(sorted(type_drop_counts.items())),
         "audit_md": args.audit_md,
+        "source_per_query": args.source_per_query,
     }
 
     summary_path = Path(args.summary_out)
     summary_path.parent.mkdir(parents=True, exist_ok=True)
     summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    write_audit_md(Path(args.audit_md), rows=rows, dropped_units=dropped_units, limit=args.audit_limit)
+    write_audit_md(
+        Path(args.audit_md),
+        rows=rows,
+        source_rows=source_rows,
+        dropped_units=dropped_units,
+        limit=args.audit_limit,
+    )
     print(json.dumps(summary, ensure_ascii=False, sort_keys=True))
     return 0
 
