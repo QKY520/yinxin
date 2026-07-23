@@ -521,7 +521,7 @@ Completed as one bounded paid-GPU sanity run on `domain_dev50`.
   - local:
     `D:\yinsir\backups\P3\p3_domain_dev50_e_verification_sanity_20260723.tar.gz`;
   - SHA256:
-    `8fccbaa14bb95d4de3da45beb638367ecd6baa5bb0490a2fa31b4a62411c6320`.
+    `74c702f9b3bcfbb2db902e9c5b2fae61223ec819358d23227938063458067a51`.
 - Report:
   `docs/P3_DOMAIN_DEV50_E_VERIFICATION_SANITY_20260723.md`.
 - Dropped-unit audit sheet:

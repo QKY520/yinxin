@@ -34,7 +34,7 @@ Bounded paid-GPU sanity run only.
 - Remote/local backup:
   `backups/P3/p3_domain_dev50_e_verification_sanity_20260723.tar.gz`
 - Backup SHA256:
-  `8fccbaa14bb95d4de3da45beb638367ecd6baa5bb0490a2fa31b4a62411c6320`
+  `74c702f9b3bcfbb2db902e9c5b2fae61223ec819358d23227938063458067a51`
 
 ## Metrics
 
