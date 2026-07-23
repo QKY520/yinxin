@@ -313,6 +313,40 @@ Completed on `domain_dev50` and preserved as a mixed result.
 - Audit template created and pushed:
   `docs/P3_DOMAIN_DEV50_C_GLOSSARY_AUDIT_20260723.md`
 
+### P3 D - RAG GPU-free Prep
+
+Completed in GPU-free mode only.
+
+- Human completed the C glossary audit and accepted C as an
+  `acceptable mixed result`.
+- D prep scope: no paid GPU, no vLLM call, no model inference, no
+  `domain_test`, no P5/full ablation.
+- Added RAG selector support in `scripts/run_p3_extraction.py`.
+- Prompt/logging now supports `rag_passages` and `rag_passage_ids`.
+- Added D dry-run config:
+  `configs/p3_domain_dev50_d_rag_k5_sanity_sanitize_dryrun.yaml`.
+- Dry-run mode used `rag.mode: lexical_preview` only to validate prompt
+  injection and relevance-audit workflow under GPU-free constraints.
+- Important: final D must still use the fixed method path
+  `bge_faiss_rerank`: BGE-M3 embeddings, FAISS top-20, and
+  bge-reranker-v2-m3 top-3 after a separate paid-GPU approval gate.
+- Remote GPU-free test passed:
+  `python -m unittest tests.test_extraction` => 13 tests OK.
+- Remote D dry-run passed:
+  `python scripts/run_p3_extraction.py --config configs/p3_domain_dev50_d_rag_k5_sanity_sanitize_dryrun.yaml --dry-run`
+- Dry-run summary:
+  - query rows: 50;
+  - RAG corpus chunks: 333;
+  - injected top-k: 3;
+  - model calls: 0;
+  - API called: false;
+  - GPU device present: false;
+  - max prompt chars: 5486.
+- Report:
+  `docs/P3_DOMAIN_DEV50_D_RAG_DRYRUN_20260723.md`
+- Relevance audit template:
+  `docs/P3_DOMAIN_DEV50_D_RAG_RELEVANCE_AUDIT_20260723.md`
+
 ## 6. Current Status And Blocker
 
 Current status:
@@ -321,39 +355,38 @@ Current status:
 - P3 domain-dev sanity has completed A, B, and C on `domain_dev50`.
 - A is the current strongest single sanity result.
 - B is a valid negative result.
-- C is a mixed result: slight recovery over B but still below A.
+- C is an accepted mixed result: slight recovery over B but still below A.
+- D(RAG) GPU-free prep has completed using lexical preview only.
 - All P3 A/B/C runs so far are dev-only, seed 42, K=5, and should not be
   reported as final paper numbers.
 - `domain_test` has not been used for tuning and must remain untouched.
 
 Current blocker:
 
-- Stop for human audit of C glossary effects using
-  `docs/P3_DOMAIN_DEV50_C_GLOSSARY_AUDIT_20260723.md`.
+- Stop for human audit of D(RAG) relevance using
+  `docs/P3_DOMAIN_DEV50_D_RAG_RELEVANCE_AUDIT_20260723.md`.
 - Do not run P4, P5, `domain_test`, or full ablations until the human explicitly
   approves the next bounded gate.
 
 ## 7. Immediate Next Plan
 
-Ask the human to fill or summarize the C audit:
+Ask the human to fill or summarize the D relevance audit:
 
-- Compare C per-query output against B and A.
-- Check whether `glossary_terms` are relevant, noisy but harmless, or misleading.
-- Check whether glossary helps `EQUIPMENT`/`MODULE` boundaries.
-- Check whether glossary causes `METRIC` or `TECH_SCHEME` over-labeling.
-- Recheck at least 10 C sanitizer flags.
-- Record final judgment: `acceptable mixed result`, `harmful`, or `promising`.
+- Count how many sampled top-1 evidence passages are same-topic.
+- Count how many top-3 sets are useful context versus noisy.
+- Identify whether RAG evidence is likely to reduce false entities or add
+  unrelated terms.
+- Decide whether to proceed to a final D `bge_faiss_rerank` config and one
+  bounded paid-GPU D sanity run.
 
 After audit, choose only one next bounded step:
 
-1. If C is acceptable: prepare D(RAG) in GPU-free mode only. Build/check RAG
-   corpus/index/rerank path on dev, write a relevance-audit template, and stop
-   before any paid GPU D run.
-2. If C is harmful: conservatively revise `data/domain_dict.jsonl` using only
-   public/support/dev-allowed evidence, record a glossary decision log, dry-run
-   C again, and stop for approval.
-3. If C has no practical value: preserve it as mixed/negative, analyze why A is
-   more stable, and ask before changing the planned matrix.
+1. If D relevance is acceptable: prepare final D `bge_faiss_rerank` config and
+   ask for explicit paid-GPU approval for one D sanity run only.
+2. If D relevance is mixed: inspect more dev-only rows or refine chunking/audit
+   criteria without touching `domain_test`.
+3. If D relevance is harmful: stop before paid D and diagnose corpus/chunking
+   retrieval noise.
 
 Do not jump directly to P5.
 
@@ -375,6 +408,8 @@ Current P3 reports:
 - `docs/P3_DOMAIN_DEV50_C_GLOSSARY_DRYRUN_20260723.md`
 - `docs/P3_DOMAIN_DEV50_C_GLOSSARY_SANITY_20260723.md`
 - `docs/P3_DOMAIN_DEV50_C_GLOSSARY_AUDIT_20260723.md`
+- `docs/P3_DOMAIN_DEV50_D_RAG_DRYRUN_20260723.md`
+- `docs/P3_DOMAIN_DEV50_D_RAG_RELEVANCE_AUDIT_20260723.md`
 
 Current P3 configs:
 
@@ -382,6 +417,7 @@ Current P3 configs:
 - `configs/p3_domain_dev50_b_knn_k5_sanity_sanitize.yaml`
 - `configs/p3_domain_dev50_c_glossary_k5_sanity_sanitize.yaml`
 - `configs/p3_domain_dev50_c_glossary_k5_sanity_sanitize_dryrun.yaml`
+- `configs/p3_domain_dev50_d_rag_k5_sanity_sanitize_dryrun.yaml`
 
 Current P3 outputs:
 

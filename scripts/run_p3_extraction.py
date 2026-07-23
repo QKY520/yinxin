@@ -108,6 +108,208 @@ def load_glossary_records(path: str) -> list[dict[str, Any]]:
     return records
 
 
+def chunk_text(text: str, *, chunk_chars: int, overlap_chars: int) -> list[str]:
+    if chunk_chars <= 0:
+        raise ValueError("chunk_chars must be positive")
+    if overlap_chars < 0 or overlap_chars >= chunk_chars:
+        raise ValueError("overlap_chars must be non-negative and smaller than chunk_chars")
+    if len(text) <= chunk_chars:
+        return [text]
+    chunks: list[str] = []
+    start = 0
+    step = chunk_chars - overlap_chars
+    while start < len(text):
+        chunk = text[start : start + chunk_chars]
+        if chunk:
+            chunks.append(chunk)
+        if start + chunk_chars >= len(text):
+            break
+        start += step
+    return chunks
+
+
+def load_rag_passages(path: str, *, chunk_chars: int, overlap_chars: int) -> list[dict[str, Any]]:
+    passages: list[dict[str, Any]] = []
+    for line_number, record in enumerate(iter_jsonl(Path(path), validate=False), start=1):
+        text = record.get("text")
+        if not isinstance(text, str) or not text.strip():
+            raise ValueError(f"{path}:{line_number}: RAG corpus row must contain non-empty text")
+        source_id = str(record.get("id") or f"row-{line_number}")
+        title = str(record.get("title") or record.get("source_id") or source_id)
+        for chunk_index, chunk in enumerate(
+            chunk_text(text.strip(), chunk_chars=chunk_chars, overlap_chars=overlap_chars)
+        ):
+            passages.append(
+                {
+                    "id": f"{source_id}#chunk-{chunk_index}",
+                    "source_id": source_id,
+                    "source_type": record.get("source_type"),
+                    "title": title,
+                    "chunk_index": chunk_index,
+                    "text": chunk,
+                    "content_sha256": record.get("content_sha256"),
+                }
+            )
+    if not passages:
+        raise ValueError(f"{path}: RAG corpus produced no passages")
+    return passages
+
+
+def format_rag_passage(passage: dict[str, Any], *, max_chars: int) -> str:
+    text = str(passage["text"])
+    if len(text) > max_chars:
+        text = text[:max_chars].rstrip() + "..."
+    return (
+        f"{passage['title']} | {passage.get('source_type') or 'unknown'} | "
+        f"{passage['id']}: {text}"
+    )
+
+
+def char_ngrams(text: str, *, n: int = 2) -> set[str]:
+    compact = "".join(text.split())
+    if len(compact) < n:
+        return {compact} if compact else set()
+    return {compact[index : index + n] for index in range(len(compact) - n + 1)}
+
+
+def lexical_rag_score(query_text: str, passage: dict[str, Any]) -> tuple[int, int, int, str]:
+    passage_text = str(passage["text"])
+    query_grams = char_ngrams(query_text)
+    passage_grams = char_ngrams(passage_text)
+    overlap = len(query_grams & passage_grams)
+    exact_title = 1 if str(passage.get("title") or "") in query_text else 0
+    exact_source = 1 if str(passage.get("source_id") or "") in query_text else 0
+    return (overlap, exact_title, exact_source, str(passage["id"]))
+
+
+def build_rag_selector(
+    config: dict[str, Any],
+) -> tuple[Callable[[dict[str, Any]], list[dict[str, Any]]], dict[str, Any]]:
+    rag_config = config.get("rag")
+    if not rag_config or rag_config.get("enabled") is not True:
+        return lambda _record: [], {"enabled": False}
+
+    corpus_path = rag_config["corpus_path"]
+    top_k = int(rag_config.get("top_k", 3))
+    retrieve_top_k = int(rag_config.get("retrieve_top_k", 20))
+    chunk_chars = int(rag_config.get("chunk_chars", 260))
+    overlap_chars = int(rag_config.get("overlap_chars", 40))
+    max_passage_chars = int(rag_config.get("max_passage_chars", 300))
+    mode = str(rag_config.get("mode", "lexical_preview"))
+    passages = load_rag_passages(
+        corpus_path,
+        chunk_chars=chunk_chars,
+        overlap_chars=overlap_chars,
+    )
+    if top_k <= 0 or retrieve_top_k < top_k:
+        raise ValueError("rag.top_k must be positive and rag.retrieve_top_k must be >= top_k")
+
+    if mode == "lexical_preview":
+        def select(record: dict[str, Any]) -> list[dict[str, Any]]:
+            ranked = sorted(
+                passages,
+                key=lambda passage: lexical_rag_score(str(record["text"]), passage),
+                reverse=True,
+            )
+            selected = ranked[:top_k]
+            return [
+                {
+                    **passage,
+                    "display": format_rag_passage(passage, max_chars=max_passage_chars),
+                }
+                for passage in selected
+            ]
+
+        return select, {
+            "enabled": True,
+            "mode": mode,
+            "note": "GPU-free lexical preview for prompt/evidence audit only; final D uses bge_faiss_rerank.",
+            "corpus_path": corpus_path,
+            "corpus_rows_sha256": sha256_file(corpus_path),
+            "chunk_count": len(passages),
+            "chunk_chars": chunk_chars,
+            "overlap_chars": overlap_chars,
+            "retrieve_top_k": retrieve_top_k,
+            "top_k": top_k,
+        }
+
+    if mode == "bge_faiss_rerank":
+        embedding_config = rag_config.get("embedding", config.get("embedding", {}))
+        reranker_config = rag_config.get("reranker", {})
+        model_path = embedding_config.get("model_path", "/root/autodl-tmp/models/bge-m3")
+        reranker_path = reranker_config.get("model_path", "/root/autodl-tmp/models/bge-reranker")
+        batch_size = int(embedding_config.get("batch_size", 8))
+        max_length = int(embedding_config.get("max_length", 512))
+        device = embedding_config.get("device", "cpu")
+        use_fp16 = bool(embedding_config.get("use_fp16", False))
+        reranker_device = reranker_config.get("device", device)
+        reranker_use_fp16 = bool(reranker_config.get("use_fp16", use_fp16))
+        if device == "cpu" and reranker_device == "cpu":
+            os.environ["CUDA_VISIBLE_DEVICES"] = ""
+        try:
+            import faiss
+            import numpy as np
+            from FlagEmbedding import BGEM3FlagModel, FlagReranker
+        except ImportError as exc:
+            raise RuntimeError("bge_faiss_rerank requires faiss, numpy, and FlagEmbedding") from exc
+
+        model = BGEM3FlagModel(model_path, use_fp16=use_fp16, device=device)
+        reranker = FlagReranker(reranker_path, use_fp16=reranker_use_fp16, device=reranker_device)
+
+        def encode(texts: list[str]) -> Any:
+            output = model.encode(texts, batch_size=batch_size, max_length=max_length)
+            dense = output["dense_vecs"] if isinstance(output, dict) else output
+            vectors = np.asarray(dense, dtype="float32")
+            if vectors.ndim == 1:
+                vectors = vectors.reshape(1, -1)
+            norms = np.linalg.norm(vectors, axis=1, keepdims=True)
+            if np.any(norms == 0):
+                raise ValueError("BGE-M3 produced a zero embedding")
+            return vectors / norms
+
+        passage_vectors = encode([str(passage["text"]) for passage in passages])
+        index = faiss.IndexFlatIP(passage_vectors.shape[1])
+        index.add(passage_vectors)
+
+        def select(record: dict[str, Any]) -> list[dict[str, Any]]:
+            query_text = str(record["text"])
+            query_vector = encode([query_text])
+            _, indices = index.search(query_vector, retrieve_top_k)
+            candidates = [passages[int(index_)] for index_ in indices[0] if int(index_) >= 0]
+            pairs = [[query_text, str(passage["text"])] for passage in candidates]
+            scores = reranker.compute_score(pairs) if pairs else []
+            if isinstance(scores, float):
+                scores = [scores]
+            ranked = sorted(zip(candidates, scores), key=lambda item: float(item[1]), reverse=True)
+            return [
+                {
+                    **passage,
+                    "rerank_score": float(score),
+                    "display": format_rag_passage(passage, max_chars=max_passage_chars),
+                }
+                for passage, score in ranked[:top_k]
+            ]
+
+        return select, {
+            "enabled": True,
+            "mode": mode,
+            "corpus_path": corpus_path,
+            "corpus_rows_sha256": sha256_file(corpus_path),
+            "chunk_count": len(passages),
+            "chunk_chars": chunk_chars,
+            "overlap_chars": overlap_chars,
+            "retrieve_top_k": retrieve_top_k,
+            "top_k": top_k,
+            "embedding_model_path": model_path,
+            "embedding_device": device,
+            "reranker_model_path": reranker_path,
+            "reranker_device": reranker_device,
+            "faiss_index": "IndexFlatIP",
+        }
+
+    raise ValueError(f"unsupported rag mode {mode!r}")
+
+
 def empty_prediction(gold: dict[str, Any]) -> dict[str, Any]:
     return {"id": gold["id"], "text": gold["text"], "entities": [], "relations": []}
 
@@ -254,7 +456,9 @@ def build_query_plan(
     list[dict[str, Any]],
     Callable[[dict[str, Any]], list[dict[str, Any]]],
     Callable[[dict[str, Any]], list[str]],
+    Callable[[dict[str, Any]], list[dict[str, Any]]],
     str,
+    dict[str, Any],
     dict[str, Any],
     dict[str, Any],
 ]:
@@ -265,6 +469,7 @@ def build_query_plan(
         query_records = query_records[:max_queries]
     example_config = config["examples"]
     select_glossary, glossary_metadata = build_glossary_selector(config)
+    select_rag, rag_metadata = build_rag_selector(config)
     if example_config["mode"] == "fixed_random":
         examples = select_fixed_random_examples(
             support_records,
@@ -283,9 +488,11 @@ def build_query_plan(
             query_records,
             lambda _record: fixed_examples,
             select_glossary,
+            select_rag,
             sha256_file(config_path),
             metadata,
             glossary_metadata,
+            rag_metadata,
         )
     if example_config["mode"] == "knn_retrieval":
         selector, metadata = build_knn_selector(config=config, support_records=support_records)
@@ -294,9 +501,11 @@ def build_query_plan(
             query_records,
             selector,
             select_glossary,
+            select_rag,
             sha256_file(config_path),
             metadata,
             glossary_metadata,
+            rag_metadata,
         )
     if example_config["mode"] == "knn_replay":
         selector, metadata = build_knn_replay_selector(config=config, support_records=support_records)
@@ -305,15 +514,27 @@ def build_query_plan(
             query_records,
             selector,
             select_glossary,
+            select_rag,
             sha256_file(config_path),
             metadata,
             glossary_metadata,
+            rag_metadata,
         )
     raise ValueError(f"unsupported example selection mode {example_config['mode']!r}")
 
 
 def run_dry(config: dict[str, Any], config_path: Path) -> int:
-    _, query_records, select_examples, select_glossary, config_hash, example_metadata, glossary_metadata = build_query_plan(
+    (
+        _,
+        query_records,
+        select_examples,
+        select_glossary,
+        select_rag,
+        config_hash,
+        example_metadata,
+        glossary_metadata,
+        rag_metadata,
+    ) = build_query_plan(
         config=config, config_path=config_path, dry_run=True
     )
     entity_types = config["schema"]["entity_types"]
@@ -323,11 +544,13 @@ def run_dry(config: dict[str, Any], config_path: Path) -> int:
     for record in query_records:
         examples = select_examples(record)
         glossary_entries = select_glossary(record)
+        rag_passages = select_rag(record)
         prompt = build_ner_prompt(
             query_text=record["text"],
             entity_types=entity_types,
             examples=examples,
             glossary_entries=glossary_entries,
+            rag_passages=[passage["display"] for passage in rag_passages],
             include_relations=False,
             output_instruction=config["prompt"]["output_instruction"],
         )
@@ -348,6 +571,8 @@ def run_dry(config: dict[str, Any], config_path: Path) -> int:
                 "gold_entities": len(record["entities"]),
                 "example_ids": [example["id"] for example in examples],
                 "glossary_terms": glossary_entries,
+                "rag_passage_ids": [passage["id"] for passage in rag_passages],
+                "rag_passages": [passage["display"] for passage in rag_passages],
             }
         )
 
@@ -366,6 +591,7 @@ def run_dry(config: dict[str, Any], config_path: Path) -> int:
         "query_records": len(query_records),
         "example_selection": example_metadata,
         "glossary_selection": glossary_metadata,
+        "rag_selection": rag_metadata,
         "model_calls": 0,
         "api_called": False,
         "model_weights_loaded": False,
@@ -391,7 +617,17 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
     if not gpu_visible():
         raise RuntimeError("GPU is not visible; refusing non-dry execution")
 
-    _, query_records, select_examples, select_glossary, config_hash, example_metadata, glossary_metadata = build_query_plan(
+    (
+        _,
+        query_records,
+        select_examples,
+        select_glossary,
+        select_rag,
+        config_hash,
+        example_metadata,
+        glossary_metadata,
+        rag_metadata,
+    ) = build_query_plan(
         config=config, config_path=config_path, dry_run=False
     )
     entity_types = set(config["schema"]["entity_types"])
@@ -411,11 +647,13 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
     for record in query_records:
         examples = select_examples(record)
         glossary_entries = select_glossary(record)
+        rag_passages = select_rag(record)
         prompt = build_ner_prompt(
             query_text=record["text"],
             entity_types=config["schema"]["entity_types"],
             examples=examples,
             glossary_entries=glossary_entries,
+            rag_passages=[passage["display"] for passage in rag_passages],
             include_relations=False,
             output_instruction=config["prompt"]["output_instruction"],
         )
@@ -492,6 +730,8 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
                 "prompt_hash": prompt_hash(prompt),
                 "example_ids": [example["id"] for example in examples],
                 "glossary_terms": glossary_entries,
+                "rag_passage_ids": [passage["id"] for passage in rag_passages],
+                "rag_passages": [passage["display"] for passage in rag_passages],
                 "attempts": attempts,
                 "sanitization_flags": sanitization_flags,
             }
@@ -509,6 +749,7 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
         "query_records": len(query_records),
         "example_selection": example_metadata,
         "glossary_selection": glossary_metadata,
+        "rag_selection": rag_metadata,
         "elapsed_seconds": round(time.monotonic() - started, 3),
         "parse_failures": parse_failures,
         "parse_failure_rate": parse_failures / len(rows) if rows else 0.0,

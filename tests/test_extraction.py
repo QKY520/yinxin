@@ -69,6 +69,19 @@ class ExtractionTest(unittest.TestCase):
         self.assertLess(prompt.index("Schema"), prompt.index("领域术语表"))
         self.assertLess(prompt.index("领域术语表"), prompt.index("示例1文本"))
 
+    def test_prompt_places_rag_after_glossary_before_examples(self) -> None:
+        example = record("ex1", "Jet uses radar.", 0, 3, "EQUIPMENT")
+        prompt = build_ner_prompt(
+            query_text="Carrier strike group uses EOTS.",
+            entity_types={"EQUIPMENT": "equipment", "MODULE": "module"},
+            examples=[example],
+            glossary_entries=["carrier（EQUIPMENT）"],
+            rag_passages=["EOTS is an electro optical targeting system."],
+        )
+        self.assertLess(prompt.index("Schema"), prompt.index("领域术语表"))
+        self.assertLess(prompt.index("领域术语表"), prompt.index("参考资料"))
+        self.assertLess(prompt.index("参考资料"), prompt.index("示例1文本"))
+
     def test_select_glossary_entries_matches_query_substrings(self) -> None:
         selected = select_glossary_entries(
             "歼-16战机的最大飞行速度和机长是多少？",
@@ -337,6 +350,110 @@ class ExtractionTest(unittest.TestCase):
             self.assertEqual(saved_prompts[0]["example_ids"], ["s2", "s1"])
             self.assertIn("歼-16战机（EQUIPMENT）", saved_prompts[0]["glossary_terms"])
             self.assertIn("后掠翼（TECH_SCHEME）", saved_prompts[0]["glossary_terms"])
+
+
+    def test_p3_runner_dry_run_writes_rag_preview_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            support = root / "support.jsonl"
+            query = root / "query.jsonl"
+            corpus = root / "rag.jsonl"
+            prompt_rows = root / "prompts.jsonl"
+            manifest = root / "manifest.json"
+            write_jsonl(
+                support,
+                [
+                    record("s1", "Carrier uses radar.", 0, 7, "EQUIPMENT"),
+                    record("s2", "Missile uses seeker.", 0, 7, "EQUIPMENT"),
+                    record("s3", "Radar tracks aircraft.", 0, 5, "MODULE"),
+                ],
+            )
+            write_jsonl(
+                query,
+                [
+                    record("q1", "Carrier strike group uses EOTS targeting system.", 0, 7, "EQUIPMENT"),
+                ],
+            )
+            write_jsonl(
+                corpus,
+                [
+                    {
+                        "id": "p1",
+                        "title": "Carrier strike group",
+                        "source_type": "unit",
+                        "text": "Carrier strike group has radar and EOTS targeting evidence.",
+                    },
+                    {
+                        "id": "p2",
+                        "title": "Unrelated",
+                        "source_type": "unit",
+                        "text": "Cooking equipment patent text.",
+                    },
+                ],
+            )
+            config = root / "config.yaml"
+            config.write_text(
+                "\n".join(
+                    [
+                        "run_id: unit-p3-d-rag-dry",
+                        "config_name: D",
+                        "data:",
+                        "  dataset: unit",
+                        f"  support_path: {support.as_posix()}",
+                        f"  query_path: {query.as_posix()}",
+                        "schema:",
+                        "  entity_types:",
+                        "    EQUIPMENT: equipment",
+                        "    MODULE: module",
+                        "  relation_types: {}",
+                        "examples:",
+                        "  mode: fixed_random",
+                        "  k: 2",
+                        "  seed: 42",
+                        "rag:",
+                        "  enabled: true",
+                        "  mode: lexical_preview",
+                        f"  corpus_path: {corpus.as_posix()}",
+                        "  top_k: 1",
+                        "  retrieve_top_k: 2",
+                        "  chunk_chars: 120",
+                        "  overlap_chars: 0",
+                        "prompt:",
+                        "  output_instruction: 只返回JSON,不要任何解释,不要markdown代码块",
+                        "model:",
+                        "  name: unit-model",
+                        "  base_url: http://127.0.0.1:8000",
+                        "  timeout_seconds: 1",
+                        "generation:",
+                        "  temperature: 0.0",
+                        "  top_p: 1.0",
+                        "  max_tokens: 64",
+                        "  seed: 42",
+                        "cache:",
+                        f"  dir: {(root / 'cache').as_posix()}",
+                        "outputs:",
+                        f"  dry_run_prompts: {prompt_rows.as_posix()}",
+                        f"  manifest: {manifest.as_posix()}",
+                        f"  per_query: {(root / 'per_query.jsonl').as_posix()}",
+                        f"  summary: {(root / 'summary.json').as_posix()}",
+                    ]
+                ),
+                encoding="utf-8",
+            )
+
+            argv = sys.argv
+            sys.argv = ["run_p3_extraction.py", "--config", str(config), "--dry-run"]
+            try:
+                self.assertEqual(run_main(), 0)
+            finally:
+                sys.argv = argv
+
+            saved_manifest = json.loads(manifest.read_text(encoding="utf-8"))
+            self.assertTrue(saved_manifest["rag_selection"]["enabled"])
+            self.assertEqual(saved_manifest["rag_selection"]["mode"], "lexical_preview")
+            saved_prompts = list(iter_jsonl(prompt_rows, validate=False))
+            self.assertEqual(saved_prompts[0]["rag_passage_ids"], ["p1#chunk-0"])
+            self.assertIn("Carrier strike group", saved_prompts[0]["rag_passages"][0])
 
 
 if __name__ == "__main__":
