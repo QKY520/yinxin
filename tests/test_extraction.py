@@ -177,6 +177,16 @@ class ExtractionTest(unittest.TestCase):
             }
         )
 
+    def test_validate_execution_gate_accepts_p5_replication_gate(self) -> None:
+        validate_execution_gate(
+            {
+                "authorized": True,
+                "model_calls_allowed": True,
+                "phase": "P5_DOMAIN_REPLICATION",
+                "human_gate": "P5_DOMAIN_REPLICATION_APPROVED",
+            }
+        )
+
     def test_validate_execution_gate_requires_model_calls_allowed(self) -> None:
         with self.assertRaisesRegex(RuntimeError, "model_calls_allowed"):
             validate_execution_gate(

@@ -46,6 +46,7 @@ P3_EXECUTION_GATES = frozenset(
 P5_EXECUTION_GATES = frozenset(
     {
         "P5_DOMAIN_PILOT_APPROVED",
+        "P5_DOMAIN_REPLICATION_APPROVED",
     }
 )
 

@@ -1,0 +1,66 @@
+﻿run_id: p5-domain-test-a-k5-seed44-draft
+config_name: A_fixed_random_domain_test_p5_draft
+
+execution:
+  phase: P5_DOMAIN_REPLICATION
+  authorized: true
+  human_gate: P5_DOMAIN_REPLICATION_APPROVED
+  approval_record: "Human approval in chat on 2026-07-24: paid GPU/card mode is enabled. Scope: bounded P5 domain replication A/B/C/D on domain_test K=5 seeds 43 and 44 only; no prompt/glossary/RAG/verifier tuning; no E/E-prime; D uses existing P5 D RAG replay manifest."
+  model_calls_allowed: true
+  gpu_required: true
+  explicit_exclusions:
+    - prompt_tuning_from_domain_test
+    - glossary_tuning_from_domain_test
+    - rag_tuning_from_domain_test
+    - verification
+    - E_or_Eprime
+
+data:
+  dataset: domain_test
+  support_path: /root/autodl-tmp/data/domain_support.jsonl
+  query_path: /root/autodl-tmp/data/domain_test.jsonl
+
+schema:
+  task: ner
+  entity_types:
+    EQUIPMENT: 完整装备、武器平台、系统或型号名称。
+    MODULE: 装备的部件、组件、子系统、传感器、载荷或功能模块。
+    TECH_SCHEME: 技术体制、制导方式、作战/测试/改进方案或能力方案。
+    METRIC: 数值指标、性能参数、射程、速度、重量、时间或数量表达。
+  relation_types: {}
+
+examples:
+  mode: fixed_random
+  k: 5
+  seed: 44
+
+prompt:
+  output_instruction: "只返回JSON,不要任何解释,不要markdown代码块"
+  retry_suffix: "只返回合法JSON"
+  retry_mode: parser_error_aware
+
+parsing:
+  drop_invalid_entities: true
+  mode: proposal_stage_sanitize
+  note: "Match the accepted P3 sanitize setting for config comparability; do not change after domain_test execution starts."
+
+model:
+  name: /root/autodl-tmp/models/qwen2.5-7b
+  base_url: http://127.0.0.1:8000
+  timeout_seconds: 300
+  api_key: EMPTY
+
+generation:
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 768
+  seed: 44
+
+cache:
+  dir: /root/project/cache/p5_extraction
+
+outputs:
+  dry_run_prompts: /root/project/logs/p5_domain_test_a_k5_seed44_prompts.jsonl
+  manifest: /root/project/logs/p5_domain_test_a_k5_seed44_manifest.json
+  per_query: /root/project/results/p5/p5_domain_test_a_k5_seed44_per_query.jsonl
+  summary: /root/project/results/p5/p5_domain_test_a_k5_seed44_summary.json
