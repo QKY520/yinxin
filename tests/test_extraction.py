@@ -5,6 +5,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -19,8 +20,10 @@ from equipment_ie.extraction import (  # noqa: E402
     select_fixed_random_examples,
     select_glossary_entries,
 )
+from equipment_ie.llm_labeling import ChatResult  # noqa: E402
 from equipment_ie.schema import iter_jsonl  # noqa: E402
 from scripts.run_p3_extraction import main as run_main  # noqa: E402
+from scripts.run_p3_extraction import run_execute  # noqa: E402
 from scripts.run_p3_extraction import validate_execution_gate  # noqa: E402
 
 
@@ -486,6 +489,107 @@ class ExtractionTest(unittest.TestCase):
             saved_prompts = list(iter_jsonl(prompt_rows, validate=False))
             self.assertEqual(saved_prompts[0]["rag_passage_ids"], ["p1#chunk-0"])
             self.assertIn("Carrier strike group", saved_prompts[0]["rag_passages"][0])
+
+    def test_run_execute_records_nonsemantic_timing_fields(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            per_query = root / "per_query.jsonl"
+            summary = root / "summary.json"
+            query_record = record("q1", "Carrier uses radar.", 0, 7, "EQUIPMENT")
+            support_record = record("s1", "Carrier has radar.", 0, 7, "EQUIPMENT")
+            config = {
+                "run_id": "unit-execute-timing",
+                "config_name": "unit",
+                "execution": {
+                    "authorized": True,
+                    "model_calls_allowed": True,
+                    "phase": "P3_UNIT",
+                    "human_gate": "P3_GPU_SANITY_APPROVED",
+                },
+                "data": {"dataset": "unit"},
+                "schema": {"entity_types": {"EQUIPMENT": "equipment"}, "relation_types": {}},
+                "examples": {"mode": "fixed_random", "k": 1, "seed": 42},
+                "prompt": {
+                    "output_instruction": "JSON_ONLY",
+                },
+                "model": {
+                    "name": "unit-model",
+                    "base_url": "http://127.0.0.1:8000",
+                    "timeout_seconds": 1,
+                    "api_key": "EMPTY",
+                },
+                "generation": {"temperature": 0.0, "top_p": 1.0, "max_tokens": 64, "seed": 42},
+                "cache": {"dir": (root / "cache").as_posix()},
+                "outputs": {
+                    "per_query": per_query.as_posix(),
+                    "summary": summary.as_posix(),
+                },
+            }
+
+            def select_examples(_record: dict) -> list[dict]:
+                return [support_record]
+
+            def select_glossary(_record: dict) -> list[str]:
+                return ["Carrier(EQUIPMENT)"]
+
+            def select_rag(_record: dict) -> list[dict]:
+                return [{"id": "p1#chunk-0", "display": "Carrier evidence."}]
+
+            def fake_chat_with_cache(**_kwargs: object) -> ChatResult:
+                return ChatResult(
+                    content=json.dumps(
+                        {
+                            "entities": [
+                                {"span": "Carrier", "type": "EQUIPMENT", "occurrence": 1}
+                            ],
+                            "relations": [],
+                        }
+                    ),
+                    request_hash="request-hash",
+                    raw_output_hash="raw-hash",
+                    cache_hit=True,
+                    latency_ms=12.5,
+                )
+
+            with (
+                patch("scripts.run_p3_extraction.gpu_visible", return_value=True),
+                patch(
+                    "scripts.run_p3_extraction.build_query_plan",
+                    return_value=(
+                        [support_record],
+                        [query_record],
+                        select_examples,
+                        select_glossary,
+                        select_rag,
+                        "config-hash",
+                        {"mode": "mock"},
+                        {"enabled": True},
+                        {"enabled": True},
+                    ),
+                ),
+                patch("scripts.run_p3_extraction.chat_with_cache", side_effect=fake_chat_with_cache),
+            ):
+                self.assertEqual(run_execute(config, root / "config.yaml"), 0)
+
+            saved_rows = list(iter_jsonl(per_query, validate=False))
+            self.assertEqual(len(saved_rows), 1)
+            row = saved_rows[0]
+            self.assertEqual(row["latency_ms"], 12.5)
+            self.assertEqual(row["llm_latency_ms"], 12.5)
+            for field in (
+                "example_selection_ms",
+                "glossary_selection_ms",
+                "rag_selection_ms",
+                "prompt_build_ms",
+                "total_record_ms",
+            ):
+                self.assertIsInstance(row[field], float)
+                self.assertGreaterEqual(row[field], 0.0)
+
+            saved_summary = json.loads(summary.read_text(encoding="utf-8"))
+            self.assertEqual(saved_summary["timing_totals_ms"]["llm_latency_ms"], 12.5)
+            self.assertIn("rag_selection_ms", saved_summary["timing_means_ms"])
+            self.assertEqual(saved_summary["entity_micro"]["tp"], 1)
 
 
 if __name__ == "__main__":

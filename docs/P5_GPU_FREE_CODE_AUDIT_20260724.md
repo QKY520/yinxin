@@ -143,37 +143,51 @@ Implication:
   even though the GPU is mostly waiting for CPU RAG selection before each vLLM
   request.
 
-Safe future fixes:
+Implemented follow-up:
 
-1. Add timing instrumentation only:
-   record `example_selection_ms`, `glossary_selection_ms`, `rag_selection_ms`,
-   `llm_latency_ms`, and `total_record_ms` in per-query rows. This does not
-   change prompts or predictions.
+1. Non-semantic timing instrumentation was added to
+   `scripts/run_p3_extraction.py` after this audit:
+   per-query rows now include `example_selection_ms`,
+   `glossary_selection_ms`, `rag_selection_ms`, `prompt_build_ms`,
+   `llm_latency_ms`, and `total_record_ms`; summaries include
+   `timing_totals_ms` and `timing_means_ms`.
 
-2. Precompute RAG selections before paid vLLM execution:
+2. A mocked unit test was added in `tests/test_extraction.py` to verify that
+   execution rows and summaries contain these timing fields without touching
+   real GPU, vLLM, cache, RAG models, or project data.
+
+3. Verification was run on AutoDL GPU-free mode:
+
+   ```text
+   ~/venv/bin/python -m unittest tests.test_extraction
+   Ran 16 tests in 0.096s
+   OK
+   ```
+
+Remaining safe future fixes:
+
+1. Precompute RAG selections before paid vLLM execution:
    build a frozen `{query_id: rag_passage_ids}` replay file in GPU-free mode
    using the fixed RAG config, hash it, and make D replay those IDs during paid
    extraction. This changes execution metadata/path only if the selected
    passages are byte-identical to the original selector output.
 
-3. If precomputation is too intrusive, use CPU-thread hygiene first:
+2. If precomputation is too intrusive, use CPU-thread hygiene first:
    set a valid `OMP_NUM_THREADS` value in the run shell and record it in
    execution metadata. This does not change prompt semantics, but it can affect
    wall time.
 
-4. Do not tune `retrieve_top_k`, `top_k`, chunk size, reranker model, or RAG
+3. Do not tune `retrieve_top_k`, `top_k`, chunk size, reranker model, or RAG
    corpus based on `domain_test` results. Those are method changes and would
    violate the frozen-test rule.
 
 ## Recommended Next Step
 
-Before any more paid P5 execution, do a small GPU-free implementation step:
-
-1. Add non-semantic timing instrumentation to `scripts/run_p3_extraction.py`.
-2. Add focused tests using mocked selectors/client calls.
-3. Optionally add a GPU-free RAG replay-manifest builder for future D runs, but
-   only if it preserves the exact selected passage IDs and displays under a
-   fixed config hash.
+Before any more paid P5 execution, the next GPU-free implementation option is
+to add a RAG replay-manifest builder for future D runs, but only if it preserves
+the exact selected passage IDs and displays under a fixed config hash. Otherwise
+the next decision can be a paid replication gate with the current runner and the
+new timing fields.
 
 Then ask for a new bounded paid gate. The safest paid continuation remains:
 

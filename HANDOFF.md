@@ -337,6 +337,15 @@ Current status:
     on 20 pairs per query on CPU; this is the likely wall-time driver;
   - logs show `libgomp: Invalid value for environment variable OMP_NUM_THREADS`,
     so CPU-thread hygiene should be fixed before more CPU-heavy paid runs.
+- Non-semantic timing instrumentation is implemented in
+  `scripts/run_p3_extraction.py`:
+  - per-query rows now record `example_selection_ms`, `glossary_selection_ms`,
+    `rag_selection_ms`, `prompt_build_ms`, `llm_latency_ms`, and
+    `total_record_ms`;
+  - summaries now record `timing_totals_ms` and `timing_means_ms`;
+  - `tests.test_extraction` includes a mocked execute-path timing test.
+- Verification: AutoDL GPU-free `~/venv/bin/python -m unittest
+  tests.test_extraction` passed, 16 tests OK.
 - The human audit passed on 2026-07-24: ablation differences are clean, C/D
   replay B, D excludes `domain_test` IDs from RAG retrieval, and all four draft
   configs remain `authorized: false`.
@@ -370,8 +379,8 @@ next step is to stop until the human explicitly approves a new bounded gate.
 
 Reasonable next choices are:
 
-1. Add non-semantic timing instrumentation to `scripts/run_p3_extraction.py`
-   in GPU-free mode, with mocked tests, before any more paid D runs.
+1. Optionally add a GPU-free RAG replay-manifest builder so future paid D runs
+   can reuse fixed RAG passage IDs instead of doing CPU rerank while vLLM waits.
 2. Replicate the domain A/B/C/D pilot on seeds 43 and 44, with no E/E-prime and
    no tuning from `domain_test`.
 3. Prepare a separate dev-first relation-enabled extraction path if RE evidence

@@ -383,6 +383,10 @@ def empty_prediction(gold: dict[str, Any]) -> dict[str, Any]:
     return {"id": gold["id"], "text": gold["text"], "entities": [], "relations": []}
 
 
+def elapsed_ms(started: float) -> float:
+    return round((time.monotonic() - started) * 1000.0, 3)
+
+
 def support_candidates(records: list[dict[str, Any]], *, k: int) -> list[dict[str, Any]]:
     candidates = [dict(record) for record in records if record.get("entities")]
     if len(candidates) < k:
@@ -708,9 +712,17 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
     predictions: list[dict[str, Any]] = []
     started = time.monotonic()
     for record in query_records:
+        record_started = time.monotonic()
+        step_started = time.monotonic()
         examples = select_examples(record)
+        example_selection_ms = elapsed_ms(step_started)
+        step_started = time.monotonic()
         glossary_entries = select_glossary(record)
+        glossary_selection_ms = elapsed_ms(step_started)
+        step_started = time.monotonic()
         rag_passages = select_rag(record)
+        rag_selection_ms = elapsed_ms(step_started)
+        step_started = time.monotonic()
         prompt = build_ner_prompt(
             query_text=record["text"],
             entity_types=config["schema"]["entity_types"],
@@ -720,6 +732,7 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
             include_relations=False,
             output_instruction=config["prompt"]["output_instruction"],
         )
+        prompt_build_ms = elapsed_ms(step_started)
         attempts: list[dict[str, Any]] = []
         pred: dict[str, Any] | None = None
         parse_error: str | None = None
@@ -788,6 +801,12 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
                 "pred_raw": pred,
                 "pred_verified": None,
                 "latency_ms": round(total_latency, 3),
+                "llm_latency_ms": round(total_latency, 3),
+                "example_selection_ms": example_selection_ms,
+                "glossary_selection_ms": glossary_selection_ms,
+                "rag_selection_ms": rag_selection_ms,
+                "prompt_build_ms": prompt_build_ms,
+                "total_record_ms": elapsed_ms(record_started),
                 "parse_failure": parse_error is not None,
                 "raw_llm_output_hash": raw_output_hash,
                 "prompt_hash": prompt_hash(prompt),
@@ -803,6 +822,21 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
     write_jsonl_atomic(Path(outputs["per_query"]), rows)
     counts = entity_micro_counts(query_records, predictions)
     parse_failures = sum(1 for row in rows if row["parse_failure"])
+    timing_fields = [
+        "example_selection_ms",
+        "glossary_selection_ms",
+        "rag_selection_ms",
+        "prompt_build_ms",
+        "llm_latency_ms",
+        "total_record_ms",
+    ]
+    timing_totals_ms = {
+        field: round(sum(float(row[field]) for row in rows), 3) for field in timing_fields
+    }
+    timing_means_ms = {
+        field: round(timing_totals_ms[field] / len(rows), 3) if rows else 0.0
+        for field in timing_fields
+    }
     summary = {
         "phase": "P3",
         "stage": "extraction_execution",
@@ -814,6 +848,8 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
         "glossary_selection": glossary_metadata,
         "rag_selection": rag_metadata,
         "elapsed_seconds": round(time.monotonic() - started, 3),
+        "timing_totals_ms": timing_totals_ms,
+        "timing_means_ms": timing_means_ms,
         "parse_failures": parse_failures,
         "parse_failure_rate": parse_failures / len(rows) if rows else 0.0,
         "sanitized_unit_events": sum(len(row["sanitization_flags"]) for row in rows),
