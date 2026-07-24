@@ -252,10 +252,14 @@ Current status:
 - P5 M0 draft artifacts now exist:
   - `docs/P5_PREP_PLAN_20260724.md`;
   - `docs/P5_RUN_MANIFEST_20260724.md`;
+  - `docs/P5_M0_DRAFT_AUDIT_20260724.md`;
   - `configs/p5_domain_test_a_k5_seed42_draft.yaml`;
   - `configs/p5_domain_test_b_knn_k5_seed42_draft.yaml`;
   - `configs/p5_domain_test_c_glossary_k5_seed42_draft.yaml`;
   - `configs/p5_domain_test_d_rag_k5_seed42_draft.yaml`.
+- The human audit passed on 2026-07-24: ablation differences are clean, C/D
+  replay B, D excludes `domain_test` IDs from RAG retrieval, and all four draft
+  configs remain `authorized: false`.
 - The four P5 draft configs are explicitly unauthorized:
   `execution.authorized: false` and `model_calls_allowed: false`.
 - AutoDL was last observed in GPU-free/no-device mode during P5 M0 prep.
@@ -263,6 +267,8 @@ Current status:
 Current blocker:
 
 - Stop for a human decision before any further paid experiment.
+- The human explicitly did not authorize paid GPU execution, vLLM startup,
+  domain-test dry-run, or config modification after the P5 M0 audit.
 - Do not dry-run the P5 `domain_test` configs, because dry-run reads test
   records and writes prompts.
 - Do not run E v3, E-prime, P5/full ablations, more seeds, or any
@@ -271,16 +277,13 @@ Current blocker:
 
 ## 8. Recommended Next Plan
 
-Recommended next step is human audit of the P5 M0 draft artifacts:
+P5 M0 is complete. Recommended next step is to stop until the human explicitly
+approves one bounded paid gate:
 
-1. Review `docs/P5_RUN_MANIFEST_20260724.md`.
-2. Review the four `configs/p5_domain_test_*_draft.yaml` files.
-3. Confirm that A/B/C/D differ only by the intended ablation switches.
-4. Confirm that C and D replay B for the same dataset/K/seed.
-5. Confirm that D excludes `domain_test` IDs from RAG retrieval.
-6. Confirm that no verifier/E/E-prime row is included.
-7. If and only if the human wants to proceed, approve one bounded paid gate:
-   domain-test pilot A/B/C/D, K=5, seed=42.
+1. Domain-test pilot A/B/C/D, K=5, seed=42.
+2. No verifier/E/E-prime row.
+3. No prompt, glossary, RAG, verifier, threshold, or config tuning from
+   `domain_test`.
 
 Do not start P5 paid execution without this explicit approval. Before future
 paid execution, the runner must also be checked or patched to accept a P5 human
