@@ -24,28 +24,35 @@ Current live state:
 
 - P0 environment, P1 public data, P2 domain data freeze, and P3/P4 domain-dev
   sanity are complete enough for a P5 decision.
-- P5 M0 GPU-free preparation is complete, and the bounded paid P5
-  domain-test pilot A/B/C/D, K=5, seed=42 was run on 2026-07-24 under
+- P5 M0 GPU-free preparation is complete. The bounded paid P5 domain-test
+  pilot A/B/C/D, K=5, seed=42 was run on 2026-07-24 under
   `P5_DOMAIN_PILOT_APPROVED`.
-- vLLM was stopped after the pilot and GPU memory returned to 0 MiB.
+- The human then approved bounded paid replication under
+  `P5_DOMAIN_REPLICATION_APPROVED`: A/B/C/D only, `domain_test`, K=5,
+  seeds 43 and 44, with no prompt/glossary/RAG/verifier tuning and no E/E-prime.
+- The replication completed successfully. vLLM was stopped after the run and
+  GPU memory returned to 0 MiB.
 - The current best dev evidence is D(RAG). Verification E/E-prime is not
   recommended for paid P5 unless the human explicitly overrides that decision.
-- The current single-seed domain-test pilot best F1 is C(kNN + glossary);
-  D(RAG) has lower FP and higher precision than C but slightly lower F1.
+- The current three-seed domain-test A/B/C/D best F1 is C(kNN + glossary):
+  F1 `0.568858 +/- 0.000769`. D(RAG) has the best precision and lowest FP:
+  precision `0.525135`, FP mean `529.0`, but slightly lower F1
+  `0.565764 +/- 0.000000`.
 - GPU-free diagnostic of the pilot is complete:
   `docs/P5_DOMAIN_PILOT_DIAGNOSTIC_20260724.md`.
 - GPU-free code audit of relation-zero and RAG runtime is complete:
   `docs/P5_GPU_FREE_CODE_AUDIT_20260724.md`.
-- Diagnostic conclusion: kNN is the cleanest positive module, glossary gives
-  the best single-seed F1, RAG lowers FP but is much slower and slightly below C
-  in F1, and all four A/B/C/D rows predicted zero relation triples.
+- Diagnostic conclusion now supported by three domain-test seeds: kNN is a
+  robust positive module, glossary gives the best F1/recall, RAG lowers FP and
+  improves precision but is slightly below C in F1, and all four A/B/C/D rows
+  remain NER-only.
 - Code-audit conclusion: P5 A/B/C/D used the NER-only path
   (`schema.task: ner`, `relation_types: {}`, `include_relations=False`), so
   zero relations are expected; D's wall time is dominated by CPU query
   embedding/reranker work outside logged vLLM latency.
-- The next possible step is another human decision. Do not run E, E-prime,
-  more seeds, CLUENER, full P5, dry-runs, or any additional `domain_test`
-  evaluation without a new explicit gate.
+- The next possible step is human review of the three-seed domain A/B/C/D block.
+  Do not run E, E-prime, CLUENER, K=1/K=10, full P5, dry-runs, or any
+  additional `domain_test` evaluation without a new explicit gate.
 
 If the human approves the next paid replication, use wording like:
 
@@ -73,10 +80,11 @@ We are building a practical SCI-Q4-oriented applied/engineering paper project:
 - Manuscript route: Chinese technical draft first, then English SCI manuscript.
 - Budget target: about 400 CNY unless separately approved.
 
-Current experimental scope is **P5 M0 complete plus one bounded paid P5
-domain-test pilot complete**. All P3 numbers below are from `domain_dev50`,
-seed 42, K=5. The P5 pilot numbers are `domain_test`, seed 42, K=5 only.
-None of these are final paper mean +/- std numbers.
+Current experimental scope is **P5 M0 complete plus bounded paid P5
+domain-test A/B/C/D, K=5, seeds 42/43/44 complete**. All P3 numbers below are
+from `domain_dev50`, seed 42, K=5. The P5 A/B/C/D numbers are now three-seed
+domain-test results, but they still cover only the domain dataset and only
+A/B/C/D. They are not the full P5 paper matrix.
 
 ## 2. Non-Negotiable Rules
 
@@ -309,6 +317,14 @@ Current status:
   - remote and local `results/p5/` per-query and summary files;
   - local backup `D:\yinsir\backups\P5\p5_domain_pilot_20260724.tar.gz`,
     SHA256 `61b05d4c89c26b22881ea17ce36da91a84fdb83ad0d3a49aaa84317e7357d808`.
+- P5 paid domain-test replication artifacts now exist:
+  - `docs/P5_DOMAIN_REPLICATION_20260724.md`;
+  - `configs/p5_domain_test_{a,b,c,d...}_k5_seed43_approved_20260724.yaml`;
+  - `configs/p5_domain_test_{a,b,c,d...}_k5_seed44_approved_20260724.yaml`;
+  - remote and local `results/p5/` per-query and summary files for
+    A/B/C/D seeds 42/43/44;
+  - local backup `D:\yinsir\backups\P5\p5_domain_replication_20260724.tar.gz`,
+    SHA256 `e53e7e4371f6b7d3d5d21921e2adf9149ecf0b89b6db0029f99961bfd7233b14`.
 - P5 pilot results on `domain_test`, K=5, seed=42:
   - A: P=0.4752, R=0.6017, F1=0.5310, TP/FP/FN=574/634/380;
   - B: P=0.5056, R=0.6143, F1=0.5547, TP/FP/FN=586/573/368;
@@ -317,6 +333,27 @@ Current status:
 - All four P5 pilot cells wrote 170 per-query rows and had 0 parse failures.
 - P5 single-seed pilot interpretation: C has the best F1; D reduces FP by 55
   relative to C but is slightly lower in F1 and much slower due to CPU RAG/rerank.
+- P5 three-seed domain-test A/B/C/D results:
+  - A: P=`0.484066 +/- 0.025428`, R=`0.599231 +/- 0.028904`,
+    F1=`0.534645 +/- 0.004375`, FP=`613.3 +/- 88.8`;
+  - B: P=`0.505743 +/- 0.000234`, R=`0.615304 +/- 0.001816`,
+    F1=`0.555169 +/- 0.000880`, FP=`573.7 +/- 1.2`;
+  - C: P=`0.511433 +/- 0.000472`, R=`0.640811 +/- 0.001210`,
+    F1=`0.568858 +/- 0.000769`, FP=`584.0 +/- 0.0`;
+  - D: P=`0.525135 +/- 0.000000`, R=`0.613208 +/- 0.000000`,
+    F1=`0.565764 +/- 0.000000`, FP=`529.0 +/- 0.0`.
+- P5 three-seed clean deltas:
+  - `B - A`: kNN gives +0.020524 F1 and about -39.7 FP;
+  - `C - B`: glossary gives +0.013689 F1 and about +10.3 FP;
+  - `D - C`: RAG gives -0.003094 F1 but about -55.0 FP;
+  - `D - A`: combined B/C/D path gives +0.031119 F1 and about -84.3 FP.
+- P5 replication execution:
+  - paid vLLM window approximately 2026-07-24 18:16:34-19:27:50 CST;
+  - estimated cost about 3.2 CNY at 2.7 CNY/hour;
+  - all eight seed43/44 run exit files contain `0`;
+  - vLLM stopped and GPU memory verified at `0 MiB / 24564 MiB`;
+  - the runner done marker initially had a trailing CR in its filename due to
+    Windows line endings and was normalized as execution metadata cleanup.
 - P5 GPU-free diagnostic interpretation:
   - `B - A`: kNN is positive, +0.0237 F1 and -61 FP;
   - `C - B`: glossary is positive for F1/recall, +0.0146 F1 and +26 TP, but
@@ -374,7 +411,9 @@ Current status:
   configs remain `authorized: false`.
 - The four P5 draft configs are explicitly unauthorized:
   `execution.authorized: false` and `model_calls_allowed: false`.
-- AutoDL was last observed in GPU-free/no-device mode during P5 M0 prep.
+- AutoDL was last observed in paid GPU mode immediately after replication
+  cleanup, with vLLM stopped and GPU memory at `0 MiB / 24564 MiB`. The human
+  should switch back to no-card/shut down after reviewing this handoff.
 - `scripts/run_p3_extraction.py` has been patched and tested so future P5
   non-dry execution can use `human_gate: P5_DOMAIN_PILOT_APPROVED`.
 - Remote `/root/project` was fast-forwarded to the runner-patch commit and
@@ -383,13 +422,13 @@ Current status:
 Current blocker:
 
 - Stop for a human decision before any further paid experiment.
-- The previous paid gate covered only A/B/C/D, K=5, seed=42 on `domain_test`;
-  that gate is complete.
+- The previous paid gates covered only A/B/C/D, K=5, seed42 pilot and
+  seeds43/44 replication on `domain_test`; both gates are complete.
 - Do not dry-run new P5 `domain_test` configs, because dry-run reads test
   records and writes prompts.
-- Do not run E v3, E-prime, P5/full ablations, more seeds, or any
-  `domain_test` model evaluation unless the human explicitly approves the next
-  bounded paid gate.
+- Do not run E v3, E-prime, CLUENER, K=1/K=10, P5/full ablations, more seeds,
+  or any `domain_test` model evaluation unless the human explicitly approves
+  the next bounded paid gate.
 - `scripts/run_p3_extraction.py` now supports the future P5 pilot gate
   `P5_DOMAIN_PILOT_APPROVED` and requires `model_calls_allowed: true` for
   non-dry model calls. This is a gate-only patch; prompt semantics, retrieval,
@@ -397,16 +436,21 @@ Current blocker:
 
 ## 8. Recommended Next Plan
 
-P5 M0 and the first bounded P5 domain-test pilot are complete. Recommended
-next step is to stop until the human explicitly approves a new bounded gate.
+P5 M0, the bounded seed-42 domain-test pilot, and the bounded seeds43/44
+domain-test replication are complete. Recommended next step is human review of
+the three-seed A/B/C/D domain block before any new paid gate.
 
 Reasonable next choices are:
 
-1. Replicate the domain A/B/C/D pilot on seeds 43 and 44, with no E/E-prime and
-   no tuning from `domain_test`.
-2. Prepare a separate dev-first relation-enabled extraction path if RE evidence
-   is still needed. Do not retrofit relation extraction into frozen P5 A-D.
-3. Explicitly override the current recommendation and authorize a verifier row,
+1. GPU-free paper-facing interpretation of the domain A/B/C/D three-seed
+   evidence block, including how to frame C as best F1 and D as FP/precision
+   reducer.
+2. Prepare a separate dev-first relation-enabled diagnostic if RE evidence is
+   still needed. Do not retrofit relation extraction into frozen P5 A-D.
+3. Prepare CLUENER-compatible P5 configs only after deciding how to handle the
+   public-test label limitation; do not evaluate unlabeled official test files
+   as all-negative gold.
+4. Explicitly override the current recommendation and authorize a verifier row,
    accepting that P3 verification was negative/mixed.
 
 Do not start more P5 paid execution without explicit approval for one of these
@@ -419,8 +463,8 @@ New session startup checklist before asking for or acting on approval:
 2. Confirm local Git status is clean and remote `origin/main` is reachable.
 3. Check AutoDL mode and remote repo only; do not run Python locally:
    `ssh autodl-paper 'cd /root/project; git rev-parse --short HEAD; git status --short; nvidia-smi --query-gpu=index,name,memory.used,memory.total --format=csv,noheader 2>/dev/null || echo GPU_FREE_OR_NVIDIA_SMI_UNAVAILABLE'`.
-4. Report that P5 M0 plus the bounded A/B/C/D seed-42 pilot are complete and
-   wait for the next gate.
+4. Report that P5 M0 plus bounded A/B/C/D domain-test seeds 42/43/44 are
+   complete and wait for the next gate.
 5. If the human approves more paid execution, verify paid GPU mode, start
    Qwen2.5-7B vLLM, change only execution metadata for the approved configs,
    execute only the approved scope, then stop.
