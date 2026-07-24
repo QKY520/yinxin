@@ -274,6 +274,10 @@ Current blocker:
 - Do not run E v3, E-prime, P5/full ablations, more seeds, or any
   `domain_test` model evaluation unless the human explicitly approves the next
   bounded paid gate.
+- `scripts/run_p3_extraction.py` now supports the future P5 pilot gate
+  `P5_DOMAIN_PILOT_APPROVED` and requires `model_calls_allowed: true` for
+  non-dry model calls. This is a gate-only patch; prompt semantics, retrieval,
+  parsing, and metrics were not changed.
 
 ## 8. Recommended Next Plan
 
@@ -286,9 +290,10 @@ approves one bounded paid gate:
    `domain_test`.
 
 Do not start P5 paid execution without this explicit approval. Before future
-paid execution, the runner must also be checked or patched to accept a P5 human
-gate, because the current extraction runner was originally built with P3 gate
-names for non-dry execution.
+paid execution, copy or update the four draft configs to approved configs by
+changing only execution authorization metadata:
+`authorized: true`, `model_calls_allowed: true`, and
+`human_gate: P5_DOMAIN_PILOT_APPROVED`.
 
 ## 9. Lessons Worth Remembering
 

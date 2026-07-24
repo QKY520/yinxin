@@ -35,6 +35,21 @@ from equipment_ie.llm_labeling import chat_with_cache, request_hash
 from equipment_ie.schema import iter_jsonl, sha256_file, validate_record
 
 
+P3_EXECUTION_GATES = frozenset(
+    {
+        "P3_GPU_SANITY_APPROVED",
+        "P3_DOMAIN_SANITY_APPROVED",
+        "P3_D_SANITY_APPROVED",
+    }
+)
+
+P5_EXECUTION_GATES = frozenset(
+    {
+        "P5_DOMAIN_PILOT_APPROVED",
+    }
+)
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", required=True)
@@ -87,6 +102,25 @@ def write_jsonl_atomic(path: Path, rows: list[dict[str, Any]]) -> int:
 
 def gpu_visible() -> bool:
     return any(Path("/dev").glob("nvidia[0-9]*"))
+
+
+def validate_execution_gate(execution: dict[str, Any]) -> None:
+    if execution.get("authorized") is not True:
+        raise RuntimeError("config execution.authorized must be true for model calls")
+    if execution.get("model_calls_allowed") is not True:
+        raise RuntimeError("config execution.model_calls_allowed must be true for model calls")
+
+    human_gate = execution.get("human_gate")
+    phase = str(execution.get("phase", ""))
+    if human_gate in P3_EXECUTION_GATES:
+        return
+    if human_gate in P5_EXECUTION_GATES:
+        if not phase.startswith("P5"):
+            raise RuntimeError("P5 human gate requires execution.phase to start with P5")
+        return
+
+    allowed = sorted(P3_EXECUTION_GATES | P5_EXECUTION_GATES)
+    raise RuntimeError(f"non-dry extraction human_gate must be one of: {allowed}")
 
 
 def load_records(path: str) -> list[dict[str, Any]]:
@@ -642,14 +676,7 @@ def run_dry(config: dict[str, Any], config_path: Path) -> int:
 
 def run_execute(config: dict[str, Any], config_path: Path) -> int:
     execution = config.get("execution", {})
-    if execution.get("authorized") is not True:
-        raise RuntimeError("config execution.authorized must be true for model calls")
-    if execution.get("human_gate") not in {
-        "P3_GPU_SANITY_APPROVED",
-        "P3_DOMAIN_SANITY_APPROVED",
-        "P3_D_SANITY_APPROVED",
-    }:
-        raise RuntimeError("P3 GPU sanity human gate is not approved in config")
+    validate_execution_gate(execution)
     if not gpu_visible():
         raise RuntimeError("GPU is not visible; refusing non-dry execution")
 

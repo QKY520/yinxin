@@ -73,10 +73,10 @@ After a future paid approval, the agent should:
 ## Known Implementation Check
 
 The current extraction runner was built during P3 and enforces P3 human-gate
-names for non-dry execution. Before any paid P5 run, the agent must either
-confirm that P5 gate support already exists on remote or patch the runner to
-accept a P5-specific approval gate. That patch must not alter prompt semantics,
-retrieval logic, parsing semantics, or metric computation.
+names for non-dry execution. The runner has now been patched to accept the
+P5-specific approval gate `P5_DOMAIN_PILOT_APPROVED` as well. That patch must
+not alter prompt semantics, retrieval logic, parsing semantics, or metric
+computation.
 
 ## Review Checklist
 

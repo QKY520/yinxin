@@ -21,6 +21,7 @@ from equipment_ie.extraction import (  # noqa: E402
 )
 from equipment_ie.schema import iter_jsonl  # noqa: E402
 from scripts.run_p3_extraction import main as run_main  # noqa: E402
+from scripts.run_p3_extraction import validate_execution_gate  # noqa: E402
 
 
 def record(record_id: str, text: str, start: int, end: int, entity_type: str) -> dict:
@@ -157,6 +158,27 @@ class ExtractionTest(unittest.TestCase):
         self.assertEqual(flags[0]["occurrence_requested"], 3)
         self.assertEqual(flags[0]["occurrence_available"], 2)
         self.assertEqual(flags[0]["occurrence_starts"], [0, 4])
+
+    def test_validate_execution_gate_accepts_p5_pilot_gate(self) -> None:
+        validate_execution_gate(
+            {
+                "authorized": True,
+                "model_calls_allowed": True,
+                "phase": "P5_CONFIG_DRAFT",
+                "human_gate": "P5_DOMAIN_PILOT_APPROVED",
+            }
+        )
+
+    def test_validate_execution_gate_requires_model_calls_allowed(self) -> None:
+        with self.assertRaisesRegex(RuntimeError, "model_calls_allowed"):
+            validate_execution_gate(
+                {
+                    "authorized": True,
+                    "model_calls_allowed": False,
+                    "phase": "P5_CONFIG_DRAFT",
+                    "human_gate": "P5_DOMAIN_PILOT_APPROVED",
+                }
+            )
 
     def test_error_retry_prompt_includes_parser_error(self) -> None:
         retry = build_error_retry_prompt(
