@@ -357,6 +357,18 @@ Current status:
 - No P5 `domain_test` replay manifest has been generated yet. Do not generate
   one without explicit human approval, because it reads frozen test texts even
   though it does not call a model or write prompts.
+- The human then approved the GPU-free stage. P5 D replay manifest generation
+  is complete and documented in `docs/P5_RAG_REPLAY_MANIFEST_20260724.md`.
+  Direct CPU BGE/reranker regeneration in no-card mode was killed with exit
+  code 137, so the successful manifest was built from the already completed P5
+  D per-query result to preserve the exact RAG passage IDs/display strings.
+  Artifacts:
+  - remote `/root/project/logs/p5_domain_test_d_rag_k5_seed42_replay_manifest.json`;
+  - local `D:\yinsir\logs\p5_domain_test_d_rag_k5_seed42_replay_manifest.json`;
+  - manifest SHA256 `00f292c2d4c1f2e0e732af88518b2e2624e7266e9a64c7cc5f0049e563002685`;
+  - validation report SHA256 `c868be6363eb67b91b528e4ddf06e8f022b74f24a3735a7a0b759aa9a5a63563`;
+  - validation passed: 170 rows, 170 unique query IDs, exactly 3 replay passages
+    per row, query hash and source D per-query hash matched.
 - The human audit passed on 2026-07-24: ablation differences are clean, C/D
   replay B, D excludes `domain_test` IDs from RAG retrieval, and all four draft
   configs remain `authorized: false`.
@@ -390,14 +402,11 @@ next step is to stop until the human explicitly approves a new bounded gate.
 
 Reasonable next choices are:
 
-1. Explicitly approve GPU-free generation of a P5 D RAG replay manifest from
-   the fixed D config, acknowledging that it reads `domain_test` texts but does
-   not call a model or tune parameters.
-2. Replicate the domain A/B/C/D pilot on seeds 43 and 44, with no E/E-prime and
+1. Replicate the domain A/B/C/D pilot on seeds 43 and 44, with no E/E-prime and
    no tuning from `domain_test`.
-3. Prepare a separate dev-first relation-enabled extraction path if RE evidence
+2. Prepare a separate dev-first relation-enabled extraction path if RE evidence
    is still needed. Do not retrofit relation extraction into frozen P5 A-D.
-4. Explicitly override the current recommendation and authorize a verifier row,
+3. Explicitly override the current recommendation and authorize a verifier row,
    accepting that P3 verification was negative/mixed.
 
 Do not start more P5 paid execution without explicit approval for one of these

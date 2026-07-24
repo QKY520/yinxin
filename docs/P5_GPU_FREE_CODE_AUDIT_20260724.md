@@ -189,6 +189,11 @@ No `domain_test` RAG replay manifest has been generated yet. The implementation
 is ready for a future explicit decision, but this code step did not read the P5
 domain-test config or write any new P5 test artifact.
 
+Update: after explicit human approval for the GPU-free stage, the P5 D replay
+manifest was generated from the existing D per-query result rather than by
+rerunning CPU BGE/reranker. See
+`docs/P5_RAG_REPLAY_MANIFEST_20260724.md`.
+
 Remaining safe future fixes:
 
 1. If precomputation is too intrusive, use CPU-thread hygiene first:

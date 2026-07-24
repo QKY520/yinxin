@@ -23,6 +23,9 @@ from equipment_ie.extraction import (  # noqa: E402
 from equipment_ie.llm_labeling import ChatResult  # noqa: E402
 from equipment_ie.schema import iter_jsonl  # noqa: E402
 from scripts.build_rag_replay_manifest import build_manifest as build_rag_replay_manifest  # noqa: E402
+from scripts.build_rag_replay_manifest import (  # noqa: E402
+    build_manifest_from_per_query as build_rag_replay_manifest_from_per_query,
+)
 from scripts.run_p3_extraction import build_rag_selector  # noqa: E402
 from scripts.run_p3_extraction import main as run_main  # noqa: E402
 from scripts.run_p3_extraction import run_execute  # noqa: E402
@@ -671,6 +674,48 @@ class ExtractionTest(unittest.TestCase):
                 [passage["display"] for passage in selected],
                 manifest["rows"][0]["rag_passages"],
             )
+
+    def test_rag_replay_manifest_can_be_built_from_existing_per_query(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            query = root / "query.jsonl"
+            per_query = root / "per_query.jsonl"
+            config_path = root / "config.yaml"
+            replay_path = root / "rag_replay.json"
+            write_jsonl(query, [record("q1", "Carrier uses radar.", 0, 7, "EQUIPMENT")])
+            write_jsonl(
+                per_query,
+                [
+                    {
+                        "id": "q1",
+                        "rag_passage_ids": ["p1#chunk-0"],
+                        "rag_passages": ["Carrier evidence | unit | p1#chunk-0: Carrier text"],
+                    }
+                ],
+            )
+            config_path.write_text("unit config for per-query replay\n", encoding="utf-8")
+            config = {"data": {"query_path": query.as_posix()}}
+
+            manifest = build_rag_replay_manifest_from_per_query(
+                config,
+                config_path=config_path,
+                output_path=replay_path,
+                source_per_query_path=per_query,
+            )
+            self.assertEqual(manifest["source_rag_mode"], "per_query_replay")
+            self.assertEqual(manifest["query_records"], 1)
+
+            replay_config = {
+                "data": {"query_path": query.as_posix()},
+                "rag": {
+                    "enabled": True,
+                    "mode": "replay_manifest",
+                    "replay_manifest_path": replay_path.as_posix(),
+                },
+            }
+            select_rag, _metadata = build_rag_selector(replay_config)
+            selected = select_rag({"id": "q1", "text": "Carrier uses radar."})
+            self.assertEqual(selected, manifest["rows"][0]["selected_passages"])
 
 
 if __name__ == "__main__":

@@ -35,7 +35,72 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", required=True)
     parser.add_argument("--output", required=True)
+    parser.add_argument(
+        "--source-per-query",
+        default="",
+        help="Existing extraction per-query JSONL to convert into a replay manifest.",
+    )
     return parser.parse_args()
+
+
+def build_manifest_from_per_query(
+    config: dict[str, Any],
+    *,
+    config_path: Path,
+    output_path: Path,
+    source_per_query_path: Path,
+) -> dict[str, Any]:
+    from equipment_ie.schema import iter_jsonl
+
+    rows: list[dict[str, Any]] = []
+    for line_number, row in enumerate(iter_jsonl(source_per_query_path, validate=False), start=1):
+        query_id = row.get("id")
+        passage_ids = row.get("rag_passage_ids")
+        passages = row.get("rag_passages")
+        if not isinstance(query_id, str) or not query_id:
+            raise ValueError(f"{source_per_query_path}:{line_number}: row must contain non-empty id")
+        if not isinstance(passage_ids, list) or not all(isinstance(item, str) for item in passage_ids):
+            raise ValueError(f"{source_per_query_path}:{line_number}: rag_passage_ids must be strings")
+        if not isinstance(passages, list) or not all(isinstance(item, str) for item in passages):
+            raise ValueError(f"{source_per_query_path}:{line_number}: rag_passages must be strings")
+        if len(passage_ids) != len(passages):
+            raise ValueError(
+                f"{source_per_query_path}:{line_number}: rag_passage_ids and rag_passages length mismatch"
+            )
+        rows.append(
+            {
+                "id": query_id,
+                "rag_passage_ids": passage_ids,
+                "rag_passages": passages,
+                "selected_passages": [
+                    {"id": passage_id, "display": display}
+                    for passage_id, display in zip(passage_ids, passages)
+                ],
+            }
+        )
+    if not rows:
+        raise ValueError(f"{source_per_query_path}: per-query file has no rows")
+
+    manifest = {
+        "stage": "rag_replay_manifest",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "source_config_path": str(config_path),
+        "source_config_sha256": sha256_file(str(config_path)),
+        "source_rag_mode": "per_query_replay",
+        "source_per_query_path": str(source_per_query_path),
+        "source_per_query_sha256": sha256_file(str(source_per_query_path)),
+        "query_path": config["data"]["query_path"],
+        "query_path_sha256": sha256_file(config["data"]["query_path"]),
+        "query_records": len(rows),
+        "api_called": False,
+        "model_calls": 0,
+        "gpu_device_present": gpu_visible(),
+        "rows": rows,
+    }
+    write_json_atomic(output_path, manifest)
+    manifest["manifest_path"] = str(output_path)
+    manifest["manifest_sha256"] = sha256_file(str(output_path))
+    return manifest
 
 
 def build_manifest(config: dict[str, Any], *, config_path: Path, output_path: Path) -> dict[str, Any]:
@@ -101,7 +166,15 @@ def main() -> int:
     config_path = Path(args.config)
     output_path = Path(args.output)
     config = load_yaml(config_path)
-    manifest = build_manifest(config, config_path=config_path, output_path=output_path)
+    if args.source_per_query:
+        manifest = build_manifest_from_per_query(
+            config,
+            config_path=config_path,
+            output_path=output_path,
+            source_per_query_path=Path(args.source_per_query),
+        )
+    else:
+        manifest = build_manifest(config, config_path=config_path, output_path=output_path)
     print(json.dumps(manifest, ensure_ascii=False, sort_keys=True))
     return 0
 
