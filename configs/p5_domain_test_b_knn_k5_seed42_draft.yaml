@@ -1,0 +1,75 @@
+run_id: p5-domain-test-b-knn-k5-seed42-draft
+config_name: B_knn_domain_test_p5_draft
+
+execution:
+  phase: P5_CONFIG_DRAFT
+  authorized: false
+  human_gate: null
+  approval_record: "Draft only. Human approved GPU-free P5 config preparation on 2026-07-24; paid GPU execution is not authorized."
+  model_calls_allowed: false
+  gpu_required: true
+  explicit_exclusions:
+    - paid_gpu_execution
+    - vllm_start
+    - prompt_tuning_from_domain_test
+    - glossary_tuning_from_domain_test
+    - rag_tuning_from_domain_test
+    - verification
+    - E_or_Eprime
+
+data:
+  dataset: domain_test
+  support_path: /root/autodl-tmp/data/domain_support.jsonl
+  query_path: /root/autodl-tmp/data/domain_test.jsonl
+
+schema:
+  task: ner
+  entity_types:
+    EQUIPMENT: 完整装备、武器平台、系统或型号名称。
+    MODULE: 装备的部件、组件、子系统、传感器、载荷或功能模块。
+    TECH_SCHEME: 技术体制、制导方式、作战/测试/改进方案或能力方案。
+    METRIC: 数值指标、性能参数、射程、速度、重量、时间或数量表达。
+  relation_types: {}
+
+examples:
+  mode: knn_retrieval
+  k: 5
+  seed: 42
+
+embedding:
+  model_path: /root/autodl-tmp/models/bge-m3
+  device: cpu
+  use_fp16: false
+  batch_size: 8
+  max_length: 512
+
+prompt:
+  output_instruction: "只返回JSON,不要任何解释,不要markdown代码块"
+  retry_suffix: "只返回合法JSON"
+  retry_mode: parser_error_aware
+
+parsing:
+  drop_invalid_entities: true
+  mode: proposal_stage_sanitize
+  note: "Match the accepted P3 sanitize setting for config comparability; do not change after domain_test execution starts."
+
+model:
+  name: /root/autodl-tmp/models/qwen2.5-7b
+  base_url: http://127.0.0.1:8000
+  timeout_seconds: 300
+  api_key: EMPTY
+
+generation:
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 768
+  seed: 42
+
+cache:
+  dir: /root/project/cache/p5_extraction
+
+outputs:
+  dry_run_prompts: /root/project/logs/p5_domain_test_b_knn_k5_seed42_prompts.jsonl
+  manifest: /root/project/logs/p5_domain_test_b_knn_k5_seed42_manifest.json
+  per_query: /root/project/results/p5/p5_domain_test_b_knn_k5_seed42_per_query.jsonl
+  summary: /root/project/results/p5/p5_domain_test_b_knn_k5_seed42_summary.json

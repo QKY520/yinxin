@@ -1,6 +1,6 @@
 # HANDOFF.md - New Conversation Handoff
 
-Date: 2026-07-23
+Date: 2026-07-24
 Workspace: `D:\yinsir`
 
 This file is written for a new Codex/agent session with no prior chat context.
@@ -248,29 +248,44 @@ Current status:
 - Verification E v1/E v2 is negative/mixed and should not receive more paid GPU
   time by default.
 - E v3 prompt/config was prepared in GPU-free mode only and is not authorized.
-- AutoDL was last observed in GPU-free/no-device mode after E v3 dry-run.
+- P5 prep plan was approved by the human for GPU-free config preparation only.
+- P5 M0 draft artifacts now exist:
+  - `docs/P5_PREP_PLAN_20260724.md`;
+  - `docs/P5_RUN_MANIFEST_20260724.md`;
+  - `configs/p5_domain_test_a_k5_seed42_draft.yaml`;
+  - `configs/p5_domain_test_b_knn_k5_seed42_draft.yaml`;
+  - `configs/p5_domain_test_c_glossary_k5_seed42_draft.yaml`;
+  - `configs/p5_domain_test_d_rag_k5_seed42_draft.yaml`.
+- The four P5 draft configs are explicitly unauthorized:
+  `execution.authorized: false` and `model_calls_allowed: false`.
+- AutoDL was last observed in GPU-free/no-device mode during P5 M0 prep.
 
 Current blocker:
 
 - Stop for a human decision before any further paid experiment.
-- Do not run E v3, E-prime, P5/full ablations, more seeds, or `domain_test`
-  unless the human explicitly approves the next bounded gate.
+- Do not dry-run the P5 `domain_test` configs, because dry-run reads test
+  records and writes prompts.
+- Do not run E v3, E-prime, P5/full ablations, more seeds, or any
+  `domain_test` model evaluation unless the human explicitly approves the next
+  bounded paid gate.
 
 ## 8. Recommended Next Plan
 
-Recommended next step is GPU-free decision planning:
+Recommended next step is human audit of the P5 M0 draft artifacts:
 
-1. Preserve D(RAG) as the current positive dev result.
-2. Treat verification as a documented negative/mixed branch.
-3. Prepare a reduced next-run plan that avoids more paid verifier experiments
-   unless the human explicitly wants them.
-4. Decide whether the next paid gate should be:
-   - a small D-focused sanity on another allowed dev/public split; or
-   - preparation for the full P5 grid with E kept as a negative row; or
-   - another explicitly approved verifier experiment using v3 despite the
-     current recommendation.
+1. Review `docs/P5_RUN_MANIFEST_20260724.md`.
+2. Review the four `configs/p5_domain_test_*_draft.yaml` files.
+3. Confirm that A/B/C/D differ only by the intended ablation switches.
+4. Confirm that C and D replay B for the same dataset/K/seed.
+5. Confirm that D excludes `domain_test` IDs from RAG retrieval.
+6. Confirm that no verifier/E/E-prime row is included.
+7. If and only if the human wants to proceed, approve one bounded paid gate:
+   domain-test pilot A/B/C/D, K=5, seed=42.
 
-Do not jump directly to P5 without a human gate.
+Do not start P5 paid execution without this explicit approval. Before future
+paid execution, the runner must also be checked or patched to accept a P5 human
+gate, because the current extraction runner was originally built with P3 gate
+names for non-dry execution.
 
 ## 9. Lessons Worth Remembering
 
@@ -303,3 +318,5 @@ Do not jump directly to P5 without a human gate.
 - All negative and mixed rows are paper evidence. Do not delete or hide them.
 - Every prompt/config/glossary/RAG decision needs a Git commit or structured
   decision record.
+- P5 `domain_test` configs should not be dry-run before paid approval; YAML
+  parsing and field inspection are allowed, prompt generation is not.
