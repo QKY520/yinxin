@@ -34,10 +34,14 @@ Current live state:
   GPU memory returned to 0 MiB.
 - The current best dev evidence is D(RAG). Verification E/E-prime is not
   recommended for paid P5 unless the human explicitly overrides that decision.
-- The current three-seed domain-test A/B/C/D best F1 is C(kNN + glossary):
-  F1 `0.568858 +/- 0.000769`. D(RAG) has the best precision and lowest FP:
-  precision `0.525135`, FP mean `529.0`, but slightly lower F1
-  `0.565764 +/- 0.000000`.
+- The current three-seed domain-test A/B/C/D F1 leader is C(kNN + glossary):
+  F1 `0.568858 +/- 0.000769`. D(RAG) is a near-tie on F1
+  (`0.565764 +/- 0.000000`) and has the best precision and lowest FP:
+  precision `0.525135`, FP mean `529.0`.
+- Human review accepted this interpretation on 2026-07-24: write C and D as
+  near-tied on F1, with C marginally ahead on recall and D clearly ahead on
+  precision and FP reduction. Do not write that C is substantially or
+  significantly better than D.
 - GPU-free diagnostic of the pilot is complete:
   `docs/P5_DOMAIN_PILOT_DIAGNOSTIC_20260724.md`.
 - GPU-free code audit of relation-zero and RAG runtime is complete:
@@ -50,9 +54,10 @@ Current live state:
   (`schema.task: ner`, `relation_types: {}`, `include_relations=False`), so
   zero relations are expected; D's wall time is dominated by CPU query
   embedding/reranker work outside logged vLLM latency.
-- The next possible step is human review of the three-seed domain A/B/C/D block.
-  Do not run E, E-prime, CLUENER, K=1/K=10, full P5, dry-runs, or any
-  additional `domain_test` evaluation without a new explicit gate.
+- The next possible step is a GPU-free paper-facing interpretation or another
+  explicitly approved bounded plan. Do not run E, E-prime, CLUENER, K=1/K=10,
+  full P5, dry-runs, or any additional `domain_test` evaluation without a new
+  explicit gate.
 
 If the human approves the next paid replication, use wording like:
 
@@ -345,8 +350,11 @@ Current status:
 - P5 three-seed clean deltas:
   - `B - A`: kNN gives +0.020524 F1 and about -39.7 FP;
   - `C - B`: glossary gives +0.013689 F1 and about +10.3 FP;
-  - `D - C`: RAG gives -0.003094 F1 but about -55.0 FP;
+  - `D - C`: RAG gives a near-tie -0.003094 F1 but about -55.0 FP;
   - `D - A`: combined B/C/D path gives +0.031119 F1 and about -84.3 FP.
+- Human review note: this supports the statement "C and D are near-tied on F1,
+  with C marginally ahead on recall and D clearly ahead on precision and FP
+  reduction." It should not be framed as "C significantly beats D."
 - P5 replication execution:
   - paid vLLM window approximately 2026-07-24 18:16:34-19:27:50 CST;
   - estimated cost about 3.2 CNY at 2.7 CNY/hour;
@@ -437,8 +445,9 @@ Current blocker:
 ## 8. Recommended Next Plan
 
 P5 M0, the bounded seed-42 domain-test pilot, and the bounded seeds43/44
-domain-test replication are complete. Recommended next step is human review of
-the three-seed A/B/C/D domain block before any new paid gate.
+domain-test replication are complete. Human review accepted the near-tie
+interpretation for C versus D. Recommended next step is GPU-free paper-facing
+interpretation of this evidence block before any new paid gate.
 
 Reasonable next choices are:
 

@@ -107,12 +107,14 @@ Sample standard deviation is reported.
 
 ## Findings
 
-1. C is the best three-seed F1 cell on `domain_test`: `0.568858 +/- 0.000769`.
-   It improves over B by +0.013689 F1, mainly through recall.
+1. C is the marginally best three-seed F1 cell on `domain_test`:
+   `0.568858 +/- 0.000769`. It improves over B by +0.013689 F1, mainly through
+   recall.
 
 2. D has the best precision and lowest false positives:
    precision `0.525135`, FP mean `529.0`. Relative to C, D removes 55 FP on
-   average but loses enough recall to trail C by 0.003094 F1.
+   average but loses enough recall to trail C by 0.003094 F1. This is a
+   near-tie on F1, not evidence that C is substantially better than D.
 
 3. kNN is a robust positive step on `domain_test`.
    B improves over A by +0.020524 F1 and reduces FP by about 39.7 on average.
@@ -120,9 +122,11 @@ Sample standard deviation is reported.
 4. Glossary is F1/recall-positive but not hallucination-reducing.
    C improves F1 over B but increases FP by about 10.3.
 
-5. RAG is a precision and FP-reduction module in this evidence block, not the
-   best F1 module. This is still paper-useful if framed as reducing an
-   entity-level false-discovery-style rate.
+5. RAG is a precision and FP-reduction module in this evidence block. The
+   honest paper-facing statement is: C and D are near-tied on F1, with C
+   marginally ahead on recall and D clearly ahead on precision and FP reduction.
+   This is paper-useful because D cuts 55 FP relative to C while keeping F1
+   nearly unchanged.
 
 6. D seed43/44 used the fixed replay manifest and therefore avoided the
    seed-42 CPU reranker overhead. Seed42 D took 6237.211s; replayed D seeds took
@@ -171,7 +175,11 @@ authoritative cost record.
 
 ## Next Gate
 
-Stop here for human review. Reasonable GPU-free next steps:
+Human review accepted the core interpretation: C is marginally best on F1, D is
+the precision/FP-reduction row, and C versus D should be described as a near-tie
+rather than as a substantial F1 win for C.
+
+Stop here before any further paid gate. Reasonable GPU-free next steps:
 
 1. write a paper-facing interpretation of the domain A/B/C/D three-seed block;
 2. decide whether to add a relation-enabled dev-first diagnostic;
