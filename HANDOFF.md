@@ -32,16 +32,21 @@ Current live state:
   recommended for paid P5 unless the human explicitly overrides that decision.
 - The current single-seed domain-test pilot best F1 is C(kNN + glossary);
   D(RAG) has lower FP and higher precision than C but slightly lower F1.
+- GPU-free diagnostic of the pilot is complete:
+  `docs/P5_DOMAIN_PILOT_DIAGNOSTIC_20260724.md`.
+- Diagnostic conclusion: kNN is the cleanest positive module, glossary gives
+  the best single-seed F1, RAG lowers FP but is much slower and slightly below C
+  in F1, and all four A/B/C/D rows predicted zero relation triples.
 - The next possible step is another human decision. Do not run E, E-prime,
   more seeds, CLUENER, full P5, dry-runs, or any additional `domain_test`
   evaluation without a new explicit gate.
 
-Next gate wording expected from the human:
+If the human approves the next paid replication, use wording like:
 
 ```text
-Approve paid GPU P5 domain pilot: run A/B/C/D on domain_test, K=5, seed=42,
-using the frozen draft configs after changing only execution authorization
-metadata. No prompt/glossary/RAG/verifier tuning is authorized.
+Approve paid GPU P5 domain replication: run only A/B/C/D on domain_test,
+K=5, seeds 43 and 44, with no prompt/glossary/RAG/verifier tuning and no
+E/E-prime.
 ```
 
 ## 1. Mission
@@ -289,6 +294,7 @@ Current status:
   - `configs/p5_domain_test_d_rag_k5_seed42_draft.yaml`.
 - P5 paid domain-test pilot artifacts now exist:
   - `docs/P5_DOMAIN_PILOT_20260724.md`;
+  - `docs/P5_DOMAIN_PILOT_DIAGNOSTIC_20260724.md`;
   - `configs/p5_domain_test_a_k5_seed42_approved_20260724.yaml`;
   - `configs/p5_domain_test_b_knn_k5_seed42_approved_20260724.yaml`;
   - `configs/p5_domain_test_c_glossary_k5_seed42_approved_20260724.yaml`;
@@ -304,6 +310,14 @@ Current status:
 - All four P5 pilot cells wrote 170 per-query rows and had 0 parse failures.
 - P5 single-seed pilot interpretation: C has the best F1; D reduces FP by 55
   relative to C but is slightly lower in F1 and much slower due to CPU RAG/rerank.
+- P5 GPU-free diagnostic interpretation:
+  - `B - A`: kNN is positive, +0.0237 F1 and -61 FP;
+  - `C - B`: glossary is positive for F1/recall, +0.0146 F1 and +26 TP, but
+    +11 FP;
+  - `D - C`: RAG improves precision and reduces FP by 55, but loses 27 TP and
+    drops F1 by 0.0035;
+  - relation extraction is not currently usable as positive evidence because
+    A/B/C/D all predicted zero relation triples against 427 gold triples.
 - The human audit passed on 2026-07-24: ablation differences are clean, C/D
   replay B, D excludes `domain_test` IDs from RAG retrieval, and all four draft
   configs remain `authorized: false`.
@@ -339,8 +353,9 @@ Reasonable next choices are:
 
 1. Replicate the domain A/B/C/D pilot on seeds 43 and 44, with no E/E-prime and
    no tuning from `domain_test`.
-2. Stop paid P5 for now and analyze/write the single-seed pilot as a decision
-   record, preserving that C has best F1 while D lowers FP at high runtime cost.
+2. Stop paid P5 for now and do a GPU-free/code-only audit of why relation
+   outputs are absent and why CPU RAG/rerank is so slow, without touching
+   `domain_test` prompts or rerunning model outputs.
 3. Explicitly override the current recommendation and authorize a verifier row,
    accepting that P3 verification was negative/mixed.
 
