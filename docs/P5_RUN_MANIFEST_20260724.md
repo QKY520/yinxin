@@ -18,8 +18,8 @@ any verifier experiment.
 
 All four configs remain `execution.authorized: false` and
 `model_calls_allowed: false`. They are not runnable for paid execution until a
-new human gate updates approval status and the runner is checked for P5 gate
-support.
+new human gate updates approval status. Runner support for
+`P5_DOMAIN_PILOT_APPROVED` has already been patched and tested.
 
 ## Frozen Design Choices
 

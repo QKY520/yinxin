@@ -11,10 +11,37 @@ Read these files before doing any project work:
 3. `AGENTS.md` - durable repository and safety rules.
 4. This `HANDOFF.md` - latest operational state.
 
-Some "current gate" text in `AGENTS.md` and `AGENT_PLAYBOOK.md` is stale
-because the project advanced beyond those snapshots. Treat the chronology in
-this `HANDOFF.md` as the latest status, while all hard safety, cost, remote-only
+The human-facing guide filename on disk is `实验实施指导文档_综合版.md`.
+
+Some status text in `AGENT_PLAYBOOK.md` is historical, and `AGENTS.md` now
+explicitly points here for the live gate. Treat the chronology in this
+`HANDOFF.md` as the latest status, while all hard safety, cost, remote-only
 execution, leakage, and human-gate rules in the control docs still apply.
+
+## 0. Current One-Screen State
+
+Current live state:
+
+- P0 environment, P1 public data, P2 domain data freeze, and P3/P4 domain-dev
+  sanity are complete enough for a P5 decision.
+- P5 M0 GPU-free preparation is complete: the P5 prep plan, run manifest, audit
+  record, and four domain-test draft configs exist.
+- No P5 paid GPU run has started. No vLLM is running for P5. No P5
+  `domain_test` dry-run or prompt generation has been performed.
+- The current best dev evidence is D(RAG). Verification E/E-prime is not
+  recommended for paid P5 unless the human explicitly overrides that decision.
+- The next possible step is a human decision on exactly one bounded paid gate:
+  P5 domain-test pilot A/B/C/D, K=5, seed=42.
+- Until that approval exists, the agent must stop after status checks,
+  documentation, Git sync, and other non-experiment housekeeping.
+
+Next gate wording expected from the human:
+
+```text
+Approve paid GPU P5 domain pilot: run A/B/C/D on domain_test, K=5, seed=42,
+using the frozen draft configs after changing only execution authorization
+metadata. No prompt/glossary/RAG/verifier tuning is authorized.
+```
 
 ## 1. Mission
 
@@ -34,9 +61,10 @@ We are building a practical SCI-Q4-oriented applied/engineering paper project:
 - Manuscript route: Chinese technical draft first, then English SCI manuscript.
 - Budget target: about 400 CNY unless separately approved.
 
-Current experimental scope is still **dev-only sanity**, not final P5. All P3
-numbers below are from `domain_dev50`, seed 42, K=5. They are not final paper
-numbers and must not be reported as mean +/- std.
+Current experimental scope is **P5 M0 complete, waiting for paid P5 domain
+pilot approval**. All P3 numbers below are from `domain_dev50`, seed 42, K=5.
+They are sanity-stage evidence only, not final paper numbers, and must not be
+reported as mean +/- std.
 
 ## 2. Non-Negotiable Rules
 
@@ -77,7 +105,7 @@ Remote:
 - Remote data/model/backup root: `/root/autodl-tmp`
 - Project venv: `/root/autodl-tmp/venvs/equipment-ie`
 - Last reported 4090 price: 2.7 CNY/hour.
-- Last observed status after E v3 dry-run: GPU-free / no Nvidia device.
+- Last observed status after P5 M0 runner sync/test: GPU-free / no Nvidia device.
 
 Useful status command:
 
@@ -263,6 +291,10 @@ Current status:
 - The four P5 draft configs are explicitly unauthorized:
   `execution.authorized: false` and `model_calls_allowed: false`.
 - AutoDL was last observed in GPU-free/no-device mode during P5 M0 prep.
+- `scripts/run_p3_extraction.py` has been patched and tested so future P5
+  non-dry execution can use `human_gate: P5_DOMAIN_PILOT_APPROVED`.
+- Remote `/root/project` was fast-forwarded to the runner-patch commit and
+  `python -m unittest tests.test_extraction` passed on AutoDL GPU-free mode.
 
 Current blocker:
 
@@ -294,6 +326,21 @@ paid execution, copy or update the four draft configs to approved configs by
 changing only execution authorization metadata:
 `authorized: true`, `model_calls_allowed: true`, and
 `human_gate: P5_DOMAIN_PILOT_APPROVED`.
+
+New session startup checklist before asking for or acting on approval:
+
+1. Read `AGENTS.md`, `AGENT_PLAYBOOK.md`, `实验实施指导文档_综合版.md`, and this
+   `HANDOFF.md`.
+2. Confirm local Git status is clean and remote `origin/main` is reachable.
+3. Check AutoDL mode and remote repo only; do not run Python locally:
+   `ssh autodl-paper 'cd /root/project; git rev-parse --short HEAD; git status --short; nvidia-smi --query-gpu=index,name,memory.used,memory.total --format=csv,noheader 2>/dev/null || echo GPU_FREE_OR_NVIDIA_SMI_UNAVAILABLE'`.
+4. If the human has not given the exact paid gate approval, report that P5 M0 is
+   complete and wait.
+5. If the human has approved the paid pilot, verify paid GPU mode, start
+   Qwen2.5-7B vLLM, create approved copies of the four draft configs by changing
+   only execution metadata, run B before C/D, then run A/B/C/D once each.
+6. After the pilot, stop vLLM, verify GPU memory is 0 MiB, back up, sync
+   lightweight artifacts, report cost, and wait for the next gate.
 
 ## 9. Lessons Worth Remembering
 

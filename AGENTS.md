@@ -10,22 +10,18 @@ and aggregation. Use a paid GPU boot only for model inference or training.
 After every GPU phase: verify outputs, back up, sync lightweight artifacts to
 `D:\yinsir`, report cost, and remind the human to shut down the instance.
 
-**CURRENT GATE**: The paper route is locked as a one-month SCI-Q4-oriented
-applied/engineering paper: Chinese draft first, then English SCI manuscript;
-equipment-domain few-shot annotated data + reproducible IE pipeline +
-RAG/glossary/schema constraints/self-verification to reduce hallucination, with
-ablation evidence. NER is the main task; RE is auxiliary evidence. The current
-experiment gate is still P2: the 2026-07-20 fixed 10-record
-Qwen2.5-14B-AWQ sanity v6 passed after a deterministic, logged overlap resolver
-was enabled only for P2 LLM review-sheet proposals. vLLM was stopped and GPU
-memory returned to 0 MiB. Do not start the 400-record full pass, perform human
-annotation, split/freeze data, or start P3/P4/P5 without explicit approval. The
-next possible action is a human decision between approving the 400-record P2
-LLM proposal pass, doing a small manual audit of the v6 review sheet first, or
-stopping GPU work. The user's total project budget target is 400 CNY; the last
-reported 4090 price is 2.7 CNY/hour. The real host and port live only in the
-user's local SSH config; use the non-secret alias `autodl-paper` in project
-files and commands.
+**CURRENT GATE**: Historical snapshot only. The paper route is locked as a
+one-month SCI-Q4-oriented applied/engineering paper: Chinese draft first, then
+English SCI manuscript; equipment-domain few-shot annotated data +
+reproducible IE pipeline + RAG/glossary/schema constraints/self-verification to
+reduce hallucination, with ablation evidence. NER is the main task; RE is
+auxiliary evidence. The live project status has moved beyond the old P2 text and
+is maintained in `HANDOFF.md`. As of 2026-07-24, P5 M0 config preparation is
+complete, the four P5 draft configs remain unauthorized, and the next allowed
+step is only a human decision on the bounded paid P5 domain pilot. The user's
+total project budget target is 400 CNY; the last reported 4090 price is 2.7
+CNY/hour. The real host and port live only in the user's local SSH config; use
+the non-secret alias `autodl-paper` in project files and commands.
 
 ## Execution Authority
 
