@@ -346,6 +346,17 @@ Current status:
   - `tests.test_extraction` includes a mocked execute-path timing test.
 - Verification: AutoDL GPU-free `~/venv/bin/python -m unittest
   tests.test_extraction` passed, 16 tests OK.
+- RAG replay-manifest support is implemented:
+  - new script `scripts/build_rag_replay_manifest.py` builds a fixed manifest
+    containing each query's selected RAG passage IDs and display strings;
+  - `scripts/run_p3_extraction.py` supports `rag.mode: replay_manifest` and
+    validates the current query file hash against the manifest before replay;
+  - `tests.test_extraction` includes a lexical round-trip replay test;
+  - AutoDL GPU-free `~/venv/bin/python -m unittest tests.test_extraction`
+    passed, 17 tests OK.
+- No P5 `domain_test` replay manifest has been generated yet. Do not generate
+  one without explicit human approval, because it reads frozen test texts even
+  though it does not call a model or write prompts.
 - The human audit passed on 2026-07-24: ablation differences are clean, C/D
   replay B, D excludes `domain_test` IDs from RAG retrieval, and all four draft
   configs remain `authorized: false`.
@@ -379,8 +390,9 @@ next step is to stop until the human explicitly approves a new bounded gate.
 
 Reasonable next choices are:
 
-1. Optionally add a GPU-free RAG replay-manifest builder so future paid D runs
-   can reuse fixed RAG passage IDs instead of doing CPU rerank while vLLM waits.
+1. Explicitly approve GPU-free generation of a P5 D RAG replay manifest from
+   the fixed D config, acknowledging that it reads `domain_test` texts but does
+   not call a model or tune parameters.
 2. Replicate the domain A/B/C/D pilot on seeds 43 and 44, with no E/E-prime and
    no tuning from `domain_test`.
 3. Prepare a separate dev-first relation-enabled extraction path if RE evidence

@@ -239,6 +239,61 @@ def lexical_rag_score(query_text: str, passage: dict[str, Any]) -> tuple[int, in
     return (overlap, exact_title, exact_source, str(passage["id"]))
 
 
+def load_rag_replay_manifest(path: str, config: dict[str, Any]) -> tuple[dict[str, list[dict[str, Any]]], dict[str, Any]]:
+    manifest_path = Path(path)
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if not isinstance(manifest, dict):
+        raise ValueError(f"{path}: RAG replay manifest must be a JSON object")
+    rows = manifest.get("rows")
+    if not isinstance(rows, list) or not rows:
+        raise ValueError(f"{path}: RAG replay manifest rows must be a non-empty list")
+
+    query_path = config.get("data", {}).get("query_path")
+    manifest_query_sha = manifest.get("query_path_sha256")
+    if query_path and manifest_query_sha:
+        current_query_sha = sha256_file(str(query_path))
+        if current_query_sha != manifest_query_sha:
+            raise ValueError(
+                f"{path}: query_path_sha256 mismatch: {current_query_sha} != {manifest_query_sha}"
+            )
+
+    replay: dict[str, list[dict[str, Any]]] = {}
+    for index, row in enumerate(rows):
+        if not isinstance(row, dict):
+            raise ValueError(f"{path}: row {index} must be an object")
+        query_id = row.get("id")
+        selected = row.get("selected_passages")
+        if not isinstance(query_id, str) or not query_id:
+            raise ValueError(f"{path}: row {index} must contain non-empty id")
+        if query_id in replay:
+            raise ValueError(f"{path}: duplicate replay id {query_id}")
+        if not isinstance(selected, list):
+            raise ValueError(f"{path}: row {query_id} selected_passages must be a list")
+        passages: list[dict[str, Any]] = []
+        for passage_index, passage in enumerate(selected):
+            if not isinstance(passage, dict):
+                raise ValueError(f"{path}: row {query_id} passage {passage_index} must be an object")
+            passage_id = passage.get("id")
+            display = passage.get("display")
+            if not isinstance(passage_id, str) or not passage_id:
+                raise ValueError(f"{path}: row {query_id} passage {passage_index} missing id")
+            if not isinstance(display, str) or not display:
+                raise ValueError(f"{path}: row {query_id} passage {passage_index} missing display")
+            passages.append(dict(passage))
+        replay[query_id] = passages
+
+    return replay, {
+        "enabled": True,
+        "mode": "replay_manifest",
+        "manifest_path": str(manifest_path),
+        "manifest_sha256": sha256_file(str(manifest_path)),
+        "source_rag_mode": manifest.get("source_rag_mode"),
+        "source_config_sha256": manifest.get("source_config_sha256"),
+        "query_path_sha256": manifest.get("query_path_sha256"),
+        "query_records": len(rows),
+    }
+
+
 def build_rag_selector(
     config: dict[str, Any],
 ) -> tuple[Callable[[dict[str, Any]], list[dict[str, Any]]], dict[str, Any]]:
@@ -246,13 +301,27 @@ def build_rag_selector(
     if not rag_config or rag_config.get("enabled") is not True:
         return lambda _record: [], {"enabled": False}
 
+    mode = str(rag_config.get("mode", "lexical_preview"))
+    if mode == "replay_manifest":
+        replay_path = rag_config.get("replay_manifest_path")
+        if not isinstance(replay_path, str) or not replay_path:
+            raise ValueError("rag.replay_manifest_path is required for replay_manifest mode")
+        replay, metadata = load_rag_replay_manifest(replay_path, config)
+
+        def select_replay(record: dict[str, Any]) -> list[dict[str, Any]]:
+            record_id = str(record["id"])
+            if record_id not in replay:
+                raise ValueError(f"RAG replay manifest has no row for query id {record_id}")
+            return [dict(passage) for passage in replay[record_id]]
+
+        return select_replay, metadata
+
     corpus_path = rag_config["corpus_path"]
     top_k = int(rag_config.get("top_k", 3))
     retrieve_top_k = int(rag_config.get("retrieve_top_k", 20))
     chunk_chars = int(rag_config.get("chunk_chars", 260))
     overlap_chars = int(rag_config.get("overlap_chars", 40))
     max_passage_chars = int(rag_config.get("max_passage_chars", 300))
-    mode = str(rag_config.get("mode", "lexical_preview"))
     passages = load_rag_passages(
         corpus_path,
         chunk_chars=chunk_chars,

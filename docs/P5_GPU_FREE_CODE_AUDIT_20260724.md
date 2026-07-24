@@ -164,30 +164,50 @@ Implemented follow-up:
    OK
    ```
 
+Implemented replay support:
+
+1. `scripts/build_rag_replay_manifest.py` was added. It builds a fixed RAG
+   replay manifest from an existing extraction config by running the configured
+   RAG selector and storing each query's selected passage IDs and display text.
+
+2. `scripts/run_p3_extraction.py` now supports `rag.mode: replay_manifest`.
+   In that mode, the runner reads fixed `selected_passages` from a manifest and
+   validates the current `query_path` hash before returning passages.
+
+3. A round-trip unit test was added: a lexical RAG selector builds a manifest,
+   then `replay_manifest` mode reads back the same passage ID and display text.
+
+4. Verification was run on AutoDL GPU-free mode after this change:
+
+   ```text
+   ~/venv/bin/python -m unittest tests.test_extraction
+   Ran 17 tests in 0.098s
+   OK
+   ```
+
+No `domain_test` RAG replay manifest has been generated yet. The implementation
+is ready for a future explicit decision, but this code step did not read the P5
+domain-test config or write any new P5 test artifact.
+
 Remaining safe future fixes:
 
-1. Precompute RAG selections before paid vLLM execution:
-   build a frozen `{query_id: rag_passage_ids}` replay file in GPU-free mode
-   using the fixed RAG config, hash it, and make D replay those IDs during paid
-   extraction. This changes execution metadata/path only if the selected
-   passages are byte-identical to the original selector output.
-
-2. If precomputation is too intrusive, use CPU-thread hygiene first:
+1. If precomputation is too intrusive, use CPU-thread hygiene first:
    set a valid `OMP_NUM_THREADS` value in the run shell and record it in
    execution metadata. This does not change prompt semantics, but it can affect
    wall time.
 
-3. Do not tune `retrieve_top_k`, `top_k`, chunk size, reranker model, or RAG
+2. Do not tune `retrieve_top_k`, `top_k`, chunk size, reranker model, or RAG
    corpus based on `domain_test` results. Those are method changes and would
    violate the frozen-test rule.
 
 ## Recommended Next Step
 
-Before any more paid P5 execution, the next GPU-free implementation option is
-to add a RAG replay-manifest builder for future D runs, but only if it preserves
-the exact selected passage IDs and displays under a fixed config hash. Otherwise
-the next decision can be a paid replication gate with the current runner and the
-new timing fields.
+Before any more paid P5 execution, the next decision is whether to generate a
+P5 D replay manifest from the fixed D config in GPU-free mode, or to run the
+next paid replication gate with live CPU RAG selection plus the new timing
+fields. Generating the P5 replay manifest would read `domain_test` IDs/text for
+RAG selection, so it should be treated as a separate explicit human gate even
+though it makes no model calls.
 
 Then ask for a new bounded paid gate. The safest paid continuation remains:
 

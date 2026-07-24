@@ -22,6 +22,8 @@ from equipment_ie.extraction import (  # noqa: E402
 )
 from equipment_ie.llm_labeling import ChatResult  # noqa: E402
 from equipment_ie.schema import iter_jsonl  # noqa: E402
+from scripts.build_rag_replay_manifest import build_manifest as build_rag_replay_manifest  # noqa: E402
+from scripts.run_p3_extraction import build_rag_selector  # noqa: E402
 from scripts.run_p3_extraction import main as run_main  # noqa: E402
 from scripts.run_p3_extraction import run_execute  # noqa: E402
 from scripts.run_p3_extraction import validate_execution_gate  # noqa: E402
@@ -590,6 +592,85 @@ class ExtractionTest(unittest.TestCase):
             self.assertEqual(saved_summary["timing_totals_ms"]["llm_latency_ms"], 12.5)
             self.assertIn("rag_selection_ms", saved_summary["timing_means_ms"])
             self.assertEqual(saved_summary["entity_micro"]["tp"], 1)
+
+    def test_rag_replay_manifest_round_trip_preserves_passages(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            query = root / "query.jsonl"
+            corpus = root / "rag.jsonl"
+            config_path = root / "config.yaml"
+            replay_path = root / "rag_replay.json"
+            write_jsonl(
+                query,
+                [
+                    record("q1", "Carrier strike group uses EOTS targeting system.", 0, 7, "EQUIPMENT"),
+                ],
+            )
+            write_jsonl(
+                corpus,
+                [
+                    {
+                        "id": "q1",
+                        "title": "Self leak",
+                        "source_type": "unit",
+                        "text": "Carrier strike group uses EOTS targeting system.",
+                    },
+                    {
+                        "id": "p1",
+                        "title": "Carrier evidence",
+                        "source_type": "unit",
+                        "text": "Carrier strike group has radar and EOTS targeting evidence.",
+                    },
+                    {
+                        "id": "p2",
+                        "title": "Other",
+                        "source_type": "unit",
+                        "text": "Unrelated cooking equipment.",
+                    },
+                ],
+            )
+            config_path.write_text("unit config for replay manifest\n", encoding="utf-8")
+            config = {
+                "data": {"query_path": query.as_posix()},
+                "rag": {
+                    "enabled": True,
+                    "mode": "lexical_preview",
+                    "corpus_path": corpus.as_posix(),
+                    "exclude_source_ids_path": query.as_posix(),
+                    "top_k": 1,
+                    "retrieve_top_k": 2,
+                    "chunk_chars": 120,
+                    "overlap_chars": 0,
+                    "max_passage_chars": 160,
+                },
+            }
+
+            manifest = build_rag_replay_manifest(
+                config,
+                config_path=config_path,
+                output_path=replay_path,
+            )
+            self.assertFalse(manifest["api_called"])
+            self.assertEqual(manifest["model_calls"], 0)
+            self.assertEqual(manifest["rows"][0]["rag_passage_ids"], ["p1#chunk-0"])
+            self.assertTrue(replay_path.is_file())
+
+            replay_config = {
+                "data": {"query_path": query.as_posix()},
+                "rag": {
+                    "enabled": True,
+                    "mode": "replay_manifest",
+                    "replay_manifest_path": replay_path.as_posix(),
+                },
+            }
+            select_rag, metadata = build_rag_selector(replay_config)
+            selected = select_rag({"id": "q1", "text": "Carrier strike group uses EOTS."})
+            self.assertEqual(metadata["mode"], "replay_manifest")
+            self.assertEqual([passage["id"] for passage in selected], ["p1#chunk-0"])
+            self.assertEqual(
+                [passage["display"] for passage in selected],
+                manifest["rows"][0]["rag_passages"],
+            )
 
 
 if __name__ == "__main__":
