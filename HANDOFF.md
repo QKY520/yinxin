@@ -34,9 +34,15 @@ Current live state:
   D(RAG) has lower FP and higher precision than C but slightly lower F1.
 - GPU-free diagnostic of the pilot is complete:
   `docs/P5_DOMAIN_PILOT_DIAGNOSTIC_20260724.md`.
+- GPU-free code audit of relation-zero and RAG runtime is complete:
+  `docs/P5_GPU_FREE_CODE_AUDIT_20260724.md`.
 - Diagnostic conclusion: kNN is the cleanest positive module, glossary gives
   the best single-seed F1, RAG lowers FP but is much slower and slightly below C
   in F1, and all four A/B/C/D rows predicted zero relation triples.
+- Code-audit conclusion: P5 A/B/C/D used the NER-only path
+  (`schema.task: ner`, `relation_types: {}`, `include_relations=False`), so
+  zero relations are expected; D's wall time is dominated by CPU query
+  embedding/reranker work outside logged vLLM latency.
 - The next possible step is another human decision. Do not run E, E-prime,
   more seeds, CLUENER, full P5, dry-runs, or any additional `domain_test`
   evaluation without a new explicit gate.
@@ -295,6 +301,7 @@ Current status:
 - P5 paid domain-test pilot artifacts now exist:
   - `docs/P5_DOMAIN_PILOT_20260724.md`;
   - `docs/P5_DOMAIN_PILOT_DIAGNOSTIC_20260724.md`;
+  - `docs/P5_GPU_FREE_CODE_AUDIT_20260724.md`;
   - `configs/p5_domain_test_a_k5_seed42_approved_20260724.yaml`;
   - `configs/p5_domain_test_b_knn_k5_seed42_approved_20260724.yaml`;
   - `configs/p5_domain_test_c_glossary_k5_seed42_approved_20260724.yaml`;
@@ -318,6 +325,18 @@ Current status:
     drops F1 by 0.0035;
   - relation extraction is not currently usable as positive evidence because
     A/B/C/D all predicted zero relation triples against 427 gold triples.
+- P5 GPU-free code audit findings:
+  - the relation-zero result is configuration/runner behavior, not a meaningful
+    relation-extraction comparison: P5 A/B/C/D were NER-only configs with
+    empty `relation_types`, and `run_p3_extraction.py` passed
+    `include_relations=False`;
+  - cached raw outputs contained no non-empty relation arrays for A/B/C/D;
+  - D's `elapsed_seconds` was 6237.211s while summed vLLM latency was only
+    436.549s, so the overhead is outside model generation;
+  - the D code performs one BGE query embedding plus `FlagReranker.compute_score`
+    on 20 pairs per query on CPU; this is the likely wall-time driver;
+  - logs show `libgomp: Invalid value for environment variable OMP_NUM_THREADS`,
+    so CPU-thread hygiene should be fixed before more CPU-heavy paid runs.
 - The human audit passed on 2026-07-24: ablation differences are clean, C/D
   replay B, D excludes `domain_test` IDs from RAG retrieval, and all four draft
   configs remain `authorized: false`.
@@ -351,12 +370,13 @@ next step is to stop until the human explicitly approves a new bounded gate.
 
 Reasonable next choices are:
 
-1. Replicate the domain A/B/C/D pilot on seeds 43 and 44, with no E/E-prime and
+1. Add non-semantic timing instrumentation to `scripts/run_p3_extraction.py`
+   in GPU-free mode, with mocked tests, before any more paid D runs.
+2. Replicate the domain A/B/C/D pilot on seeds 43 and 44, with no E/E-prime and
    no tuning from `domain_test`.
-2. Stop paid P5 for now and do a GPU-free/code-only audit of why relation
-   outputs are absent and why CPU RAG/rerank is so slow, without touching
-   `domain_test` prompts or rerunning model outputs.
-3. Explicitly override the current recommendation and authorize a verifier row,
+3. Prepare a separate dev-first relation-enabled extraction path if RE evidence
+   is still needed. Do not retrofit relation extraction into frozen P5 A-D.
+4. Explicitly override the current recommendation and authorize a verifier row,
    accepting that P3 verification was negative/mixed.
 
 Do not start more P5 paid execution without explicit approval for one of these
