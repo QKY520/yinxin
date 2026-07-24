@@ -24,16 +24,17 @@ Current live state:
 
 - P0 environment, P1 public data, P2 domain data freeze, and P3/P4 domain-dev
   sanity are complete enough for a P5 decision.
-- P5 M0 GPU-free preparation is complete: the P5 prep plan, run manifest, audit
-  record, and four domain-test draft configs exist.
-- No P5 paid GPU run has started. No vLLM is running for P5. No P5
-  `domain_test` dry-run or prompt generation has been performed.
+- P5 M0 GPU-free preparation is complete, and the bounded paid P5
+  domain-test pilot A/B/C/D, K=5, seed=42 was run on 2026-07-24 under
+  `P5_DOMAIN_PILOT_APPROVED`.
+- vLLM was stopped after the pilot and GPU memory returned to 0 MiB.
 - The current best dev evidence is D(RAG). Verification E/E-prime is not
   recommended for paid P5 unless the human explicitly overrides that decision.
-- The next possible step is a human decision on exactly one bounded paid gate:
-  P5 domain-test pilot A/B/C/D, K=5, seed=42.
-- Until that approval exists, the agent must stop after status checks,
-  documentation, Git sync, and other non-experiment housekeeping.
+- The current single-seed domain-test pilot best F1 is C(kNN + glossary);
+  D(RAG) has lower FP and higher precision than C but slightly lower F1.
+- The next possible step is another human decision. Do not run E, E-prime,
+  more seeds, CLUENER, full P5, dry-runs, or any additional `domain_test`
+  evaluation without a new explicit gate.
 
 Next gate wording expected from the human:
 
@@ -61,10 +62,10 @@ We are building a practical SCI-Q4-oriented applied/engineering paper project:
 - Manuscript route: Chinese technical draft first, then English SCI manuscript.
 - Budget target: about 400 CNY unless separately approved.
 
-Current experimental scope is **P5 M0 complete, waiting for paid P5 domain
-pilot approval**. All P3 numbers below are from `domain_dev50`, seed 42, K=5.
-They are sanity-stage evidence only, not final paper numbers, and must not be
-reported as mean +/- std.
+Current experimental scope is **P5 M0 complete plus one bounded paid P5
+domain-test pilot complete**. All P3 numbers below are from `domain_dev50`,
+seed 42, K=5. The P5 pilot numbers are `domain_test`, seed 42, K=5 only.
+None of these are final paper mean +/- std numbers.
 
 ## 2. Non-Negotiable Rules
 
@@ -105,7 +106,8 @@ Remote:
 - Remote data/model/backup root: `/root/autodl-tmp`
 - Project venv: `/root/autodl-tmp/venvs/equipment-ie`
 - Last reported 4090 price: 2.7 CNY/hour.
-- Last observed status after P5 M0 runner sync/test: GPU-free / no Nvidia device.
+- Last observed status after the P5 domain pilot: paid GPU mode was active, but
+  vLLM was stopped and GPU memory returned to 0 MiB.
 
 Useful status command:
 
@@ -285,6 +287,23 @@ Current status:
   - `configs/p5_domain_test_b_knn_k5_seed42_draft.yaml`;
   - `configs/p5_domain_test_c_glossary_k5_seed42_draft.yaml`;
   - `configs/p5_domain_test_d_rag_k5_seed42_draft.yaml`.
+- P5 paid domain-test pilot artifacts now exist:
+  - `docs/P5_DOMAIN_PILOT_20260724.md`;
+  - `configs/p5_domain_test_a_k5_seed42_approved_20260724.yaml`;
+  - `configs/p5_domain_test_b_knn_k5_seed42_approved_20260724.yaml`;
+  - `configs/p5_domain_test_c_glossary_k5_seed42_approved_20260724.yaml`;
+  - `configs/p5_domain_test_d_rag_k5_seed42_approved_20260724.yaml`;
+  - remote and local `results/p5/` per-query and summary files;
+  - local backup `D:\yinsir\backups\P5\p5_domain_pilot_20260724.tar.gz`,
+    SHA256 `61b05d4c89c26b22881ea17ce36da91a84fdb83ad0d3a49aaa84317e7357d808`.
+- P5 pilot results on `domain_test`, K=5, seed=42:
+  - A: P=0.4752, R=0.6017, F1=0.5310, TP/FP/FN=574/634/380;
+  - B: P=0.5056, R=0.6143, F1=0.5547, TP/FP/FN=586/573/368;
+  - C: P=0.5117, R=0.6415, F1=0.5693, TP/FP/FN=612/584/342;
+  - D: P=0.5251, R=0.6132, F1=0.5658, TP/FP/FN=585/529/369.
+- All four P5 pilot cells wrote 170 per-query rows and had 0 parse failures.
+- P5 single-seed pilot interpretation: C has the best F1; D reduces FP by 55
+  relative to C but is slightly lower in F1 and much slower due to CPU RAG/rerank.
 - The human audit passed on 2026-07-24: ablation differences are clean, C/D
   replay B, D excludes `domain_test` IDs from RAG retrieval, and all four draft
   configs remain `authorized: false`.
@@ -299,9 +318,9 @@ Current status:
 Current blocker:
 
 - Stop for a human decision before any further paid experiment.
-- The human explicitly did not authorize paid GPU execution, vLLM startup,
-  domain-test dry-run, or config modification after the P5 M0 audit.
-- Do not dry-run the P5 `domain_test` configs, because dry-run reads test
+- The previous paid gate covered only A/B/C/D, K=5, seed=42 on `domain_test`;
+  that gate is complete.
+- Do not dry-run new P5 `domain_test` configs, because dry-run reads test
   records and writes prompts.
 - Do not run E v3, E-prime, P5/full ablations, more seeds, or any
   `domain_test` model evaluation unless the human explicitly approves the next
@@ -313,19 +332,20 @@ Current blocker:
 
 ## 8. Recommended Next Plan
 
-P5 M0 is complete. Recommended next step is to stop until the human explicitly
-approves one bounded paid gate:
+P5 M0 and the first bounded P5 domain-test pilot are complete. Recommended
+next step is to stop until the human explicitly approves a new bounded gate.
 
-1. Domain-test pilot A/B/C/D, K=5, seed=42.
-2. No verifier/E/E-prime row.
-3. No prompt, glossary, RAG, verifier, threshold, or config tuning from
-   `domain_test`.
+Reasonable next choices are:
 
-Do not start P5 paid execution without this explicit approval. Before future
-paid execution, copy or update the four draft configs to approved configs by
-changing only execution authorization metadata:
-`authorized: true`, `model_calls_allowed: true`, and
-`human_gate: P5_DOMAIN_PILOT_APPROVED`.
+1. Replicate the domain A/B/C/D pilot on seeds 43 and 44, with no E/E-prime and
+   no tuning from `domain_test`.
+2. Stop paid P5 for now and analyze/write the single-seed pilot as a decision
+   record, preserving that C has best F1 while D lowers FP at high runtime cost.
+3. Explicitly override the current recommendation and authorize a verifier row,
+   accepting that P3 verification was negative/mixed.
+
+Do not start more P5 paid execution without explicit approval for one of these
+or another equally bounded scope.
 
 New session startup checklist before asking for or acting on approval:
 
@@ -334,12 +354,12 @@ New session startup checklist before asking for or acting on approval:
 2. Confirm local Git status is clean and remote `origin/main` is reachable.
 3. Check AutoDL mode and remote repo only; do not run Python locally:
    `ssh autodl-paper 'cd /root/project; git rev-parse --short HEAD; git status --short; nvidia-smi --query-gpu=index,name,memory.used,memory.total --format=csv,noheader 2>/dev/null || echo GPU_FREE_OR_NVIDIA_SMI_UNAVAILABLE'`.
-4. If the human has not given the exact paid gate approval, report that P5 M0 is
-   complete and wait.
-5. If the human has approved the paid pilot, verify paid GPU mode, start
-   Qwen2.5-7B vLLM, create approved copies of the four draft configs by changing
-   only execution metadata, run B before C/D, then run A/B/C/D once each.
-6. After the pilot, stop vLLM, verify GPU memory is 0 MiB, back up, sync
+4. Report that P5 M0 plus the bounded A/B/C/D seed-42 pilot are complete and
+   wait for the next gate.
+5. If the human approves more paid execution, verify paid GPU mode, start
+   Qwen2.5-7B vLLM, change only execution metadata for the approved configs,
+   execute only the approved scope, then stop.
+6. After every paid run, stop vLLM, verify GPU memory is 0 MiB, back up, sync
    lightweight artifacts, report cost, and wait for the next gate.
 
 ## 9. Lessons Worth Remembering
@@ -359,6 +379,12 @@ New session startup checklist before asking for or acting on approval:
   from RAG corpus for dev sanity; later exclude test IDs for test.
 - RAG relevance is noisy but still helped by structurally anchoring the model
   and reducing FP. D is positive despite imperfect evidence.
+- On the seed-42 domain-test pilot, D lowered FP relative to C but was slightly
+  lower in F1; C was the best single-seed F1. Do not overclaim until more seeds
+  exist.
+- D is expensive in wall time because CPU RAG/reranker dominated runtime
+  (`elapsed_seconds` about 6237s for 170 rows). Budget future RAG cells
+  accordingly.
 - Verification v1 failed because the verifier treated RAG evidence as primary.
   It answered `no` when RAG did not mention the entity.
 - Verification v2 fixed most overkill but still did not beat D; it retained
