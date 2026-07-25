@@ -363,6 +363,8 @@ Current status:
 - Result-to-claim artifacts now exist:
   - `findings.md`;
   - `docs/RESULT_TO_CLAIM_P5_DOMAIN_20260725.md`.
+- GPU-free paper evidence package now exists:
+  - `docs/P5_DOMAIN_PAPER_EVIDENCE_20260725.md`.
 - Result-to-claim revised claim:
   "In a frozen low-label Chinese equipment-domain NER setting, kNN
   demonstrations and glossary injection improve entity extraction F1, while RAG
@@ -461,8 +463,10 @@ Current blocker:
 P5 M0, the bounded seed-42 domain-test pilot, and the bounded seeds43/44
 domain-test replication are complete. Human review accepted the near-tie
 interpretation for C versus D. GPU-free result-to-claim verdict is `partial`.
-Recommended next step is GPU-free paper-facing aggregation and wording cleanup
-before any new paid gate.
+GPU-free paper-facing aggregation and wording cleanup has started, producing
+`docs/P5_DOMAIN_PAPER_EVIDENCE_20260725.md`. Recommended next step is to turn
+that evidence package into the paper Results subsection outline before any new
+paid gate.
 
 Reasonable next choices are:
 
