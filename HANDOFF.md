@@ -42,6 +42,11 @@ Current live state:
   near-tied on F1, with C marginally ahead on recall and D clearly ahead on
   precision and FP reduction. Do not write that C is substantially or
   significantly better than D.
+- Result-to-claim review was run GPU-free on 2026-07-25. Verdict: `partial`.
+  The supported claim is scoped to domain-test NER only: kNN and glossary
+  improve F1/recall, while RAG keeps F1 near-tied and improves precision /
+  reduces FP. Verification, RE, public benchmark generalization, and K-scan
+  robustness are not supported by current evidence.
 - GPU-free diagnostic of the pilot is complete:
   `docs/P5_DOMAIN_PILOT_DIAGNOSTIC_20260724.md`.
 - GPU-free code audit of relation-zero and RAG runtime is complete:
@@ -355,6 +360,15 @@ Current status:
 - Human review note: this supports the statement "C and D are near-tied on F1,
   with C marginally ahead on recall and D clearly ahead on precision and FP
   reduction." It should not be framed as "C significantly beats D."
+- Result-to-claim artifacts now exist:
+  - `findings.md`;
+  - `docs/RESULT_TO_CLAIM_P5_DOMAIN_20260725.md`.
+- Result-to-claim revised claim:
+  "In a frozen low-label Chinese equipment-domain NER setting, kNN
+  demonstrations and glossary injection improve entity extraction F1, while RAG
+  evidence preserves near-tied F1 and improves precision / reduces
+  false-positive entity predictions. Verification and relation extraction are
+  not claimed from the current evidence."
 - P5 replication execution:
   - paid vLLM window approximately 2026-07-24 18:16:34-19:27:50 CST;
   - estimated cost about 3.2 CNY at 2.7 CNY/hour;
@@ -446,8 +460,9 @@ Current blocker:
 
 P5 M0, the bounded seed-42 domain-test pilot, and the bounded seeds43/44
 domain-test replication are complete. Human review accepted the near-tie
-interpretation for C versus D. Recommended next step is GPU-free paper-facing
-interpretation of this evidence block before any new paid gate.
+interpretation for C versus D. GPU-free result-to-claim verdict is `partial`.
+Recommended next step is GPU-free paper-facing aggregation and wording cleanup
+before any new paid gate.
 
 Reasonable next choices are:
 
