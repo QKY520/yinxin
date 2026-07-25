@@ -375,6 +375,8 @@ Current status:
   The recent-priority file records the user's requirement to emphasize
   2023-2025 literature where possible, while keeping older papers only as
   foundational references.
+- Integrated Chinese paper draft with expanded related work now exists:
+  - `docs/EQUIPMENT_IE_PAPER_DRAFT_WITH_RELATED_WORK_20260725.docx`.
 - Result-to-claim revised claim:
   "In a frozen low-label Chinese equipment-domain NER setting, kNN
   demonstrations and glossary injection improve entity extraction F1, while RAG
@@ -481,7 +483,9 @@ skeleton DOCX also exists at
 step is human editing of the DOCX draft, or a separate human decision on RE
 diagnostic, public benchmark protocol, or another bounded paid gate.
 Related-work preparation has also started in DOCX form, with explicit priority
-for recent 2023-2025 literature.
+for recent 2023-2025 literature. An integrated paper draft with related work
+has been generated as
+`docs/EQUIPMENT_IE_PAPER_DRAFT_WITH_RELATED_WORK_20260725.docx`.
 
 Reasonable next choices are:
 
