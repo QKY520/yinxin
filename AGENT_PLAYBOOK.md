@@ -6,7 +6,7 @@
 >
 > PAPER STRATEGY UPDATE (2026-07-20): The project is now framed for a practical SCI-Q4 submission within roughly one month and a 400 CNY target budget. The original route is retained: equipment-domain small annotated dataset + reproducible few-shot IE pipeline + RAG/glossary/schema constraints + verification to reduce hallucination + ablation evidence. Draft Chinese first, then produce the English SCI manuscript. NER is the main evidence line; RE is auxiliary.
 >
-> EXECUTION STATUS UPDATE (2026-07-20): P2 Qwen2.5-14B-AWQ fixed 10-record sanity v6 passed with 0/10 parse failures after enabling a deterministic logged overlap resolver only for LLM review-sheet proposal generation. Stop before the 400-record P2 full pass, human annotation, split/freeze, P3/P4/P5, or optional P7 unless the human explicitly approves the next gate.
+> EXECUTION STATUS UPDATE (2026-07-25): The live status has moved beyond the old P2 gate. P0/P1/P2 are complete, the domain split is frozen, P3/P4 domain-dev sanity is complete, and a bounded P5 domain-test A/B/C/D K=5 three-seed block is complete. The result-to-claim verdict is `partial`: usable evidence supports a narrow low-label Chinese equipment-domain NER paper claim, while RE, CoVe, CLUENER/public generalization, K-scan robustness, and the full A..E′ matrix are not currently supported. Current work is GPU-free Markdown paper/pre-submission preparation only. See `HANDOFF.md` for the latest operational state before acting.
 
 ---
 
@@ -165,6 +165,12 @@ FIX: kill-precision < 50% → verification prompt is over-killing; add evidence 
 
 ## 7. PHASE P5 — Ablation matrix (RTX 4090 boot; longest phase)
 
+Status note as of 2026-07-25: the table below remains the original full-plan
+contract, not the set of completed evidence. The completed P5 evidence is only
+`domain_test`, K=5, configs A/B/C/D, seeds 42/43/44. It is valid for a scoped
+domain NER claim, but it is not a complete P5 grid. Do not fill missing E,
+E-prime, CLUENER, or K-scan rows without a new explicit human gate.
+
 | Config | example_sel | glossary | RAG | self_verif |
 |---|---|---|---|---|
 | A | fixed_random | ✗ | ✗ | ✗ |
@@ -205,6 +211,14 @@ FIX: a config underperforms its predecessor (e.g., C < B) → do NOT delete the 
 ## 9. PHASE P6 — Wrap-up (GPU-free boot)
 
 Aggregate, generate final `results/summary.md`, verify all backups (code pushed; `/root/autodl-tmp` tarball in file storage; cache/ included), then report to human: best config, largest F1 contributor, largest hallucination reduction, total spend, and open questions. Remind human to shut down the instance.
+
+Current wrap-up stance as of 2026-07-25: use `docs/RESULT_TO_CLAIM_P5_DOMAIN_20260725.md`,
+`docs/P5_DOMAIN_PAPER_EVIDENCE_20260725.md`, `docs/P5_PAPER_REVIEW_AUDIT_20260725.md`,
+`docs/P5_PAPER_P0_REVIEW_FEEDBACK_20260725.md`, and `findings.md` as the
+paper-facing evidence base. The manuscript should honestly frame C and D as
+near-tied on F1, with C marginally ahead on recall/F1 and D clearly better on
+precision and false-positive reduction. Do not claim significant superiority,
+relation extraction success, or verification gains from the current results.
 
 ## 10. OPTIONAL PHASE P7 — QLoRA fine-tune (only if human approves after P6)
 

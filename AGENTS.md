@@ -10,18 +10,18 @@ and aggregation. Use a paid GPU boot only for model inference or training.
 After every GPU phase: verify outputs, back up, sync lightweight artifacts to
 `D:\yinsir`, report cost, and remind the human to shut down the instance.
 
-**CURRENT GATE**: Historical snapshot only. The paper route is locked as a
-one-month SCI-Q4-oriented applied/engineering paper: Chinese draft first, then
-English SCI manuscript; equipment-domain few-shot annotated data +
-reproducible IE pipeline + RAG/glossary/schema constraints/self-verification to
-reduce hallucination, with ablation evidence. NER is the main task; RE is
-auxiliary evidence. The live project status has moved beyond the old P2 text and
-is maintained in `HANDOFF.md`. As of 2026-07-24, P5 M0 config preparation is
-complete, the four P5 draft configs remain unauthorized, and the next allowed
-step is only a human decision on the bounded paid P5 domain pilot. The user's
-total project budget target is 400 CNY; the last reported 4090 price is 2.7
-CNY/hour. The real host and port live only in the user's local SSH config; use
-the non-secret alias `autodl-paper` in project files and commands.
+**CURRENT GATE (2026-07-25)**: The live status is maintained in `HANDOFF.md`.
+P0/P1/P2 are complete, the self-built domain split is frozen, P3/P4 domain-dev
+sanity is complete, and the bounded P5 `domain_test` A/B/C/D K=5 seeds
+42/43/44 block is complete. Result-to-claim verdict is `partial`: the supported
+paper claim is a narrow low-label Chinese equipment-domain NER claim, not full
+IE, RE, CoVe, public-benchmark generalization, or K-scan robustness. The current
+task is GPU-free paper writing / pre-submission preparation in Markdown. No
+further paid GPU, vLLM, dry-run, model call, or frozen-test prompt generation is
+authorized without a new explicit bounded human gate. The user's total project
+budget target is 400 CNY; the last reported 4090 price is 2.7 CNY/hour. The
+real host and port live only in the user's local SSH config; use the non-secret
+alias `autodl-paper` in project files and commands.
 
 ## Execution Authority
 
@@ -30,6 +30,7 @@ Read these files before any project work:
 1. `AGENT_PLAYBOOK.md` - authoritative machine execution contract.
 2. `实验实施指导文档_综合版.md` - human-facing rationale and operational guide.
 3. `AGENTS.md` - durable repository and collaboration rules.
+4. `HANDOFF.md` - latest operational state and current next step.
 
 If the documents differ, `AGENT_PLAYBOOK.md` controls execution. This file may
 clarify comparisons or local workflow but must not silently replace fixed model,
@@ -185,15 +186,17 @@ Paper-facing framing:
 
 ## Current Priority And State
 
-Current step: **Step 5 in progress - P2 14B fixed 10-record sanity v6 passed;
-stop for the next human gate before any 400-record full pass, human annotation,
-split/freeze, or P3/P4/P5 work**.
+Current step: **Paper-writing / pre-submission preparation, GPU-free only**.
+The experiment evidence is sufficient for a narrow SCI-Q4-oriented applied NER
+paper draft, but it is not a complete P5 matrix.
 
 - Local workspace: `D:\yinsir`.
-- Git repository: `main` initialized and tracking `origin/main`.
-- GitHub remote: the current implementation state is pushed and hash-verified.
-- AutoDL instance: reachable in GPU-free mode as of 2026-07-16; no GPU device or
-  experiment process was present during the Pause A audit.
+- Git repository: `main` tracks `origin/main`. As of the latest handoff, local
+  commits are ahead because GitHub push fails through the local `127.0.0.1`
+  proxy. The latest handoff-refresh commit is local-only until GitHub or AutoDL
+  SSH connectivity is restored.
+- AutoDL instance: currently expected in GPU-free/no-card mode. Check with SSH
+  alias `autodl-paper`; do not assume a paid GPU is active.
 - AutoDL image: the human confirmed the P0 image was saved.
 - SSH alias: `autodl-paper`; dedicated ED25519 key authentication verified.
 - GitHub deploy key: read-only access verified from AutoDL over SSH port 443.
@@ -255,15 +258,48 @@ split/freeze, or P3/P4/P5 work**.
   `p2_14b_sanity_v6_success_20260720_r2.tar.gz`; remote and local SHA256 both
   equal `16cc70ea...acfaead`. The first same-name v6 backup attempt was a
   45-byte failed tar and must not be treated as a valid backup.
-- Test set: not created and therefore not frozen.
-- GPU spend: sanity GPU service windows have been minimized and stopped after
-  use. The v6 service window was approximately 19:46-19:52 Asia/Shanghai on
-  2026-07-20, costing about 0.27 CNY at 2.7 CNY/hour; platform billing remains
-  the authoritative spend record.
+- Domain data is now complete and frozen: `domain_support.jsonl` has 30 rows,
+  `domain_dev.jsonl` has 50 rows, and `domain_test.jsonl` has 170 rows.
+  `data/FROZEN` and `logs/dedup.json` exist on the remote artifacts.
+- P3/P4 domain-dev sanity is complete. A/B/C/D/E variants were tested on
+  `domain_dev50`; D(RAG) was the strongest positive dev result, while verifier
+  E variants were negative or mixed and are not recommended for more paid GPU by
+  default.
+- P5 M0 config preparation is complete, followed by two bounded paid gates:
+  `P5_DOMAIN_PILOT_APPROVED` for A/B/C/D K=5 seed 42 and
+  `P5_DOMAIN_REPLICATION_APPROVED` for A/B/C/D K=5 seeds 43/44 on
+  `domain_test`. These gates are complete and do not authorize further work.
+- P5 three-seed domain-test A/B/C/D NER results:
+  - A: F1 `0.534645 +/- 0.004375`, FP `613.3 +/- 88.8`;
+  - B: F1 `0.555169 +/- 0.000880`, FP `573.7 +/- 1.2`;
+  - C: F1 `0.568858 +/- 0.000769`, FP `584.0 +/- 0.0`;
+  - D: F1 `0.565764 +/- 0.000000`, FP `529.0 +/- 0.0`.
+- Accepted interpretation: C and D are near-tied on F1; C is marginally ahead on
+  recall/F1, while D is clearly ahead on precision and false-positive reduction
+  (55 fewer FP than C). Do not write that C significantly beats D.
+- Result-to-claim verdict: `partial`. Supported: in frozen low-label Chinese
+  equipment-domain NER, kNN and glossary improve F1/recall, and RAG preserves
+  near-tied F1 while improving precision / reducing entity-level false positives.
+  Not supported: relation extraction, CoVe/self-verification gains, public
+  benchmark generalization, K=1/K=10 robustness, or full IE claims.
+- Current paper artifacts are Markdown, not DOCX. All generated `.docx` files
+  under the project docs were deleted on 2026-07-25 at the user's request after
+  encoding/rendering problems. The current editable draft is
+  `docs/EQUIPMENT_IE_PAPER_DRAFT_V3_REVIEW_POLISH_20260725.md`.
+- GPU-free P0 paper repair package is complete: variance explanation for
+  A/B/C/D and C-vs-D FP qualitative analysis are recorded in
+  `docs/P5_DOMAIN_PAPER_EVIDENCE_20260725.md`,
+  `docs/RESULT_TO_CLAIM_P5_DOMAIN_20260725.md`, `findings.md`, and
+  `logs/p5_c_vs_d_fp_qualitative_20260725.{json,csv}`.
+- Cost: the P5 replication paid vLLM window was approximately
+  2026-07-24 18:16:34-19:27:50 CST, about 3.2 CNY at 2.7 CNY/hour. Platform
+  billing remains authoritative. vLLM was stopped after paid runs.
 
-Stop for explicit approval before the 400-record P2 LLM proposal pass, human
-annotation, splitting/freezing, P3/P4/P5, or any broad paid GPU work. See
-`docs/P2_DECISION_LOG.md` for the exact v2-v6 sanity history.
+Stop for explicit approval before any further paid GPU work, vLLM launch, model
+call, P5 E/E-prime, CLUENER run, K=1/K=10 scan, more seeds, dry-run, or any
+operation that reads frozen `domain_test` to produce new prompts/config outputs.
+The allowed current work is GPU-free manuscript editing, documentation, and
+lightweight artifact inspection.
 
 ## Fixed Technology Decisions
 

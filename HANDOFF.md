@@ -1,197 +1,81 @@
 # HANDOFF.md - New Conversation Handoff
 
-Date: 2026-07-24
+Date: 2026-07-25
 Workspace: `D:\yinsir`
 
-This file is written for a new Codex/agent session with no prior chat context.
-Read these files before doing any project work:
+This file is the latest operational state for a new Codex/agent session with no
+chat history. Read these files before doing any project work:
 
-1. `AGENT_PLAYBOOK.md` - authoritative machine execution contract.
-2. `实验实施指导文档_综合版.md` - human-facing rationale and operational guide.
-3. `AGENTS.md` - durable repository and safety rules.
-4. This `HANDOFF.md` - latest operational state.
+1. `AGENTS.md` - durable repository, safety, and collaboration rules.
+2. `AGENT_PLAYBOOK.md` - authoritative machine execution contract.
+3. `实验实施指导文档_综合版.md` - human-facing rationale and operational guide.
+4. This `HANDOFF.md` - live status and next step.
 
-The human-facing guide filename on disk is `实验实施指导文档_综合版.md`.
+If older docs conflict with this file on status chronology, this file is newer.
+Hard rules in `AGENTS.md` and `AGENT_PLAYBOOK.md` still apply.
 
-Some status text in `AGENT_PLAYBOOK.md` is historical, and `AGENTS.md` now
-explicitly points here for the live gate. Treat the chronology in this
-`HANDOFF.md` as the latest status, while all hard safety, cost, remote-only
-execution, leakage, and human-gate rules in the control docs still apply.
+## 1. What We Are Doing Now
 
-## 0. Current One-Screen State
+We are preparing a practical SCI-Q4-oriented applied/engineering paper about
+few-shot Chinese equipment-domain NER using a reproducible local-LLM extraction
+pipeline.
 
-Current live state:
+Current task: **GPU-free paper writing and pre-submission preparation in
+Markdown**.
 
-- P0 environment, P1 public data, P2 domain data freeze, and P3/P4 domain-dev
-  sanity are complete enough for a P5 decision.
-- P5 M0 GPU-free preparation is complete. The bounded paid P5 domain-test
-  pilot A/B/C/D, K=5, seed=42 was run on 2026-07-24 under
-  `P5_DOMAIN_PILOT_APPROVED`.
-- The human then approved bounded paid replication under
-  `P5_DOMAIN_REPLICATION_APPROVED`: A/B/C/D only, `domain_test`, K=5,
-  seeds 43 and 44, with no prompt/glossary/RAG/verifier tuning and no E/E-prime.
-- The replication completed successfully. vLLM was stopped after the run and
-  GPU memory returned to 0 MiB.
-- The current best dev evidence is D(RAG). Verification E/E-prime is not
-  recommended for paid P5 unless the human explicitly overrides that decision.
-- The current three-seed domain-test A/B/C/D F1 leader is C(kNN + glossary):
-  F1 `0.568858 +/- 0.000769`. D(RAG) is a near-tie on F1
-  (`0.565764 +/- 0.000000`) and has the best precision and lowest FP:
-  precision `0.525135`, FP mean `529.0`.
-- Human review accepted this interpretation on 2026-07-24: write C and D as
-  near-tied on F1, with C marginally ahead on recall and D clearly ahead on
-  precision and FP reduction. Do not write that C is substantially or
-  significantly better than D.
-- Result-to-claim review was run GPU-free on 2026-07-25. Verdict: `partial`.
-  The supported claim is scoped to domain-test NER only: kNN and glossary
-  improve F1/recall, while RAG keeps F1 near-tied and improves precision /
-  reduces FP. Verification, RE, public benchmark generalization, and K-scan
-  robustness are not supported by current evidence.
-- GPU-free diagnostic of the pilot is complete:
-  `docs/P5_DOMAIN_PILOT_DIAGNOSTIC_20260724.md`.
-- GPU-free code audit of relation-zero and RAG runtime is complete:
-  `docs/P5_GPU_FREE_CODE_AUDIT_20260724.md`.
-- Diagnostic conclusion now supported by three domain-test seeds: kNN is a
-  robust positive module, glossary gives the best F1/recall, RAG lowers FP and
-  improves precision but is slightly below C in F1, and all four A/B/C/D rows
-  remain NER-only.
-- Code-audit conclusion: P5 A/B/C/D used the NER-only path
-  (`schema.task: ner`, `relation_types: {}`, `include_relations=False`), so
-  zero relations are expected; D's wall time is dominated by CPU query
-  embedding/reranker work outside logged vLLM latency.
-- The next possible step is a GPU-free paper-facing interpretation or another
-  explicitly approved bounded plan. Do not run E, E-prime, CLUENER, K=1/K=10,
-  full P5, dry-runs, or any additional `domain_test` evaluation without a new
-  explicit gate.
+Current editable paper draft:
 
-If the human approves the next paid replication, use wording like:
+- `docs/EQUIPMENT_IE_PAPER_DRAFT_V3_REVIEW_POLISH_20260725.md`
 
-```text
-Approve paid GPU P5 domain replication: run only A/B/C/D on domain_test,
-K=5, seeds 43 and 44, with no prompt/glossary/RAG/verifier tuning and no
-E/E-prime.
-```
+All generated `.docx` files were deleted on 2026-07-25 at the user's request
+because of rendering/encoding problems. Future writing defaults to UTF-8
+Markdown unless the user explicitly asks otherwise.
 
-## 1. Mission
+No paid GPU, vLLM launch, dry-run, model call, frozen-test prompt generation, or
+new experiment is currently authorized.
 
-We are building a practical SCI-Q4-oriented applied/engineering paper project:
-
-- Domain: Chinese equipment-domain technical/public texts.
-- Main task: few-shot NER.
-- Auxiliary task: exact relation extraction.
-- Entity schema: `EQUIPMENT`, `MODULE`, `TECH_SCHEME`, `METRIC`.
-- Relation schema: `USES`, `HAS_METRIC`, `PART_OF`.
-- Method line: local Qwen2.5 extraction with fixed-random versus kNN examples,
-  glossary injection, RAG evidence, and atomic self-verification.
-- Paper claim: not supervised SOTA. The intended claim is that retrieval and
-  verification-style mechanisms can reduce entity-level false-discovery-style
-  hallucination while preserving or improving extraction F1 in a low-label
-  equipment domain.
-- Manuscript route: Chinese technical draft first, then English SCI manuscript.
-- Budget target: about 400 CNY unless separately approved.
-
-Current experimental scope is **P5 M0 complete plus bounded paid P5
-domain-test A/B/C/D, K=5, seeds 42/43/44 complete**. All P3 numbers below are
-from `domain_dev50`, seed 42, K=5. The P5 A/B/C/D numbers are now three-seed
-domain-test results, but they still cover only the domain dataset and only
-A/B/C/D. They are not the full P5 paper matrix.
-
-## 2. Non-Negotiable Rules
-
-- Never run project Python locally on Windows.
-- Windows `D:\yinsir` is only for editing, Git, SSH/SCP, documentation, and
-  lightweight artifact checks.
-- All Python, tests, data processing, inference, evaluation, and aggregation
-  must run on AutoDL through SSH alias `autodl-paper`.
-- Use AutoDL GPU-free mode for coding, tests, dry-runs, preprocessing, and
-  aggregation.
-- Use paid GPU only for model inference/training and only after explicit human
-  approval for one bounded step.
-- After every GPU phase: stop vLLM, verify GPU memory returns to 0 MiB, back
-  up, sync lightweight artifacts to `D:\yinsir`, report cost, and remind the
-  human to shut down or switch to no-card mode.
-- Never touch `domain_test` for prompt tuning, glossary tuning, RAG tuning,
-  threshold changes, or verification tuning.
-- Preserve negative and mixed results. Do not rerun them away.
-- Commit and push after meaningful code/config/documentation changes.
-- Do not run E-prime, P5/full ablations, more seeds, or any `domain_test`
-  evaluation without a new explicit gate.
-- The real AutoDL host/port/passwords live only in the user's local SSH config.
-  Never write them into tracked files.
-
-## 3. Repo And Machine
-
-Local:
-
-- Workspace: `D:\yinsir`
-- Branch: `main`
-- Git remote: `https://github.com/QKY520/yinxin.git`
-- Git identity for this repo: `yly <714520833@qq.com>`
-
-Remote:
-
-- SSH alias: `autodl-paper`
-- Remote code: `/root/project`
-- Remote data/model/backup root: `/root/autodl-tmp`
-- Project venv: `/root/autodl-tmp/venvs/equipment-ie`
-- Last reported 4090 price: 2.7 CNY/hour.
-- Last observed status after the P5 domain pilot: paid GPU mode was active, but
-  vLLM was stopped and GPU memory returned to 0 MiB.
-
-Useful status command:
-
-```bash
-ssh autodl-paper 'cd /root/project; git rev-parse --short HEAD; git status --short; nvidia-smi --query-gpu=index,name,memory.used,memory.total --format=csv,noheader 2>/dev/null || echo GPU_FREE_OR_NVIDIA_SMI_UNAVAILABLE'
-```
-
-## 4. Completed Work
+## 2. What Is Already Completed
 
 ### P0 - Environment
 
-Completed.
+Complete.
 
 - AutoDL environment was set up.
-- Project venv imports and `pip check` passed previously.
-- Fixed model directories were downloaded and structurally checked:
+- Project venv and required imports passed previously.
+- Four fixed model directories were downloaded and structurally checked:
   Qwen2.5-7B-Instruct, Qwen2.5-14B-Instruct-AWQ, BGE-M3, and
   bge-reranker-v2-m3.
 - P0 backup was created and hash-verified.
-- Human confirmed the P0 image was saved.
+- The human confirmed the P0 image was saved.
 
 ### P1 - Public Data
 
-Completed.
+Complete.
 
 - CLUENER, Few-NERD SUP, DuIE 2.0, and CMNEE were downloaded and normalized.
 - 12 official split JSONL files were generated.
-- K=1/5/10 support files were generated with seed 42.
+- K=1/5/10 public support files were generated with seed 42.
 - Loader/span checks passed.
-- Known limitation: public CLUENER and DuIE test files have no gold labels and
-  must never be evaluated as all-negative gold.
-- P1 backup was created and verified.
+- Important limitation: public CLUENER and DuIE test files have no gold labels.
+  They must never be evaluated as all-negative gold.
 
-### P2 - Domain Dataset
+### P2 - Self-Built Domain Data
 
-Completed and frozen.
+Complete and frozen.
 
-- 400 public-text equipment-domain candidates were collected:
+- 400 public equipment-domain candidates were collected:
   Baidu Baike 7, patent 84, CMNEE 309.
 - Schema `p2-schema-draft-v1` and 10 synthetic examples were approved.
-- QAonMilitaryKG exact-match distant supervision had low coverage:
-  15/400 records matched, 23 EQUIPMENT suggestions, 0 relations.
-- Qwen2.5-14B-AWQ proposal path and human annotation/adjudication completed for
-  the approved 250-record route.
-- Final adjudicated 100-row double-annotation subset:
-  607 entities, 259 relations, 0 errors, 0 warnings.
-- One structural repair was logged for `domain-candidate-0123`.
-- Frozen outputs on remote:
-  - `/root/autodl-tmp/data/domain_gold_250.jsonl` - 250 rows;
-  - `/root/autodl-tmp/data/domain_support.jsonl` - 30 rows;
-  - `/root/autodl-tmp/data/domain_dev.jsonl` - 50 rows;
-  - `/root/autodl-tmp/data/domain_test.jsonl` - 170 rows;
-  - `/root/autodl-tmp/data/domain_rag_corpus.jsonl` - 230 rows;
-  - `/root/autodl-tmp/data/FROZEN`;
-  - `/root/project/logs/dedup.json`.
+- QAonMilitaryKG distant supervision had low coverage:
+  15/400 records, 23 EQUIPMENT suggestions, 0 relations.
+- Qwen2.5-14B-AWQ proposal workflow, human review, adjudication, and freeze
+  were completed for the approved 250-record route.
+- Final frozen split:
+  - `domain_support.jsonl`: 30 rows;
+  - `domain_dev.jsonl`: 50 rows;
+  - `domain_test.jsonl`: 170 rows;
+  - `domain_rag_corpus.jsonl`: 230 rows;
+  - `data/FROZEN` and `logs/dedup.json` exist in the remote artifact set.
 - Important hashes:
   - `domain_gold_250.jsonl`:
     `fb183c733d328124c35e527872eb9cb4ea839fdf7bea1059c2313e3ea207acdc`;
@@ -201,356 +85,225 @@ Completed and frozen.
     `ade6eda3547349117b5fa212c6567bd76722bb1996844b0de4f2d5a01ffc0c6b`;
   - `domain_test.jsonl`:
     `42f6ecbbfd1eb57937cd74a04e5b8362fe0976b5bf108e52523a4778dd53bfd0`.
-- P2 gold backup:
-  - `D:\yinsir\backups\P2\p2_domain_gold_freeze_20260722.tar.gz`;
-  - SHA256:
-    `a3711e2af4179d8398d8d497827ff703b1cfa4a8b0c05ea4de47837b9329ec3f`.
+- Local P2 gold backup:
+  `backups/P2/p2_domain_gold_freeze_20260722.tar.gz`;
+  SHA256 `a3711e2af4179d8398d8d497827ff703b1cfa4a8b0c05ea4de47837b9329ec3f`.
 
-## 5. P3 Domain-Dev Final Sanity Summary
+### P3/P4 - Domain-Dev Sanity
 
-P3 domain-dev sanity has now completed A, B, C, D, E v1, E v2, plus a GPU-free
-E v3 dry-run. All model-run cells are `domain_dev50`, K=5, seed 42, Qwen2.5-7B
-via vLLM. These are sanity results only.
+Complete enough for the current paper route.
 
-| Config | Main change | Precision | Recall | F1 | TP/FP/FN | Hallucination rate | Verdict |
-| --- | --- | ---: | ---: | ---: | --- | ---: | --- |
-| A | fixed random, no glossary/RAG/verif | 0.4914 | 0.5570 | 0.5221 | 171/177/136 | 0.5086 | accepted baseline |
-| B | kNN examples | 0.4767 | 0.5342 | 0.5038 | 164/180/143 | 0.5233 | negative |
-| C | B replay + glossary | 0.4722 | 0.5537 | 0.5097 | 170/190/137 | 0.5278 | mixed |
-| D | C + RAG rerank top-3 | 0.5211 | 0.5635 | 0.5415 | 173/159/134 | 0.4789 | positive, current best |
-| E v1 | D + verifier v1 | 0.6173 | 0.3257 | 0.4264 | 100/62/207 | 0.3827 | negative, severe overkill |
-| E v2 | D + source-first verifier v2 | 0.5266 | 0.5472 | 0.5367 | 168/151/139 | 0.4734 | mixed/near-tie negative |
+All model-run cells below are `domain_dev50`, K=5, seed 42, Qwen2.5-7B via
+vLLM.
 
-Key comparisons:
+| Config | Main change | Precision | Recall | F1 | TP/FP/FN | Verdict |
+| --- | --- | ---: | ---: | ---: | --- | --- |
+| A | fixed random, no glossary/RAG/verif | 0.4914 | 0.5570 | 0.5221 | 171/177/136 | accepted baseline |
+| B | kNN examples | 0.4767 | 0.5342 | 0.5038 | 164/180/143 | negative |
+| C | B replay + glossary | 0.4722 | 0.5537 | 0.5097 | 170/190/137 | mixed |
+| D | C + RAG rerank top-3 | 0.5211 | 0.5635 | 0.5415 | 173/159/134 | positive |
+| E v1 | D + verifier v1 | 0.6173 | 0.3257 | 0.4264 | 100/62/207 | overkill |
+| E v2 | D + verifier v2 | 0.5266 | 0.5472 | 0.5367 | 168/151/139 | mixed |
 
-- `B - A`: kNN is negative on this tiny 30-row support set:
-  F1 `-0.0183`, FP `+3`.
-- `C - B`: glossary slightly recovers recall/F1 but increases FP:
-  F1 `+0.0059`, FP `+10`.
-- `D - C`: RAG is the strongest positive module:
-  F1 `+0.0317`, FP `-31`.
-- `D - A`: D is also better than the fixed-random baseline:
-  F1 `+0.0193`, FP `-18`.
-- `E v1 - D`: verifier v1 reduces hallucination rate by about 9.6 percentage
-  points but destroys recall and F1.
-- `E v2 - D`: verifier v2 fixes most overkill but still slightly lowers F1 and
-  barely reduces hallucination rate.
+Dev interpretation: D(RAG) was the strongest positive sanity result. Verifier
+variants were negative or mixed and are not recommended for more paid GPU by
+default.
 
-Current decision:
+### P5 - Bounded Domain-Test Evidence
 
-- **D(RAG) is the current best positive result.**
-- Verification should be preserved as a negative/mixed branch for now.
-- Do not run E-prime with the current verifier approach.
-- E v3 prompt exists only as GPU-free prep and remains unauthorized for paid
-  execution.
+Complete for a narrow paper claim, not complete as the original full P5 matrix.
 
-## 6. P3 Detailed Milestones And Reports
+Completed scope:
 
-Important reports:
+- Dataset: `domain_test`
+- K: 5
+- Seeds: 42, 43, 44
+- Configs:
+  - A: fixed random;
+  - B: kNN examples;
+  - C: kNN + glossary;
+  - D: kNN + glossary + RAG.
+- Not run/completed: E, E-prime, CLUENER, K=1, K=10, more seeds, full public
+  benchmark matrix.
 
-- A baseline:
-  - `docs/P3_DOMAIN_DEV50_SANITY_20260722.md`
-  - `docs/P3_DOMAIN_DEV50_SANITIZE_AUDIT_20260722.md`
-- B kNN:
-  - `docs/P3_DOMAIN_DEV50_B_KNN_SANITY_20260722.md`
-  - `docs/P3_DOMAIN_DEV50_B_KNN_AUDIT_20260722.md`
-- C glossary:
-  - `docs/P3_DOMAIN_DEV50_C_GLOSSARY_DRYRUN_20260723.md`
-  - `docs/P3_DOMAIN_DEV50_C_GLOSSARY_SANITY_20260723.md`
-  - `docs/P3_DOMAIN_DEV50_C_GLOSSARY_AUDIT_20260723.md`
-- D RAG:
-  - `docs/P3_DOMAIN_DEV50_D_RAG_DRYRUN_20260723.md`
-  - `docs/P3_DOMAIN_DEV50_D_RAG_RELEVANCE_AUDIT_20260723.md`
-  - `docs/P3_DOMAIN_DEV50_D_RAG_SANITY_20260723.md`
-  - `docs/P3_DOMAIN_DEV50_D_RAG_AUDIT_20260723.md`
-- E verification:
-  - `docs/P3_DOMAIN_DEV50_E_VERIFICATION_DRYRUN_20260723.md`
-  - `docs/P3_DOMAIN_DEV50_E_VERIFICATION_EXEC_PREP_20260723.md`
-  - `docs/P3_DOMAIN_DEV50_E_VERIFICATION_SANITY_20260723.md`
-  - `docs/P3_DOMAIN_DEV50_E_VERIFICATION_VERDICT_20260723.md`
-  - `docs/P3_DOMAIN_DEV50_E_VERIFICATION_V2_DRYRUN_20260723.md`
-  - `docs/P3_DOMAIN_DEV50_E_V2_VERIFICATION_SANITY_20260723.md`
-  - `docs/P3_DOMAIN_DEV50_E_V2_VERIFICATION_VERDICT_20260723.md`
-  - `docs/P3_DOMAIN_DEV50_E_VERIFICATION_V3_DRYRUN_20260723.md`
-- Final summary:
-  - `docs/P3_DOMAIN_DEV50_FINAL_SUMMARY_20260723.md`
+All 12 completed per-query/summary files under `results/p5/` were verified:
+170 rows per cell, 0 parse failures, SHA256 matched during the prior audit.
 
-Important P3 backups:
+Three-seed domain-test NER results:
 
-- A:
-  `D:\yinsir\backups\P3\p3_domain_dev50_sanity_sanitize_20260722.tar.gz`
-  SHA256 `3b26fbd36e0614e1dbc440cbab47c9eb05c750b6e135dc9595c0860a3f91bfac`
-- B:
-  `D:\yinsir\backups\P3\p3_domain_dev50_b_knn_sanity_sanitize_20260722.tar.gz`
-  SHA256 `53ac62255488fb9ca9269d9c789141dffec1d5729b2e6a75c99c519f0d3348db`
-- C:
-  `D:\yinsir\backups\P3\p3_domain_dev50_c_glossary_sanity_sanitize_20260723.tar.gz`
-  SHA256 `84febe390bf5690b80e06049dd48c9d92de5e478c7e5a914dab333a707531e58`
-- D:
-  `D:\yinsir\backups\P3\p3_domain_dev50_d_rag_sanity_20260723.tar.gz`
-  SHA256 `f449d67638ac71bd43f0ffd7fe1dc93149ac1d52b431faf358ea540c34e3f843`
-- E v1:
-  `D:\yinsir\backups\P3\p3_domain_dev50_e_verification_sanity_20260723.tar.gz`
-  SHA256 `74c702f9b3bcfbb2db902e9c5b2fae61223ec819358d23227938063458067a51`
-- E v2:
-  `D:\yinsir\backups\P3\p3_domain_dev50_e_v2_verification_sanity_20260723.tar.gz`
-  SHA256 `68514392464b742586327223e476dfa9bc3e38b45905d9c33634980de92e742c`
+| Config | F1 mean +/- std | FP mean +/- std | Main reading |
+| --- | ---: | ---: | --- |
+| A | `0.534645 +/- 0.004375` | `613.3 +/- 88.8` | baseline |
+| B | `0.555169 +/- 0.000880` | `573.7 +/- 1.2` | kNN improves F1 and lowers FP |
+| C | `0.568858 +/- 0.000769` | `584.0 +/- 0.0` | best F1/recall |
+| D | `0.565764 +/- 0.000000` | `529.0 +/- 0.0` | best precision and lowest FP |
 
-## 7. Current Status And Blocker
+Clean deltas:
 
-Current status:
+- `B - A`: +0.020524 F1 and about -39.7 FP.
+- `C - B`: +0.013689 F1 and about +10.3 FP.
+- `D - C`: -0.003094 F1, but about -55.0 FP.
+- `D - A`: +0.031119 F1 and about -84.3 FP.
 
-- P0, P1, and P2 are complete.
-- Domain data is frozen. `domain_test` exists and has not been used for tuning.
-- P3 domain-dev sanity sequence is complete enough for a decision.
-- D(RAG) is the current best positive result.
-- Verification E v1/E v2 is negative/mixed and should not receive more paid GPU
-  time by default.
-- E v3 prompt/config was prepared in GPU-free mode only and is not authorized.
-- P5 prep plan was approved by the human for GPU-free config preparation only.
-- P5 M0 draft artifacts now exist:
-  - `docs/P5_PREP_PLAN_20260724.md`;
-  - `docs/P5_RUN_MANIFEST_20260724.md`;
-  - `docs/P5_M0_DRAFT_AUDIT_20260724.md`;
-  - `configs/p5_domain_test_a_k5_seed42_draft.yaml`;
-  - `configs/p5_domain_test_b_knn_k5_seed42_draft.yaml`;
-  - `configs/p5_domain_test_c_glossary_k5_seed42_draft.yaml`;
-  - `configs/p5_domain_test_d_rag_k5_seed42_draft.yaml`.
-- P5 paid domain-test pilot artifacts now exist:
-  - `docs/P5_DOMAIN_PILOT_20260724.md`;
-  - `docs/P5_DOMAIN_PILOT_DIAGNOSTIC_20260724.md`;
-  - `docs/P5_GPU_FREE_CODE_AUDIT_20260724.md`;
-  - `configs/p5_domain_test_a_k5_seed42_approved_20260724.yaml`;
-  - `configs/p5_domain_test_b_knn_k5_seed42_approved_20260724.yaml`;
-  - `configs/p5_domain_test_c_glossary_k5_seed42_approved_20260724.yaml`;
-  - `configs/p5_domain_test_d_rag_k5_seed42_approved_20260724.yaml`;
-  - remote and local `results/p5/` per-query and summary files;
-  - local backup `D:\yinsir\backups\P5\p5_domain_pilot_20260724.tar.gz`,
-    SHA256 `61b05d4c89c26b22881ea17ce36da91a84fdb83ad0d3a49aaa84317e7357d808`.
-- P5 paid domain-test replication artifacts now exist:
-  - `docs/P5_DOMAIN_REPLICATION_20260724.md`;
-  - `configs/p5_domain_test_{a,b,c,d...}_k5_seed43_approved_20260724.yaml`;
-  - `configs/p5_domain_test_{a,b,c,d...}_k5_seed44_approved_20260724.yaml`;
-  - remote and local `results/p5/` per-query and summary files for
-    A/B/C/D seeds 42/43/44;
-  - local backup `D:\yinsir\backups\P5\p5_domain_replication_20260724.tar.gz`,
-    SHA256 `e53e7e4371f6b7d3d5d21921e2adf9149ecf0b89b6db0029f99961bfd7233b14`.
-- P5 pilot results on `domain_test`, K=5, seed=42:
-  - A: P=0.4752, R=0.6017, F1=0.5310, TP/FP/FN=574/634/380;
-  - B: P=0.5056, R=0.6143, F1=0.5547, TP/FP/FN=586/573/368;
-  - C: P=0.5117, R=0.6415, F1=0.5693, TP/FP/FN=612/584/342;
-  - D: P=0.5251, R=0.6132, F1=0.5658, TP/FP/FN=585/529/369.
-- All four P5 pilot cells wrote 170 per-query rows and had 0 parse failures.
-- P5 single-seed pilot interpretation: C has the best F1; D reduces FP by 55
-  relative to C but is slightly lower in F1 and much slower due to CPU RAG/rerank.
-- P5 three-seed domain-test A/B/C/D results:
-  - A: P=`0.484066 +/- 0.025428`, R=`0.599231 +/- 0.028904`,
-    F1=`0.534645 +/- 0.004375`, FP=`613.3 +/- 88.8`;
-  - B: P=`0.505743 +/- 0.000234`, R=`0.615304 +/- 0.001816`,
-    F1=`0.555169 +/- 0.000880`, FP=`573.7 +/- 1.2`;
-  - C: P=`0.511433 +/- 0.000472`, R=`0.640811 +/- 0.001210`,
-    F1=`0.568858 +/- 0.000769`, FP=`584.0 +/- 0.0`;
-  - D: P=`0.525135 +/- 0.000000`, R=`0.613208 +/- 0.000000`,
-    F1=`0.565764 +/- 0.000000`, FP=`529.0 +/- 0.0`.
-- P5 three-seed clean deltas:
-  - `B - A`: kNN gives +0.020524 F1 and about -39.7 FP;
-  - `C - B`: glossary gives +0.013689 F1 and about +10.3 FP;
-  - `D - C`: RAG gives a near-tie -0.003094 F1 but about -55.0 FP;
-  - `D - A`: combined B/C/D path gives +0.031119 F1 and about -84.3 FP.
-- Human review note: this supports the statement "C and D are near-tied on F1,
-  with C marginally ahead on recall and D clearly ahead on precision and FP
-  reduction." It should not be framed as "C significantly beats D."
-- Result-to-claim artifacts now exist:
-  - `findings.md`;
-  - `docs/RESULT_TO_CLAIM_P5_DOMAIN_20260725.md`.
-- GPU-free paper evidence package now exists:
-  - `docs/P5_DOMAIN_PAPER_EVIDENCE_20260725.md`.
-- All generated DOCX files were deleted on 2026-07-25 at the user's request
-  because of rendering/encoding problems. The current editable paper draft is
-  the UTF-8 Markdown file:
-  - `docs/EQUIPMENT_IE_PAPER_DRAFT_V3_REVIEW_POLISH_20260725.md`.
-- GPU-free P0 paper repair package evidence still exists in Markdown/log form:
-  - `docs/P5_DOMAIN_PAPER_EVIDENCE_20260725.md`;
-  - `docs/RESULT_TO_CLAIM_P5_DOMAIN_20260725.md`;
-  - `findings.md`;
-  - local synced qualitative logs:
-    `logs/p5_c_vs_d_fp_qualitative_20260725.json` and
-    `logs/p5_c_vs_d_fp_qualitative_20260725.csv`.
-  It adds the variance footnote for A versus B/C/D and a C-vs-D qualitative FP
-  analysis: D removes/avoids 181 C false positives, introduces 126 new false
-  positives, and nets the observed 55-FP reduction.
-- Result-to-claim revised claim:
-  "In a frozen low-label Chinese equipment-domain NER setting, kNN
-  demonstrations and glossary injection improve entity extraction F1, while RAG
-  evidence preserves near-tied F1 and improves precision / reduces
-  false-positive entity predictions. Verification and relation extraction are
-  not claimed from the current evidence."
-- P5 replication execution:
-  - paid vLLM window approximately 2026-07-24 18:16:34-19:27:50 CST;
-  - estimated cost about 3.2 CNY at 2.7 CNY/hour;
-  - all eight seed43/44 run exit files contain `0`;
-  - vLLM stopped and GPU memory verified at `0 MiB / 24564 MiB`;
-  - the runner done marker initially had a trailing CR in its filename due to
-    Windows line endings and was normalized as execution metadata cleanup.
-- P5 GPU-free diagnostic interpretation:
-  - `B - A`: kNN is positive, +0.0237 F1 and -61 FP;
-  - `C - B`: glossary is positive for F1/recall, +0.0146 F1 and +26 TP, but
-    +11 FP;
-  - `D - C`: RAG improves precision and reduces FP by 55, but loses 27 TP and
-    drops F1 by 0.0035;
-  - relation extraction is not currently usable as positive evidence because
-    A/B/C/D all predicted zero relation triples against 427 gold triples.
-- P5 GPU-free code audit findings:
-  - the relation-zero result is configuration/runner behavior, not a meaningful
-    relation-extraction comparison: P5 A/B/C/D were NER-only configs with
-    empty `relation_types`, and `run_p3_extraction.py` passed
-    `include_relations=False`;
-  - cached raw outputs contained no non-empty relation arrays for A/B/C/D;
-  - D's `elapsed_seconds` was 6237.211s while summed vLLM latency was only
-    436.549s, so the overhead is outside model generation;
-  - the D code performs one BGE query embedding plus `FlagReranker.compute_score`
-    on 20 pairs per query on CPU; this is the likely wall-time driver;
-  - logs show `libgomp: Invalid value for environment variable OMP_NUM_THREADS`,
-    so CPU-thread hygiene should be fixed before more CPU-heavy paid runs.
-- Non-semantic timing instrumentation is implemented in
-  `scripts/run_p3_extraction.py`:
-  - per-query rows now record `example_selection_ms`, `glossary_selection_ms`,
-    `rag_selection_ms`, `prompt_build_ms`, `llm_latency_ms`, and
-    `total_record_ms`;
-  - summaries now record `timing_totals_ms` and `timing_means_ms`;
-  - `tests.test_extraction` includes a mocked execute-path timing test.
-- Verification: AutoDL GPU-free `~/venv/bin/python -m unittest
-  tests.test_extraction` passed, 16 tests OK.
-- RAG replay-manifest support is implemented:
-  - new script `scripts/build_rag_replay_manifest.py` builds a fixed manifest
-    containing each query's selected RAG passage IDs and display strings;
-  - `scripts/run_p3_extraction.py` supports `rag.mode: replay_manifest` and
-    validates the current query file hash against the manifest before replay;
-  - `tests.test_extraction` includes a lexical round-trip replay test;
-  - AutoDL GPU-free `~/venv/bin/python -m unittest tests.test_extraction`
-    passed, 17 tests OK.
-- No P5 `domain_test` replay manifest has been generated yet. Do not generate
-  one without explicit human approval, because it reads frozen test texts even
-  though it does not call a model or write prompts.
-- The human then approved the GPU-free stage. P5 D replay manifest generation
-  is complete and documented in `docs/P5_RAG_REPLAY_MANIFEST_20260724.md`.
-  Direct CPU BGE/reranker regeneration in no-card mode was killed with exit
-  code 137, so the successful manifest was built from the already completed P5
-  D per-query result to preserve the exact RAG passage IDs/display strings.
-  Artifacts:
-  - remote `/root/project/logs/p5_domain_test_d_rag_k5_seed42_replay_manifest.json`;
-  - local `D:\yinsir\logs\p5_domain_test_d_rag_k5_seed42_replay_manifest.json`;
-  - manifest SHA256 `00f292c2d4c1f2e0e732af88518b2e2624e7266e9a64c7cc5f0049e563002685`;
-  - validation report SHA256 `c868be6363eb67b91b528e4ddf06e8f022b74f24a3735a7a0b759aa9a5a63563`;
-  - validation passed: 170 rows, 170 unique query IDs, exactly 3 replay passages
-    per row, query hash and source D per-query hash matched.
-- The human audit passed on 2026-07-24: ablation differences are clean, C/D
-  replay B, D excludes `domain_test` IDs from RAG retrieval, and all four draft
-  configs remain `authorized: false`.
-- The four P5 draft configs are explicitly unauthorized:
-  `execution.authorized: false` and `model_calls_allowed: false`.
-- AutoDL was last observed in paid GPU mode immediately after replication
-  cleanup, with vLLM stopped and GPU memory at `0 MiB / 24564 MiB`. The human
-  should switch back to no-card/shut down after reviewing this handoff.
-- `scripts/run_p3_extraction.py` has been patched and tested so future P5
-  non-dry execution can use `human_gate: P5_DOMAIN_PILOT_APPROVED`.
-- Remote `/root/project` was fast-forwarded to the runner-patch commit and
-  `python -m unittest tests.test_extraction` passed on AutoDL GPU-free mode.
+Accepted wording: **C and D are near-tied on F1; C is marginally ahead on
+recall/F1, while D is clearly ahead on precision and false-positive reduction.
+Do not write that C significantly or substantially beats D.**
 
-Current blocker:
+P5 paid run note:
 
-- Stop for a human decision before any further paid experiment.
-- The previous paid gates covered only A/B/C/D, K=5, seed42 pilot and
-  seeds43/44 replication on `domain_test`; both gates are complete.
-- Do not dry-run new P5 `domain_test` configs, because dry-run reads test
-  records and writes prompts.
-- Do not run E v3, E-prime, CLUENER, K=1/K=10, P5/full ablations, more seeds,
-  or any `domain_test` model evaluation unless the human explicitly approves
-  the next bounded paid gate.
-- `scripts/run_p3_extraction.py` now supports the future P5 pilot gate
-  `P5_DOMAIN_PILOT_APPROVED` and requires `model_calls_allowed: true` for
-  non-dry model calls. This is a gate-only patch; prompt semantics, retrieval,
-  parsing, and metrics were not changed.
+- The replication paid vLLM window was approximately
+  2026-07-24 18:16:34-19:27:50 CST.
+- Estimated cost was about 3.2 CNY at 2.7 CNY/hour.
+- vLLM was stopped after the run and GPU memory was verified at 0 MiB.
 
-## 8. Recommended Next Plan
+## 3. Current Claim Boundary
 
-P5 M0, the bounded seed-42 domain-test pilot, and the bounded seeds43/44
-domain-test replication are complete. Human review accepted the near-tie
-interpretation for C versus D. GPU-free result-to-claim verdict is `partial`.
-GPU-free paper-facing aggregation and wording cleanup has produced the current
-UTF-8 Markdown draft:
-`docs/EQUIPMENT_IE_PAPER_DRAFT_V3_REVIEW_POLISH_20260725.md`. It includes the
-application-oriented title, revised abstract, introduction scenario,
-related-work differentiation, C/D near-tie framing, variance footnote, and FP
-table note. All generated DOCX files were removed at the user's request.
+Result-to-claim verdict: `partial`.
 
-Reasonable next choices are:
+Supported claim:
 
-1. GPU-free paper-facing interpretation of the domain A/B/C/D three-seed
-   evidence block, including how to frame C as best F1 and D as FP/precision
-   reducer.
-2. Prepare a separate dev-first relation-enabled diagnostic if RE evidence is
-   still needed. Do not retrofit relation extraction into frozen P5 A-D.
-3. Prepare CLUENER-compatible P5 configs only after deciding how to handle the
-   public-test label limitation; do not evaluate unlabeled official test files
-   as all-negative gold.
-4. Explicitly override the current recommendation and authorize a verifier row,
-   accepting that P3 verification was negative/mixed.
+> In a frozen low-label Chinese equipment-domain NER setting, kNN
+> demonstrations and glossary injection improve entity extraction F1, while RAG
+> evidence preserves near-tied F1 and improves precision / reduces
+> false-positive entity predictions.
 
-Do not start more P5 paid execution without explicit approval for one of these
-or another equally bounded scope.
+Not supported by current evidence:
 
-New session startup checklist before asking for or acting on approval:
+- relation extraction success;
+- CoVe/self-verification improvement;
+- public benchmark generalization;
+- K=1/K=10 robustness;
+- full A..E-prime ablation matrix;
+- supervised-SOTA-style claims;
+- any claim that C significantly beats D.
 
-1. Read `AGENTS.md`, `AGENT_PLAYBOOK.md`, `实验实施指导文档_综合版.md`, and this
-   `HANDOFF.md`.
-2. Confirm local Git status is clean and remote `origin/main` is reachable.
-3. Check AutoDL mode and remote repo only; do not run Python locally:
-   `ssh autodl-paper 'cd /root/project; git rev-parse --short HEAD; git status --short; nvidia-smi --query-gpu=index,name,memory.used,memory.total --format=csv,noheader 2>/dev/null || echo GPU_FREE_OR_NVIDIA_SMI_UNAVAILABLE'`.
-4. Report that P5 M0 plus bounded A/B/C/D domain-test seeds 42/43/44 are
-   complete and wait for the next gate.
-5. If the human approves more paid execution, verify paid GPU mode, start
-   Qwen2.5-7B vLLM, change only execution metadata for the approved configs,
-   execute only the approved scope, then stop.
-6. After every paid run, stop vLLM, verify GPU memory is 0 MiB, back up, sync
-   lightweight artifacts, report cost, and wait for the next gate.
+Paper positioning:
 
-## 9. Lessons Worth Remembering
+- Main task: NER.
+- RE: auxiliary background only unless new dev-first evidence is created later.
+- Contribution style: applied/reproducible engineering pipeline plus small
+  equipment-domain dataset and honest ablation evidence.
+- Target: one-month SCI-Q4-oriented manuscript route, Chinese draft first and
+  then English SCI manuscript.
 
-- The equipment-domain route is fixed. Do not drift into toy domains or generic
-  NER demos.
-- P3 sanity is domain-first now. CLUENER is still needed later but should not
-  distract from the current domain decision.
-- kNN with only 30 support rows is weak; B being worse than A is plausible and
-  useful negative evidence.
-- C used kNN replay deliberately so C-B isolates glossary injection. Preserve
-  this hygiene.
-- Glossary is a double-edged tool: it can recover domain terms but also induces
-  broad type bias and false positives.
-- D had an important leakage bug in early preview: top-1 retrieved the query
-  itself because dev IDs were not excluded. The fix is active: exclude dev IDs
-  from RAG corpus for dev sanity; later exclude test IDs for test.
-- RAG relevance is noisy but still helped by structurally anchoring the model
-  and reducing FP. D is positive despite imperfect evidence.
-- On the seed-42 domain-test pilot, D lowered FP relative to C but was slightly
-  lower in F1; C was the best single-seed F1. Do not overclaim until more seeds
-  exist.
-- D is expensive in wall time because CPU RAG/reranker dominated runtime
-  (`elapsed_seconds` about 6237s for 170 rows). Budget future RAG cells
-  accordingly.
-- Verification v1 failed because the verifier treated RAG evidence as primary.
-  It answered `no` when RAG did not mention the entity.
-- Verification v2 fixed most overkill but still did not beat D; it retained
-  useful location/organization filtering but still deleted legitimate
-  formation/group and component entities.
-- E v3 prompt is only a GPU-free backup design; do not run it paid unless the
-  human explicitly overrides the current recommendation.
-- Always stop vLLM immediately after a paid run and verify GPU memory returns
-  to 0 MiB.
-- AutoDL GPU-free mode may have tight memory limits. Avoid loading BGE-M3 unless
-  needed; use replay/cached artifacts when that preserves comparisons.
-- All negative and mixed rows are paper evidence. Do not delete or hide them.
-- Every prompt/config/glossary/RAG decision needs a Git commit or structured
-  decision record.
-- P5 `domain_test` configs should not be dry-run before paid approval; YAML
-  parsing and field inspection are allowed, prompt generation is not.
+## 4. Current Paper And Review Artifacts
+
+Use these as the paper-facing evidence base:
+
+- `docs/EQUIPMENT_IE_PAPER_DRAFT_V3_REVIEW_POLISH_20260725.md`
+- `docs/RESULT_TO_CLAIM_P5_DOMAIN_20260725.md`
+- `docs/P5_DOMAIN_PAPER_EVIDENCE_20260725.md`
+- `docs/P5_PAPER_REVIEW_AUDIT_20260725.md`
+- `docs/P5_PAPER_P0_REVIEW_FEEDBACK_20260725.md`
+- `findings.md`
+- `logs/p5_c_vs_d_fp_qualitative_20260725.json`
+- `logs/p5_c_vs_d_fp_qualitative_20260725.csv`
+
+P0 paper repair already completed:
+
+- Added variance explanation: A has fixed-random example-selection noise;
+  B/C/D use kNN/replay, so variance is much smaller.
+- Added C-vs-D qualitative FP analysis:
+  - D removes/avoids 181 C-only false positives;
+  - D introduces 126 new false positives;
+  - net FP reduction is 55;
+  - major categories: unsupported entity 84, type/overlap 34, short alias/code
+    25, boundary error 24, metric fragment 14.
+
+## 5. Non-Negotiable Execution Rules
+
+- Never run project Python locally on Windows.
+- Windows `D:\yinsir` is only for editing, Git, SSH/SCP, documentation, and
+  lightweight artifact checks.
+- All Python, tests, data processing, inference, evaluation, and aggregation
+  must run on AutoDL through SSH alias `autodl-paper`.
+- Use AutoDL GPU-free/no-card mode for current work.
+- Use paid GPU only for model inference/training and only after explicit human
+  approval for one bounded step.
+- After every GPU phase: stop vLLM, verify GPU memory returns to 0 MiB, back up,
+  sync lightweight artifacts to `D:\yinsir`, report cost, and remind the human
+  to shut down or switch to no-card mode.
+- Never use `domain_test` for prompt tuning, glossary tuning, RAG tuning,
+  threshold changes, or verification tuning.
+- Do not run E/E-prime, CLUENER, K=1/K=10, full P5, more seeds, dry-runs, model
+  calls, or new `domain_test` prompt generation without a new explicit gate.
+- Preserve negative and mixed results; do not rerun them away.
+- The real AutoDL host/port/passwords live only in the user's local SSH config.
+  Use only the alias `autodl-paper` in docs and commands.
+
+## 6. Repo And Machine Notes
+
+Local:
+
+- Workspace: `D:\yinsir`
+- Branch: `main`
+- Git remote: `https://github.com/QKY520/yinxin.git`
+- Git identity for this repo: `yly <714520833@qq.com>`
+- This handoff refresh is committed with message:
+  `docs: refresh project handoff state`. Run `git log -1 --oneline` for the
+  exact current hash.
+- Previous local commit before this handoff refresh:
+  `863c701 docs: replace generated docx drafts with markdown`
+- GitHub push has recently failed because the local proxy `127.0.0.1` cannot
+  connect. AutoDL SSH also returned connection refused during this refresh, so
+  the latest handoff-refresh commit is currently local-only until GitHub or
+  AutoDL connectivity is restored.
+
+Remote:
+
+- SSH alias: `autodl-paper`
+- Remote code: `/root/project`
+- Remote data/model/backup root: `/root/autodl-tmp`
+- Project venv: `/root/autodl-tmp/venvs/equipment-ie`
+- Last expected mode: GPU-free/no-card. Confirm before doing anything remote.
+
+Useful no-Python status command:
+
+```bash
+ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status --short && (nvidia-smi --query-gpu=index,name,memory.used,memory.total --format=csv,noheader 2>/dev/null || echo GPU_FREE_OR_NVIDIA_SMI_UNAVAILABLE)'
+```
+
+## 7. Recommended Next Step
+
+Default next step is **no-card manuscript work**:
+
+1. Continue editing the Markdown paper draft.
+2. Tighten the abstract/introduction/results/conclusion around the scoped
+   `partial` claim.
+3. Keep C-vs-D wording honest: near-tie on F1, D stronger on precision and FP
+   reduction.
+4. Use `docs/P5_PAPER_P0_REVIEW_FEEDBACK_20260725.md` as the pre-submission
+   checklist.
+5. Optionally screen target SCI-Q4 journals and adapt the manuscript format.
+
+Do not start any new experiment unless the human gives a new bounded gate. If a
+future gate is approved, change only execution metadata for the approved scope
+and keep prompt/glossary/RAG/verifier semantics unchanged unless the gate
+explicitly authorizes a method change.
+
+## 8. Lessons Worth Remembering
+
+- The project is now paper-first, not experiment-first.
+- The experiment is basically complete only for the narrow domain NER claim; it
+  is not a complete full-matrix IE paper.
+- C and D are a near-tie on F1. D's value is FP/precision reduction, not a large
+  F1 gain.
+- The stronger paper is the honest one: do not overclaim RE, CoVe, public
+  generalization, or statistical significance.
+- Glossary helps recall/F1 but can add false positives.
+- RAG is slower because CPU embedding/reranking dominated D's wall time; future
+  RAG runs need replay manifests or timing hygiene if more experiments are ever
+  approved.
+- P5 A/B/C/D were NER-only configs (`schema.task: ner`, empty relation types);
+  zero relation predictions are expected and are not evidence that RE failed as
+  a tested module.
+- Verification v1/v2 over-killed or failed to beat D on dev. Keep it as a
+  limitation/negative result unless new evidence is produced.
+- AutoDL no-card mode may have tight memory limits. Avoid loading BGE-M3 unless
+  needed; prefer cached/replay artifacts when they preserve comparisons.
+- DOCX output caused encoding/rendering trouble in this workflow. Use Markdown
+  as the working manuscript format.
+- Backups and hashes matter. Never leave the only copy of data/results on the
+  AutoDL instance.
+- Every new paid action needs an explicit bounded human gate, even if it seems
+  technically small.
