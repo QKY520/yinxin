@@ -54,3 +54,17 @@ until `execution.authorized` and `approval_record` are changed in a separately
 approved and committed decision. Dry-run loads the tokenizer only, verifies all
 input/model metadata hashes, computes exact chat-template token counts, and
 writes a deployment manifest without loading model weights or contacting vLLM.
+
+P6-QA0 blank double-annotation preparation (AutoDL GPU-free only):
+
+```bash
+cd /root/project
+source /root/venv/bin/activate
+python scripts/prepare_p6_qa0_blind_annotation.py
+```
+
+This command requires the exact frozen `domain_test.jsonl` SHA256 and the P2
+`FROZEN` marker. It creates independently shuffled blank NER sheets for two
+human annotators plus a coordinator-only map and manifest under
+`/root/autodl-tmp/backup/p6/`. It does not modify frozen data, expose old labels
+to annotators, generate prompts, run a model, or authorize human annotation.

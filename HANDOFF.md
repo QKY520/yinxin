@@ -21,7 +21,9 @@ few-shot Chinese equipment-domain NER using a reproducible local-LLM extraction
 pipeline.
 
 Current task: **GPU-free paper writing and pre-submission preparation in
-Markdown**.
+Markdown**. The bounded `P6-QA0` blank double-annotation preparation is
+complete. Human annotation has not started; the project is stopped before
+`P6_QA1_HUMAN_ANNOTATION_START_APPROVED`.
 
 Current editable paper draft:
 
@@ -31,8 +33,9 @@ All generated `.docx` files were deleted on 2026-07-25 at the user's request
 because of rendering/encoding problems. Future writing defaults to UTF-8
 Markdown unless the user explicitly asks otherwise.
 
-No paid GPU, vLLM launch, dry-run, model call, frozen-test prompt generation, or
-new experiment is currently authorized.
+No paid GPU, vLLM launch, dry-run, model call, frozen-test prompt generation,
+human annotation, adjudication, frozen-data correction, or new experiment is
+currently authorized.
 
 ## 2. What Is Already Completed
 
@@ -61,15 +64,16 @@ Complete.
 
 ### P2 - Self-Built Domain Data
 
-Complete and frozen.
+Structurally complete and frozen as version `v1`; independent human-gold quality
+evidence is not complete.
 
 - 400 public equipment-domain candidates were collected:
   Baidu Baike 7, patent 84, CMNEE 309.
 - Schema `p2-schema-draft-v1` and 10 synthetic examples were approved.
 - QAonMilitaryKG distant supervision had low coverage:
   15/400 records, 23 EQUIPMENT suggestions, 0 relations.
-- Qwen2.5-14B-AWQ proposal workflow, human review, adjudication, and freeze
-  were completed for the approved 250-record route.
+- Qwen2.5-14B-AWQ proposal workflow, machine/rule-assisted review, nominal
+  adjudication, and freeze were completed for the approved 250-record route.
 - Final frozen split:
   - `domain_support.jsonl`: 30 rows;
   - `domain_dev.jsonl`: 50 rows;
@@ -88,6 +92,11 @@ Complete and frozen.
 - Local P2 gold backup:
   `backups/P2/p2_domain_gold_freeze_20260722.tar.gz`;
   SHA256 `a3711e2af4179d8398d8d497827ff703b1cfa4a8b0c05ea4de47837b9329ec3f`.
+- Quality caveat: the old `0.9909` agreement came from machine/rule-generated
+  pseudo A/B files and is not valid human IAA. Within the 170-row test source
+  map, 61 rows are tagged `adjudicated_double_annotation` and 109 are tagged
+  `annotator_a_single_annotation`; those names describe the old build path and
+  do not prove independent human annotation.
 
 ### P3/P4 - Domain-Dev Sanity
 
@@ -156,6 +165,33 @@ P5 paid run note:
 - Estimated cost was about 3.2 CNY at 2.7 CNY/hour.
 - vLLM was stopped after the run and GPU memory was verified at 0 MiB.
 
+### P6-QA0 - Frozen-Gold Audit Preparation
+
+Complete in AutoDL GPU-free mode; no human annotation has started.
+
+- Added `scripts/prepare_p6_qa0_blind_annotation.py` and four focused unit
+  tests. All tests passed remotely in GPU-free mode.
+- The script required the exact frozen test SHA256 and P2 `FROZEN` marker,
+  matched all test text hashes to the source map, and refused existing-output
+  overwrite.
+- Generated two independently shuffled 170-row UTF-8 BOM CSVs. Each contains
+  only `blind_id,text,entities_json,notes`; both annotation fields are blank.
+- Seeds: A `2026072501`, B `2026072502`; orders and blind IDs differ.
+- Generated a 170-row coordinator-only blind-ID map and an atomic manifest.
+- Remote package:
+  `/root/autodl-tmp/backup/p6/p6_qa0_blind_annotation_20260725/`.
+- Local ignored backup:
+  `backups/P6/p6_qa0_blind_annotation_20260725/`.
+- Output SHA256:
+  - A CSV: `3a36082631b45339d8b8e6ecd724ca3bbb7f74196531339ddb4621c4a72e1171`;
+  - B CSV: `39b5ee7755ee48bd1c0d762e1ecdfd8c6a4251bdf8a0e1cf82a4c7ad149ae685`;
+  - coordinator map: `d39d2252400cdc17a37eef78ed3a276c1f86c804d65e03f43cef31d752e38eb1`;
+  - manifest: `45fa9fd6cb7886ad7b7bc58078de4391b57e3233bd41a9960be1368a88695451`.
+- Full protocol and future gates:
+  `docs/P6_QA0_FROZEN_GOLD_AUDIT_PLAN_20260725.md`.
+- Cost impact: 0 paid-GPU CNY; no model/vLLM/dry-run activity. Post-generation
+  check still reported GPU-free/no devices.
+
 ## 3. Current Claim Boundary
 
 Result-to-claim verdict: `partial`.
@@ -166,6 +202,11 @@ Supported claim:
 > demonstrations and glossary injection improve entity extraction F1, while RAG
 > evidence preserves near-tied F1 and improves precision / reduces
 > false-positive entity predictions.
+
+This result statement is conditional on the current frozen `v1` labels. Until
+true double annotation and blind adjudication are complete, the paper must not
+claim independently human-annotated gold, valid human IAA, or a fully
+quality-controlled dataset contribution.
 
 Not supported by current evidence:
 
@@ -195,6 +236,7 @@ Use these as the paper-facing evidence base:
 - `docs/P5_DOMAIN_PAPER_EVIDENCE_20260725.md`
 - `docs/P5_PAPER_REVIEW_AUDIT_20260725.md`
 - `docs/P5_PAPER_P0_REVIEW_FEEDBACK_20260725.md`
+- `docs/P6_QA0_FROZEN_GOLD_AUDIT_PLAN_20260725.md`
 - `findings.md`
 - `logs/p5_c_vs_d_fp_qualitative_20260725.json`
 - `logs/p5_c_vs_d_fp_qualitative_20260725.csv`
@@ -227,6 +269,10 @@ P0 paper repair already completed:
   threshold changes, or verification tuning.
 - Do not run E/E-prime, CLUENER, K=1/K=10, full P5, more seeds, dry-runs, model
   calls, or new `domain_test` prompt generation without a new explicit gate.
+- Do not distribute `blind_id_map.jsonl` to annotators. Do not start human
+  annotation without `P6_QA1_HUMAN_ANNOTATION_START_APPROVED`.
+- Never overwrite frozen `v1`. Any corrected gold must be independently
+  adjudicated, versioned as `v2`, re-frozen, and assigned new hashes.
 - Preserve negative and mixed results; do not rerun them away.
 - The real AutoDL host/port/passwords live only in the user's local SSH config.
   Use only the alias `autodl-paper` in docs and commands.
@@ -239,15 +285,14 @@ Local:
 - Branch: `main`
 - Git remote: `https://github.com/QKY520/yinxin.git`
 - Git identity for this repo: `yly <714520833@qq.com>`
-- This handoff refresh is committed with message:
-  `docs: refresh project handoff state`. Run `git log -1 --oneline` for the
-  exact current hash.
-- Previous local commit before this handoff refresh:
-  `863c701 docs: replace generated docx drafts with markdown`
-- GitHub push has recently failed because the local proxy `127.0.0.1` cannot
-  connect. AutoDL SSH also returned connection refused during this refresh, so
-  the latest handoff-refresh commit is currently local-only until GitHub or
-  AutoDL connectivity is restored.
+- Latest local commit message: `p6: prepare blinded frozen-gold audit`. Run
+  `git log -1 --oneline` for the exact current hash.
+- Previous local commit:
+  `8f33886 docs: refresh project handoff state`.
+- GitHub push still fails because the local proxy `127.0.0.1` cannot connect.
+  AutoDL SSH is working again, so QA0 code/artifacts were executed and synced
+  through the `autodl-paper` alias. The latest commit remains local-only until
+  GitHub connectivity is restored.
 
 Remote:
 
@@ -255,7 +300,10 @@ Remote:
 - Remote code: `/root/project`
 - Remote data/model/backup root: `/root/autodl-tmp`
 - Project venv: `/root/autodl-tmp/venvs/equipment-ie`
-- Last expected mode: GPU-free/no-card. Confirm before doing anything remote.
+- Current Git HEAD before manual QA0 sync: `863c701`; the remote worktree has
+  the final QA0 files copied from local because GitHub sync is unavailable.
+- Last verified mode: GPU-free/no-card (`No devices found`). Confirm again
+  before doing anything remote.
 
 Useful no-Python status command:
 
@@ -265,27 +313,34 @@ ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status -
 
 ## 7. Recommended Next Step
 
-Default next step is **no-card manuscript work**:
+Stop after P6-QA0. The next data-quality step requires explicit approval named:
 
-1. Continue editing the Markdown paper draft.
-2. Tighten the abstract/introduction/results/conclusion around the scoped
-   `partial` claim.
-3. Keep C-vs-D wording honest: near-tie on F1, D stronger on precision and FP
-   reduction.
-4. Use `docs/P5_PAPER_P0_REVIEW_FEEDBACK_20260725.md` as the pre-submission
-   checklist.
-5. Optionally screen target SCI-Q4 journals and adapt the manuscript format.
+```text
+P6_QA1_HUMAN_ANNOTATION_START_APPROVED
+```
 
-Do not start any new experiment unless the human gives a new bounded gate. If a
-future gate is approved, change only execution metadata for the approved scope
-and keep prompt/glossary/RAG/verifier semantics unchanged unless the gate
-explicitly authorizes a method change.
+That gate should authorize only two real humans to independently annotate the
+already prepared blank 170-row NER sheets. It must not authorize model calls,
+old-gold disclosure, prediction inspection, adjudication, frozen-data changes,
+or re-evaluation. Those require later bounded gates after A/B return.
+
+In parallel, GPU-free manuscript work may continue only with conservative
+wording: the current results are conditional on frozen `v1` labels, C and D are
+near-tied on F1, and no human-IAA or quality-controlled-human-gold claim is
+currently allowed.
 
 ## 8. Lessons Worth Remembering
 
 - The project is now paper-first, not experiment-first.
 - The experiment is basically complete only for the narrow domain NER claim; it
   is not a complete full-matrix IE paper.
+- Structurally frozen data is not automatically publication-grade human gold.
+  The `0.9909` pseudo-IAA must never be cited as human agreement.
+- True A/B annotation must start from blank text, remain mutually blind, and
+  include every explicit repeated mention. An agent cannot substitute for a
+  human annotator or human adjudicator when the paper claims human gold.
+- Old frozen `v1` must be preserved. Any correction is a new `v2` with blind
+  adjudication, new hashes, and uniform re-scoring only after a later gate.
 - C and D are a near-tie on F1. D's value is FP/precision reduction, not a large
   F1 gain.
 - The stronger paper is the honest one: do not overclaim RE, CoVe, public
