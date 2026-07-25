@@ -377,6 +377,15 @@ Current status:
   foundational references.
 - Integrated Chinese paper draft with expanded related work now exists:
   - `docs/EQUIPMENT_IE_PAPER_DRAFT_WITH_RELATED_WORK_20260725.docx`.
+- GPU-free P0 paper repair package now exists:
+  - `docs/P5_P0_FIX_PACKAGE_20260725.docx`;
+  - `docs/EQUIPMENT_IE_PAPER_DRAFT_WITH_P0_FIXES_20260725.docx`;
+  - local synced qualitative logs:
+    `logs/p5_c_vs_d_fp_qualitative_20260725.json` and
+    `logs/p5_c_vs_d_fp_qualitative_20260725.csv`.
+  It adds the variance footnote for A versus B/C/D and a C-vs-D qualitative FP
+  analysis: D removes/avoids 181 C false positives, introduces 126 new false
+  positives, and nets the observed 55-FP reduction.
 - Result-to-claim revised claim:
   "In a frozen low-label Chinese equipment-domain NER setting, kNN
   demonstrations and glossary injection improve entity extraction F1, while RAG
@@ -486,6 +495,9 @@ Related-work preparation has also started in DOCX form, with explicit priority
 for recent 2023-2025 literature. An integrated paper draft with related work
 has been generated as
 `docs/EQUIPMENT_IE_PAPER_DRAFT_WITH_RELATED_WORK_20260725.docx`.
+The GPU-free P0 paper repair package has also been generated, including the
+variance explanation and qualitative FP analysis, with an updated paper draft at
+`docs/EQUIPMENT_IE_PAPER_DRAFT_WITH_P0_FIXES_20260725.docx`.
 
 Reasonable next choices are:
 
