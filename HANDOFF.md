@@ -365,22 +365,14 @@ Current status:
   - `docs/RESULT_TO_CLAIM_P5_DOMAIN_20260725.md`.
 - GPU-free paper evidence package now exists:
   - `docs/P5_DOMAIN_PAPER_EVIDENCE_20260725.md`.
-- First DOCX Results draft now exists:
-  - `docs/P5_DOMAIN_RESULTS_FIRST_DRAFT_20260725.docx`.
-- First full Chinese paper skeleton DOCX now exists:
-  - `docs/EQUIPMENT_IE_PAPER_SKELETON_FIRST_DRAFT_20260725.docx`.
-- Related-work/reference DOCX drafts now exist:
-  - `docs/RELATED_WORK_REFERENCES_FRAMEWORK_20260725.docx`;
-  - `docs/RECENT_RELATED_WORK_PRIORITY_20260725.docx`.
-  The recent-priority file records the user's requirement to emphasize
-  2023-2025 literature where possible, while keeping older papers only as
-  foundational references.
-- Integrated Chinese paper draft with expanded related work now exists:
-  - `docs/EQUIPMENT_IE_PAPER_DRAFT_WITH_RELATED_WORK_20260725.docx`.
-- GPU-free P0 paper repair package now exists:
-  - `docs/P5_P0_FIX_PACKAGE_20260725.docx`;
-  - `docs/EQUIPMENT_IE_PAPER_DRAFT_WITH_P0_FIXES_20260725.docx`;
-  - `docs/EQUIPMENT_IE_PAPER_DRAFT_V3_REVIEW_POLISH_20260725.docx`;
+- All generated DOCX files were deleted on 2026-07-25 at the user's request
+  because of rendering/encoding problems. The current editable paper draft is
+  the UTF-8 Markdown file:
+  - `docs/EQUIPMENT_IE_PAPER_DRAFT_V3_REVIEW_POLISH_20260725.md`.
+- GPU-free P0 paper repair package evidence still exists in Markdown/log form:
+  - `docs/P5_DOMAIN_PAPER_EVIDENCE_20260725.md`;
+  - `docs/RESULT_TO_CLAIM_P5_DOMAIN_20260725.md`;
+  - `findings.md`;
   - local synced qualitative logs:
     `logs/p5_c_vs_d_fp_qualitative_20260725.json` and
     `logs/p5_c_vs_d_fp_qualitative_20260725.csv`.
@@ -485,24 +477,12 @@ Current blocker:
 P5 M0, the bounded seed-42 domain-test pilot, and the bounded seeds43/44
 domain-test replication are complete. Human review accepted the near-tie
 interpretation for C versus D. GPU-free result-to-claim verdict is `partial`.
-GPU-free paper-facing aggregation and wording cleanup has started, producing
-`docs/P5_DOMAIN_PAPER_EVIDENCE_20260725.md` and the first DOCX draft
-`docs/P5_DOMAIN_RESULTS_FIRST_DRAFT_20260725.docx`. A fuller Chinese paper
-skeleton DOCX also exists at
-`docs/EQUIPMENT_IE_PAPER_SKELETON_FIRST_DRAFT_20260725.docx`. Recommended next
-step is human editing of the DOCX draft, or a separate human decision on RE
-diagnostic, public benchmark protocol, or another bounded paid gate.
-Related-work preparation has also started in DOCX form, with explicit priority
-for recent 2023-2025 literature. An integrated paper draft with related work
-has been generated as
-`docs/EQUIPMENT_IE_PAPER_DRAFT_WITH_RELATED_WORK_20260725.docx`.
-The GPU-free P0 paper repair package has also been generated, including the
-variance explanation and qualitative FP analysis, with an updated paper draft at
-`docs/EQUIPMENT_IE_PAPER_DRAFT_WITH_P0_FIXES_20260725.docx`.
-After human P0 review feedback, a v3 review-polished DOCX was generated at
-`docs/EQUIPMENT_IE_PAPER_DRAFT_V3_REVIEW_POLISH_20260725.docx`; it updates the
-title, abstract, introduction scenario, related-work differentiation, near-tie
-framing, and FP table note.
+GPU-free paper-facing aggregation and wording cleanup has produced the current
+UTF-8 Markdown draft:
+`docs/EQUIPMENT_IE_PAPER_DRAFT_V3_REVIEW_POLISH_20260725.md`. It includes the
+application-oriented title, revised abstract, introduction scenario,
+related-work differentiation, C/D near-tie framing, variance footnote, and FP
+table note. All generated DOCX files were removed at the user's request.
 
 Reasonable next choices are:
 
