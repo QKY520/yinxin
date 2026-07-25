@@ -369,6 +369,12 @@ Current status:
   - `docs/P5_DOMAIN_RESULTS_FIRST_DRAFT_20260725.docx`.
 - First full Chinese paper skeleton DOCX now exists:
   - `docs/EQUIPMENT_IE_PAPER_SKELETON_FIRST_DRAFT_20260725.docx`.
+- Related-work/reference DOCX drafts now exist:
+  - `docs/RELATED_WORK_REFERENCES_FRAMEWORK_20260725.docx`;
+  - `docs/RECENT_RELATED_WORK_PRIORITY_20260725.docx`.
+  The recent-priority file records the user's requirement to emphasize
+  2023-2025 literature where possible, while keeping older papers only as
+  foundational references.
 - Result-to-claim revised claim:
   "In a frozen low-label Chinese equipment-domain NER setting, kNN
   demonstrations and glossary injection improve entity extraction F1, while RAG
@@ -474,6 +480,8 @@ skeleton DOCX also exists at
 `docs/EQUIPMENT_IE_PAPER_SKELETON_FIRST_DRAFT_20260725.docx`. Recommended next
 step is human editing of the DOCX draft, or a separate human decision on RE
 diagnostic, public benchmark protocol, or another bounded paid gate.
+Related-work preparation has also started in DOCX form, with explicit priority
+for recent 2023-2025 literature.
 
 Reasonable next choices are:
 
