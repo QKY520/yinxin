@@ -380,6 +380,7 @@ Current status:
 - GPU-free P0 paper repair package now exists:
   - `docs/P5_P0_FIX_PACKAGE_20260725.docx`;
   - `docs/EQUIPMENT_IE_PAPER_DRAFT_WITH_P0_FIXES_20260725.docx`;
+  - `docs/EQUIPMENT_IE_PAPER_DRAFT_V3_REVIEW_POLISH_20260725.docx`;
   - local synced qualitative logs:
     `logs/p5_c_vs_d_fp_qualitative_20260725.json` and
     `logs/p5_c_vs_d_fp_qualitative_20260725.csv`.
@@ -498,6 +499,10 @@ has been generated as
 The GPU-free P0 paper repair package has also been generated, including the
 variance explanation and qualitative FP analysis, with an updated paper draft at
 `docs/EQUIPMENT_IE_PAPER_DRAFT_WITH_P0_FIXES_20260725.docx`.
+After human P0 review feedback, a v3 review-polished DOCX was generated at
+`docs/EQUIPMENT_IE_PAPER_DRAFT_V3_REVIEW_POLISH_20260725.docx`; it updates the
+title, abstract, introduction scenario, related-work differentiation, near-tie
+framing, and FP table note.
 
 Reasonable next choices are:
 
