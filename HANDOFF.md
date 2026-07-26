@@ -319,14 +319,15 @@ Local:
 - Branch: `main`
 - Git remote: `https://github.com/QKY520/yinxin.git`
 - Git identity for this repo: `yly <714520833@qq.com>`
-- Latest local commit message: `p6: prepare blinded frozen-gold audit`. Run
-  `git log -1 --oneline` for the exact current hash.
-- Previous local commit:
-  `8f33886 docs: refresh project handoff state`.
-- GitHub push still fails because the local proxy `127.0.0.1` cannot connect.
-  AutoDL SSH is working again, so QA0 code/artifacts were executed and synced
-  through the `autodl-paper` alias. The latest commit remains local-only until
-  GitHub connectivity is restored.
+- QA2 implementation commit:
+  `6690d92 p6: record blocked annotation QA2`.
+- Previous QA0 commit:
+  `a39a5a2 p6: prepare blinded frozen-gold audit`.
+- The 2026-07-26 GitHub push attempt still failed because the local proxy
+  `127.0.0.1` could not connect. AutoDL SSH is working, so QA2 code,
+  documentation, tests, and lightweight artifacts were synced through the
+  `autodl-paper` alias. The local commits remain unpushed until GitHub
+  connectivity is restored.
 
 Remote:
 
