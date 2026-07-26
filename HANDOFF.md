@@ -21,9 +21,9 @@ few-shot Chinese equipment-domain NER using a reproducible local-LLM extraction
 pipeline.
 
 Current task: **GPU-free paper writing and pre-submission preparation in
-Markdown**. `P6-QA2` validation is complete and blocked. Submitted A/B files
-do not satisfy independent human double annotation, so the project is stopped
-before re-annotation, adjudication, v2 freezing, or re-evaluation.
+Markdown**. `P6-QA1R` diagnosis and non-test calibration preparation are
+complete. The project is stopped before two-human calibration annotation,
+fresh test re-annotation, adjudication, v2 freezing, or re-evaluation.
 
 Current editable paper draft:
 
@@ -34,8 +34,8 @@ because of rendering/encoding problems. Future writing defaults to UTF-8
 Markdown unless the user explicitly asks otherwise.
 
 No paid GPU, vLLM launch, dry-run, model call, frozen-test prompt generation,
-re-annotation, adjudication, frozen-data correction, re-evaluation, or new
-experiment is currently authorized.
+human calibration annotation, re-annotation, adjudication, frozen-data
+correction, re-evaluation, or new experiment is currently authorized.
 
 ## 2. What Is Already Completed
 
@@ -222,6 +222,41 @@ Complete and blocked in AutoDL GPU-free mode.
 - No old gold, predictions, prompts, models, vLLM, or paid GPU were used; no
   labels were modified. Cost impact: 0 paid-GPU CNY.
 
+### P6-QA1R - Diagnostic Repair And Non-Test Calibration Prep
+
+Complete in AutoDL GPU-free mode; no human calibration has started.
+
+- Existing provenance-invalid QA2 files were used only as diagnostic inputs.
+  They remain ineligible for human IAA or adjudication.
+- Entity disagreement taxonomy across 130 rows:
+  - same-boundary type conflicts: 127 instances / 60 rows;
+  - same-type overlapping-boundary conflicts: 40 / 28;
+  - overlapping boundary-and-type conflicts: 10 / 10;
+  - unmatched A/B entities: 158 / 265.
+- The dominant paired confusion was `EQUIPMENT -> TECH_SCHEME` with 104
+  instances. This, 180 A repeated-mention warnings, and an empty METRIC class
+  drove the revised operational rules.
+- Added diagnostic and calibration-prep scripts with seven focused tests; all
+  tests passed remotely:
+  - `scripts/analyze_p6_qa2_disagreements.py`;
+  - `scripts/prepare_p6_qa1r_calibration.py`;
+  - corresponding tests under `tests/`.
+- Added guideline and report:
+  - `docs/P6_QA1R_ANNOTATION_GUIDELINE_V3_20260726.md`;
+  - `docs/P6_QA1R_DIAGNOSIS_AND_CALIBRATION_20260726.md`.
+- Prepared 24 text-only domain-dev calibration rows: six each for METRIC,
+  TECH_SCHEME, EQUIPMENT/MODULE, and repeated-mention risk. A/B orders differ,
+  annotation fields are blank, and no old dev labels, test gold, predictions,
+  or coordinator IDs were exported.
+- Coordinator-only diagnosis:
+  `/root/autodl-tmp/backup/p6/p6_qa1r_diagnosis_20260726/` and
+  `backups/P6/p6_qa1r_diagnosis_20260726/`.
+- Calibration package:
+  `/root/autodl-tmp/backup/p6/p6_qa1r_calibration_20260726/` and
+  `backups/P6/p6_qa1r_calibration_20260726/`.
+- Frozen `domain_test.jsonl` and `FROZEN` hashes remained unchanged; the final
+  server check still reported no GPU devices. Cost impact: 0 paid-GPU CNY.
+
 ## 3. Current Claim Boundary
 
 Result-to-claim verdict: `partial`.
@@ -268,6 +303,8 @@ Use these as the paper-facing evidence base:
 - `docs/P5_PAPER_P0_REVIEW_FEEDBACK_20260725.md`
 - `docs/P6_QA0_FROZEN_GOLD_AUDIT_PLAN_20260725.md`
 - `docs/P6_QA2_ANNOTATION_VALIDATION_20260726.md`
+- `docs/P6_QA1R_ANNOTATION_GUIDELINE_V3_20260726.md`
+- `docs/P6_QA1R_DIAGNOSIS_AND_CALIBRATION_20260726.md`
 - `findings.md`
 - `logs/p5_c_vs_d_fp_qualitative_20260725.json`
 - `logs/p5_c_vs_d_fp_qualitative_20260725.csv`
@@ -300,11 +337,14 @@ P0 paper repair already completed:
   threshold changes, or verification tuning.
 - Do not run E/E-prime, CLUENER, K=1/K=10, full P5, more seeds, dry-runs, model
   calls, or new `domain_test` prompt generation without a new explicit gate.
-- Do not distribute `blind_id_map.jsonl` to annotators. Do not start human
-  annotation without `P6_QA1_HUMAN_ANNOTATION_START_APPROVED`.
+- Do not distribute any coordinator map to annotators. Do not start the 24-row
+  human calibration without `P6_QA1R_HUMAN_CALIBRATION_START_APPROVED`.
 - Do not treat the current A/B completed files or their `0.5573` diagnostic as
   human IAA. Do not repair them into an adjudication input; independence was
   already lost through a shared generation script.
+- Calibration uses domain-dev text only and is not formal test IAA. Existing
+  domain-dev labels are not calibration answers and must not be shown to the
+  two annotators.
 - Never overwrite frozen `v1`. Any corrected gold must be independently
   adjudicated, versioned as `v2`, re-frozen, and assigned new hashes.
 - Preserve negative and mixed results; do not rerun them away.
@@ -348,18 +388,22 @@ ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status -
 
 ## 7. Recommended Next Step
 
-Stop after blocked P6-QA2. To retain a human-double-annotation claim, the next
-data-quality step requires explicit approval named:
+Stop after P6-QA1R calibration preparation. The next data-quality step requires
+explicit approval named:
 
 ```text
-P6_QA1R_TRUE_HUMAN_REANNOTATION_APPROVED
+P6_QA1R_HUMAN_CALIBRATION_START_APPROVED
 ```
 
-That gate should authorize only two real humans to independently re-annotate
-fresh copies of the original blank 170-row NER sheets. Neither may see the
-current completed files, shared scripts, old gold, predictions, map, or the
-other annotator's output. It must not authorize adjudication, frozen-data
-changes, model calls, or re-evaluation.
+That gate should authorize only two real humans to independently annotate their
+own 24-row domain-dev calibration sheets using the locked v3 guideline. They
+must not see the other sheet, current QA2 files, existing dev/test gold,
+predictions, coordinator map, or shared label-generation code. After both
+return, a separate GPU-free gate must validate structure and compute diagnostic
+calibration agreement before any joint guideline discussion.
+
+This gate must not authorize fresh test re-annotation, adjudication, frozen-data
+changes, model calls, or re-evaluation. Those remain later bounded steps.
 
 In parallel, GPU-free manuscript work may continue only with conservative
 wording: the current results are conditional on frozen `v1` labels, C and D are
@@ -379,6 +423,10 @@ currently allowed.
 - A shared annotation dictionary that writes both A and B invalidates human
   independence even if one file is edited afterward. File agreement is not
   annotation provenance.
+- Low agreement must be repaired through non-test calibration and clearer
+  operational rules, not by editing labels to reach a threshold. The present
+  diagnosis found physical-system versus TECH_SCHEME confusion, repeated
+  mention omissions, and complete METRIC under-coverage as the main risks.
 - Old frozen `v1` must be preserved. Any correction is a new `v2` with blind
   adjudication, new hashes, and uniform re-scoring only after a later gate.
 - C and D are a near-tie on F1. D's value is FP/precision reduction, not a large

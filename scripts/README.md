@@ -83,3 +83,30 @@ fields, flags duplicates/overlaps/unresolved repeated mentions, and computes
 file-level exact span+type concordance. It never reads old gold or predictions,
 never repairs labels, and cannot by itself establish independent human
 provenance.
+
+P6-QA1R diagnostic classification of the already blocked QA2 files (AutoDL
+GPU-free only):
+
+```bash
+cd /root/project
+source /root/venv/bin/activate
+python scripts/analyze_p6_qa2_disagreements.py
+```
+
+This locks the existing QA2 hashes and classifies same-boundary type conflicts,
+overlapping-boundary conflicts, and unmatched A/B entities. Its output is
+coordinator-only diagnostic material, not human IAA or adjudication, and it
+does not modify labels or read gold/predictions.
+
+P6-QA1R non-test calibration preparation (AutoDL GPU-free only):
+
+```bash
+cd /root/project
+source /root/venv/bin/activate
+python scripts/prepare_p6_qa1r_calibration.py
+```
+
+This locks `domain_dev.jsonl`, selects 24 texts using text-only ambiguity
+buckets, strips all existing labels/relations, and creates differently shuffled
+blank A/B calibration sheets plus a coordinator-only map. Calibration is for
+guideline repair and must not be reported as formal test IAA.
