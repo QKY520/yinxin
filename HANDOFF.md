@@ -359,6 +359,8 @@ Local:
 - Branch: `main`
 - Git remote: `https://github.com/QKY520/yinxin.git`
 - Git identity for this repo: `yly <714520833@qq.com>`
+- QA1R diagnosis/calibration-prep commit:
+  `f8162ce p6: prepare annotation agreement recovery`.
 - QA2 implementation commit:
   `6690d92 p6: record blocked annotation QA2`.
 - Previous QA0 commit:
