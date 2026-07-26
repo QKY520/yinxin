@@ -140,3 +140,13 @@ P6-QA0 验收后必须停止，等待：
 ```text
 P6_QA1_HUMAN_ANNOTATION_START_APPROVED
 ```
+
+## 8. 2026-07-26 QA2 结果
+
+后续提交的 A/B completed 文件未通过 QA2：21 个 hard errors、181 个重复 mention
+blocking reviews；149 个严格有效配对的文件级 diagnostic F1 为 `0.5573`。更关键的
+是，provenance 脚本使用同一标签字典同时生成 A/B 初始文件，违反“两名真人从空白
+文本独立标注”的前提。因此 formal human IAA 保持 `null`，不得进入裁决或 v2。
+
+完整结论见 `docs/P6_QA2_ANNOTATION_VALIDATION_20260726.md`。当前推荐门禁退回
+`P6_QA1R_TRUE_HUMAN_REANNOTATION_APPROVED`，而不是向后进入 adjudication。

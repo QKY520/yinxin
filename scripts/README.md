@@ -68,3 +68,18 @@ This command requires the exact frozen `domain_test.jsonl` SHA256 and the P2
 human annotators plus a coordinator-only map and manifest under
 `/root/autodl-tmp/backup/p6/`. It does not modify frozen data, expose old labels
 to annotators, generate prompts, run a model, or authorize human annotation.
+
+P6-QA2 completed-sheet validation (AutoDL GPU-free only):
+
+```bash
+cd /root/project
+source /root/venv/bin/activate
+python scripts/validate_p6_qa2_annotations.py
+```
+
+The validator locks the submitted completed sheets and QA0 blank/map hashes,
+checks blind-ID/text alignment, parses exact NER spans, rejects blank or invalid
+fields, flags duplicates/overlaps/unresolved repeated mentions, and computes
+file-level exact span+type concordance. It never reads old gold or predictions,
+never repairs labels, and cannot by itself establish independent human
+provenance.

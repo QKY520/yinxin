@@ -1,6 +1,6 @@
 # HANDOFF.md - New Conversation Handoff
 
-Date: 2026-07-25
+Date: 2026-07-26
 Workspace: `D:\yinsir`
 
 This file is the latest operational state for a new Codex/agent session with no
@@ -21,9 +21,9 @@ few-shot Chinese equipment-domain NER using a reproducible local-LLM extraction
 pipeline.
 
 Current task: **GPU-free paper writing and pre-submission preparation in
-Markdown**. The bounded `P6-QA0` blank double-annotation preparation is
-complete. Human annotation has not started; the project is stopped before
-`P6_QA1_HUMAN_ANNOTATION_START_APPROVED`.
+Markdown**. `P6-QA2` validation is complete and blocked. Submitted A/B files
+do not satisfy independent human double annotation, so the project is stopped
+before re-annotation, adjudication, v2 freezing, or re-evaluation.
 
 Current editable paper draft:
 
@@ -34,8 +34,8 @@ because of rendering/encoding problems. Future writing defaults to UTF-8
 Markdown unless the user explicitly asks otherwise.
 
 No paid GPU, vLLM launch, dry-run, model call, frozen-test prompt generation,
-human annotation, adjudication, frozen-data correction, or new experiment is
-currently authorized.
+re-annotation, adjudication, frozen-data correction, re-evaluation, or new
+experiment is currently authorized.
 
 ## 2. What Is Already Completed
 
@@ -192,6 +192,36 @@ Complete in AutoDL GPU-free mode; no human annotation has started.
 - Cost impact: 0 paid-GPU CNY; no model/vLLM/dry-run activity. Post-generation
   check still reported GPU-free/no devices.
 
+### P6-QA2 - Submitted Annotation Validation
+
+Complete and blocked in AutoDL GPU-free mode.
+
+- Submitted completed hashes:
+  - A: `f07a650688c9cafcf4d16f5be906a0f45a3623838994cc9af2954385eb2183b7`;
+  - B: `90e8e2458de3dd1f847a730759a353efb0a493bbbe385bbaa88fecf6acccd8ef`.
+- Blind IDs, 170 texts, and text hashes matched the QA0 coordinator map.
+- Structural result: 19 A rows not sorted, 2 B `entities_json` fields blank,
+  and 181 unresolved repeated-mention candidates (180 A, 1 B).
+- Only 149/170 strict pairs entered diagnostic comparison: exact file F1
+  `0.557265`, 19 exact rows, 130 disagreement rows.
+- Diagnostic per-type F1: EQUIPMENT `0.645852`, MODULE `0.548673`,
+  TECH_SCHEME `0.032967`; METRIC was empty in both valid subsets and is not an
+  interpretable 1.0 result.
+- Formal human IAA is `null`. Repository provenance files show one shared
+  `ANNO` dictionary and one `process_rows` function writing both A/B completed
+  sheets. Later edits cannot restore independent blank-start provenance.
+- Validator and four focused tests:
+  `scripts/validate_p6_qa2_annotations.py` and
+  `tests/test_validate_p6_qa2_annotations.py`; tests passed remotely.
+- Full report: `docs/P6_QA2_ANNOTATION_VALIDATION_20260726.md`.
+- Raw coordinator-only output:
+  `/root/autodl-tmp/backup/p6/p6_qa2_annotation_validation_20260726/` and
+  `backups/P6/p6_qa2_annotation_validation_20260726/`.
+- Validation report SHA256:
+  `aa614ad12cf9b7babf0ebb0e950ec44b960cb259226027142c7a0180acef6292`.
+- No old gold, predictions, prompts, models, vLLM, or paid GPU were used; no
+  labels were modified. Cost impact: 0 paid-GPU CNY.
+
 ## 3. Current Claim Boundary
 
 Result-to-claim verdict: `partial`.
@@ -237,6 +267,7 @@ Use these as the paper-facing evidence base:
 - `docs/P5_PAPER_REVIEW_AUDIT_20260725.md`
 - `docs/P5_PAPER_P0_REVIEW_FEEDBACK_20260725.md`
 - `docs/P6_QA0_FROZEN_GOLD_AUDIT_PLAN_20260725.md`
+- `docs/P6_QA2_ANNOTATION_VALIDATION_20260726.md`
 - `findings.md`
 - `logs/p5_c_vs_d_fp_qualitative_20260725.json`
 - `logs/p5_c_vs_d_fp_qualitative_20260725.csv`
@@ -271,6 +302,9 @@ P0 paper repair already completed:
   calls, or new `domain_test` prompt generation without a new explicit gate.
 - Do not distribute `blind_id_map.jsonl` to annotators. Do not start human
   annotation without `P6_QA1_HUMAN_ANNOTATION_START_APPROVED`.
+- Do not treat the current A/B completed files or their `0.5573` diagnostic as
+  human IAA. Do not repair them into an adjudication input; independence was
+  already lost through a shared generation script.
 - Never overwrite frozen `v1`. Any corrected gold must be independently
   adjudicated, versioned as `v2`, re-frozen, and assigned new hashes.
 - Preserve negative and mixed results; do not rerun them away.
@@ -313,16 +347,18 @@ ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status -
 
 ## 7. Recommended Next Step
 
-Stop after P6-QA0. The next data-quality step requires explicit approval named:
+Stop after blocked P6-QA2. To retain a human-double-annotation claim, the next
+data-quality step requires explicit approval named:
 
 ```text
-P6_QA1_HUMAN_ANNOTATION_START_APPROVED
+P6_QA1R_TRUE_HUMAN_REANNOTATION_APPROVED
 ```
 
-That gate should authorize only two real humans to independently annotate the
-already prepared blank 170-row NER sheets. It must not authorize model calls,
-old-gold disclosure, prediction inspection, adjudication, frozen-data changes,
-or re-evaluation. Those require later bounded gates after A/B return.
+That gate should authorize only two real humans to independently re-annotate
+fresh copies of the original blank 170-row NER sheets. Neither may see the
+current completed files, shared scripts, old gold, predictions, map, or the
+other annotator's output. It must not authorize adjudication, frozen-data
+changes, model calls, or re-evaluation.
 
 In parallel, GPU-free manuscript work may continue only with conservative
 wording: the current results are conditional on frozen `v1` labels, C and D are
@@ -339,6 +375,9 @@ currently allowed.
 - True A/B annotation must start from blank text, remain mutually blind, and
   include every explicit repeated mention. An agent cannot substitute for a
   human annotator or human adjudicator when the paper claims human gold.
+- A shared annotation dictionary that writes both A and B invalidates human
+  independence even if one file is edited afterward. File agreement is not
+  annotation provenance.
 - Old frozen `v1` must be preserved. Any correction is a new `v2` with blind
   adjudication, new hashes, and uniform re-scoring only after a later gate.
 - C and D are a near-tie on F1. D's value is FP/precision reduction, not a large
