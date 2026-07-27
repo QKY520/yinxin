@@ -1,6 +1,6 @@
 # HANDOFF.md - New Conversation Handoff
 
-Date: 2026-07-26
+Date: 2026-07-27
 Workspace: `D:\yinsir`
 
 This file is the latest operational state for a new Codex/agent session with no
@@ -21,9 +21,12 @@ few-shot Chinese equipment-domain NER using a reproducible local-LLM extraction
 pipeline.
 
 Current task: **GPU-free paper writing and pre-submission preparation in
-Markdown**. `P6-QA1R` diagnosis and non-test calibration preparation are
-complete. The project is stopped before two-human calibration annotation,
-fresh test re-annotation, adjudication, v2 freezing, or re-evaluation.
+Markdown**. `P6-QA1R` non-test calibration files were submitted and validated.
+The calibration quality gate is `blocked`: strict exact span+type F1 is
+`0.6098`, and the 24-row order-insensitive diagnostic F1 is `0.6455`, below the
+`0.85` calibration target. The project is stopped before joint guideline
+reconciliation, a fresh independent calibration round, test re-annotation,
+adjudication, v2 freezing, or re-evaluation.
 
 Current editable paper draft:
 
@@ -34,8 +37,9 @@ because of rendering/encoding problems. Future writing defaults to UTF-8
 Markdown unless the user explicitly asks otherwise.
 
 No paid GPU, vLLM launch, dry-run, model call, frozen-test prompt generation,
-human calibration annotation, re-annotation, adjudication, frozen-data
-correction, re-evaluation, or new experiment is currently authorized.
+joint guideline reconciliation, further calibration, re-annotation,
+adjudication, frozen-data correction, re-evaluation, or new experiment is
+currently authorized.
 
 ## 2. What Is Already Completed
 
@@ -224,7 +228,9 @@ Complete and blocked in AutoDL GPU-free mode.
 
 ### P6-QA1R - Diagnostic Repair And Non-Test Calibration Prep
 
-Complete in AutoDL GPU-free mode; no human calibration has started.
+Complete in AutoDL GPU-free mode. At the end of this preparation step, human
+calibration had not yet started; the subsequently submitted calibration files
+and their validation are recorded in the next subsection.
 
 - Existing provenance-invalid QA2 files were used only as diagnostic inputs.
   They remain ineligible for human IAA or adjudication.
@@ -256,6 +262,36 @@ Complete in AutoDL GPU-free mode; no human calibration has started.
   `backups/P6/p6_qa1r_calibration_20260726/`.
 - Frozen `domain_test.jsonl` and `FROZEN` hashes remained unchanged; the final
   server check still reported no GPU devices. Cost impact: 0 paid-GPU CNY.
+
+### P6-QA1R - Submitted Non-Test Calibration Validation
+
+Complete and blocked in AutoDL GPU-free mode.
+
+- Completed input hashes:
+  - A: `36613af484210ea7b916e744e1785b37ee5c47ed7bf41149ef5ac19af230bb0a`;
+  - B: `9017bf65c8bd5e02a529bdef73f0ff845edc46d4471a84d80bb72615fc7aa8c7`.
+- A/B each contained 24 rows; blind IDs, texts, hashes, blank sheets, and the
+  coordinator map aligned exactly.
+- Five B rows had `ENTITIES_NOT_SORTED`; 29 B repeated-mention reviews blocked
+  the gate; four duplicate uncertainty codes were warnings.
+- Strict 19-row concordance: A/B entities 188/140, 100 exact matches,
+  P/R/F1 `0.7143/0.5319/0.6098`, and 1/19 exact rows.
+- Because all hard errors were ordering only, a secondary non-repair diagnostic
+  used all 24 rows order-insensitively: A/B entities 243/197, 142 exact matches,
+  P/R/F1 `0.7208/0.5844/0.6455`, and 1/24 exact rows.
+- Secondary per-type F1: EQUIPMENT `0.7081`, MODULE `0.5896`, TECH_SCHEME
+  `0.3200`, and METRIC `0.7879`.
+- The `0.6455` diagnostic is `0.2045` below the `0.85` calibration target.
+  `formal_human_iaa` remains `null`; this calibration is not formal test IAA.
+- Validator and six focused tests:
+  `scripts/validate_p6_qa1r_calibration.py` and
+  `tests/test_validate_p6_qa1r_calibration.py`; tests passed remotely.
+- Full report: `docs/P6_QA1R_CALIBRATION_VALIDATION_20260727.md`.
+- Final coordinator-only output:
+  `/root/autodl-tmp/backup/p6/p6_qa1r_calibration_validation_20260727_r2/`
+  and `backups/P6/p6_qa1r_calibration_validation_20260727_r2/`.
+- No dev gold, frozen test, predictions, prompts, model calls, vLLM, paid GPU,
+  or label repair was used. Frozen hashes remained unchanged.
 
 ## 3. Current Claim Boundary
 
@@ -305,6 +341,7 @@ Use these as the paper-facing evidence base:
 - `docs/P6_QA2_ANNOTATION_VALIDATION_20260726.md`
 - `docs/P6_QA1R_ANNOTATION_GUIDELINE_V3_20260726.md`
 - `docs/P6_QA1R_DIAGNOSIS_AND_CALIBRATION_20260726.md`
+- `docs/P6_QA1R_CALIBRATION_VALIDATION_20260727.md`
 - `findings.md`
 - `logs/p5_c_vs_d_fp_qualitative_20260725.json`
 - `logs/p5_c_vs_d_fp_qualitative_20260725.csv`
@@ -337,8 +374,9 @@ P0 paper repair already completed:
   threshold changes, or verification tuning.
 - Do not run E/E-prime, CLUENER, K=1/K=10, full P5, more seeds, dry-runs, model
   calls, or new `domain_test` prompt generation without a new explicit gate.
-- Do not distribute any coordinator map to annotators. Do not start the 24-row
-  human calibration without `P6_QA1R_HUMAN_CALIBRATION_START_APPROVED`.
+- Do not distribute any coordinator map to annotators. The prior 24-row human
+  calibration gate is consumed; do not edit or rescore those same rows as a new
+  independent round.
 - Do not treat the current A/B completed files or their `0.5573` diagnostic as
   human IAA. Do not repair them into an adjudication input; independence was
   already lost through a shared generation script.
@@ -390,22 +428,21 @@ ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status -
 
 ## 7. Recommended Next Step
 
-Stop after P6-QA1R calibration preparation. The next data-quality step requires
+Stop after P6-QA1R calibration validation. The next data-quality step requires
 explicit approval named:
 
 ```text
-P6_QA1R_HUMAN_CALIBRATION_START_APPROVED
+P6_QA1R_GUIDELINE_RECONCILIATION_APPROVED
 ```
 
-That gate should authorize only two real humans to independently annotate their
-own 24-row domain-dev calibration sheets using the locked v3 guideline. They
-must not see the other sheet, current QA2 files, existing dev/test gold,
-predictions, coordinator map, or shared label-generation code. After both
-return, a separate GPU-free gate must validate structure and compute diagnostic
-calibration agreement before any joint guideline discussion.
+That gate should authorize only coordinator-led discussion of the 24 completed
+calibration disagreements and preparation of annotation guideline v4. It must
+not authorize editing the submitted calibration labels to raise the score.
+After v4 is locked, a later gate may prepare a fresh, unused non-test calibration
+set for another mutually blind independent round.
 
-This gate must not authorize fresh test re-annotation, adjudication, frozen-data
-changes, model calls, or re-evaluation. Those remain later bounded steps.
+Fresh test re-annotation, adjudication, frozen-data changes, model calls, and
+re-evaluation remain later bounded steps.
 
 In parallel, GPU-free manuscript work may continue only with conservative
 wording: the current results are conditional on frozen `v1` labels, C and D are
@@ -429,6 +466,10 @@ currently allowed.
   operational rules, not by editing labels to reach a threshold. The present
   diagnosis found physical-system versus TECH_SCHEME confusion, repeated
   mention omissions, and complete METRIC under-coverage as the main risks.
+- The first v3 calibration round also failed: order-insensitive F1 `0.6455`,
+  with TECH_SCHEME F1 `0.3200`, MODULE F1 `0.5896`, and 29 repeated-mention
+  reviews. Discuss it to improve v4, then use a fresh unused calibration set;
+  never relabel the same 24 rows and call the new score independent agreement.
 - Old frozen `v1` must be preserved. Any correction is a new `v2` with blind
   adjudication, new hashes, and uniform re-scoring only after a later gate.
 - C and D are a near-tie on F1. D's value is FP/precision reduction, not a large

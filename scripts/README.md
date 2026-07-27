@@ -110,3 +110,20 @@ This locks `domain_dev.jsonl`, selects 24 texts using text-only ambiguity
 buckets, strips all existing labels/relations, and creates differently shuffled
 blank A/B calibration sheets plus a coordinator-only map. Calibration is for
 guideline repair and must not be reported as formal test IAA.
+
+P6-QA1R completed calibration validation (AutoDL GPU-free only):
+
+```bash
+cd /root/project
+source /root/venv/bin/activate
+python scripts/validate_p6_qa1r_calibration.py
+```
+
+The validator locks both blank sheets, both submitted completed sheets, and the
+coordinator map by SHA256. It checks row/text alignment, exact spans and types,
+entity ordering, repeated mentions, and uncertainty codes, then writes a
+coordinator-only report, issue table, disagreement JSONL, and manifest. It does
+not read old dev gold, frozen test, predictions, prompts, or models; it never
+repairs labels and cannot establish independent human provenance. Existing
+output directories are refused. The 2026-07-27 result is `blocked`; see
+`docs/P6_QA1R_CALIBRATION_VALIDATION_20260727.md`.
