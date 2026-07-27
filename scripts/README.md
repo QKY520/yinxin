@@ -111,6 +111,23 @@ buckets, strips all existing labels/relations, and creates differently shuffled
 blank A/B calibration sheets plus a coordinator-only map. Calibration is for
 guideline repair and must not be reported as formal test IAA.
 
+P6-QA1R v4 fresh calibration preparation after the retired 24-row round
+(AutoDL GPU-free only):
+
+```bash
+cd /root/project
+source /root/venv/bin/activate
+python scripts/prepare_p6_qa1r_fresh_calibration.py
+```
+
+This locks the retired coordinator map, excludes all 24 old text hashes,
+selects 20 of the remaining 26 domain-dev texts with five deterministic rows
+per ambiguity bucket, and preserves six coordinator-only reserve rows. It
+creates physically separated A/B delivery directories containing blank sheets,
+the locked v4 guideline, and role-specific instructions. Existing output,
+input-hash drift, retired overlap, missing bucket capacity, equal A/B seeds, or
+delivery leakage fail closed. The preparation gate does not start annotation.
+
 P6-QA1R completed calibration validation (AutoDL GPU-free only):
 
 ```bash

@@ -24,9 +24,11 @@ Current task: **GPU-free paper writing and pre-submission preparation in
 Markdown**. `P6-QA1R` non-test calibration validation remains `blocked`, and
 the approved coordinator reconciliation is complete. The human locked
 guideline v4 on 2026-07-27 under `P6_QA1R_GUIDELINE_V4_LOCK_APPROVED` without
-changing or adjudicating submitted labels. The project is stopped before fresh
-calibration preparation, a new independent calibration round, test
-re-annotation, adjudication, v2 freezing, or re-evaluation.
+changing or adjudicating submitted labels. A fresh 20-row non-test calibration
+package was then prepared and verified under
+`P6_QA1R_FRESH_CALIBRATION_PREP_APPROVED`. It remains completely blank; the
+project is stopped before human annotation, comparison, test re-annotation,
+adjudication, v2 freezing, or re-evaluation.
 
 Current editable paper draft:
 
@@ -37,9 +39,9 @@ because of rendering/encoding problems. Future writing defaults to UTF-8
 Markdown unless the user explicitly asks otherwise.
 
 No paid GPU, vLLM launch, dry-run, model call, frozen-test prompt generation,
-fresh calibration preparation, further annotation, re-annotation,
-adjudication, frozen-data correction, re-evaluation, or new experiment is
-currently authorized. The reconciliation and guideline-lock gates are
+human calibration annotation, comparison, re-annotation, adjudication,
+frozen-data correction, re-evaluation, or new experiment is currently
+authorized. The reconciliation, guideline-lock, and fresh-preparation gates are
 consumed.
 
 ## 2. What Is Already Completed
@@ -348,6 +350,59 @@ Complete in AutoDL GPU-free mode; guideline v4 is locked.
 - No dev/test gold, predictions, prompts, model calls, new calibration material,
   vLLM, paid GPU, or label changes were used. Frozen hashes remained unchanged.
 
+### P6-QA1R - Old-24 V4 Rescore Diagnostic
+
+Complete and still invalid for fresh independent calibration.
+
+- User-submitted A/B rescore hashes were
+  `2a128744bd3b8508d65555706fc7c8a1d4692c9f761b2d57d7fedc9ccb5698d5`
+  and `8c49d04b4636835942c929fa91e1c56d3e41c95ebc4ace70cd40759052209bcd`.
+- Both reused the retired 24 texts. Their scripts expanded all occurrences and
+  resolved overlaps before writing the CSVs, so the outputs are not valid
+  evidence of a fresh, direct, mutually blind human round.
+- Structure was clean, but exact file concordance was only `0.814229`: 238/268
+  A/B entities, 206 exact matches, and 3/24 exact rows. Per-type F1 was
+  EQUIPMENT `0.7835`, MODULE `0.8421`, TECH_SCHEME `0.4000`, and METRIC
+  `0.8889`.
+- This exceeds `0.80` numerically but misses the locked calibration target
+  `0.85`; more importantly, `formal_human_iaa` remains `null` because the
+  provenance and fresh-set requirements fail.
+- Diagnostic output is under
+  `/root/autodl-tmp/backup/p6/p6_qa1r_old24_v4_rescore_diagnostic_20260727_r1/`
+  and `backups/P6/p6_qa1r_old24_v4_rescore_diagnostic_20260727_r1/`.
+
+### P6-QA1R - Fresh Calibration Preparation
+
+Complete in AutoDL GPU-free mode; human annotation has not started.
+
+- Added `scripts/prepare_p6_qa1r_fresh_calibration.py` and four focused tests.
+  Together with three old-preparer regression tests, all seven passed remotely.
+- The locked old coordinator map excluded all 24 retired text hashes from the
+  50-row domain-dev file. Of the 26 unused rows, 20 were selected and six were
+  preserved as coordinator-only reserve.
+- Selection seed `2026072701` assigned five unique texts to each text-only risk
+  bucket: METRIC, TECH_SCHEME, EQUIPMENT_MODULE, and REPEATED_MENTION.
+- A/B seeds `2026072702/2026072703` produced different orders and new blind-ID
+  prefixes `P6FRESH-A/B`. All annotation fields are blank.
+- A/B delivery directories are physically separated and contain only the role's
+  blank CSV, role-specific instructions, locked v4 guideline, and delivery
+  manifest. Coordinator and reserve maps are outside both delivery directories.
+- A/B blank-sheet SHA256 are
+  `df8b99c99b83ecbe71b38b352d584fd1e0dc67df93ba4b1a9c347c14e984c89c`
+  and `b7e7df0c7331c1af379cda8e01c6287c8de2e644d82758e170ad3c26699c6ff1`.
+- Coordinator-map, reserve-map, and root-manifest SHA256 are respectively
+  `6a902ab6e2063b52c1d8103cf777ed25dc2def31371a3f26866f51d3d9664e18`,
+  `20fe19da3911ad56d478e23c32c021f6fb3c5b340bf784d72963b6d88f228c9b`,
+  and `bc404d4aeb6c2cab1c303ac063f9fdd43b950a587787cc222dcabbc4a9adba00`.
+- A full reload verified blank fields, A/B/map alignment, distinct order,
+  retired overlap 0, delivery separation, and the exact 24+20+6 partition.
+- Remote/local package:
+  `/root/autodl-tmp/backup/p6/p6_qa1r_fresh_calibration_20260727/` and
+  `backups/P6/p6_qa1r_fresh_calibration_20260727/`.
+- Full report: `docs/P6_QA1R_FRESH_CALIBRATION_PREPARATION_20260727.md`.
+- No test, prediction, prompt, model, vLLM, paid GPU, gold change, or annotation
+  activity occurred. Cost impact was 0 CNY.
+
 ## 3. Current Claim Boundary
 
 Result-to-claim verdict: `partial`.
@@ -402,6 +457,7 @@ Use these as the paper-facing evidence base:
 - `docs/P6_QA1R_GUIDELINE_V4_LOCK_RECORD_20260727.md`
 - `docs/P6_QA1R_ANNOTATOR_A_INSTRUCTIONS_V4_20260727.md`
 - `docs/P6_QA1R_ANNOTATOR_B_INSTRUCTIONS_V4_20260727.md`
+- `docs/P6_QA1R_FRESH_CALIBRATION_PREPARATION_20260727.md`
 - `findings.md`
 - `logs/p5_c_vs_d_fp_qualitative_20260725.json`
 - `logs/p5_c_vs_d_fp_qualitative_20260725.csv`
@@ -440,6 +496,10 @@ P0 paper repair already completed:
 - Guideline v4 is locked. Do not use the lock gate to generate or start a
   fresh calibration round; that requires
   `P6_QA1R_FRESH_CALIBRATION_PREP_APPROVED`.
+- The fresh preparation gate is now consumed. Do not distribute or start the
+  blank package until `P6_QA1R_FRESH_CALIBRATION_ANNOTATION_APPROVED` is
+  explicitly recorded. Then give A/B only their own complete delivery
+  directory; never send `coordinator_only` or the other role's directory.
 - Do not treat the current A/B completed files or their `0.5573` diagnostic as
   human IAA. Do not repair them into an adjudication input; independence was
   already lost through a shared generation script.
@@ -493,18 +553,19 @@ ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status -
 
 ## 7. Recommended Next Step
 
-Stop after the P6-QA1R guideline-v4 lock. The next data-quality step is fresh,
-unused non-test calibration preparation and requires explicit approval named:
+Stop after verified fresh-calibration preparation. The next data-quality step
+is two-real-human, mutually blind annotation of the prepared blank package and
+requires explicit approval named:
 
 ```text
-P6_QA1R_FRESH_CALIBRATION_PREP_APPROVED
+P6_QA1R_FRESH_CALIBRATION_ANNOTATION_APPROVED
 ```
 
-That later gate may prepare a fresh, unused non-test calibration set for
-another mutually blind independent round. It must not edit submitted labels,
-start human annotation, use frozen test, or authorize adjudication. Human
-annotation begins only after the blank package and protocol are verified and a
-separate bounded approval is recorded.
+That gate authorizes only distributing `annotator_a_delivery` to human A and
+`annotator_b_delivery` to human B, followed by independent completion of all 20
+rows. It does not authorize coordinator comparison before both files are
+returned and hash-locked, automatic label-writing scripts, frozen test,
+adjudication, gold changes, model calls, or re-evaluation.
 
 Fresh test re-annotation, adjudication, frozen-data changes, model calls, and
 re-evaluation remain later bounded steps.
@@ -535,6 +596,10 @@ currently allowed.
   with TECH_SCHEME F1 `0.3200`, MODULE F1 `0.5896`, and 29 repeated-mention
   reviews. Discuss it to improve v4, then use a fresh unused calibration set;
   never relabel the same 24 rows and call the new score independent agreement.
+- Reapplying v4 to those same retired 24 rows yielded clean file concordance
+  `0.8142`, but it remains invalid for fresh human calibration and exposed
+  TECH_SCHEME F1 `0.4000`. Familiar items plus scripts that expand mentions or
+  resolve overlaps cannot establish independent-human provenance.
 - Reconciliation found 119 events across 23/24 rows. The dominant fix is not a
   looser metric; it is an explicit inclusion/exclusion policy, object-versus-
   method decision order, evidence-based EQUIPMENT/MODULE role, alias role
