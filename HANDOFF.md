@@ -20,21 +20,29 @@ We are preparing a practical SCI-Q4-oriented applied/engineering paper about
 few-shot Chinese equipment-domain NER using a reproducible local-LLM extraction
 pipeline.
 
-Current task: **GPU-free paper writing and pre-submission preparation in
-Markdown**. `P6-QA1R` non-test calibration validation remains `blocked`, and
-the approved coordinator reconciliation is complete. The human locked
-guideline v4 on 2026-07-27 under `P6_QA1R_GUIDELINE_V4_LOCK_APPROVED` without
-changing or adjudicating submitted labels. A fresh 20-row non-test calibration
-package was then prepared and verified under
-`P6_QA1R_FRESH_CALIBRATION_PREP_APPROVED`. It remains completely blank; the
-human then approved `P6_QA1R_FRESH_CALIBRATION_ANNOTATION_APPROVED`. The two
-role-separated directories were completed by two humans, and the human
-coordinator explicitly confirmed their provenance. Validation under
-`P6_QA1R_FRESH_CALIBRATION_VALIDATION_APPROVED` is complete: strict fresh
-human-calibration F1 is exactly `0.8000`, with no structural errors. This meets
-the original minimum `>=0.80` but not the conservative v4 target `>=0.85`.
-The project is stopped before the result-policy decision, formal test
-re-annotation, adjudication, v2 freezing, or re-evaluation.
+Current task: **GPU-free manuscript refinement and pre-submission
+claim/evidence alignment in Markdown**. The immediate quality-control problem
+has been resolved for the current paper route. On 2026-07-27, after validation
+of the fresh two-human non-test calibration, the human explicitly accepted the
+original project minimum `>=0.80`, accepted the observed exact span+type
+micro-F1 of `0.8000` as passing, and instructed the project to close the
+experiment/QA issue and proceed to paper refinement.
+
+This decision must be recorded precisely:
+
+- `P6-QA1R` is a **human-accepted pass under the original `>=0.80` policy** for
+  entering manuscript refinement;
+- the automatic validator still says `blocked` only because locked guideline
+  v4 also introduced a more conservative target of `>=0.85`;
+- the valid result is **fresh two-human non-test calibration agreement**, not
+  frozen-test formal IAA;
+- the `0.8000` overall score has no margin, and `TECH_SCHEME` remains a serious
+  class-specific limitation (`F1=0.153846`).
+
+The experiment phase is therefore **closed for the current narrow SCI-Q4 NER
+submission route**, but the original full experimental plan is not complete.
+Only the bounded P5 `domain_test` A/B/C/D, K=5, seeds 42/43/44 block exists.
+Do not translate "ready to refine the paper" into "the full P5 matrix passed."
 
 Current editable paper draft:
 
@@ -47,7 +55,9 @@ Markdown unless the user explicitly asks otherwise.
 No paid GPU, vLLM launch, dry-run, model call, frozen-test prompt generation,
 further calibration editing/comparison, re-annotation, adjudication,
 frozen-data correction, re-evaluation, or new experiment is currently
-authorized. The fresh annotation and validation gates are consumed.
+authorized. The fresh annotation and validation gates are consumed. No formal
+test audit is required for the next manuscript-editing step and none is
+authorized by the acceptance decision.
 
 ## 2. What Is Already Completed
 
@@ -76,8 +86,10 @@ Complete.
 
 ### P2 - Self-Built Domain Data
 
-Structurally complete and frozen as version `v1`; independent human-gold quality
-evidence is not complete.
+Complete and frozen as version `v1` for the current experiment. Its quality
+evidence now includes a valid fresh two-human calibration on 20 previously
+unused non-test passages, but the frozen test itself was not independently
+double-annotated and has no formal test IAA.
 
 - 400 public equipment-domain candidates were collected:
   Baidu Baike 7, patent 84, CMNEE 309.
@@ -179,7 +191,9 @@ P5 paid run note:
 
 ### P6-QA0 - Frozen-Gold Audit Preparation
 
-Complete in AutoDL GPU-free mode; no human annotation has started.
+Complete in AutoDL GPU-free mode. At the end of this preparation step, no human
+annotation had started; the later QA2 submissions and their invalid provenance
+diagnosis are recorded below.
 
 - Added `scripts/prepare_p6_qa0_blind_annotation.py` and four focused unit
   tests. All tests passed remotely in GPU-free mode.
@@ -378,7 +392,9 @@ Complete and still invalid for fresh independent calibration.
 
 ### P6-QA1R - Fresh Calibration Preparation
 
-Complete in AutoDL GPU-free mode; human annotation has not started.
+Complete in AutoDL GPU-free mode. At the end of this preparation step, human
+annotation had not started; the later completed human files and validation are
+recorded in the next subsection.
 
 - Added `scripts/prepare_p6_qa1r_fresh_calibration.py` and four focused tests.
   Together with three old-preparer regression tests, all seven passed remotely.
@@ -409,15 +425,17 @@ Complete in AutoDL GPU-free mode; human annotation has not started.
   activity occurred. Cost impact was 0 CNY.
 - The human subsequently approved
   `P6_QA1R_FRESH_CALIBRATION_ANNOTATION_APPROVED` on 2026-07-27. Only the two
-  role-separated delivery directories may be distributed; coordinator
-  comparison remains unauthorized until both completed files are returned and
-  hash-locked.
+  role-separated delivery directories were distributed. Both completed files
+  were subsequently returned, hash-locked, and validated under the separate
+  validation gate described below.
 - Annotation start/return protocol:
   `docs/P6_QA1R_FRESH_CALIBRATION_ANNOTATION_START_20260727.md`.
 
 ### P6-QA1R - Fresh Human Calibration Validation
 
-Complete in AutoDL GPU-free mode; no labels were changed.
+Complete in AutoDL GPU-free mode; no labels were changed. The human has accepted
+this result as passing the original project minimum and has closed this QA issue
+for the current paper-writing route.
 
 - The coordinator explicitly confirmed that the final A/B files contain two
   human annotation results. Locked completed SHA256 are
@@ -431,6 +449,9 @@ Complete in AutoDL GPU-free mode; no labels were changed.
   and METRIC `1.000000`.
 - The original minimum `>=0.80` is met exactly. The conservative v4 target
   `>=0.85` is not met, so the automatic validator status is still `blocked`.
+- Human result-policy decision on 2026-07-27: accept `0.8000` under the original
+  minimum and proceed to manuscript refinement. This is a documented policy
+  acceptance, not a change to the measured result or validator output.
 - This is valid fresh human calibration agreement, not frozen-test formal IAA;
   `formal_test_iaa` remains `null`.
 - Final output:
@@ -451,10 +472,18 @@ Supported claim:
 > evidence preserves near-tied F1 and improves precision / reduces
 > false-positive entity predictions.
 
-This result statement is conditional on the current frozen `v1` labels. Until
-true double annotation and blind adjudication are complete, the paper must not
-claim independently human-annotated gold, valid human IAA, or a fully
-quality-controlled dataset contribution.
+This result statement is conditional on the current frozen `v1` labels. The
+paper may report the fresh two-human non-test calibration agreement exactly as
+performed: 20 previously unused non-test passages, exact span+type micro-F1
+`0.8000`, zero structural errors, and a major `TECH_SCHEME` limitation. It must
+not rename this number as frozen-test IAA, imply that all 170 frozen test rows
+were independently double-annotated, claim that all entity classes have good
+agreement, or describe the dataset as fully quality-controlled human gold.
+
+Safe dataset wording is: a small frozen equipment-domain dataset with a
+documented annotation workflow and an independent non-test human-calibration
+audit. Avoid stronger provenance language unless a later formal test audit and
+new frozen version actually exist.
 
 Not supported by current evidence:
 
@@ -538,6 +567,10 @@ P0 paper repair already completed:
 - Fresh A/B annotation and validation are complete. Never edit these submitted
   files and recompute them to improve `0.8000`; preserve all 15 disagreement
   rows. Do not call this calibration number frozen-test formal IAA.
+- The human has accepted the original `>=0.80` threshold for this submission
+  route. Do not reopen the threshold dispute or demand another calibration
+  round unless the human explicitly requests it or a target journal/reviewer
+  creates a new bounded requirement.
 - Do not treat the current A/B completed files or their `0.5573` diagnostic as
   human IAA. Do not repair them into an adjudication input; independence was
   already lost through a shared generation script.
@@ -547,6 +580,9 @@ P0 paper repair already completed:
 - Never overwrite frozen `v1`. Any corrected gold must be independently
   adjudicated, versioned as `v2`, re-frozen, and assigned new hashes.
 - Preserve negative and mixed results; do not rerun them away.
+- The scoped experiment package is closed for manuscript writing, but the full
+  P5 gate remains incomplete. Never write that all planned experiments or the
+  entire A..E-prime matrix passed.
 - The real AutoDL host/port/passwords live only in the user's local SSH config.
   Use only the alias `autodl-paper` in docs and commands.
 
@@ -558,7 +594,15 @@ Local:
 - Branch: `main`
 - Git remote: `https://github.com/QKY520/yinxin.git`
 - Git identity for this repo: `yly <714520833@qq.com>`
-- Calibration-validation commit:
+- Latest evidence commit before this handoff refresh:
+  `df6c46c p6: validate fresh human calibration`.
+- At the pre-edit status check, local `main` was 25 commits ahead of
+  `origin/main`. Five user-owned annotation helper scripts were untracked:
+  `p6_annotate_complete.py`, `p6_cal_b_annotate.py`,
+  `p6_cal_b_annotate_v4.py`, `p6_complete_annotate.py`, and
+  `p6_fresh_b_annotate.py`. Preserve them; do not execute, modify, delete, or
+  commit them unless the human explicitly requests it.
+- Earlier calibration-validation commit:
   `fcd1556 p6: validate blocked calibration round`.
 - QA1R diagnosis/calibration-prep commit:
   `f8162ce p6: prepare annotation agreement recovery`.
@@ -578,10 +622,11 @@ Remote:
 - Remote code: `/root/project`
 - Remote data/model/backup root: `/root/autodl-tmp`
 - Project venv: `/root/autodl-tmp/venvs/equipment-ie`
-- Current Git HEAD before manual QA0 sync: `863c701`; the remote worktree has
-  the final QA0 files copied from local because GitHub sync is unavailable.
-- Last verified mode: GPU-free/no-card (`No devices found`). Confirm again
-  before doing anything remote.
+- Read-only status verified on 2026-07-27: remote Git HEAD is `863c701`; the
+  remote worktree contains manually synced modified/untracked P6 files because
+  GitHub sync is unavailable. Do not clean or reset that worktree.
+- Last verified mode on 2026-07-27: GPU-free/no-card (`No devices were found`).
+  Confirm again before doing anything remote.
 
 Useful no-Python status command:
 
@@ -591,34 +636,45 @@ ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status -
 
 ## 7. Recommended Next Step
 
-The current decision is whether to accept the original minimum `0.80` and plan
-a formal test audit, or to retain the conservative v4 target `0.85` and perform
-new guideline/text work. The SCI-Q4/time-oriented recommendation is to accept
-the honestly reported minimum while explicitly retaining the TECH_SCHEME
-limitation, then prepare only a GPU-free formal-audit plan. A bounded approval
-for that route is:
+The threshold decision is complete. The next task is a focused, GPU-free edit
+of:
 
-```text
-P6_QA1R_ACCEPT_080_MINIMUM_AND_PLAN_FORMAL_AUDIT_APPROVED
-```
+`docs/EQUIPMENT_IE_PAPER_DRAFT_V3_REVIEW_POLISH_20260725.md`
 
-That gate would authorize planning only. It would not authorize reading or
-changing frozen test, generating model prompts, adjudication, re-scoring,
-model calls, or paid GPU.
+The next session should first inspect the manuscript against the verified P5
+and P6 evidence, then edit the Markdown draft only. The refinement pass should:
 
-Fresh test re-annotation, adjudication, frozen-data changes, model calls, and
-re-evaluation remain later bounded steps.
+1. keep the title, abstract, contributions, and conclusion limited to
+   low-label Chinese equipment-domain NER;
+2. add the fresh human-calibration protocol and exact `0.8000` result to the
+   dataset/quality section, including the low `TECH_SCHEME` F1 limitation;
+3. preserve all P5 numbers and describe C/D as an F1 near-tie: C has slightly
+   higher recall/F1, while D has higher precision and 55 fewer FP;
+4. remove or soften any implication of formal frozen-test IAA, fully
+   independently double-annotated gold, full IE/RE success, CoVe benefit,
+   public-benchmark generalization, K-scan robustness, a complete P5 matrix, or
+   statistical significance;
+5. finish terminology, table notes, limitations, references, and a
+   claim-to-evidence consistency check before English translation or journal
+   formatting.
 
-In parallel, GPU-free manuscript work may continue only with conservative
-wording: the current results are conditional on frozen `v1` labels, C and D are
-near-tied on F1, and no human-IAA or quality-controlled-human-gold claim is
-currently allowed.
+No new experiment or formal test audit is the default next step. Those are
+optional later supplements only if the human explicitly opens a new bounded
+gate or a concrete target journal/reviewer requires them. GPU-free Markdown
+editing is already within the approved current stage; paid or model-backed work
+is not.
 
 ## 8. Lessons Worth Remembering
 
 - The project is now paper-first, not experiment-first.
-- The experiment is basically complete only for the narrow domain NER claim; it
-  is not a complete full-matrix IE paper.
+- The experiment package is closed for the narrow domain NER submission claim;
+  it is not a completed full-matrix IE experiment.
+- The fresh human calibration solved the immediate `>=0.80` credibility gate
+  for proceeding with the paper. It did not create frozen-test formal IAA or
+  erase class-specific ambiguity.
+- Preserve both threshold facts: the original minimum was met exactly and the
+  human accepted it; the later conservative `0.85` target was not met and the
+  validator output must not be rewritten.
 - Structurally frozen data is not automatically publication-grade human gold.
   The `0.9909` pseudo-IAA must never be cited as human agreement.
 - True A/B annotation must start from blank text, remain mutually blind, and
@@ -643,6 +699,9 @@ currently allowed.
   with perfect METRIC and strong MODULE agreement, but TECH_SCHEME F1 remained
   only `0.1538`. Meeting the overall minimum does not erase this class-specific
   limitation or create formal-test IAA.
+- The coordinator explicitly attested that the final fresh A/B files are human
+  annotations. Use that accepted provenance; do not reopen the earlier
+  script-origin dispute for these final files.
 - Reconciliation found 119 events across 23/24 rows. The dominant fix is not a
   looser metric; it is an explicit inclusion/exclusion policy, object-versus-
   method decision order, evidence-based EQUIPMENT/MODULE role, alias role
@@ -666,6 +725,8 @@ currently allowed.
   needed; prefer cached/replay artifacts when they preserve comparisons.
 - DOCX output caused encoding/rendering trouble in this workflow. Use Markdown
   as the working manuscript format.
+- The current v3 Markdown draft predates the accepted fresh-calibration result;
+  it still needs an evidence-grounded dataset/quality update before submission.
 - Backups and hashes matter. Never leave the only copy of data/results on the
   AutoDL instance.
 - Every new paid action needs an explicit bounded human gate, even if it seems
