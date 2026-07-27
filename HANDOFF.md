@@ -22,11 +22,11 @@ pipeline.
 
 Current task: **GPU-free paper writing and pre-submission preparation in
 Markdown**. `P6-QA1R` non-test calibration validation remains `blocked`, and
-the approved coordinator reconciliation is now complete. A guideline v4 draft
-was prepared from all 24 rows without changing or adjudicating submitted
-labels. The project is stopped before human approval/locking of v4, a fresh
-independent calibration round, test re-annotation, adjudication, v2 freezing,
-or re-evaluation.
+the approved coordinator reconciliation is complete. The human locked
+guideline v4 on 2026-07-27 under `P6_QA1R_GUIDELINE_V4_LOCK_APPROVED` without
+changing or adjudicating submitted labels. The project is stopped before fresh
+calibration preparation, a new independent calibration round, test
+re-annotation, adjudication, v2 freezing, or re-evaluation.
 
 Current editable paper draft:
 
@@ -37,9 +37,10 @@ because of rendering/encoding problems. Future writing defaults to UTF-8
 Markdown unless the user explicitly asks otherwise.
 
 No paid GPU, vLLM launch, dry-run, model call, frozen-test prompt generation,
-v4-based fresh calibration preparation, further annotation, re-annotation,
+fresh calibration preparation, further annotation, re-annotation,
 adjudication, frozen-data correction, re-evaluation, or new experiment is
-currently authorized. The guideline-reconciliation gate is consumed.
+currently authorized. The reconciliation and guideline-lock gates are
+consumed.
 
 ## 2. What Is Already Completed
 
@@ -295,7 +296,7 @@ Complete and blocked in AutoDL GPU-free mode.
 
 ### P6-QA1R - Guideline Reconciliation
 
-Complete in AutoDL GPU-free mode; guideline v4 is a draft awaiting human lock.
+Complete in AutoDL GPU-free mode; guideline v4 is locked.
 
 - Added a locked, read-only reconciliation analyzer and six focused tests:
   - `scripts/analyze_p6_qa1r_calibration_reconciliation.py`;
@@ -308,9 +309,22 @@ Complete in AutoDL GPU-free mode; guideline v4 is a draft awaiting human lock.
 - Same-boundary type directions were `EQUIPMENT->MODULE` 15,
   `TECH_SCHEME->EQUIPMENT` 8, and `TECH_SCHEME->MODULE` 3. Directions describe
   file differences, not gold.
-- Prepared:
+- Prepared and reconciled:
   - `docs/P6_QA1R_GUIDELINE_RECONCILIATION_20260727.md`;
-  - `docs/P6_QA1R_ANNOTATION_GUIDELINE_V4_DRAFT_20260727.md`.
+  - `docs/P6_QA1R_ANNOTATION_GUIDELINE_V4_LOCKED_20260727.md`;
+  - `docs/P6_QA1R_GUIDELINE_V4_LOCK_RECORD_20260727.md`.
+- The human approved `P6_QA1R_GUIDELINE_V4_LOCK_APPROVED` on 2026-07-27.
+  The locked guide SHA256 is
+  `a15289cd0f45bc23a0ce9d981db24745b814cfb94c6b03687e60a13b81b6ca80`.
+  The lock-record SHA256 is
+  `870ae640ad23070ecce63ae475c52da8f93081cb6a203a33908a65071a54d500`.
+  Locking changed only version/status and future-gate wording; annotation
+  decision rules were not substantively rewritten.
+- Lock artifacts are mirrored under
+  `/root/autodl-tmp/backup/p6/p6_qa1r_guideline_v4_lock_20260727/` and
+  `backups/P6/p6_qa1r_guideline_v4_lock_20260727/`.
+- No calibration sheet, label, gold, prediction, prompt, or model output was
+  created or changed. The server remained GPU-free; cost impact was 0 CNY.
 - Final coordinator-only output:
   `/root/autodl-tmp/backup/p6/p6_qa1r_guideline_reconciliation_20260727_r2/`
   and `backups/P6/p6_qa1r_guideline_reconciliation_20260727_r2/`.
@@ -371,7 +385,8 @@ Use these as the paper-facing evidence base:
 - `docs/P6_QA1R_DIAGNOSIS_AND_CALIBRATION_20260726.md`
 - `docs/P6_QA1R_CALIBRATION_VALIDATION_20260727.md`
 - `docs/P6_QA1R_GUIDELINE_RECONCILIATION_20260727.md`
-- `docs/P6_QA1R_ANNOTATION_GUIDELINE_V4_DRAFT_20260727.md`
+- `docs/P6_QA1R_ANNOTATION_GUIDELINE_V4_LOCKED_20260727.md`
+- `docs/P6_QA1R_GUIDELINE_V4_LOCK_RECORD_20260727.md`
 - `findings.md`
 - `logs/p5_c_vs_d_fp_qualitative_20260725.json`
 - `logs/p5_c_vs_d_fp_qualitative_20260725.csv`
@@ -407,9 +422,9 @@ P0 paper repair already completed:
 - Do not distribute any coordinator map to annotators. The prior 24-row human
   calibration gate is consumed; do not edit or rescore those same rows as a new
   independent round.
-- Guideline v4 is only a draft until the human explicitly locks it. Do not use
-  it to generate or start a fresh calibration round under the reconciliation
-  gate.
+- Guideline v4 is locked. Do not use the lock gate to generate or start a
+  fresh calibration round; that requires
+  `P6_QA1R_FRESH_CALIBRATION_PREP_APPROVED`.
 - Do not treat the current A/B completed files or their `0.5573` diagnostic as
   human IAA. Do not repair them into an adjudication input; independence was
   already lost through a shared generation script.
@@ -463,19 +478,18 @@ ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status -
 
 ## 7. Recommended Next Step
 
-Stop after P6-QA1R guideline reconciliation. The next data-quality step is the
-human schema/guideline decision and requires explicit approval named:
+Stop after the P6-QA1R guideline-v4 lock. The next data-quality step is fresh,
+unused non-test calibration preparation and requires explicit approval named:
 
 ```text
-P6_QA1R_GUIDELINE_V4_LOCK_APPROVED
+P6_QA1R_FRESH_CALIBRATION_PREP_APPROVED
 ```
 
-That gate should authorize only accepting
-`docs/P6_QA1R_ANNOTATION_GUIDELINE_V4_DRAFT_20260727.md` as the locked
-calibration guideline. It must not authorize editing submitted labels or
-generating a new calibration set. After v4 is locked, a later bounded gate
-`P6_QA1R_FRESH_CALIBRATION_PREP_APPROVED` may prepare a fresh, unused non-test
-calibration set for another mutually blind independent round.
+That later gate may prepare a fresh, unused non-test calibration set for
+another mutually blind independent round. It must not edit submitted labels,
+start human annotation, use frozen test, or authorize adjudication. Human
+annotation begins only after the blank package and protocol are verified and a
+separate bounded approval is recorded.
 
 Fresh test re-annotation, adjudication, frozen-data changes, model calls, and
 re-evaluation remain later bounded steps.

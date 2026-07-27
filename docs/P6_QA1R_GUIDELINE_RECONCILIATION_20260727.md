@@ -1,9 +1,10 @@
-# P6-QA1R 校准分歧复盘与指南 v4 提案
+# P6-QA1R 校准分歧复盘与指南 v4 锁定说明
 
 日期：2026-07-27
 
-状态：`P6_QA1R_GUIDELINE_RECONCILIATION_APPROVED` 已执行；指南 v4 仍为草案，
-等待负责人锁定。当前 24 条校准标签未修改、未裁决、未重新计分。
+状态：`P6_QA1R_GUIDELINE_RECONCILIATION_APPROVED` 已执行；负责人于
+2026-07-27 通过 `P6_QA1R_GUIDELINE_V4_LOCK_APPROVED` 锁定指南 v4。当前
+24 条校准标签仍未修改、未裁决、未重新计分。
 
 ## 1. 范围与保护
 
@@ -176,16 +177,22 @@
 ## 6. 本门禁结论与下一步
 
 当前 24 条已退役为训练/复盘材料。它们不得在协商后修改并重新作为独立校准计分。
-完整规则提案见：
+锁定前草案 SHA256：
 
-`docs/P6_QA1R_ANNOTATION_GUIDELINE_V4_DRAFT_20260727.md`
+`7b9c9b89b280ad03f90799d1130c1826bc7508544d6c6b08ed99d4de423af38e`
 
-下一步需要负责人明确审批：
+唯一生效的锁定版见：
 
-```text
-P6_QA1R_GUIDELINE_V4_LOCK_APPROVED
-```
+`docs/P6_QA1R_ANNOTATION_GUIDELINE_V4_LOCKED_20260727.md`
 
-该审批只锁定 v4 规则，不生成新校准表。v4 锁定后，另行申请
-`P6_QA1R_FRESH_CALIBRATION_PREP_APPROVED`，从未使用的非 test 文本准备新一轮空白
-互盲材料。
+锁定版 SHA256：
+
+`a15289cd0f45bc23a0ce9d981db24745b814cfb94c6b03687e60a13b81b6ca80`
+
+锁定记录：`docs/P6_QA1R_GUIDELINE_V4_LOCK_RECORD_20260727.md`，SHA256：
+
+`870ae640ad23070ecce63ae475c52da8f93081cb6a203a33908a65071a54d500`
+
+本次锁定只改变文档的版本状态和后续门禁表述，没有改写实体判定规则，也没有生成
+新校准表。下一步须另行申请 `P6_QA1R_FRESH_CALIBRATION_PREP_APPROVED`，才能从
+未使用的非 test 文本准备新一轮空白互盲材料。
