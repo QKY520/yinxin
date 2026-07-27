@@ -325,6 +325,19 @@ Complete in AutoDL GPU-free mode; guideline v4 is locked.
   `backups/P6/p6_qa1r_guideline_v4_lock_20260727/`.
 - No calibration sheet, label, gold, prediction, prompt, or model output was
   created or changed. The server remained GPU-free; cost impact was 0 CNY.
+- Prepared separate role-specific reading/operation instructions for the two
+  future annotators:
+  - `docs/P6_QA1R_ANNOTATOR_A_INSTRUCTIONS_V4_20260727.md`;
+  - `docs/P6_QA1R_ANNOTATOR_B_INSTRUCTIONS_V4_20260727.md`.
+  A/B SHA256 are respectively
+  `5f0cf56819a10e76e0a2639257b8c051af213e4ee2dfe6accdbf077509e9b136`
+  and
+  `432acf0f19315e9eb089726126c33aabc9e7830d2fe7ea243078c4f3ea180c65`.
+  These files contain no calibration text or answer and do not authorize
+  calibration preparation or human annotation.
+- Instruction backups are under
+  `/root/autodl-tmp/backup/p6/p6_qa1r_annotator_instructions_v4_20260727/`
+  and `backups/P6/p6_qa1r_annotator_instructions_v4_20260727/`.
 - Final coordinator-only output:
   `/root/autodl-tmp/backup/p6/p6_qa1r_guideline_reconciliation_20260727_r2/`
   and `backups/P6/p6_qa1r_guideline_reconciliation_20260727_r2/`.
@@ -387,6 +400,8 @@ Use these as the paper-facing evidence base:
 - `docs/P6_QA1R_GUIDELINE_RECONCILIATION_20260727.md`
 - `docs/P6_QA1R_ANNOTATION_GUIDELINE_V4_LOCKED_20260727.md`
 - `docs/P6_QA1R_GUIDELINE_V4_LOCK_RECORD_20260727.md`
+- `docs/P6_QA1R_ANNOTATOR_A_INSTRUCTIONS_V4_20260727.md`
+- `docs/P6_QA1R_ANNOTATOR_B_INSTRUCTIONS_V4_20260727.md`
 - `findings.md`
 - `logs/p5_c_vs_d_fp_qualitative_20260725.json`
 - `logs/p5_c_vs_d_fp_qualitative_20260725.csv`
