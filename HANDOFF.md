@@ -28,10 +28,13 @@ changing or adjudicating submitted labels. A fresh 20-row non-test calibration
 package was then prepared and verified under
 `P6_QA1R_FRESH_CALIBRATION_PREP_APPROVED`. It remains completely blank; the
 human then approved `P6_QA1R_FRESH_CALIBRATION_ANNOTATION_APPROVED`. The two
-role-separated directories may now be given to two different humans. The
-project is waiting for both independent completed files and remains stopped
-before coordinator comparison, validation, test re-annotation, adjudication,
-v2 freezing, or re-evaluation.
+role-separated directories were completed by two humans, and the human
+coordinator explicitly confirmed their provenance. Validation under
+`P6_QA1R_FRESH_CALIBRATION_VALIDATION_APPROVED` is complete: strict fresh
+human-calibration F1 is exactly `0.8000`, with no structural errors. This meets
+the original minimum `>=0.80` but not the conservative v4 target `>=0.85`.
+The project is stopped before the result-policy decision, formal test
+re-annotation, adjudication, v2 freezing, or re-evaluation.
 
 Current editable paper draft:
 
@@ -42,9 +45,9 @@ because of rendering/encoding problems. Future writing defaults to UTF-8
 Markdown unless the user explicitly asks otherwise.
 
 No paid GPU, vLLM launch, dry-run, model call, frozen-test prompt generation,
-coordinator comparison/validation, re-annotation, adjudication, frozen-data
-correction, re-evaluation, or new experiment is currently authorized. Only the
-two-human completion of the already locked fresh A/B blank sheets is active.
+further calibration editing/comparison, re-annotation, adjudication,
+frozen-data correction, re-evaluation, or new experiment is currently
+authorized. The fresh annotation and validation gates are consumed.
 
 ## 2. What Is Already Completed
 
@@ -412,6 +415,31 @@ Complete in AutoDL GPU-free mode; human annotation has not started.
 - Annotation start/return protocol:
   `docs/P6_QA1R_FRESH_CALIBRATION_ANNOTATION_START_20260727.md`.
 
+### P6-QA1R - Fresh Human Calibration Validation
+
+Complete in AutoDL GPU-free mode; no labels were changed.
+
+- The coordinator explicitly confirmed that the final A/B files contain two
+  human annotation results. Locked completed SHA256 are
+  `6906142d5894c3a4f1332bed326258b4f9c35958baa17f8e8475339b435f8877`
+  and `40428a8ed642685dd7940c60e3dc08af929dcaa4e71c0b7530e89eaa7dbb732e`.
+- All 20 pairs passed structure: zero hard errors, zero blocking reviews, and
+  all four types covered by both annotators.
+- A/B entities were 175/220 with 158 exact matches. Precision/recall/F1 were
+  `0.718182/0.902857/0.800000`; 5/20 rows were exactly equal and 15 disagreed.
+- Per-type F1: EQUIPMENT `0.728261`, MODULE `0.898876`, TECH_SCHEME `0.153846`,
+  and METRIC `1.000000`.
+- The original minimum `>=0.80` is met exactly. The conservative v4 target
+  `>=0.85` is not met, so the automatic validator status is still `blocked`.
+- This is valid fresh human calibration agreement, not frozen-test formal IAA;
+  `formal_test_iaa` remains `null`.
+- Final output:
+  `/root/autodl-tmp/backup/p6/p6_qa1r_fresh_calibration_validation_20260727_r2/`
+  and `backups/P6/p6_qa1r_fresh_calibration_validation_20260727_r2/`.
+- Full report: `docs/P6_QA1R_FRESH_CALIBRATION_VALIDATION_20260727.md`.
+- No test/gold/prediction/model activity occurred; frozen hashes remained
+  unchanged and cost impact was 0 CNY.
+
 ## 3. Current Claim Boundary
 
 Result-to-claim verdict: `partial`.
@@ -468,6 +496,7 @@ Use these as the paper-facing evidence base:
 - `docs/P6_QA1R_ANNOTATOR_B_INSTRUCTIONS_V4_20260727.md`
 - `docs/P6_QA1R_FRESH_CALIBRATION_PREPARATION_20260727.md`
 - `docs/P6_QA1R_FRESH_CALIBRATION_ANNOTATION_START_20260727.md`
+- `docs/P6_QA1R_FRESH_CALIBRATION_VALIDATION_20260727.md`
 - `findings.md`
 - `logs/p5_c_vs_d_fp_qualitative_20260725.json`
 - `logs/p5_c_vs_d_fp_qualitative_20260725.csv`
@@ -506,10 +535,9 @@ P0 paper repair already completed:
 - Guideline v4 is locked. Do not use the lock gate to generate or start a
   fresh calibration round; that requires
   `P6_QA1R_FRESH_CALIBRATION_PREP_APPROVED`.
-- `P6_QA1R_FRESH_CALIBRATION_ANNOTATION_APPROVED` is recorded. Give A/B only
-  their own complete delivery directory; never send `coordinator_only`, the
-  root package, or the other role's directory. Do not compare, validate, or
-  report a score until both completed files are returned and hash-locked.
+- Fresh A/B annotation and validation are complete. Never edit these submitted
+  files and recompute them to improve `0.8000`; preserve all 15 disagreement
+  rows. Do not call this calibration number frozen-test formal IAA.
 - Do not treat the current A/B completed files or their `0.5573` diagnostic as
   human IAA. Do not repair them into an adjudication input; independence was
   already lost through a shared generation script.
@@ -563,22 +591,20 @@ ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status -
 
 ## 7. Recommended Next Step
 
-The current step is human-only: give `annotator_a_delivery` to human A and
-`annotator_b_delivery` to a different human B, then wait for both independently
-completed 20-row files. Do not run coordinator comparison while either person
-is still working.
-
-After both completed files are returned and their SHA256 values are locked, the
-next coordinator step requires explicit approval named:
+The current decision is whether to accept the original minimum `0.80` and plan
+a formal test audit, or to retain the conservative v4 target `0.85` and perform
+new guideline/text work. The SCI-Q4/time-oriented recommendation is to accept
+the honestly reported minimum while explicitly retaining the TECH_SCHEME
+limitation, then prepare only a GPU-free formal-audit plan. A bounded approval
+for that route is:
 
 ```text
-P6_QA1R_FRESH_CALIBRATION_VALIDATION_APPROVED
+P6_QA1R_ACCEPT_080_MINIMUM_AND_PLAN_FORMAL_AUDIT_APPROVED
 ```
 
-That later gate authorizes only locked-input structure validation and exact
-span+type file concordance in AutoDL GPU-free mode. It does not authorize
-label repair, a favorable rerun, formal test, adjudication, gold changes, model
-calls, or re-evaluation.
+That gate would authorize planning only. It would not authorize reading or
+changing frozen test, generating model prompts, adjudication, re-scoring,
+model calls, or paid GPU.
 
 Fresh test re-annotation, adjudication, frozen-data changes, model calls, and
 re-evaluation remain later bounded steps.
@@ -613,6 +639,10 @@ currently allowed.
   `0.8142`, but it remains invalid for fresh human calibration and exposed
   TECH_SCHEME F1 `0.4000`. Familiar items plus scripts that expand mentions or
   resolve overlaps cannot establish independent-human provenance.
+- The genuinely fresh 20-row human calibration reached exact micro-F1 `0.8000`
+  with perfect METRIC and strong MODULE agreement, but TECH_SCHEME F1 remained
+  only `0.1538`. Meeting the overall minimum does not erase this class-specific
+  limitation or create formal-test IAA.
 - Reconciliation found 119 events across 23/24 rows. The dominant fix is not a
   looser metric; it is an explicit inclusion/exclusion policy, object-versus-
   method decision order, evidence-based EQUIPMENT/MODULE role, alias role
