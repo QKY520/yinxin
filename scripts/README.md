@@ -127,3 +127,19 @@ not read old dev gold, frozen test, predictions, prompts, or models; it never
 repairs labels and cannot establish independent human provenance. Existing
 output directories are refused. The 2026-07-27 result is `blocked`; see
 `docs/P6_QA1R_CALIBRATION_VALIDATION_20260727.md`.
+
+P6-QA1R guideline-reconciliation analysis (AutoDL GPU-free only):
+
+```bash
+cd /root/project
+source /root/venv/bin/activate
+python scripts/analyze_p6_qa1r_calibration_reconciliation.py
+```
+
+This locks the submitted calibration A/B files, coordinator map, and final
+validation report. It classifies all 24 rows order-insensitively into type,
+boundary, repeated-mention, and unmatched-scope signals, then writes
+coordinator-only summary/event/row artifacts. It does not change the submitted
+labels, adjudicate gold, read existing dev/test gold or predictions, or prepare
+a new calibration set. The final output directory is the `_r2` directory named
+in `docs/P6_QA1R_GUIDELINE_RECONCILIATION_20260727.md`.
