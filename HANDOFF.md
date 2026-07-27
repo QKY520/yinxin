@@ -27,8 +27,11 @@ guideline v4 on 2026-07-27 under `P6_QA1R_GUIDELINE_V4_LOCK_APPROVED` without
 changing or adjudicating submitted labels. A fresh 20-row non-test calibration
 package was then prepared and verified under
 `P6_QA1R_FRESH_CALIBRATION_PREP_APPROVED`. It remains completely blank; the
-project is stopped before human annotation, comparison, test re-annotation,
-adjudication, v2 freezing, or re-evaluation.
+human then approved `P6_QA1R_FRESH_CALIBRATION_ANNOTATION_APPROVED`. The two
+role-separated directories may now be given to two different humans. The
+project is waiting for both independent completed files and remains stopped
+before coordinator comparison, validation, test re-annotation, adjudication,
+v2 freezing, or re-evaluation.
 
 Current editable paper draft:
 
@@ -39,10 +42,9 @@ because of rendering/encoding problems. Future writing defaults to UTF-8
 Markdown unless the user explicitly asks otherwise.
 
 No paid GPU, vLLM launch, dry-run, model call, frozen-test prompt generation,
-human calibration annotation, comparison, re-annotation, adjudication,
-frozen-data correction, re-evaluation, or new experiment is currently
-authorized. The reconciliation, guideline-lock, and fresh-preparation gates are
-consumed.
+coordinator comparison/validation, re-annotation, adjudication, frozen-data
+correction, re-evaluation, or new experiment is currently authorized. Only the
+two-human completion of the already locked fresh A/B blank sheets is active.
 
 ## 2. What Is Already Completed
 
@@ -402,6 +404,13 @@ Complete in AutoDL GPU-free mode; human annotation has not started.
 - Full report: `docs/P6_QA1R_FRESH_CALIBRATION_PREPARATION_20260727.md`.
 - No test, prediction, prompt, model, vLLM, paid GPU, gold change, or annotation
   activity occurred. Cost impact was 0 CNY.
+- The human subsequently approved
+  `P6_QA1R_FRESH_CALIBRATION_ANNOTATION_APPROVED` on 2026-07-27. Only the two
+  role-separated delivery directories may be distributed; coordinator
+  comparison remains unauthorized until both completed files are returned and
+  hash-locked.
+- Annotation start/return protocol:
+  `docs/P6_QA1R_FRESH_CALIBRATION_ANNOTATION_START_20260727.md`.
 
 ## 3. Current Claim Boundary
 
@@ -458,6 +467,7 @@ Use these as the paper-facing evidence base:
 - `docs/P6_QA1R_ANNOTATOR_A_INSTRUCTIONS_V4_20260727.md`
 - `docs/P6_QA1R_ANNOTATOR_B_INSTRUCTIONS_V4_20260727.md`
 - `docs/P6_QA1R_FRESH_CALIBRATION_PREPARATION_20260727.md`
+- `docs/P6_QA1R_FRESH_CALIBRATION_ANNOTATION_START_20260727.md`
 - `findings.md`
 - `logs/p5_c_vs_d_fp_qualitative_20260725.json`
 - `logs/p5_c_vs_d_fp_qualitative_20260725.csv`
@@ -496,10 +506,10 @@ P0 paper repair already completed:
 - Guideline v4 is locked. Do not use the lock gate to generate or start a
   fresh calibration round; that requires
   `P6_QA1R_FRESH_CALIBRATION_PREP_APPROVED`.
-- The fresh preparation gate is now consumed. Do not distribute or start the
-  blank package until `P6_QA1R_FRESH_CALIBRATION_ANNOTATION_APPROVED` is
-  explicitly recorded. Then give A/B only their own complete delivery
-  directory; never send `coordinator_only` or the other role's directory.
+- `P6_QA1R_FRESH_CALIBRATION_ANNOTATION_APPROVED` is recorded. Give A/B only
+  their own complete delivery directory; never send `coordinator_only`, the
+  root package, or the other role's directory. Do not compare, validate, or
+  report a score until both completed files are returned and hash-locked.
 - Do not treat the current A/B completed files or their `0.5573` diagnostic as
   human IAA. Do not repair them into an adjudication input; independence was
   already lost through a shared generation script.
@@ -553,19 +563,22 @@ ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status -
 
 ## 7. Recommended Next Step
 
-Stop after verified fresh-calibration preparation. The next data-quality step
-is two-real-human, mutually blind annotation of the prepared blank package and
-requires explicit approval named:
+The current step is human-only: give `annotator_a_delivery` to human A and
+`annotator_b_delivery` to a different human B, then wait for both independently
+completed 20-row files. Do not run coordinator comparison while either person
+is still working.
+
+After both completed files are returned and their SHA256 values are locked, the
+next coordinator step requires explicit approval named:
 
 ```text
-P6_QA1R_FRESH_CALIBRATION_ANNOTATION_APPROVED
+P6_QA1R_FRESH_CALIBRATION_VALIDATION_APPROVED
 ```
 
-That gate authorizes only distributing `annotator_a_delivery` to human A and
-`annotator_b_delivery` to human B, followed by independent completion of all 20
-rows. It does not authorize coordinator comparison before both files are
-returned and hash-locked, automatic label-writing scripts, frozen test,
-adjudication, gold changes, model calls, or re-evaluation.
+That later gate authorizes only locked-input structure validation and exact
+span+type file concordance in AutoDL GPU-free mode. It does not authorize
+label repair, a favorable rerun, formal test, adjudication, gold changes, model
+calls, or re-evaluation.
 
 Fresh test re-annotation, adjudication, frozen-data changes, model calls, and
 re-evaluation remain later bounded steps.
