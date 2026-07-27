@@ -6,9 +6,9 @@ Workspace: `D:\yinsir`
 This file is the latest operational state for a new Codex/agent session with no
 chat history. Read these files before doing any project work:
 
-1. `AGENTS.md` - durable repository, safety, and collaboration rules.
-2. `AGENT_PLAYBOOK.md` - authoritative machine execution contract.
-3. `实验实施指导文档_综合版.md` - human-facing rationale and operational guide.
+1. `AGENT_PLAYBOOK.md` - authoritative machine execution contract.
+2. `实验实施指导文档_综合版.md` - human-facing rationale and operational guide.
+3. `AGENTS.md` - durable repository, safety, and collaboration rules.
 4. This `HANDOFF.md` - live status and next step.
 
 If older docs conflict with this file on status chronology, this file is newer.
@@ -25,13 +25,19 @@ We are preparing a practical SCI-Q4-oriented applied/engineering paper about
 few-shot Chinese equipment-domain NER using a reproducible local-LLM extraction
 pipeline.
 
-Current task: **GPU-free manuscript refinement and pre-submission
-claim/evidence alignment in Markdown**. The immediate quality-control problem
-has been resolved for the current paper route. On 2026-07-27, after validation
-of the fresh two-human non-test calibration, the human explicitly accepted the
-original project minimum `>=0.80`, accepted the observed exact span+type
-micro-F1 of `0.8000` as passing, and instructed the project to close the
-experiment/QA issue and proceed to paper refinement.
+Completed current step (2026-07-27): **GPU-free manuscript refinement and
+pre-submission claim/evidence alignment in Markdown**. The approved pass audited
+the title, abstract, contributions, dataset, method, experimental scope,
+results, discussion, limitations, and conclusion of the current Chinese draft.
+It incorporated the fresh two-human non-test calibration, restored the full
+precision/recall/F1/FP values for all A/B/C/D rows, and made the unsupported
+claim boundary explicit throughout the paper. The immediate quality-control
+and first manuscript-refinement step is closed for the current paper route.
+
+On 2026-07-27, after validation of the fresh two-human non-test calibration,
+the human explicitly accepted the original project minimum `>=0.80`, accepted
+the observed exact span+type micro-F1 of `0.8000` as passing, and instructed
+the project to close the experiment/QA issue and proceed to paper refinement.
 
 This decision must be recorded precisely:
 
@@ -52,6 +58,11 @@ Do not translate "ready to refine the paper" into "the full P5 matrix passed."
 Current editable paper draft:
 
 - `docs/EQUIPMENT_IE_PAPER_DRAFT_V3_REVIEW_POLISH_20260725.md`
+
+The next step requires a new human confirmation: review the refined Chinese
+draft and decide whether to proceed to reference verification, target-journal
+formatting, or English conversion. None of those follow-up branches is implied
+by this completed Markdown pass.
 
 All generated `.docx` files were deleted on 2026-07-25 at the user's request
 because of rendering/encoding problems. Future writing defaults to UTF-8
@@ -466,6 +477,37 @@ for the current paper-writing route.
 - No test/gold/prediction/model activity occurred; frozen hashes remained
   unchanged and cost impact was 0 CNY.
 
+### GPU-Free Markdown Manuscript Refinement
+
+Complete on 2026-07-27 under the human-approved paper-refinement gate.
+
+- Edited only
+  `docs/EQUIPMENT_IE_PAPER_DRAFT_V3_REVIEW_POLISH_20260725.md` and this
+  `HANDOFF.md`; the five user-owned untracked P6 helper scripts were preserved
+  without execution or modification.
+- Added the 400-candidate construction summary, 30/50/170 frozen split,
+  leakage controls, and the explicit absence of full frozen-test double
+  annotation/formal IAA.
+- Added the fresh two-human non-test calibration protocol and complete result:
+  20/20 structurally valid pairs, 175/220 entities, 158 exact matches,
+  P/R/F1 `0.718182/0.902857/0.800000`, and per-type F1 values of `0.728261`,
+  `0.898876`, `0.153846`, and `1.000000` for
+  EQUIPMENT/MODULE/TECH_SCHEME/METRIC.
+- Recorded that `0.8000` exactly meets the human-accepted original `>=0.80`
+  minimum but misses the later conservative `>=0.85` target, is not
+  frozen-test formal IAA, and leaves `TECH_SCHEME` as a major limitation.
+- Restored six-decimal P5 precision/recall/F1 values and retained all FP means
+  and standard deviations. The paper consistently describes C/D as an F1
+  near-tie: C is marginally higher in recall/F1; D is higher in precision and
+  has 55.0 fewer FP on average.
+- Removed "significantly" as a positive result claim and explicitly excludes
+  RE, CoVe, public-benchmark generalization, K-scan robustness,
+  statistical significance, and full-matrix completion from current claims.
+- Document-only verification checked 31 required evidence literals, all clean
+  F1/FP deltas, the 181/126 qualitative FP accounting and category sum, and
+  `git diff --check`. No Python, frozen-test read, SSH job, model/API, dry-run,
+  vLLM, GPU, or new experiment was used. Paid-GPU cost impact: 0 CNY.
+
 ## 3. Current Claim Boundary
 
 Result-to-claim verdict: `partial`.
@@ -599,10 +641,11 @@ Local:
 - Branch: `main`
 - Git remote: `https://github.com/QKY520/yinxin.git`
 - Git identity for this repo: `yly <714520833@qq.com>`
-- Latest evidence commit before this handoff refresh:
-  `df6c46c p6: validate fresh human calibration`.
-- Before the four-document synchronization, local `main` was 26 commits ahead of
-  `origin/main`. Five user-owned annotation helper scripts were untracked:
+- Latest completed guidance commit before the manuscript-refinement pass:
+  `87d2e8c docs: synchronize paper-stage project guidance`.
+- At the start of the manuscript-refinement pass, local `main` was 27 commits
+  ahead of `origin/main`. Five user-owned annotation helper scripts were
+  untracked:
   `p6_annotate_complete.py`, `p6_cal_b_annotate.py`,
   `p6_cal_b_annotate_v4.py`, `p6_complete_annotate.py`, and
   `p6_fresh_b_annotate.py`. Preserve them; do not execute, modify, delete, or
@@ -641,33 +684,18 @@ ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status -
 
 ## 7. Recommended Next Step
 
-The threshold decision is complete. The next task is a focused, GPU-free edit
-of:
+The threshold decision and first focused Markdown refinement are complete. The
+next human-gated action is to read the refined Chinese draft and choose one
+bounded continuation: bibliographic/reference verification, target-journal
+selection and formatting, or English manuscript conversion. The draft still
+uses a "reference candidates" list rather than submission-ready bibliographic
+entries, so reference verification should occur before final formatting.
 
-`docs/EQUIPMENT_IE_PAPER_DRAFT_V3_REVIEW_POLISH_20260725.md`
-
-The next session should first inspect the manuscript against the verified P5
-and P6 evidence, then edit the Markdown draft only. The refinement pass should:
-
-1. keep the title, abstract, contributions, and conclusion limited to
-   low-label Chinese equipment-domain NER;
-2. add the fresh human-calibration protocol and exact `0.8000` result to the
-   dataset/quality section, including the low `TECH_SCHEME` F1 limitation;
-3. preserve all P5 numbers and describe C/D as an F1 near-tie: C has slightly
-   higher recall/F1, while D has higher precision and 55 fewer FP;
-4. remove or soften any implication of formal frozen-test IAA, fully
-   independently double-annotated gold, full IE/RE success, CoVe benefit,
-   public-benchmark generalization, K-scan robustness, a complete P5 matrix, or
-   statistical significance;
-5. finish terminology, table notes, limitations, references, and a
-   claim-to-evidence consistency check before English translation or journal
-   formatting.
-
-No new experiment or formal test audit is the default next step. Those are
-optional later supplements only if the human explicitly opens a new bounded
-gate or a concrete target journal/reviewer requires them. GPU-free Markdown
-editing is already within the approved current stage; paid or model-backed work
-is not.
+No new experiment or formal test audit is the default next step. Those remain
+optional supplements only if the human explicitly opens a new bounded gate or
+a concrete target journal/reviewer requires them. Paid GPU, model-backed
+writing/review, external API use, and secondary-agent review remain
+unauthorized.
 
 ### Full-Matrix Feasibility
 
@@ -751,8 +779,10 @@ delay the first manuscript-refinement pass.
   needed; prefer cached/replay artifacts when they preserve comparisons.
 - DOCX output caused encoding/rendering trouble in this workflow. Use Markdown
   as the working manuscript format.
-- The current v3 Markdown draft predates the accepted fresh-calibration result;
-  it still needs an evidence-grounded dataset/quality update before submission.
+- The current v3 Markdown draft now includes the accepted fresh-calibration
+  result, explicit dataset-quality caveats, exact P5 values, and a consistent
+  claim boundary. It still needs human review and submission-ready reference
+  verification before English conversion or journal formatting.
 - Backups and hashes matter. Never leave the only copy of data/results on the
   AutoDL instance.
 - Every new paid action needs an explicit bounded human gate, even if it seems
