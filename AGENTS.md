@@ -10,18 +10,27 @@ and aggregation. Use a paid GPU boot only for model inference or training.
 After every GPU phase: verify outputs, back up, sync lightweight artifacts to
 `D:\yinsir`, report cost, and remind the human to shut down the instance.
 
-**CURRENT GATE (2026-07-25)**: The live status is maintained in `HANDOFF.md`.
+**CURRENT GATE (2026-07-27)**: The live status is maintained in `HANDOFF.md`.
 P0/P1/P2 are complete, the self-built domain split is frozen, P3/P4 domain-dev
 sanity is complete, and the bounded P5 `domain_test` A/B/C/D K=5 seeds
-42/43/44 block is complete. Result-to-claim verdict is `partial`: the supported
-paper claim is a narrow low-label Chinese equipment-domain NER claim, not full
-IE, RE, CoVe, public-benchmark generalization, or K-scan robustness. The current
-task is GPU-free paper writing / pre-submission preparation in Markdown. No
-further paid GPU, vLLM, dry-run, model call, or frozen-test prompt generation is
-authorized without a new explicit bounded human gate. The user's total project
-budget target is 400 CNY; the last reported 4090 price is 2.7 CNY/hour. The
-real host and port live only in the user's local SSH config; use the non-secret
-alias `autodl-paper` in project files and commands.
+42/43/44 block is complete. P6 quality repair produced a fresh, structurally
+valid 20-passage non-test calibration independently completed by two humans:
+exact span+type micro-F1 is `0.8000`. The human explicitly accepted the
+original `>=0.80` minimum as passing and closed the QA issue for the current
+paper route. The later conservative v4 target `>=0.85` was not met, and this
+result is not frozen-test formal IAA; `TECH_SCHEME` F1 is only `0.153846`.
+Result-to-claim remains `partial`: the supported claim is narrow low-label
+Chinese equipment-domain NER, not full IE, RE, CoVe, public-benchmark
+generalization, K-scan robustness, or a complete P5 matrix. The scoped
+experiment package is closed for manuscript writing. The current task is
+GPU-free refinement of the Markdown paper and pre-submission claim/evidence
+audit. No further paid GPU, vLLM, dry-run, model call, new experiment, or
+frozen-test prompt generation is authorized without a new explicit bounded
+human gate. The original full matrix is technically possible as a later
+expansion, but it is neither complete nor the default next step. The user's
+total project budget target is 400 CNY; the last reported 4090 price is 2.7
+CNY/hour. The real host and port live only in the user's local SSH config; use
+the non-secret alias `autodl-paper` in project files and commands.
 
 ## Execution Authority
 
@@ -78,7 +87,7 @@ Project workflow mapping:
 | Check evidence before claims | `$result-to-claim` | Decide which claims are supported and identify missing evidence before paper writing |
 | Refine extra ablations | `$ablation-planner` | Use only after main results and result-to-claim; preserve the fixed clean comparisons in this file |
 | Build paper outline | `$paper-plan` | Convert verified results and limitations into a claims-evidence outline |
-| Draft final manuscript | `$paper-writing` | Run only after P6 artifacts are complete and the human approves the target venue/template |
+| Draft final manuscript | `$paper-writing` | Plain GPU-free Markdown refinement is current; workflow branches requiring model calls, secondary review, LaTeX, or a venue template need explicit approval |
 
 Generic Skill defaults are overridden as follows:
 
@@ -114,20 +123,23 @@ Generic Skill defaults are overridden as follows:
 
 ## Project Overview
 
-This paper project studies few-shot named entity recognition (NER) and relation
-extraction (RE) from public equipment-domain technical documents using locally
-deployed open-source LLMs. The system combines:
+The original project studies few-shot named entity recognition (NER) and
+relation extraction (RE) from public equipment-domain technical documents using
+locally deployed open-source LLMs. The implemented system design combines:
 
 1. fixed-random versus kNN-retrieved in-context demonstrations;
 2. query-matched equipment-domain glossary injection;
 3. retrieval-augmented generation (RAG) with reranked evidence; and
 4. Chain-of-Verification-style atomic self-verification (CoVe).
 
-The paper's primary contribution is not a claim of beating fully supervised
-SOTA. The central claim is that evidence retrieval and atomic verification can
-reduce unsupported entity/relation predictions in a low-label professional
-domain while preserving or improving extraction F1. The final evidence must be
-a reproducible ablation matrix, not a single attractive run.
+The original goal was to test all four mechanisms in a full reproducible
+ablation matrix. The current paper claim is narrower because only A/B/C/D NER
+has frozen three-seed P5 evidence: kNN and glossary improve F1/recall, while RAG
+preserves near-tied F1 and improves precision/reduces false-positive entity
+predictions. Atomic verification and RE remain implemented or explored parts of
+the broader design, but they are not supported positive contributions in the
+current manuscript. Never promote the original goal into a completed-result
+claim.
 
 ## Paper Strategy Lock - 2026-07-20
 
@@ -150,24 +162,27 @@ The user clarified and approved the publication target and practical objective:
   not replace the reproducible local-model experiment claims unless a later
   decision explicitly changes the claim.
 
-Paper-facing framing:
+Current paper-facing framing, updated 2026-07-27:
 
-1. Dataset contribution: a small, quality-controlled public-equipment-domain
-   Chinese NER/RE dataset with annotation guideline, agreement report, frozen
-   splits, and deduplication records.
-2. Engineering method contribution: a reproducible few-shot extraction pipeline
-   combining kNN demonstrations, domain glossary/schema constraints, RAG
-   evidence, and atomic self-verification.
-3. Evidence contribution: clean ablations showing which module improves NER F1
-   and which module reduces entity-level false-discovery-style hallucination.
-4. Practical limitation: the work is positioned as low-label domain IE, not as
-   supervised SOTA, and RE may be reported as supporting evidence if its results
-   are weaker.
+1. Dataset contribution: a small frozen public-equipment-domain Chinese NER
+   dataset with documented construction, guideline, split hashes,
+   deduplication, and a fresh two-human non-test calibration audit. Do not call
+   the frozen test independently double-annotated or report `0.8000` as formal
+   test IAA.
+2. Engineering method contribution: a reproducible local-LLM few-shot NER
+   pipeline comparing fixed-random/kNN demonstrations, domain glossary
+   injection, and reranked RAG evidence.
+3. Evidence contribution: three-seed A/B/C/D domain-test ablations showing F1
+   and recall effects plus RAG's precision/false-positive trade-off.
+4. Practical limitations: `TECH_SCHEME` calibration agreement is weak; RE,
+   CoVe, public generalization, K sensitivity, significance, and the full
+   A..E-prime matrix are not supported current contributions.
 
 ## Key Research Context
 
 - **Primary language/domain**: Chinese equipment and military-technology text.
-- **Task**: few-shot NER plus exact relation-triple extraction.
+- **Original task**: few-shot NER plus exact relation-triple extraction;
+  **current paper evidence**: NER only.
 - **Default entities**: `EQUIPMENT`, `MODULE`, `TECH_SCHEME`, `METRIC`.
 - **Default relations**: `USES`, `HAS_METRIC`, `PART_OF`.
 - **Primary LLM**: Qwen2.5-7B-Instruct, FP16, served with vLLM.
@@ -177,10 +192,10 @@ Paper-facing framing:
 - **Index**: FAISS inner product; normalized inner product equals cosine.
 - **Primary NER metric**: entity-level micro P/R/F1 using seqeval semantics.
 - **RE metric**: exact-triple micro P/R/F1 on the domain set.
-- **Hallucination metric**: false-positive entities divided by all predicted
-  entities. Report it before and after verification. In the paper, describe
-  this precisely as an entity-level false-discovery-style rate rather than a
-  broad open-ended factuality score.
+- **Error metric**: false-positive entities divided by all predicted entities
+  is an entity-level false-discovery-style rate, not a broad factuality score.
+  The current verified table reports precision and FP counts for A/B/C/D; do
+  not claim verifier pre/post improvement without completed E/E-prime evidence.
 - **Optional fine-tuning**: QLoRA with LLaMA-Factory only in P7 and only after
   explicit human approval following P6.
 
@@ -188,7 +203,11 @@ Paper-facing framing:
 
 Current step: **Paper-writing / pre-submission preparation, GPU-free only**.
 The experiment evidence is sufficient for a narrow SCI-Q4-oriented applied NER
-paper draft, but it is not a complete P5 matrix.
+paper draft, but it is not a complete P5 matrix. The human accepted the fresh
+two-human non-test calibration F1 `0.8000` under the original minimum and asked
+to proceed with paper refinement. Preserve the stricter validator result
+(`0.85` not met), the `TECH_SCHEME` limitation, and the absence of formal
+frozen-test IAA.
 
 - Local workspace: `D:\yinsir`.
 - Git repository: `main` tracks `origin/main`. As of the latest handoff, local
@@ -209,7 +228,9 @@ paper draft, but it is not a complete P5 matrix.
   BGE-M3 ONNX export was removed with human approval.
 - Storage: 30 GB system disk and 120 GB data disk at `/root/autodl-tmp`; about
   80 GB was free after P0 cleanup.
-- Remote code: `/root/project` tracks the same `main` commit as GitHub.
+- Remote code: `/root/project` was last read-only checked at Git HEAD `863c701`
+  with manually synced modified/untracked P6 files. Do not clean or reset it;
+  local Git is the authoritative tracked history while GitHub push is blocked.
 - P0 backup: remote metadata and logs are under
   `/root/autodl-tmp/backup/p0`; the verified lightweight copy is under
   `D:\yinsir\backups\P0`.
@@ -282,6 +303,19 @@ paper draft, but it is not a complete P5 matrix.
   near-tied F1 while improving precision / reducing entity-level false positives.
   Not supported: relation extraction, CoVe/self-verification gains, public
   benchmark generalization, K=1/K=10 robustness, or full IE claims.
+- P6 fresh human calibration is complete on 20 previously unused non-test
+  passages. A/B contained 175/220 entities with 158 exact matches, exact
+  span+type micro-F1 `0.800000`, zero structural errors, and per-type F1:
+  EQUIPMENT `0.728261`, MODULE `0.898876`, TECH_SCHEME `0.153846`, METRIC
+  `1.000000`. The human accepted the original `>=0.80` minimum for manuscript
+  progression. This is valid calibration agreement, not frozen-test formal IAA.
+- Full-matrix feasibility: the original run contract contains 60 model cells
+  (36 K=5 cells plus 24 A/E K-scan cells). Twelve domain A/B/C/D K=5 cells are
+  complete, leaving at least 48 model cells. A strict full-IE interpretation
+  would additionally require a dev-first relation-enabled protocol/reruns;
+  CLUENER also needs a valid labeled evaluation protocol because official test
+  gold is unavailable. This work is technically feasible but not authorized or
+  recommended before the current manuscript audit.
 - Current paper artifacts are Markdown, not DOCX. All generated `.docx` files
   under the project docs were deleted on 2026-07-25 at the user's request after
   encoding/rendering problems. The current editable draft is
@@ -363,7 +397,7 @@ Few-shot support selection:
 
 ## Self-Built Equipment Dataset
 
-Target pipeline:
+Original target pipeline:
 
 1. Collect 300-500 public passages, each about 100-300 Chinese characters, from
    equipment-related Baidu Baike entries, public patent abstracts, and CMNEE text.
@@ -382,6 +416,14 @@ Before annotation, present the schema plus 10 labeled examples and wait for
 human approval (P2 Pause A). After finalizing test, create `data/FROZEN` and
 record file hashes. No prompt, threshold, or config change may be informed by
 test results after this point.
+
+Current status override (2026-07-27): the frozen v1 split is 30/50/170. The old
+`0.9909` pseudo A/B agreement is not human IAA. A later fresh two-human audit on
+20 unused non-test passages achieved exact micro-F1 `0.8000`; the human accepted
+the original minimum for the scoped paper. This does not establish formal
+frozen-test IAA or independently double-annotated test gold. Do not initiate
+test re-annotation, adjudication, v2 freezing, or another calibration round
+without a new bounded human gate.
 
 ## Leakage And Deduplication Rules
 
@@ -535,6 +577,9 @@ statements in `results/summary.md`.
 - Collect, pre-label, LLM-refine, human-annotate, deduplicate, split, and freeze.
 - Gate: support/dev/test exist, test has at least 100 items, `FROZEN` and
   `logs/dedup.json` exist, agreement F1 is at least 0.80.
+- Current status: structural freeze is complete; the later fresh non-test human
+  calibration reached and was human-accepted at exactly `0.8000`. Formal test
+  IAA remains unavailable and must be stated as a limitation.
 
 ### P3 - Base Extraction
 
@@ -553,11 +598,16 @@ statements in `results/summary.md`.
 - Run the complete frozen grid and K scan.
 - Gate: no missing required cells, every aggregate recomputes from raw rows,
   summary and two required plots exist.
+- Current status: this original full gate is not met. The scoped domain NER
+  A/B/C/D K=5 three-seed evidence package is complete and closed for paper
+  writing; missing cells must not be fabricated or launched without a new gate.
 
 ### P6 - Wrap-Up
 
 - Aggregate results, verify backups, report best config, largest F1 contributor,
   largest hallucination reducer, total cost, and open questions.
+- Current status: result-to-claim and fresh human calibration review are
+  complete for the narrow route; manuscript refinement is now in progress.
 
 ### P7 - Optional QLoRA
 
@@ -765,7 +815,13 @@ Before any GPU job:
 
 ## Paper-Ready Deliverables
 
-Required final artifacts:
+The following is the original full-plan artifact list. It is not a statement
+that every item exists, and missing full-matrix/verification/K-scan artifacts
+must not be fabricated or automatically generated. The current submission route
+uses the verified A/B/C/D domain evidence, P6 calibration report, Markdown
+manuscript, and explicit limitations recorded in `HANDOFF.md`.
+
+Original full-plan artifacts:
 
 - reproducible source code and YAML configs;
 - normalized-data manifests and validation reports;

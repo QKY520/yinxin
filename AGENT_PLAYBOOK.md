@@ -1,12 +1,12 @@
-# AGENT EXECUTION PLAYBOOK — LLM Few-shot IE for Equipment Documents (v1.0)
+# AGENT EXECUTION PLAYBOOK — LLM Few-shot IE for Equipment Documents (v1.1)
 
 > ROLE: You are a coding agent executing this project end-to-end on an AutoDL cloud Linux instance.
 > READ ONCE, THEN EXECUTE PHASE BY PHASE. This file is self-contained — all selection decisions are final; do not re-research or substitute components unless a FALLBACK rule fires.
-> PROJECT GOAL: Few-shot NER + RE on equipment-domain documents using locally deployed open-source LLMs, with RAG + self-verification (CoVe) to suppress hallucination. Final deliverable: ablation matrix proving each module's F1 gain and hallucination-rate reduction.
+> ORIGINAL PROJECT GOAL: Few-shot NER + RE on equipment-domain documents using locally deployed open-source LLMs, with RAG + self-verification (CoVe) to suppress hallucination. The original final deliverable was a full ablation matrix. Current evidence is narrower; the status update below controls what may be claimed or executed.
 >
 > PAPER STRATEGY UPDATE (2026-07-20): The project is now framed for a practical SCI-Q4 submission within roughly one month and a 400 CNY target budget. The original route is retained: equipment-domain small annotated dataset + reproducible few-shot IE pipeline + RAG/glossary/schema constraints + verification to reduce hallucination + ablation evidence. Draft Chinese first, then produce the English SCI manuscript. NER is the main evidence line; RE is auxiliary.
 >
-> EXECUTION STATUS UPDATE (2026-07-25): The live status has moved beyond the old P2 gate. P0/P1/P2 are complete, the domain split is frozen, P3/P4 domain-dev sanity is complete, and a bounded P5 domain-test A/B/C/D K=5 three-seed block is complete. The result-to-claim verdict is `partial`: usable evidence supports a narrow low-label Chinese equipment-domain NER paper claim, while RE, CoVe, CLUENER/public generalization, K-scan robustness, and the full A..E′ matrix are not currently supported. Current work is GPU-free Markdown paper/pre-submission preparation only. See `HANDOFF.md` for the latest operational state before acting.
+> EXECUTION STATUS UPDATE (2026-07-27): P0/P1/P2 are complete, the domain split is frozen, P3/P4 domain-dev sanity is complete, and a bounded P5 `domain_test` A/B/C/D K=5 three-seed block is complete. A fresh 20-passage non-test calibration independently completed by two humans passed all structural checks and reached exact span+type micro-F1 `0.8000`. The human accepted the original `>=0.80` minimum as passing and closed the QA issue for the current paper route. The stricter v4 target `>=0.85` was not met; this is not frozen-test formal IAA, and `TECH_SCHEME` F1 is `0.153846`. Result-to-claim remains `partial`: usable evidence supports a narrow low-label Chinese equipment-domain NER paper claim, while RE, CoVe, CLUENER/public generalization, K-scan robustness, significance, and the full A..E′ matrix are unsupported. The scoped experiment package is closed for manuscript writing. Current work is GPU-free refinement of `docs/EQUIPMENT_IE_PAPER_DRAFT_V3_REVIEW_POLISH_20260725.md`. No phase command below is authorization to start new experiments. See `HANDOFF.md` before acting.
 
 ---
 
@@ -22,6 +22,10 @@
 8. **NEVER report a single run.** Every reported cell = mean ± std over seeds {42, 43, 44}.
 9. **SECURITY/COMPLIANCE**: only public, non-classified corpora (licenses: CMNEE per repo, Few-NERD CC BY-SA 4.0, CLUENER Apache 2.0). If the human ever supplies non-public documents, PAUSE and ask for explicit confirmation of compliance before any processing.
 10. **PAUSE GATES** (`⏸️`): stop and ask the human. **VERIFY GATES** (`✅`): machine-checkable; all conditions must pass before the next phase. On gate failure, follow the FIX branch; if no branch fires, pause and report.
+11. **CURRENT STOP**: the historical P0-P7 commands below are reference
+    contracts, not live authorization. No paid GPU, vLLM, dry-run, model call,
+    new frozen-test prompt, or new experiment is allowed without a new explicit
+    bounded human gate. GPU-free Markdown/documentation work is the live step.
 
 ---
 
@@ -115,6 +119,15 @@ Leakage protocol (MANDATORY):
 FIX: agreement < 0.80 → PAUSE, report confusion cases to human, revise annotation guideline, re-annotate. Do not proceed.
 ```
 
+Current status override (2026-07-27): frozen v1 remains unchanged. The old
+`0.9909` pseudo A/B agreement is not human IAA. A later fresh, two-human,
+20-passage non-test calibration achieved exact micro-F1 `0.8000`; the human
+accepted the original minimum for manuscript progression. The automatic
+validator remains `blocked` against the later conservative `0.85` target.
+Report this only as fresh non-test human calibration agreement, with
+`TECH_SCHEME` F1 `0.153846`, not as frozen-test formal IAA or proof that all 170
+test passages were independently double-annotated.
+
 ## 5. PHASE P3 — Extraction pipeline (RTX 4090 boot)
 
 Serve:
@@ -165,11 +178,20 @@ FIX: kill-precision < 50% → verification prompt is over-killing; add evidence 
 
 ## 7. PHASE P5 — Ablation matrix (RTX 4090 boot; longest phase)
 
-Status note as of 2026-07-25: the table below remains the original full-plan
+Status note as of 2026-07-27: the table below remains the original full-plan
 contract, not the set of completed evidence. The completed P5 evidence is only
 `domain_test`, K=5, configs A/B/C/D, seeds 42/43/44. It is valid for a scoped
 domain NER claim, but it is not a complete P5 grid. Do not fill missing E,
 E-prime, CLUENER, or K-scan rows without a new explicit human gate.
+
+Full-matrix feasibility: the written contract contains 60 model cells (36 K=5
+cells plus 24 A/E K-scan cells). Twelve domain A/B/C/D K=5 cells are complete,
+so at least 48 cells remain. Strict full-IE completion is larger in evidence
+terms because the completed domain cells are NER-only and relation-enabled work
+needs a dev-first protocol/rerun. CLUENER official test has no offline gold, so
+a valid labeled evaluation protocol must be locked first. The matrix is
+technically feasible as a future bounded expansion, but it is not the current
+task and is not authorized.
 
 | Config | example_sel | glossary | RAG | self_verif |
 |---|---|---|---|---|
@@ -189,7 +211,7 @@ Metrics per cell:
 
 Outputs:
 - `results/main_table.csv`: one row per (config, dataset, k, seed) with P/R/F1/halluc_pre/halluc_post.
-- `results/summary.md`: aggregated mean±std; one sentence naming the largest F1 contributor and the largest hallucination reducer (D vs E isolates verification; E′ vs B isolates verification-without-RAG; D vs C isolates RAG).
+- `results/summary.md`: aggregated mean±std; one sentence naming the largest F1 contributor and the largest hallucination reducer (E vs D isolates verification with RAG; E′ vs C isolates verification without RAG; D vs C isolates RAG without verification).
 - `results/plots/`: F1-vs-k line chart; hallucination pre/post bar chart (matplotlib).
 
 ```
@@ -212,13 +234,19 @@ FIX: a config underperforms its predecessor (e.g., C < B) → do NOT delete the 
 
 Aggregate, generate final `results/summary.md`, verify all backups (code pushed; `/root/autodl-tmp` tarball in file storage; cache/ included), then report to human: best config, largest F1 contributor, largest hallucination reduction, total spend, and open questions. Remind human to shut down the instance.
 
-Current wrap-up stance as of 2026-07-25: use `docs/RESULT_TO_CLAIM_P5_DOMAIN_20260725.md`,
+Current wrap-up stance as of 2026-07-27: use `docs/RESULT_TO_CLAIM_P5_DOMAIN_20260725.md`,
 `docs/P5_DOMAIN_PAPER_EVIDENCE_20260725.md`, `docs/P5_PAPER_REVIEW_AUDIT_20260725.md`,
 `docs/P5_PAPER_P0_REVIEW_FEEDBACK_20260725.md`, and `findings.md` as the
-paper-facing evidence base. The manuscript should honestly frame C and D as
-near-tied on F1, with C marginally ahead on recall/F1 and D clearly better on
-precision and false-positive reduction. Do not claim significant superiority,
-relation extraction success, or verification gains from the current results.
+P5 evidence base. Add
+`docs/P6_QA1R_FRESH_CALIBRATION_VALIDATION_20260727.md` and the locked v4
+guideline as the annotation-quality evidence. The human accepted fresh
+non-test calibration F1 `0.8000` under the original minimum, but the manuscript
+must retain the `0.85` miss, low `TECH_SCHEME` agreement, and absence of formal
+test IAA. Frame C and D as near-tied on F1, with C marginally ahead on
+recall/F1 and D clearly better on precision and false-positive reduction. Do
+not claim significant superiority, relation extraction success, verification
+gains, public generalization, K robustness, or full-matrix completion. The next
+action is GPU-free Markdown refinement, not another experiment.
 
 ## 10. OPTIONAL PHASE P7 — QLoRA fine-tune (only if human approves after P6)
 
@@ -226,4 +254,4 @@ LLaMA-Factory, QLoRA on Qwen2.5-7B, training data formatted from IEPile/CMNEE co
 
 ---
 
-*v1.0. Selection rationale lives in《技术选型与分阶段实现方案》; human-oriented narrative in《实验实施指导文档_综合版》. This playbook supersedes both for execution purposes. Any self-made decision (schema edits, glossary growth, verification-prompt revisions) must be committed to git with a one-line rationale.*
+*v1.1 status synchronization dated 2026-07-27. Selection rationale lives in《技术选型与分阶段实现方案》; human-oriented narrative in《实验实施指导文档_综合版》. This playbook supersedes both for execution purposes. Any self-made decision (schema edits, glossary growth, verification-prompt revisions) must be committed to git with a one-line rationale.*

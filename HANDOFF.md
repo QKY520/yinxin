@@ -14,6 +14,11 @@ chat history. Read these files before doing any project work:
 If older docs conflict with this file on status chronology, this file is newer.
 Hard rules in `AGENTS.md` and `AGENT_PLAYBOOK.md` still apply.
 
+Synchronization note (2026-07-27): `AGENTS.md`, `AGENT_PLAYBOOK.md`,
+`实验实施指导文档_综合版.md`, and this file have been aligned to the same
+paper-writing status, accepted `0.8000` calibration decision, claim boundary,
+full-matrix feasibility assessment, and execution red lines.
+
 ## 1. What We Are Doing Now
 
 We are preparing a practical SCI-Q4-oriented applied/engineering paper about
@@ -596,7 +601,7 @@ Local:
 - Git identity for this repo: `yly <714520833@qq.com>`
 - Latest evidence commit before this handoff refresh:
   `df6c46c p6: validate fresh human calibration`.
-- At the pre-edit status check, local `main` was 25 commits ahead of
+- Before the four-document synchronization, local `main` was 26 commits ahead of
   `origin/main`. Five user-owned annotation helper scripts were untracked:
   `p6_annotate_complete.py`, `p6_cal_b_annotate.py`,
   `p6_cal_b_annotate_v4.py`, `p6_complete_annotate.py`, and
@@ -663,6 +668,27 @@ optional later supplements only if the human explicitly opens a new bounded
 gate or a concrete target journal/reviewer requires them. GPU-free Markdown
 editing is already within the approved current stage; paid or model-backed work
 is not.
+
+### Full-Matrix Feasibility
+
+The original written matrix is technically feasible as a future project, but
+it is not a simple completion of a few rows:
+
+- original contract: 60 model cells (36 K=5 cells plus 24 A/E K-scan cells);
+- completed: 12 `domain_test` A/B/C/D K=5 cells;
+- remaining: at least 48 model cells;
+- the completed domain cells are NER-only, so a strict full-IE claim also needs
+  a dev-first relation-enabled protocol and new runs;
+- CLUENER official test has no offline gold and needs a locked valid evaluation
+  protocol before any run;
+- E verifier variants were negative or mixed on dev, while E-prime remains
+  uncompleted; any future verifier rows must be preserved honestly and never
+  test-tuned into positive results.
+
+Thus full-matrix work is possible only after a new bounded plan defines the
+exact cells, evaluation protocol, estimated time/cost, stopping rules, and
+paper claim it would support. It is not currently authorized and should not
+delay the first manuscript-refinement pass.
 
 ## 8. Lessons Worth Remembering
 
@@ -731,3 +757,5 @@ is not.
   AutoDL instance.
 - Every new paid action needs an explicit bounded human gate, even if it seems
   technically small.
+- Full-matrix completion is an optional evidence expansion, not a prerequisite
+  already imposed on the current narrow SCI-Q4 manuscript route.
