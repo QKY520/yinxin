@@ -1,6 +1,11 @@
 # P5 Paper Draft — P0 Fixes 版审稿意见
 
 Date: 2026-07-25
+
+> **历史审计说明（2026-07-27）：** 下列审计对象 DOCX 已按用户要求删除。
+> 本文件仅保留审稿与修改依据，不是可编辑论文版本。当前唯一论文正文为
+> `docs/EQUIPMENT_IE_PAPER_DRAFT_V3_REVIEW_POLISH_20260725.md`。
+
 审计对象: `docs/EQUIPMENT_IE_PAPER_DRAFT_WITH_P0_FIXES_20260725.docx`
 
 ---

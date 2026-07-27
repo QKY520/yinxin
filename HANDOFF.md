@@ -508,6 +508,29 @@ Complete on 2026-07-27 under the human-approved paper-refinement gate.
   `git diff --check`. No Python, frozen-test read, SSH job, model/API, dry-run,
   vLLM, GPU, or new experiment was used. Paid-GPU cost impact: 0 CNY.
 
+### Repository Version Cleanup
+
+Complete on 2026-07-27 under the human-approved old-version cleanup request.
+
+- Removed `docs/CONTINUATION_HANDOFF.md`, a stale 2026-07-20 P2 handoff that
+  conflicted with the root `HANDOFF.md`, and refreshed `README.md` to make the
+  root file the sole live status entry point.
+- Removed seven ignored `backups/P5` patch copies whose only purpose was to
+  recover superseded DOCX/paper-draft stages. Their source commits
+  `660b641`, `79a807d`, `1d0464d`, `2ae8e38`, `b606084`, `873e618`, and
+  `863c701` were verified as ancestors of the current Git `HEAD`, so those old
+  versions remain recoverable from Git history.
+- Marked the two retained P5 paper-review audits as historical evidence whose
+  DOCX targets have been deleted, and pointed both to the sole current Markdown
+  manuscript.
+- Preserved all experiment configs, raw/per-query results, logs, failed and
+  negative runs, frozen-data audits, calibration provenance, paper evidence
+  reports, phase backups, and the five user-owned untracked P6 scripts. Files
+  named `draft`, `v1/v2/v3`, or `sanity` were not deleted when they form part
+  of the reproducibility or decision trail.
+- No Python, frozen-test read, SSH job, model/API, vLLM, GPU, or experiment was
+  used. Paid-GPU cost impact: 0 CNY.
+
 ## 3. Current Claim Boundary
 
 Result-to-claim verdict: `partial`.
