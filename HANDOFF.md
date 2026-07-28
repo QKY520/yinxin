@@ -19,11 +19,16 @@ Synchronization note (2026-07-27): `AGENTS.md`, `AGENT_PLAYBOOK.md`,
 paper-writing status, accepted `0.8000` calibration decision, claim boundary,
 full-matrix feasibility assessment, and execution red lines.
 
-Latest paper-preparation note (2026-07-28): the approved GPU-free target-journal
-screening and reference-authenticity audit is complete. The manuscript now has
-numbered, source-checked references and in-text citations. Three conditional
-journal candidates were screened from official pages, but their current JCR
-quartiles still require the author's institution-level JCR confirmation.
+Latest paper-preparation note (2026-07-28): after the approved GPU-free
+target-journal screening and reference-authenticity audit, the human selected
+Journal of Information Science and Engineering (JISE) as the intended primary
+target and explicitly approved a bounded English Markdown conversion. A
+JISE-oriented English working draft now exists at
+docs/JISE_ENGLISH_MANUSCRIPT_DRAFT_V1_20260728.md. It retains the locked
+A/B/C/D evidence, the fresh non-test calibration disclosure, and all claim
+boundaries. JISE selection does not prove its current JCR quartile or fees;
+author-side institution-level JCR and journal-policy confirmation remain
+required before submission.
 
 ## 1. What We Are Doing Now
 
@@ -73,15 +78,19 @@ submission route**, but the original full experimental plan is not complete.
 Only the bounded P5 `domain_test` A/B/C/D, K=5, seeds 42/43/44 block exists.
 Do not translate "ready to refine the paper" into "the full P5 matrix passed."
 
-Current editable paper draft:
+Current editable paper drafts:
+
+- docs/JISE_ENGLISH_MANUSCRIPT_DRAFT_V1_20260728.md (JISE-oriented English
+  Markdown working draft);
 
 - `docs/EQUIPMENT_IE_PAPER_DRAFT_V3_REVIEW_POLISH_20260725.md`
 
-The next step requires a human institution-level JCR check for the three exact
-journal titles/ISSNs, including JCR year, category, rank, quartile, and the
-author's institutional quartile rule. Do not begin English conversion or
-journal-template formatting until one target is explicitly selected. No new
-experiment is the default next step.
+The human selected JISE and opened the bounded English-Markdown gate, which is
+now complete. Before an actual submission, the author still needs an
+institution-level JCR check for the exact journal title/ISSN, including JCR
+year, category, rank, quartile, and the institution's quartile rule. The
+current work does not authorize LaTeX/DOCX conversion, journal-template
+formatting, submission, or any new experiment.
 
 All generated `.docx` files were deleted on 2026-07-25 at the user's request
 because of rendering/encoding problems. Future writing defaults to UTF-8
@@ -527,6 +536,31 @@ Complete on 2026-07-27 under the human-approved paper-refinement gate.
   `git diff --check`. No Python, frozen-test read, SSH job, model/API, dry-run,
   vLLM, GPU, or new experiment was used. Paid-GPU cost impact: 0 CNY.
 
+### JISE-Oriented English Markdown Conversion
+
+Complete on 2026-07-28 under the human-approved, GPU-free English-conversion
+gate.
+
+- The human selected Journal of Information Science and Engineering (JISE) as
+  the intended primary target after the three-journal screening.
+- Created docs/JISE_ENGLISH_MANUSCRIPT_DRAFT_V1_20260728.md from the
+  evidence-locked Chinese Markdown manuscript. It is a plain UTF-8 English
+  working draft, not a JISE template, LaTeX source, DOCX file, PDF, or
+  submission package.
+- Preserved the frozen 30/50/170 split, all A/B/C/D K=5 seed-42/43/44 numbers,
+  the C/D F1 near-tie wording, the 55.0-FP reduction, and the seed-42
+  181/126 qualitative FP accounting.
+- Preserved the calibration disclosure: 20 fresh non-test passages, A/B
+  175/220 entities, 158 exact matches, exact micro-F1 0.8000, original
+  >=0.80 threshold accepted, later >=0.85 target not met, no frozen-test
+  formal IAA, and TECH_SCHEME F1 0.153846.
+- Explicitly excludes positive claims about RE, CoVe, public-benchmark
+  generalization, K scans, statistical significance, and full-matrix
+  completion. The same 17 source-checked references are retained, with
+  preprints and data resources identified honestly.
+- No Python, frozen-test read, SSH job, model/API, secondary agent, dry-run,
+  vLLM, GPU, or new experiment was used. Paid-GPU cost impact: 0 CNY.
+
 ### Repository Version Cleanup
 
 Complete on 2026-07-27 under the human-approved old-version cleanup request.
@@ -727,21 +761,25 @@ ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status -
 
 ## 7. Recommended Next Step
 
-The threshold decision, first focused Markdown refinement, three-journal
-screening, and reference-authenticity verification are complete. The next
-human-only action is to query the institution's current Journal Citation
-Reports for these exact candidates and record JCR year, category, rank, and
-quartile:
+The threshold decision, focused Chinese Markdown refinement, three-journal
+screening, reference-authenticity verification, JISE selection, and
+JISE-oriented English Markdown conversion are complete. The next human-only
+action is to query the institution's current Journal Citation Reports for JISE
+and record JCR year, category, rank, quartile, and the institution's quartile
+rule. The two screened backups should be checked only if JISE fails that
+author-side gate:
 
 1. Journal of Information Science and Engineering - current first choice;
 2. KSII Transactions on Internet and Information Systems - first backup;
 3. Computer Science and Information Systems - second backup.
 
 The public checks confirm SCIE/SCI claims but do not prove current JCR Q4.
-Do not substitute JIF, CiteScore, or SJR quartiles. After the human confirms one
-journal and its fee/page rules, open one bounded gate for English conversion
-and that journal's formatting. The current draft already contains numbered
-references, but their final punctuation/style remains target-dependent.
+Do not substitute JIF, CiteScore, or SJR quartiles. The bounded English
+Markdown conversion gate has been consumed; after the author confirms JISE's
+JCR status and fee/page rules, any journal-template conversion or submission
+action needs its own explicit, bounded approval. The English draft already
+contains numbered references, but their final punctuation/style remains
+target-dependent.
 
 No new experiment or formal test audit is the default next step. Those remain
 optional supplements only if the human explicitly opens a new bounded gate or
@@ -831,10 +869,11 @@ delay the first manuscript-refinement pass.
   needed; prefer cached/replay artifacts when they preserve comparisons.
 - DOCX output caused encoding/rendering trouble in this workflow. Use Markdown
   as the working manuscript format.
-- The current v3 Markdown draft now includes the accepted fresh-calibration
-  result, explicit dataset-quality caveats, exact P5 values, and a consistent
-  claim boundary. It still needs human review and submission-ready reference
-  verification before English conversion or journal formatting.
+- The current Chinese and English Markdown drafts include the accepted
+  fresh-calibration result, explicit dataset-quality caveats, exact P5 values,
+  and a consistent claim boundary. They still need author review plus
+  target-specific JCR, fee, and final-format confirmation before any
+  journal-template conversion or submission.
 - Backups and hashes matter. Never leave the only copy of data/results on the
   AutoDL instance.
 - Every new paid action needs an explicit bounded human gate, even if it seems
