@@ -30,13 +30,34 @@ boundaries. JISE selection does not prove its current JCR quartile or fees;
 author-side institution-level JCR and journal-policy confirmation remain
 required before submission.
 
+Latest submission-package note (2026-07-28): the human subsequently approved a
+GPU-free JISE submission package. Eight UTF-8 Markdown staging files now exist
+under `docs/JISE_SUBMISSION_PACKAGE_20260728/`: a JISE-oriented submission
+manuscript, cover letter, submission metadata/author form, declarations and AI
+disclosure, Associate Editor selection, pre-submission checklist, editorial-
+office query draft, and package README. The package is not a PDF, DOCX, LaTeX
+source, or submitted record. It deliberately leaves author identity, funding,
+conflict, data/code availability, ethics, JCR, and fee fields unresolved for
+human confirmation. JISE's official pages contain a page-limit ambiguity (a
+12-page template/charge boundary versus a separate regular-manuscript limit of
+25 pages); the package adopts no more than 12 formatted pages only as a
+conservative cost target and requires written clarification before
+formatting/submission.
+
 ## 1. What We Are Doing Now
 
 We are preparing a practical SCI-Q4-oriented applied/engineering paper about
 few-shot Chinese equipment-domain NER using a reproducible local-LLM extraction
 pipeline.
 
-Completed latest step (2026-07-28): **GPU-free screening of three target
+Completed latest step (2026-07-28): **GPU-free JISE Markdown submission-package
+preparation**. The package contains the submission-text branch, cover letter,
+author/system metadata, declarations and AI disclosure, editor choices,
+pre-submission checklist, and an editorial-office query draft. It remains a
+staging package with explicit author-only blockers; no template file or actual
+submission was created.
+
+Completed preceding step (2026-07-28): **GPU-free screening of three target
 journals and reference-authenticity verification**. The verified candidates
 are Journal of Information Science and Engineering, KSII Transactions on
 Internet and Information Systems, and Computer Science and Information Systems.
@@ -45,8 +66,8 @@ facts recorded in `docs/TARGET_JOURNAL_AND_REFERENCE_AUDIT_20260728.md`.
 Public pages do not establish the current JCR quartile, so no journal is yet
 locked as Q4. The paper's former reference-candidate list was replaced with 17
 numbered entries; peer-reviewed papers, preprints, and the DuIE data resource
-are explicitly distinguished. No experiment, Python, GPU, model, API, or
-secondary agent was used.
+are explicitly distinguished. No experiment, local Python, GPU, project model,
+external API, or secondary agent was used.
 
 Completed current step (2026-07-27): **GPU-free manuscript refinement and
 pre-submission claim/evidence alignment in Markdown**. The approved pass audited
@@ -80,17 +101,22 @@ Do not translate "ready to refine the paper" into "the full P5 matrix passed."
 
 Current editable paper drafts:
 
+- `docs/JISE_SUBMISSION_PACKAGE_20260728/` (current JISE Markdown staging
+  package; use its file 01 as the submission-text branch after resolving all
+  author placeholders);
+
 - docs/JISE_ENGLISH_MANUSCRIPT_DRAFT_V1_20260728.md (JISE-oriented English
   Markdown working draft);
 
 - `docs/EQUIPMENT_IE_PAPER_DRAFT_V3_REVIEW_POLISH_20260725.md`
 
-The human selected JISE and opened the bounded English-Markdown gate, which is
-now complete. Before an actual submission, the author still needs an
-institution-level JCR check for the exact journal title/ISSN, including JCR
-year, category, rank, quartile, and the institution's quartile rule. The
-current work does not authorize LaTeX/DOCX conversion, journal-template
-formatting, submission, or any new experiment.
+The human selected JISE and completed the bounded English-Markdown and Markdown
+submission-package gates. Before an actual submission, the author still needs
+an institution-level JCR check for the exact journal title/ISSN, including JCR
+year, category, rank, quartile, and the institution's quartile rule, plus the
+author/declaration and journal-policy confirmations recorded in the package.
+The current work does not authorize LaTeX/DOCX conversion, PDF generation,
+journal-template formatting, submission, or any new experiment.
 
 All generated `.docx` files were deleted on 2026-07-25 at the user's request
 because of rendering/encoding problems. Future writing defaults to UTF-8
@@ -533,8 +559,9 @@ Complete on 2026-07-27 under the human-approved paper-refinement gate.
   statistical significance, and full-matrix completion from current claims.
 - Document-only verification checked 31 required evidence literals, all clean
   F1/FP deltas, the 181/126 qualitative FP accounting and category sum, and
-  `git diff --check`. No Python, frozen-test read, SSH job, model/API, dry-run,
-  vLLM, GPU, or new experiment was used. Paid-GPU cost impact: 0 CNY.
+  `git diff --check`. No Python, frozen-test read, SSH job, project model,
+  external LLM/API, dry-run, vLLM, GPU, or new experiment was used. Paid-GPU
+  cost impact: 0 CNY.
 
 ### JISE-Oriented English Markdown Conversion
 
@@ -558,8 +585,54 @@ gate.
   generalization, K scans, statistical significance, and full-matrix
   completion. The same 17 source-checked references are retained, with
   preprints and data resources identified honestly.
-- No Python, frozen-test read, SSH job, model/API, secondary agent, dry-run,
-  vLLM, GPU, or new experiment was used. Paid-GPU cost impact: 0 CNY.
+- No Python, frozen-test read, SSH job, project model, external LLM/API,
+  secondary agent, dry-run, vLLM, GPU, or new experiment was used. Paid-GPU
+  cost impact: 0 CNY.
+
+### GPU-Free JISE Submission Package
+
+Complete on 2026-07-28 under the human-approved Markdown submission-package
+gate.
+
+- Created `docs/JISE_SUBMISSION_PACKAGE_20260728/` with eight UTF-8 Markdown
+  files: manuscript, cover letter, author/system metadata, declaration and AI-
+  disclosure options, two-editor selection, checklist, editorial-office query,
+  and README.
+- Rechecked the current official JISE submission, manuscript, preparation, AI-
+  policy, and Associate Editor pages. The system requires a PDF for submission;
+  final publication accepts JISE Word or LaTeX files; keywords must number
+  5-10; references use square brackets in first-citation order; two relevant
+  Associate Editors must be selected; AI tools/models and purposes must be
+  disclosed in the manuscript or acknowledgements and in the submission system.
+- Recommended Associate Editors, subject to live-list and conflict recheck:
+  Makoto P. Kato (information retrieval/extraction/knowledge base) and Berlin
+  Chen (information retrieval/NLP/machine learning). Shou-De Lin and Chao-Lin
+  Liu are documented alternates.
+- Corrected the earlier simplified length note: JISE's policy page uses 12
+  template pages as a limit/charge boundary, whereas its manuscript page states
+  regular manuscripts should be within 25 pages (short papers within 15) and
+  also charges USD 100 per accepted page above 12. The package targets no more
+  than 12 formatted pages conservatively and blocks submission pending written
+  confirmation of length and all charges.
+- Added an explicit AI disclosure: Qwen2.5-7B-Instruct is the evaluated
+  experimental extractor; Qwen2.5-14B-Instruct-AWQ historically generated
+  candidate suggestions that were not accepted as gold without human review;
+  OpenAI Codex (GPT-5-based) assisted with English conversion, language editing,
+  organization, and claim-evidence checks. No generative AI produced the two-
+  human calibration annotations, changed frozen labels/numerical results, or
+  generated manuscript figures/images.
+- Static checks found all locked P5/P6 literals, 17 numbered references, five
+  numbered table captions, and six keywords. The abstract in the manuscript and
+  metadata form matches. Recomputed text-level deltas remain B-A `0.020524`,
+  C-B `0.013689`, D-C `-0.003094`, C-D FP `55.0`, and the qualitative category
+  sum `181`. `git diff --check` passed after Markdown cleanup.
+- All `[[...]]` placeholders are intentional blockers. No author names,
+  affiliations, funding, conflicts, ethics determination, licences, or public-
+  release promises were invented.
+- This package was prepared in the current Codex writing session; no project
+  inference model, external LLM/API, second agent, Python, frozen-test read, SSH
+  job, dry-run, vLLM, paid GPU, or new experiment was invoked. Paid-GPU cost
+  impact: 0 CNY.
 
 ### Repository Version Cleanup
 
@@ -581,8 +654,8 @@ Complete on 2026-07-27 under the human-approved old-version cleanup request.
   reports, phase backups, and the five user-owned untracked P6 scripts. Files
   named `draft`, `v1/v2/v3`, or `sanity` were not deleted when they form part
   of the reproducibility or decision trail.
-- No Python, frozen-test read, SSH job, model/API, vLLM, GPU, or experiment was
-  used. Paid-GPU cost impact: 0 CNY.
+- No Python, frozen-test read, SSH job, project model, external LLM/API, vLLM,
+  GPU, or experiment was used. Paid-GPU cost impact: 0 CNY.
 
 ## 3. Current Claim Boundary
 
@@ -631,6 +704,8 @@ Paper positioning:
 
 Use these as the paper-facing evidence base:
 
+- `docs/JISE_SUBMISSION_PACKAGE_20260728/`
+- `docs/JISE_ENGLISH_MANUSCRIPT_DRAFT_V1_20260728.md`
 - `docs/EQUIPMENT_IE_PAPER_DRAFT_V3_REVIEW_POLISH_20260725.md`
 - `docs/TARGET_JOURNAL_AND_REFERENCE_AUDIT_20260728.md`
 - `docs/RESULT_TO_CLAIM_P5_DOMAIN_20260725.md`
@@ -718,6 +793,10 @@ Local:
 - Branch: `main`
 - Git remote: `https://github.com/QKY520/yinxin.git`
 - Git identity for this repo: `yly <714520833@qq.com>`
+- JISE Markdown submission-package commit:
+  `d5ba7ca docs: prepare JISE submission package`.
+- JISE-oriented English working-draft commit:
+  `fea7c43 docs: add JISE English manuscript draft`.
 - Latest completed guidance commit before the manuscript-refinement pass:
   `87d2e8c docs: synchronize paper-stage project guidance`.
 - At the start of the manuscript-refinement pass, local `main` was 27 commits
@@ -762,24 +841,36 @@ ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status -
 ## 7. Recommended Next Step
 
 The threshold decision, focused Chinese Markdown refinement, three-journal
-screening, reference-authenticity verification, JISE selection, and
-JISE-oriented English Markdown conversion are complete. The next human-only
-action is to query the institution's current Journal Citation Reports for JISE
-and record JCR year, category, rank, quartile, and the institution's quartile
-rule. The two screened backups should be checked only if JISE fails that
-author-side gate:
+screening, reference-authenticity verification, JISE selection, English
+Markdown conversion, and JISE Markdown submission package are complete. The
+next step is author-side completion of the package; it does not require an
+experiment or GPU. The human/corresponding author should:
+
+1. query the institution's current Journal Citation Reports for JISE and record
+   JCR year, category, rank, quartile, query date, and institutional quartile
+   rule;
+2. fill and approve author names/order, affiliations, emails, ORCIDs, funding,
+   conflicts, CRediT roles, ethics determination, and data/code availability;
+3. run the documented conflict check for Makoto P. Kato and Berlin Chen;
+4. send or adapt the editorial-office query to confirm the 12-versus-25-page
+   wording, all charges, and the disclosed AI-assisted workflow; and
+5. resolve all `[[...]]` blockers in the package.
+
+The two screened backups should be checked only if JISE fails the JCR, scope,
+fee, AI-policy, or author-side gate:
 
 1. Journal of Information Science and Engineering - current first choice;
 2. KSII Transactions on Internet and Information Systems - first backup;
 3. Computer Science and Information Systems - second backup.
 
-The public checks confirm SCIE/SCI claims but do not prove current JCR Q4.
-Do not substitute JIF, CiteScore, or SJR quartiles. The bounded English
-Markdown conversion gate has been consumed; after the author confirms JISE's
-JCR status and fee/page rules, any journal-template conversion or submission
-action needs its own explicit, bounded approval. The English draft already
-contains numbered references, but their final punctuation/style remains
-target-dependent.
+The public checks confirm SCIE/SCI claims but do not prove current JCR Q4. Do
+not substitute JIF, CiteScore, or SJR quartiles. The bounded English conversion
+and Markdown submission-package gates have been consumed. After all author
+fields and journal-policy questions are resolved, the recommended next agent
+gate is **JISE template conversion and PDF proofing only**. It must be approved
+separately because the present gate did not authorize DOCX, LaTeX, PDF, or
+actual submission. The package references are numbered and source-checked, but
+their final template punctuation and page layout remain pending.
 
 No new experiment or formal test audit is the default next step. Those remain
 optional supplements only if the human explicitly opens a new bounded gate or
@@ -869,11 +960,12 @@ delay the first manuscript-refinement pass.
   needed; prefer cached/replay artifacts when they preserve comparisons.
 - DOCX output caused encoding/rendering trouble in this workflow. Use Markdown
   as the working manuscript format.
-- The current Chinese and English Markdown drafts include the accepted
-  fresh-calibration result, explicit dataset-quality caveats, exact P5 values,
-  and a consistent claim boundary. They still need author review plus
-  target-specific JCR, fee, and final-format confirmation before any
-  journal-template conversion or submission.
+- The current Chinese/English drafts and JISE Markdown package include the
+  accepted fresh-calibration result, explicit dataset-quality caveats, exact P5
+  values, and a consistent claim boundary. The package still needs author
+  identity/declaration completion plus target-specific JCR, fee, AI-policy, and
+  final-format confirmation before any journal-template conversion or
+  submission.
 - Backups and hashes matter. Never leave the only copy of data/results on the
   AutoDL instance.
 - Every new paid action needs an explicit bounded human gate, even if it seems

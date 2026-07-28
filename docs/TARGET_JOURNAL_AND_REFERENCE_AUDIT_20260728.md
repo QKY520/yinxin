@@ -2,7 +2,7 @@
 
 日期：2026-07-28
 范围：当前中文 Markdown 稿件的原始审计范围；不补实验，不转换英文或期刊模板
-核验方式：出版社/期刊官网、ACL Anthology、arXiv、DBLP 和官方数据下载页的普通网页；未调用模型、外部 LLM 或 API
+核验方式：当前 Codex 会话读取出版社/期刊官网、ACL Anthology、arXiv、DBLP 和官方数据下载页的普通网页；未调用项目模型、外部 LLM/API 或第二 Agent
 
 后续状态更新（2026-07-28）：用户已选择 Journal of Information Science
 and Engineering（JISE）为拟投首选，并明确批准仅限 UTF-8 Markdown 的英文
@@ -44,7 +44,7 @@ submission、manuscripts、preparation 和 Associate Editor 官方页面。官�
 - Aims, scope, SCIE、JIF 和出版频率：<https://jise.iis.sinica.edu.tw/pages/jise/index.html>
 - 投稿、AI 披露、12 页收费界线和约 6 个月评审说明：<https://jise.iis.sinica.edu.tw/pages/authors/index.html>
 - PDF 投稿、Word/LaTeX 最终文件、常规稿 25 页/short paper 15 页、版权和超页费：<https://jise.iis.sinica.edu.tw/pages/authors/manuscripts.html>
-- 摘要、5--10 个关键词、参考文献、图表等准备要求：<https://jise.iis.sinica.edu.tw/pages/authors/preparation.html>
+- 摘要、5-10 个关键词、参考文献、图表等准备要求：<https://jise.iis.sinica.edu.tw/pages/authors/preparation.html>
 - 投稿系统作者邮箱、信息和顺序说明：<https://jise.iis.sinica.edu.tw/pages/authors/submission.html>
 - 风险控制：12 页与 25/15 页的表述必须由编辑部书面澄清；现阶段按不超过 12 个模板页控制成本。官网只明确超过 12 页每页 100 USD，不能据此推断常规发表一定免费；投稿前还应确认 APC、彩图、开放获取或其他费用。
 
