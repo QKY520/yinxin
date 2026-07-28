@@ -10,6 +10,15 @@ and Engineering（JISE）为拟投首选，并明确批准仅限 UTF-8 Markdown 
 该后续决定不改变本审计的原始核验范围，也不证明 JISE 的当前 JCR 分区、常规
 费用或最终格式；这些仍须由作者在投稿前人工确认。
 
+投稿包状态更新（2026-07-28）：用户随后批准无卡制作 JISE Markdown 投稿包，
+产物位于 `docs/JISE_SUBMISSION_PACKAGE_20260728/`。本次复核补查了 JISE 的
+submission、manuscripts、preparation 和 Associate Editor 官方页面。官网篇幅
+口径并不完全一致：submission policy 页写按 Word 模板 12 页并对超出部分按
+100 USD/页收费；manuscripts 页同时写常规稿应在 25 页内、short paper 在 15 页
+内，并再次写接受后超过 12 页收费。因此当前只把“尽量不超过 12 个模板页”作为
+保守成本目标，不把 12 页或 25 页单独写成已锁定的最终上限；正式投稿前须向编辑
+部书面确认。当前授权不含 Word/LaTeX/PDF 转换或实际投稿。
+
 ## 1. 执行结论
 
 当前稿件可以进入“人工确认 JCR 分区后选刊”的阶段。公开网页已经确认三本候选均由期刊官网声明进入 SCIE/SCI，且主题范围能够容纳 AI、信息系统或应用型 NER 工作；但是三本官网都没有公开展示可据以锁定投稿决策的当前 JCR quartile。因此，“SCI Q4”仍是投稿前必须由作者通过机构版 Journal Citation Reports 当日确认的人工门禁，不能用 JIF 数值、Scopus CiteScore 或 SJR quartile 替代。
@@ -26,15 +35,18 @@ and Engineering（JISE）为拟投首选，并明确批准仅限 UTF-8 Markdown 
 
 | 顺序 | 期刊 | 官网可确认的索引与指标 | 主题适配 | 费用与篇幅 | 周期与主要风险 |
 | ---: | --- | --- | --- | --- | --- |
-| 1 | Journal of Information Science and Engineering | 官网列出 SCIE；显示 2024 JIF 1.1；双月刊 | Scope 包含 Artificial Intelligence，适合突出低标注 NER、可复现管线与误报控制 | 12 页以内；超出后每页 100 USD。官网未明确列出常规 APC，投稿前需向编辑部确认 | 官网称多数稿件约 6 个月得到评审结果；当前 JCR quartile 未公开，必须机构确认 |
+| 1 | Journal of Information Science and Engineering | 官网列出 SCIE；显示 2024 JIF 1.1；双月刊 | Scope 包含 Artificial Intelligence、Information Retrieval、Natural Language Processing，适合突出低标注 NER、可复现管线与误报控制 | policy 页以 12 个模板页为收费界线；manuscripts 页另列常规稿 25 页、short paper 15 页，口径须书面确认。超过 12 页写明 100 USD/页；官网未明确常规 APC | 官网称多数稿件约 6 个月得到评审结果；当前 JCR quartile 未公开，必须机构确认 |
 | 2 | KSII Transactions on Internet and Information Systems | 官网列出 SCIE；显示 2025 JIF 1.0；月刊、开放获取 | Scope 明列 Artificial Intelligence & Big Data 和 Information Systems；需将稿件定位为信息系统中的应用型实体抽取 | 13-21 页；700 USD 出版费 | 费用高；Internet 主题不是本文核心，cover letter 需解释信息系统适配；当前 JCR quartile 必须机构确认 |
 | 3 | Computer Science and Information Systems | 官网列出 Science Citation Index 和 JCR；显示 2024 两年 JIF 1.8；开放获取 | 接收计算机科学、软件工程和信息系统的理论与产业/应用研究，可容纳工程型 NER | 600 EUR；作者指南写 25-30 页，政策页写 20 页，须投稿前书面确认 | 官网提示编辑部投稿过载；政策页称 4-8 个月；最终稿仅收 LaTeX；当前 JCR quartile 必须机构确认 |
 
 ### 2.1 JISE 官网证据
 
 - Aims, scope, SCIE、JIF 和出版频率：<https://jise.iis.sinica.edu.tw/pages/jise/index.html>
-- 篇幅、超页费和约 6 个月评审说明：<https://jise.iis.sinica.edu.tw/pages/authors/index.html>
-- 风险控制：官网只明确“超过 12 页每页 100 USD”，不能据此推断常规发表一定免费；投稿前应邮件确认是否还有彩图、开放获取或其他费用。
+- 投稿、AI 披露、12 页收费界线和约 6 个月评审说明：<https://jise.iis.sinica.edu.tw/pages/authors/index.html>
+- PDF 投稿、Word/LaTeX 最终文件、常规稿 25 页/short paper 15 页、版权和超页费：<https://jise.iis.sinica.edu.tw/pages/authors/manuscripts.html>
+- 摘要、5--10 个关键词、参考文献、图表等准备要求：<https://jise.iis.sinica.edu.tw/pages/authors/preparation.html>
+- 投稿系统作者邮箱、信息和顺序说明：<https://jise.iis.sinica.edu.tw/pages/authors/submission.html>
+- 风险控制：12 页与 25/15 页的表述必须由编辑部书面澄清；现阶段按不超过 12 个模板页控制成本。官网只明确超过 12 页每页 100 USD，不能据此推断常规发表一定免费；投稿前还应确认 APC、彩图、开放获取或其他费用。
 
 ### 2.2 KSII TIIS 官网证据
 
@@ -101,10 +113,13 @@ and Engineering（JISE）为拟投首选，并明确批准仅限 UTF-8 Markdown 
 1. 在机构版 JCR 中逐刊查询准确刊名和 ISSN，记录采用的 JCR 年度、学科类别、rank、quartile 和查询日期。
 2. 明确作者单位认定 SCI Q4 时采用“任一类别 Q4”“最低类别 Q4”还是“指定主类别 Q4”的规则。
 3. 先确认 JISE；若不满足 Q4 或费用条件，再依次确认 KSII TIIS 和 ComSIS。
-4. 向拟投期刊编辑部书面确认当前 APC、超页费和篇幅上限，尤其是 JISE 常规费用及 ComSIS 的冲突页数规则。
-5. 后续人工决策已选择 JISE，并已完成仅限英文 UTF-8 Markdown 的转换。该授权
-   不包括 LaTeX/DOCX、期刊模板适配、正式投稿或新实验；在作者确认 JCR、费用
-   和篇幅规则后，任何此类下一步仍需新的、范围明确的人工门禁。
+4. 向拟投期刊编辑部书面确认当前 APC、超页费和篇幅上限，尤其是 JISE 的
+   12 页收费界线与常规稿 25 页/short paper 15 页口径、常规费用，以及 ComSIS
+   的冲突页数规则。
+5. 后续人工决策已选择 JISE，并已完成英文 UTF-8 Markdown 转换和 Markdown
+   投稿包。该授权不包括 LaTeX/DOCX、期刊模板适配、PDF、正式投稿或新实验；
+   作者仍需补全身份、声明、利益冲突、数据/代码可用性及 JCR/费用信息。之后的
+   格式转换和实际投稿仍需新的、范围明确的人工门禁。
 
 ## 7. 剩余文献风险
 
