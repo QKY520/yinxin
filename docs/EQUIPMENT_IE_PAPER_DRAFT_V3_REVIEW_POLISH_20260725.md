@@ -26,21 +26,21 @@
 
 ## 2 相关工作
 
-少样本 NER 研究已经证明，在标注样本有限时，示例选择和样本相似性对实体识别性能具有重要影响。Few-NERD 为细粒度 few-shot NER 提供了代表性基准，structured nearest-neighbor learning 和 coarse-to-fine few-shot NER 则从度量学习或层级类型角度提升少样本泛化能力。与这些工作不同，本文不训练新的 few-shot NER 模型，而是将近邻思想用于 LLM in-context 示例选择，并在装备领域真实低标注设置下验证其相对固定随机示例的收益。
+少样本 NER 研究已经证明，在标注样本有限时，示例选择和样本相似性对实体识别性能具有重要影响。Few-NERD 为细粒度 few-shot NER 提供了代表性基准 [1]，structured nearest-neighbor learning [2] 和 decomposed meta-learning [3] 则从结构化近邻或元学习角度提升少样本泛化能力。与这些工作不同，本文不训练新的 few-shot NER 模型，而是将近邻思想用于 LLM in-context 示例选择，并在装备领域真实低标注设置下验证其相对固定随机示例的收益。
 
-生成式信息抽取和 LLM-based NER 近年来发展迅速。UIE 和 InstructUIE 展示了统一结构生成和指令调优在多任务 IE 中的潜力，GPT-NER 和 OneKE 进一步说明 LLM 可以通过 schema 或任务描述完成命名实体识别和知识抽取。本文与这些工作共享“结构化生成”的技术背景，但目标不同：我们不构建通用 IE 模型，而是研究在本地开源 LLM 和少量领域标注条件下，如何通过可解释的模块组合降低装备领域 NER 的实体级误报。
+生成式信息抽取和 LLM-based NER 近年来发展迅速。UIE [4] 和 InstructUIE [5] 展示了统一结构生成和指令调优在多任务 IE 中的潜力，GPT-NER [6] 和 OneKE [7] 进一步说明 LLM 可以通过 schema 或任务描述完成命名实体识别和知识抽取。其中 InstructUIE 和 GPT-NER 在本文中按 arXiv 预印本引用，OneKE 则按 2025 年 WWW Companion 正式论文引用。本文与这些工作共享“结构化生成”的技术背景，但目标不同：我们不构建通用 IE 模型，而是研究在本地开源 LLM 和少量领域标注条件下，如何通过可解释的模块组合降低装备领域 NER 的实体级误报。
 
-领域词典和 gazetteer 是 NER 中长期使用的外部知识来源。已有研究表明，gazetteer 可以提供实体候选和类型先验，中文 NER 中的 lexicon 或实体增强预训练也有助于缓解字级模型缺少词边界的问题。本文的 glossary injection 与静态 gazetteer 特征不同：系统根据查询文本动态匹配领域术语，并将相关术语以 prompt 块形式注入 LLM。实验显示，该模块主要增强召回率和 F1，但同时可能增加假阳性，因此不能被简单视为误报抑制机制。
+领域词典和 gazetteer 是 NER 中长期使用的外部知识来源。已有研究表明，gazetteer 可以提供实体候选和类型先验 [8]。本文的 glossary injection 与静态 gazetteer 特征不同：系统根据查询文本动态匹配领域术语，并将相关术语以 prompt 块形式注入 LLM。实验显示，该模块主要增强召回率和 F1，但同时可能增加假阳性，因此不能被简单视为误报抑制机制。
 
-RAG 通过外部检索为生成模型提供可追溯证据，近年已从基础检索增强扩展到多阶段检索、重排和可靠性优化。幻觉检测研究如 SelfCheckGPT、Chain-of-Verification 以及 LLM hallucination survey 说明，生成模型的无依据输出是高风险应用中的核心问题。本文不主张当前 verifier 已经有效；相反，我们更窄地检验 RAG 的证据约束是否能迁移到 few-shot domain NER，并减少实体级 false-positive predictions。
+RAG 通过外部检索为生成模型提供可追溯证据 [9]，近年已从基础检索增强扩展到多阶段检索、重排和可靠性优化 [10]。SelfCheckGPT [11] 和 Chain-of-Verification [12] 等研究说明，生成模型的无依据输出是高风险应用中的核心问题。本文不主张当前 verifier 已经有效；相反，我们更窄地检验 RAG 的证据约束是否能迁移到 few-shot domain NER，并减少实体级 false-positive predictions。
 
-公开 NER/IE 资源中，CLUENER 和 DuIE 面向中文任务，Few-NERD 提供英文 few-shot NER 参照，军事领域还有 CMNEE 等公开事件抽取数据。然而，这些数据集的语言、任务或 schema 与装备技术文本中的 EQUIPMENT、MODULE、TECH_SCHEME 和 METRIC 并不完全一致。本文因此构建小规模装备领域 NER 数据，并将论文定位为低标注专业领域的工程化消融验证，而非通用 NER 或关系抽取 SOTA 对比。当前实验没有验证跨公开基准泛化。
+公开 NER/IE 资源中，CLUENER [13] 和 DuIE 2.0 [14] 面向中文任务，Few-NERD [1] 提供英文 few-shot NER 参照，军事领域还有 CMNEE [15] 等公开文档级事件抽取数据。需要强调，CMNEE 是军事新闻事件抽取数据集，不是 NER 数据集。然而，这些数据集的语言、任务或 schema 与装备技术文本中的 EQUIPMENT、MODULE、TECH_SCHEME 和 METRIC 并不完全一致。本文因此构建小规模装备领域 NER 数据，并将论文定位为低标注专业领域的工程化消融验证，而非通用 NER 或关系抽取 SOTA 对比。当前实验没有验证跨公开基准泛化。
 
 ## 3 数据集与任务定义
 
 ### 3.1 数据构建、划分与冻结
 
-本文从公开百科条目、专利摘要和军事/装备相关公开语料中收集 400 条候选文本，其中百科 7 条、专利 84 条、CMNEE 来源文本 309 条。QAonMilitaryKG 的精确字符串匹配和 Qwen2.5-14B-Instruct-AWQ 仅用于生成辅助标注建议，建议本身不作为 gold。经人工审查与结构验证后，最终形成 250 条冻结 v1 数据：support 30 条、dev 50 条、test 170 条。support 是 kNN 或固定随机示例的唯一候选池，dev 用于冻结前开发，test 仅用于最终配置评估。
+本文从公开百科条目、专利摘要和军事/装备相关公开语料中收集 400 条候选文本，其中百科 7 条、专利 84 条、CMNEE 来源文本 309 条 [15]。项目内记录的 QAonMilitaryKG 种子词典精确字符串匹配和 Qwen2.5-14B-Instruct-AWQ [17] 仅用于生成辅助标注建议，建议本身不作为 gold。经人工审查与结构验证后，最终形成 250 条冻结 v1 数据：support 30 条、dev 50 条、test 170 条。support 是 kNN 或固定随机示例的唯一候选池，dev 用于冻结前开发，test 仅用于最终配置评估。
 
 冻结测试集具有固定文件哈希和冻结标记。RAG 语料由公开百科、专利和术语条目构成，并按固定 8-gram 协议与测试文本去重；测试文本不进入示例池或 RAG 语料。数据冻结后，本文未根据测试结果修改 prompt、schema、阈值或实验配置。
 
@@ -80,7 +80,7 @@ RAG 通过外部检索为生成模型提供可追溯证据，近年已从基础�
 
 ### 4.2 示例选择、术语表与 RAG
 
-固定随机模式在 support 中按运行 seed 选择一组 K 条示例；kNN 模式使用 BGE-M3 生成归一化向量，并通过 FAISS 内积检索每个查询最相近的 K 条 support 示例。领域术语表以 QAonMilitaryKG 和语料高频术语为种子，根据查询文本的子串或关键词匹配条目，每个查询最多注入 20 条。
+固定随机模式在 support 中按运行 seed 选择一组 K 条示例；kNN 模式使用 BGE-M3 [16] 生成归一化向量，并通过 FAISS 内积检索每个查询最相近的 K 条 support 示例。领域术语表以项目内记录的 QAonMilitaryKG 种子词典和语料高频术语为种子，根据查询文本的子串或关键词匹配条目，每个查询最多注入 20 条。
 
 RAG 语料先切分为约 200-300 字的段落。查询时由 BGE-M3/FAISS 召回 top-20，再使用 bge-reranker-v2-m3 重排并将 top-3 证据放入 prompt。检索证据用于约束初始抽取，而不是一个事后规则过滤器。
 
@@ -97,7 +97,7 @@ B 使用 BGE-M3 的 kNN 示例检索；C/D 复用 B 的示例 ID，使 B→C→D
 
 ## 5 实验设置
 
-本文报告的最终测试结果均来自冻结的 170 条 domain test，K=5，seeds 为 42、43、44，主模型为以 FP16 部署的 Qwen2.5-7B-Instruct。实验范围仅包含 A/B/C/D 共 12 个运行单元；每个单元均有 170 条可回溯的 per-query 记录，parse failure 为 0。表中报告三个随机种子的均值与样本标准差。
+本文报告的最终测试结果均来自冻结的 170 条 domain test，K=5，seeds 为 42、43、44，主模型为以 FP16 部署的 Qwen2.5-7B-Instruct [17]。实验范围仅包含 A/B/C/D 共 12 个运行单元；每个单元均有 170 条可回溯的 per-query 记录，parse failure 为 0。表中报告三个随机种子的均值与样本标准差。
 
 当前配置的任务均为 NER-only，关系类型为空，因此不报告关系抽取性能，也不将零关系预测解释为关系抽取实验的负面结果。本文没有完成 E/E′、公开基准、K=1/K=10 或更多 seed 的最终测试。由于只使用三个 seed 且未进行假设检验，所有配置差异均作描述性解释，不使用“统计显著”措辞。
 
@@ -158,18 +158,38 @@ C 和 D 在 F1 上近似持平（near-tie）：C 的 F1/recall 为 0.568858/0.64
 
 这一结论仅适用于当前冻结的中文装备领域 NER 设置。双人非测试集校准的总体 F1 为 0.8000，但 TECH_SCHEME 一致性很低，且不存在 frozen-test formal IAA；关系抽取、CoVe、公开基准泛化、K 扫描稳健性和统计显著性均未由当前实验验证。本文的价值在于提供一个范围明确、数字可回溯且保留负面权衡的工程证据基础，而不是声称完成了更宽泛的信息抽取方案。
 
-## 参考文献候选
+## 参考文献
 
-- [Ding et al., 2021] Few-NERD: A Few-shot Named Entity Recognition Dataset.
-- [Yang and Katiyar, 2020] Simple and Effective Few-Shot Named Entity Recognition with Structured Nearest Neighbor Learning.
-- [Ma et al., 2023] Coarse-to-fine Few-shot Learning for Named Entity Recognition.
-- [Wang et al., 2025] GPT-NER: Named Entity Recognition via Large Language Models.
-- [Luo et al., 2024/2025] OneKE: A Dockerized Schema-Guided LLM Agent-based Knowledge Extraction System.
-- [Liu et al., 2019] Towards Improving Neural Named Entity Recognition with Gazetteers.
-- [Lewis et al., 2020] Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks.
-- [Gao et al., 2023/2024] Retrieval-Augmented Generation for Large Language Models: A Survey.
-- [Dhuliawala et al., 2024] Chain-of-Verification Reduces Hallucination in Large Language Models.
-- [Manakul et al., 2023] SelfCheckGPT.
-- [Zhu et al., 2024] CMNEE.
-- [Chen et al., 2024] BGE M3-Embedding.
-- [Qwen Team, 2025] Qwen2.5 Technical Report.
+[1] Ding N, Xu G, Chen Y, et al. Few-NERD: A Few-shot Named Entity Recognition Dataset. In: Proceedings of ACL-IJCNLP 2021, 2021: 3198-3213. https://doi.org/10.18653/v1/2021.acl-long.248.
+
+[2] Yang Y, Katiyar A. Simple and Effective Few-Shot Named Entity Recognition with Structured Nearest Neighbor Learning. In: Proceedings of EMNLP 2020, 2020: 6365-6375. https://doi.org/10.18653/v1/2020.emnlp-main.516.
+
+[3] Ma T, Jiang H, Wu Q, et al. Decomposed Meta-Learning for Few-Shot Named Entity Recognition. In: Findings of ACL 2022, 2022: 1584-1596. https://doi.org/10.18653/v1/2022.findings-acl.124.
+
+[4] Lu Y, Liu Q, Dai D, et al. Unified Structure Generation for Universal Information Extraction. In: Proceedings of ACL 2022, 2022: 5755-5772. https://doi.org/10.18653/v1/2022.acl-long.395.
+
+[5] Wang X, Zhou W, Zu C, et al. InstructUIE: Multi-task Instruction Tuning for Unified Information Extraction. arXiv preprint arXiv:2304.08085, 2023. https://doi.org/10.48550/arXiv.2304.08085.
+
+[6] Wang S, Sun X, Li X, et al. GPT-NER: Named Entity Recognition via Large Language Models. arXiv preprint arXiv:2304.10428, 2023. https://doi.org/10.48550/arXiv.2304.10428.
+
+[7] Luo Y, Ru X, Liu K, et al. OneKE: A Dockerized Schema-Guided LLM Agent-based Knowledge Extraction System. In: Companion Proceedings of the ACM Web Conference 2025, 2025: 2871-2874. https://doi.org/10.1145/3701716.3715189.
+
+[8] Liu T, Yao J G, Lin C Y. Towards Improving Neural Named Entity Recognition with Gazetteers. In: Proceedings of ACL 2019, 2019: 5301-5307. https://doi.org/10.18653/v1/P19-1524.
+
+[9] Lewis P, Perez E, Piktus A, et al. Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks. Advances in Neural Information Processing Systems, 2020, 33: 9459-9474.
+
+[10] Gao Y, Xiong Y, Gao X, et al. Retrieval-Augmented Generation for Large Language Models: A Survey. arXiv preprint arXiv:2312.10997, 2023 (v5 revised 2024). https://doi.org/10.48550/arXiv.2312.10997.
+
+[11] Manakul P, Liusie A, Gales M. SelfCheckGPT: Zero-Resource Black-Box Hallucination Detection for Generative Large Language Models. In: Proceedings of EMNLP 2023, 2023: 9004-9017. https://doi.org/10.18653/v1/2023.emnlp-main.557.
+
+[12] Dhuliawala S, Komeili M, Xu J, et al. Chain-of-Verification Reduces Hallucination in Large Language Models. In: Findings of ACL 2024, 2024: 3563-3578. https://doi.org/10.18653/v1/2024.findings-acl.212.
+
+[13] Xu L, Tong Y, Dong Q, et al. CLUENER2020: Fine-grained Named Entity Recognition Dataset and Benchmark for Chinese. arXiv preprint arXiv:2001.04351, 2020. https://doi.org/10.48550/arXiv.2001.04351.
+
+[14] Baidu Qianyan. DuIE 2.0 [Dataset]. https://dataset-bj.cdn.bcebos.com/qianyan/DuIE_2_0.zip (accessed 2026-07-28).
+
+[15] Zhu M, Xu Z, Zeng K, et al. CMNEE: A Large-Scale Document-Level Event Extraction Dataset Based on Open-Source Chinese Military News. In: Proceedings of LREC-COLING 2024, 2024: 3367-3379. https://aclanthology.org/2024.lrec-main.299/.
+
+[16] Chen J, Xiao S, Zhang P, et al. M3-Embedding: Multi-Linguality, Multi-Functionality, Multi-Granularity Text Embeddings Through Self-Knowledge Distillation. In: Findings of ACL 2024, 2024: 2318-2335. https://doi.org/10.18653/v1/2024.findings-acl.137.
+
+[17] Qwen, Yang A, Yang B, et al. Qwen2.5 Technical Report. arXiv preprint arXiv:2412.15115, 2024 (v2 revised 2025). https://doi.org/10.48550/arXiv.2412.15115.

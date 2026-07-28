@@ -1,6 +1,6 @@
 # HANDOFF.md - New Conversation Handoff
 
-Date: 2026-07-27
+Date: 2026-07-28
 Workspace: `D:\yinsir`
 
 This file is the latest operational state for a new Codex/agent session with no
@@ -19,11 +19,29 @@ Synchronization note (2026-07-27): `AGENTS.md`, `AGENT_PLAYBOOK.md`,
 paper-writing status, accepted `0.8000` calibration decision, claim boundary,
 full-matrix feasibility assessment, and execution red lines.
 
+Latest paper-preparation note (2026-07-28): the approved GPU-free target-journal
+screening and reference-authenticity audit is complete. The manuscript now has
+numbered, source-checked references and in-text citations. Three conditional
+journal candidates were screened from official pages, but their current JCR
+quartiles still require the author's institution-level JCR confirmation.
+
 ## 1. What We Are Doing Now
 
 We are preparing a practical SCI-Q4-oriented applied/engineering paper about
 few-shot Chinese equipment-domain NER using a reproducible local-LLM extraction
 pipeline.
+
+Completed latest step (2026-07-28): **GPU-free screening of three target
+journals and reference-authenticity verification**. The verified candidates
+are Journal of Information Science and Engineering, KSII Transactions on
+Internet and Information Systems, and Computer Science and Information Systems.
+Official pages support their SCIE/SCI status, scope, public JIF, fee, and format
+facts recorded in `docs/TARGET_JOURNAL_AND_REFERENCE_AUDIT_20260728.md`.
+Public pages do not establish the current JCR quartile, so no journal is yet
+locked as Q4. The paper's former reference-candidate list was replaced with 17
+numbered entries; peer-reviewed papers, preprints, and the DuIE data resource
+are explicitly distinguished. No experiment, Python, GPU, model, API, or
+secondary agent was used.
 
 Completed current step (2026-07-27): **GPU-free manuscript refinement and
 pre-submission claim/evidence alignment in Markdown**. The approved pass audited
@@ -59,10 +77,11 @@ Current editable paper draft:
 
 - `docs/EQUIPMENT_IE_PAPER_DRAFT_V3_REVIEW_POLISH_20260725.md`
 
-The next step requires a new human confirmation: review the refined Chinese
-draft and decide whether to proceed to reference verification, target-journal
-formatting, or English conversion. None of those follow-up branches is implied
-by this completed Markdown pass.
+The next step requires a human institution-level JCR check for the three exact
+journal titles/ISSNs, including JCR year, category, rank, quartile, and the
+author's institutional quartile rule. Do not begin English conversion or
+journal-template formatting until one target is explicitly selected. No new
+experiment is the default next step.
 
 All generated `.docx` files were deleted on 2026-07-25 at the user's request
 because of rendering/encoding problems. Future writing defaults to UTF-8
@@ -579,6 +598,7 @@ Paper positioning:
 Use these as the paper-facing evidence base:
 
 - `docs/EQUIPMENT_IE_PAPER_DRAFT_V3_REVIEW_POLISH_20260725.md`
+- `docs/TARGET_JOURNAL_AND_REFERENCE_AUDIT_20260728.md`
 - `docs/RESULT_TO_CLAIM_P5_DOMAIN_20260725.md`
 - `docs/P5_DOMAIN_PAPER_EVIDENCE_20260725.md`
 - `docs/P5_PAPER_REVIEW_AUDIT_20260725.md`
@@ -681,7 +701,7 @@ Local:
   `6690d92 p6: record blocked annotation QA2`.
 - Previous QA0 commit:
   `a39a5a2 p6: prepare blinded frozen-gold audit`.
-- GitHub push attempts through 2026-07-27 still failed because the local proxy
+- GitHub push attempts through 2026-07-28 still failed because the local proxy
   `127.0.0.1` could not connect. AutoDL SSH is working, so QA2 code,
   documentation, tests, and lightweight artifacts were synced through the
   `autodl-paper` alias. The local commits remain unpushed until GitHub
@@ -707,12 +727,21 @@ ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status -
 
 ## 7. Recommended Next Step
 
-The threshold decision and first focused Markdown refinement are complete. The
-next human-gated action is to read the refined Chinese draft and choose one
-bounded continuation: bibliographic/reference verification, target-journal
-selection and formatting, or English manuscript conversion. The draft still
-uses a "reference candidates" list rather than submission-ready bibliographic
-entries, so reference verification should occur before final formatting.
+The threshold decision, first focused Markdown refinement, three-journal
+screening, and reference-authenticity verification are complete. The next
+human-only action is to query the institution's current Journal Citation
+Reports for these exact candidates and record JCR year, category, rank, and
+quartile:
+
+1. Journal of Information Science and Engineering - current first choice;
+2. KSII Transactions on Internet and Information Systems - first backup;
+3. Computer Science and Information Systems - second backup.
+
+The public checks confirm SCIE/SCI claims but do not prove current JCR Q4.
+Do not substitute JIF, CiteScore, or SJR quartiles. After the human confirms one
+journal and its fee/page rules, open one bounded gate for English conversion
+and that journal's formatting. The current draft already contains numbered
+references, but their final punctuation/style remains target-dependent.
 
 No new experiment or formal test audit is the default next step. Those remain
 optional supplements only if the human explicitly opens a new bounded gate or
