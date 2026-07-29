@@ -1,0 +1,30 @@
+\section{DISCUSSION}
+
+The results support a narrow, conditional claim. Under frozen v1 labels,
+$K=5$, and the current local-model configuration, kNN demonstrations and
+glossary injection improve F1/recall, while RAG yields near-tied F1 relative to
+C with higher precision and fewer false-positive entities. The practical value
+of RAG in this result is not maximizing F1; it is reducing the number of
+erroneous candidates that could enter manual review or later knowledge-base
+cleaning.
+
+The modules have different effects. kNN reduces dependence on a fixed randomly
+selected demonstration set. The glossary broadens domain coverage but may also
+invite additional false positives. RAG moves the system to a more conservative
+precision-oriented point. These effects are not monotonically additive, and
+D's lower F1 than C must be retained as a real trade-off rather than hidden by
+reporting only the best value.
+
+The calibration audit further narrows interpretation. Overall non-test
+calibration F1 of 0.8000 indicates that the locked guideline reached the
+original minimum on a small fresh sample, but \entitytype{TECH\_SCHEME}
+agreement of 0.153846 shows that this class remains unstable. Aggregate
+micro-F1 on the frozen v1 labels may therefore obscure class-specific label
+ambiguity. The four entity types should not be treated as equally reliable in
+future applications.
+
+The evidence does not support a broader information-extraction claim. The
+final A/B/C/D package is NER-only, so relation extraction cannot be treated as
+a positive result. CoVe/self-verification has no positive final-test evidence.
+Public-benchmark generalization, robustness across $K$ values, and statistical
+significance are likewise outside the completed evidence.

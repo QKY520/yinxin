@@ -1,0 +1,53 @@
+\section{INTRODUCTION}
+
+Chinese equipment and military-technology documents contain equipment names,
+modules, technical schemes, and performance metrics that are valuable for
+downstream search, analysis, and knowledge-base construction. Manual annotation
+of these entities is expensive, particularly when a domain corpus grows beyond
+a small collection of passages. Few-shot NER provides a practical route to
+bootstrap extraction from limited labeled examples, but generative LLM
+extractors can also create entity-level false positives. For example, an
+organization may be labeled as \entitytype{EQUIPMENT}, a descriptive phrase as
+\entitytype{MODULE}, or a partial numerical expression as a complete
+\entitytype{METRIC}. Such errors increase the burden of downstream review and
+reduce trust in a deployment.
+
+The practical question in this setting is therefore not only how to maximize
+F1, but also how to reduce unsupported or boundary-unreliable entity
+predictions without materially degrading extraction performance. Few-shot NER
+studies have shown that example selection and semantic proximity affect
+performance under limited supervision \cite{ding2021fewnerd,yang2020structured,ma2022decomposed}.
+Meanwhile, universal information extraction and instruction-tuned extraction
+systems show that structured generation can support multiple extraction tasks
+\cite{lu2022uie,wang2023instructuie,wang2023gptner,luo2025oneke}. These lines of
+work motivate a targeted engineering question: can relevant demonstrations,
+query-matched terminology, and retrieved evidence provide useful and
+interpretable control over a local LLM extractor in a narrow equipment-domain
+NER setting?
+
+This paper studies that question using a frozen Chinese equipment-domain
+dataset and four incremental configurations. Configuration A uses a
+fixed-random demonstration set; B replaces it with kNN-retrieved
+demonstrations; C adds a query-matched domain glossary; and D additionally
+injects reranked RAG evidence. The resulting comparison chain is deliberately
+narrow. It measures entity-level micro precision, recall, F1, and
+false-positive entity counts for NER only. It does not establish
+relation-extraction effectiveness, Chain-of-Verification (CoVe) gains,
+public-benchmark generalization, $K$ sensitivity, statistical significance, or
+completion of the originally planned full information-extraction matrix.
+
+The contributions are as follows.
+
+\begin{enumerate}
+  \item We document a small frozen Chinese equipment-domain NER dataset with
+  four entity types and an independent two-human non-test calibration audit.
+  The audit is reported accurately as non-test calibration agreement, not as
+  formal frozen-test inter-annotator agreement (IAA).
+  \item We implement a reproducible local-LLM few-shot extraction pipeline
+  that compares fixed-random versus kNN demonstrations, query-matched glossary
+  injection, and reranked RAG evidence.
+  \item We provide descriptive three-seed evidence that kNN and the glossary
+  improve F1/recall, while RAG preserves near-tied F1 relative to the glossary
+  configuration and improves precision with 55.0 fewer false-positive entities
+  on average. No claim of statistical significance is made.
+\end{enumerate}

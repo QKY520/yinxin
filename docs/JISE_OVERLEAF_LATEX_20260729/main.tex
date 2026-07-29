@@ -1,0 +1,56 @@
+\documentclass[10pt,a4paper,twoside]{article}
+
+% Official JISE style downloaded from the journal website on 2026-07-29.
+\usepackage{JISE}
+\setlength\titlebox{6.5cm}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{times}
+\usepackage{mathptmx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{url}
+
+\newcommand{\placeholder}[1]{\textbf{[AUTHOR INPUT: #1]}}
+\newcommand{\entitytype}[1]{\texttt{#1}}
+\newcommand{\modelname}[1]{\texttt{#1}}
+
+\setcounter{page}{1}
+
+\input{frontmatter}
+
+\begin{document}
+
+% JISE inserts received/revised/accepted dates during editorial production.
+% Do not invent these dates for the submission manuscript.
+\editorfootnote{{\small$^+$}Corresponding author:
+\placeholder{FULL NAME, POSTAL ADDRESS, EMAIL}.}
+\maketitle
+
+\begin{abstract}
+\input{sections/00_abstract}
+\begin{keywords}
+Chinese named entity recognition, low-label learning, equipment domain,
+retrieval-augmented generation, domain glossary, large language models
+\end{keywords}
+\end{abstract}
+
+\input{sections/01_introduction}
+\input{sections/02_related_work}
+\input{sections/03_dataset}
+\input{sections/04_method}
+\input{sections/05_experimental_setup}
+\input{sections/06_results}
+\input{sections/07_discussion}
+\input{sections/08_limitations}
+\input{sections/09_conclusion}
+\input{sections/10_disclosures}
+
+\bibliographystyle{JISEbib}
+\bibliography{references}
+
+% JISE's sample template includes author biographies after the references.
+% Add verified biographies and photos only if the live submission instructions
+% require them; do not invent biographical details.
+
+\end{document}

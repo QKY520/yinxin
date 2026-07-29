@@ -1,0 +1,21 @@
+\section{CONCLUSION}
+
+This work presents a reproducible local-LLM pipeline for low-label Chinese
+equipment-domain NER and evaluates kNN demonstrations, glossary injection, and
+RAG evidence through frozen-test A/B/C/D ablations over three seeds. In the
+current v1 dataset and $K=5$ setting, kNN and the glossary improve F1/recall.
+Configurations C and D are near-tied in F1: C is marginally higher in recall
+and F1, whereas D has higher precision and 55.0 fewer false-positive entity
+predictions on average. The available evidence therefore supports RAG as a
+precision-oriented component, not as the best-F1 module or a universal
+hallucination-removal method.
+
+This conclusion applies only to the frozen Chinese equipment-domain NER
+setting studied here. The fresh non-test human calibration has overall F1 of
+0.8000 but weak \entitytype{TECH\_SCHEME} agreement, and no frozen-test formal
+IAA is available. Relation extraction, CoVe gains, public-benchmark
+generalization, $K$-scan robustness, statistical significance, and a complete
+ablation matrix remain unverified. The paper's contribution is an
+evidence-bounded engineering baseline that preserves both gains and negative
+trade-offs rather than claiming a broader completed information-extraction
+solution.

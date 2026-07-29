@@ -1,0 +1,23 @@
+Named entity recognition (NER) for Chinese equipment-domain documents is
+constrained by scarce annotations and by false-positive entity predictions from
+generative large language model (LLM) extractors. We construct a small frozen
+dataset from public equipment-related texts, with 30 support passages, 50
+development passages, and 170 test passages. Using
+\modelname{Qwen2.5-7B-Instruct} as a local extractor, we compare four
+incremental NER-only configurations on the frozen test set: fixed-random
+demonstrations, $k$-nearest-neighbor (kNN) demonstrations, kNN demonstrations
+with a domain glossary, and the same configuration augmented with reranked
+retrieval-augmented generation (RAG) evidence. A fresh two-human calibration on
+20 previously unused non-test passages obtained exact span-plus-type micro-F1
+of 0.8000. This score exactly met the study's original minimum threshold, but
+it is not formal inter-annotator agreement for the frozen test set; moreover,
+the \entitytype{TECH\_SCHEME} class obtained F1 of only 0.153846. In descriptive
+three-seed ablations at $K=5$, kNN improved F1 by 0.020524 over the
+fixed-random baseline, and glossary injection added 0.013689 F1 mainly through
+recall. The glossary-only configuration C and the RAG configuration D were
+near-tied in F1 (0.568858 versus 0.565764). Configuration D achieved higher
+precision and reduced the mean false-positive entity count from 584.0 to
+529.0. The evidence therefore supports RAG as a precision- and
+false-positive-oriented module in this frozen low-label equipment-domain NER
+setting, rather than as the best-F1 configuration or a general solution to
+hallucination.

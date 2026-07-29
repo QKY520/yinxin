@@ -1,0 +1,17 @@
+\section{EXPERIMENTAL SETUP}
+
+All final results come from the frozen 170-passage domain test split using
+$K=5$ and random seeds 42, 43, and 44. The primary extractor is
+\modelname{Qwen2.5-7B-Instruct} \cite{qwen2024qwen25}, deployed locally in
+FP16. The evaluated scope is limited to four configurations and three seeds,
+yielding 12 completed run units. Each unit has 170 traceable per-query records,
+and the observed parse-failure count is zero. Tables report the mean and sample
+standard deviation over the three seeds.
+
+The final configurations are NER-only: relation types are empty and no
+relation-extraction metric is reported. Zero relation predictions in this
+configuration are not relation-extraction results. The final test package does
+not contain E or E-prime verifier configurations, public-benchmark evaluations,
+$K=1$ or $K=10$ scans, or additional seeds. With only three seeds and no
+hypothesis test, all between-configuration readings in this paper are
+descriptive rather than statistically significant findings.

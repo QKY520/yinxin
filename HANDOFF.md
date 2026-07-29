@@ -44,18 +44,39 @@ human confirmation. JISE's official pages contain a page-limit ambiguity (a
 conservative cost target and requires written clarification before
 formatting/submission.
 
+Latest LaTeX/Overleaf note (2026-07-29): the human explicitly approved JISE
+LaTeX conversion and Overleaf upload/compile guidance, while withholding actual
+submission. A modular Overleaf project now exists under
+`docs/JISE_OVERLEAF_LATEX_20260729/`, with an upload-ready archive at
+`docs/JISE_OVERLEAF_LATEX_20260729.zip`. It uses the official `JISE.sty` and
+`JISEbib.bst` downloaded from the JISE website, retains all author-only
+placeholders, and preserves the locked evidence boundary. Static checks passed
+for all 11 included section files, 17 cited/17 defined bibliography entries,
+labels/references, five tables, required result literals, and archive layout.
+No local PDF was compiled because Windows/WSL had no TeX installation, AutoDL
+SSH was unavailable, and a temporary no-install Tectonic download timed out.
+The first real compile is therefore a human Overleaf action; it is not an
+actual journal submission.
+
 ## 1. What We Are Doing Now
 
 We are preparing a practical SCI-Q4-oriented applied/engineering paper about
 few-shot Chinese equipment-domain NER using a reproducible local-LLM extraction
 pipeline.
 
-Completed latest step (2026-07-28): **GPU-free JISE Markdown submission-package
-preparation**. The package contains the submission-text branch, cover letter,
-author/system metadata, declarations and AI disclosure, editor choices,
+Completed latest step (2026-07-29): **GPU-free JISE LaTeX/Overleaf conversion**.
+The evidence-locked English manuscript has been transferred into the official
+JISE LaTeX structure, split into modular source files, connected to 17
+source-checked BibTeX entries, and packaged for Overleaf upload. The source
+still displays deliberate `[AUTHOR INPUT: ...]` blockers and has not yet
+received its first Overleaf compile or visual proof. No actual submission was
+performed.
+
+Completed preceding step (2026-07-28): **GPU-free JISE Markdown submission-
+package preparation**. The package contains the submission-text branch, cover
+letter, author/system metadata, declarations and AI disclosure, editor choices,
 pre-submission checklist, and an editorial-office query draft. It remains a
-staging package with explicit author-only blockers; no template file or actual
-submission was created.
+staging package with explicit author-only blockers.
 
 Completed preceding step (2026-07-28): **GPU-free screening of three target
 journals and reference-authenticity verification**. The verified candidates
@@ -101,6 +122,11 @@ Do not translate "ready to refine the paper" into "the full P5 matrix passed."
 
 Current editable paper drafts:
 
+- `docs/JISE_OVERLEAF_LATEX_20260729/` (official-template LaTeX/Overleaf
+  project; author placeholders and first Overleaf compile remain pending);
+
+- `docs/JISE_OVERLEAF_LATEX_20260729.zip` (upload-ready Overleaf archive);
+
 - `docs/JISE_SUBMISSION_PACKAGE_20260728/` (current JISE Markdown staging
   package; use its file 01 as the submission-text branch after resolving all
   author placeholders);
@@ -115,8 +141,10 @@ submission-package gates. Before an actual submission, the author still needs
 an institution-level JCR check for the exact journal title/ISSN, including JCR
 year, category, rank, quartile, and the institution's quartile rule, plus the
 author/declaration and journal-policy confirmations recorded in the package.
-The current work does not authorize LaTeX/DOCX conversion, PDF generation,
-journal-template formatting, submission, or any new experiment.
+The approved LaTeX/template-conversion gate is now consumed. The current work
+does not authorize DOCX conversion, actual journal submission, or any new
+experiment. Overleaf compilation and visual proofing are permitted within the
+approved gate, but uploading the resulting PDF to JISE is not.
 
 All generated `.docx` files were deleted on 2026-07-25 at the user's request
 because of rendering/encoding problems. Future writing defaults to UTF-8
@@ -814,11 +842,11 @@ Local:
   `6690d92 p6: record blocked annotation QA2`.
 - Previous QA0 commit:
   `a39a5a2 p6: prepare blinded frozen-gold audit`.
-- GitHub push attempts through 2026-07-28 still failed because the local proxy
-  `127.0.0.1` could not connect. AutoDL SSH is working, so QA2 code,
-  documentation, tests, and lightweight artifacts were synced through the
-  `autodl-paper` alias. The local commits remain unpushed until GitHub
-  connectivity is restored.
+- GitHub push attempts through 2026-07-28 failed because the local proxy
+  `127.0.0.1` could not connect. On 2026-07-29 the human explicitly instructed
+  the agent not to retry GitHub push, pull, or connectivity checks. Keep all
+  work local and attempt GitHub synchronization only when the human explicitly
+  asks to "sync".
 
 Remote:
 
@@ -842,19 +870,23 @@ ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status -
 
 The threshold decision, focused Chinese Markdown refinement, three-journal
 screening, reference-authenticity verification, JISE selection, English
-Markdown conversion, and JISE Markdown submission package are complete. The
-next step is author-side completion of the package; it does not require an
-experiment or GPU. The human/corresponding author should:
+Markdown conversion, JISE Markdown submission package, and official-template
+LaTeX conversion are complete. The immediate next step is the first Overleaf
+compile and visual proof using `docs/JISE_OVERLEAF_LATEX_20260729.zip`; it does
+not require an experiment or GPU. The human/corresponding author should:
 
-1. query the institution's current Journal Citation Reports for JISE and record
+1. upload the ZIP to Overleaf, select `main.tex` and PDFLaTeX, compile, and
+   return the first compile log/PDF observations for template-specific fixes;
+2. query the institution's current Journal Citation Reports for JISE and record
    JCR year, category, rank, quartile, query date, and institutional quartile
    rule;
-2. fill and approve author names/order, affiliations, emails, ORCIDs, funding,
+3. fill and approve author names/order, affiliations, emails, ORCIDs, funding,
    conflicts, CRediT roles, ethics determination, and data/code availability;
-3. run the documented conflict check for Makoto P. Kato and Berlin Chen;
-4. send or adapt the editorial-office query to confirm the 12-versus-25-page
+4. run the documented conflict check for Makoto P. Kato and Berlin Chen;
+5. send or adapt the editorial-office query to confirm the 12-versus-25-page
    wording, all charges, and the disclosed AI-assisted workflow; and
-5. resolve all `[[...]]` blockers in the package.
+6. resolve all `[[...]]` Markdown blockers and all LaTeX
+   `[AUTHOR INPUT: ...]` blockers.
 
 The two screened backups should be checked only if JISE fails the JCR, scope,
 fee, AI-policy, or author-side gate:
@@ -864,13 +896,11 @@ fee, AI-policy, or author-side gate:
 3. Computer Science and Information Systems - second backup.
 
 The public checks confirm SCIE/SCI claims but do not prove current JCR Q4. Do
-not substitute JIF, CiteScore, or SJR quartiles. The bounded English conversion
-and Markdown submission-package gates have been consumed. After all author
-fields and journal-policy questions are resolved, the recommended next agent
-gate is **JISE template conversion and PDF proofing only**. It must be approved
-separately because the present gate did not authorize DOCX, LaTeX, PDF, or
-actual submission. The package references are numbered and source-checked, but
-their final template punctuation and page layout remain pending.
+not substitute JIF, CiteScore, or SJR quartiles. The bounded English,
+submission-package, and LaTeX-conversion gates have been consumed. Overleaf
+compilation and PDF proofing are authorized; actual JISE-system upload and
+submission are not. The package references are source-checked, but their final
+template punctuation and page layout remain pending the first Overleaf compile.
 
 No new experiment or formal test audit is the default next step. Those remain
 optional supplements only if the human explicitly opens a new bounded gate or
@@ -960,12 +990,12 @@ delay the first manuscript-refinement pass.
   needed; prefer cached/replay artifacts when they preserve comparisons.
 - DOCX output caused encoding/rendering trouble in this workflow. Use Markdown
   as the working manuscript format.
-- The current Chinese/English drafts and JISE Markdown package include the
-  accepted fresh-calibration result, explicit dataset-quality caveats, exact P5
-  values, and a consistent claim boundary. The package still needs author
-  identity/declaration completion plus target-specific JCR, fee, AI-policy, and
-  final-format confirmation before any journal-template conversion or
-  submission.
+- The current Chinese/English drafts, JISE Markdown package, and official-style
+  LaTeX/Overleaf project include the accepted fresh-calibration result,
+  explicit dataset-quality caveats, exact P5 values, and a consistent claim
+  boundary. The LaTeX package still needs its first Overleaf compile, author
+  identity/declaration completion, and target-specific JCR, fee, AI-policy,
+  and final-format confirmation before submission.
 - Backups and hashes matter. Never leave the only copy of data/results on the
   AutoDL instance.
 - Every new paid action needs an explicit bounded human gate, even if it seems

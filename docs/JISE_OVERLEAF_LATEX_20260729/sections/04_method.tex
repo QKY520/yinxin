@@ -1,0 +1,54 @@
+\section{METHOD}
+
+\subsection{Structured Few-Shot Extraction}
+
+The extractor receives one query passage and $K$ support examples and returns a
+JSON entity list. Prompt blocks follow a fixed order: task definition, entity
+schema, optional glossary entries, optional RAG evidence, $K$ demonstrations,
+and the query passage. The output instruction requires JSON only. Requests are
+cached by a SHA256 hash of the complete prompt and model-relevant generation
+settings. The parsing ladder strips code fences, attempts structured JSON
+parsing, retries once with a legal-JSON reminder when necessary, and records a
+second failure as no prediction while preserving the raw output.
+
+\subsection{Demonstrations, Glossary, and RAG Evidence}
+
+In fixed-random mode, one $K$-example set is selected from the support split
+according to the run seed. In kNN mode, BGE-M3 \cite{chen2024m3} encodes
+normalized support and query vectors, and FAISS inner-product search retrieves
+the $K$ most similar support examples for each query. For configurations C and
+D, the retrieved example identifiers are replayed from configuration B so that
+B-to-C and C-to-D comparisons isolate glossary and RAG changes, respectively.
+
+The glossary is seeded from project-recorded QAonMilitaryKG terminology and
+high-frequency corpus terms. Entries are matched to a query by substring or
+keyword, with at most 20 injected entries. The RAG corpus is segmented into
+approximately 200--300-character passages. BGE-M3/FAISS first retrieves the top
+20 candidates, \modelname{bge-reranker-v2-m3} reranks them, and the top 3
+evidence passages are inserted into the prompt. RAG is used to constrain
+initial extraction with retrieved context, not as a post-hoc rule filter.
+
+\subsection{Evaluated Configurations}
+
+\begin{table}[ht]
+\caption{Evaluated NER-only configurations.}
+\label{tab:configs}
+\centering
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{>{\centering\arraybackslash}p{0.7cm}p{2.2cm}
+>{\centering\arraybackslash}p{1.3cm}>{\centering\arraybackslash}p{1.2cm}p{4.6cm}}
+\toprule
+Config. & Demonstrations & Glossary & RAG & Isolated comparison \\
+\midrule
+A & Fixed random & No & No & Baseline \\
+B & kNN & No & No & B$-$A: demonstration retrieval \\
+C & kNN replay & Yes & No & C$-$B: glossary injection \\
+D & kNN replay & Yes & Yes & D$-$C: RAG evidence \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The original engineering design also explored self-verification/CoVe variants.
+Their development-set results were negative or mixed, and no positive final
+test evidence exists. They are therefore excluded from the verified method
+contribution and from the final table.

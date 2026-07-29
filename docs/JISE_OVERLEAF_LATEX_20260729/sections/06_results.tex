@@ -1,0 +1,88 @@
+\section{RESULTS AND ANALYSIS}
+
+\begin{table}[ht]
+\caption{Frozen domain-test NER results over seeds 42, 43, and 44 at $K=5$.
+Values are mean $\pm$ sample standard deviation.}
+\label{tab:main-results}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{ccccc}
+\toprule
+Config. & Precision & Recall & F1 & FP count \\
+\midrule
+A & $0.484066\pm0.025428$ & $0.599231\pm0.028904$ & $0.534645\pm0.004375$ & $613.3\pm88.8$ \\
+B & $0.505743\pm0.000234$ & $0.615304\pm0.001816$ & $0.555169\pm0.000880$ & $573.7\pm1.2$ \\
+C & $0.511433\pm0.000472$ & $0.640811\pm0.001210$ & $0.568858\pm0.000769$ & $584.0\pm0.0$ \\
+D & $0.525135\pm0.000000$ & $0.613208\pm0.000000$ & $0.565764\pm0.000000$ & $529.0\pm0.0$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The random seed affects both fixed-random example selection and generation in
+configuration A. Configuration B uses deterministic kNN demonstration
+retrieval, and C/D replay B's demonstration identifiers. Therefore, the larger
+variance in A additionally contains fixed-random demonstration-selection noise,
+whereas B/C/D mainly reflect residual generation or cache-condition variation
+under the recorded setup.
+
+\subsection{kNN Demonstrations and Glossary Injection}
+
+Configuration B improves F1 by 0.020524 over A and reduces the mean
+false-positive count by approximately 39.7. In the present frozen dataset,
+this is descriptive evidence that relevant support examples matter for
+few-shot equipment-domain NER.
+
+Configuration C further improves F1 by 0.013689 over B. Its recall increases
+from 0.615304 to 0.640811, while its mean FP count rises by approximately 10.3.
+Accordingly, the glossary is best interpreted as a domain-coverage and
+recall-oriented component, rather than a false-positive suppression mechanism.
+
+\subsection{RAG Precision and False-Positive Trade-Off}
+
+Configurations C and D are near-tied in F1. C has marginally higher F1 and
+recall (0.568858 and 0.640811) than D (0.565764 and 0.613208). D has higher
+precision, 0.525135 versus 0.511433, and its mean FP count falls from 584.0 to
+529.0. The D-minus-C F1 difference is $-0.003094$, while the mean net FP
+reduction is 55.0.
+
+The appropriate conclusion is thus a trade-off: RAG did not produce the best
+F1 in this comparison, but it shifted the extractor toward a more
+precision-oriented operating point with fewer entity-level false positives.
+No statistical significance test was performed, so the near-tie must not be
+described as evidence that C significantly or substantially outperforms D, nor
+that the numerical difference identifies a stable winner.
+
+\subsection{Qualitative C-versus-D False-Positive Analysis}
+
+To explain the FP trade-off, we compared seed-42 predictions from C and D at
+the per-query level. The analysis considered false-positive entities present in
+C but absent from D and grouped them by their relation to the reference
+annotations. D did not simply remove 55 incorrect entities: it removed or
+avoided 181 C-only false positives and introduced 126 new false positives,
+yielding the net reduction of 55.
+
+\begin{table}[ht]
+\caption{Seed-42 categories of C-only false positives avoided by D.}
+\label{tab:fp-categories}
+\centering
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{p{3.6cm}rp{6.4cm}}
+\toprule
+Category & Count & Interpretation \\
+\midrule
+Unsupported entity & 84 & The predicted span had no exact reference support. \\
+Type or nested-overlap error & 34 & The prediction overlapped a reference entity but had an inconsistent type or nested boundary. \\
+Over-labeled short alias or code & 25 & A short name, code, or common noun was promoted to an entity. \\
+Boundary error & 24 & The prediction overlapped a same-type reference entity but had an imprecise span boundary. \\
+Metric fragment & 14 & A metric-like fragment was not an exact reference \entitytype{METRIC}. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+This seed-42 qualitative evidence is consistent with the precision/FP trade-off
+in Table~\ref{tab:main-results}, but it does not prove the same error mechanism
+for every seed, dataset, model, or entity type. RAG remains an imperfect
+constraint: it can introduce new errors. We therefore describe its observed
+contribution as a net reduction in entity-level false positives and higher
+precision in this scope, not as elimination of hallucination.

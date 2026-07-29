@@ -1,0 +1,102 @@
+\section{DATASET AND TASK DEFINITION}
+
+\subsection{Construction, Split, and Freeze}
+
+We collected 400 candidate passages from public sources: 7 encyclopedia
+passages, 84 patent abstracts, and 309 passages originating from military- or
+equipment-related public text associated with CMNEE source material
+\cite{zhu2024cmnee}. A project-recorded QAonMilitaryKG seed dictionary was used
+only for exact string-match suggestion generation.
+\modelname{Qwen2.5-14B-Instruct-AWQ} was also used in the historical proposal
+workflow to generate review suggestions; neither machine suggestion nor model
+output was accepted as gold by itself.
+
+After human review and structural validation, 250 passages were frozen as
+dataset version v1: 30 support passages, 50 development passages, and 170 test
+passages. The support split is the sole candidate pool for both fixed-random and
+kNN demonstrations. Development data was used before the final test evaluation.
+The frozen test set was used only to evaluate final configurations; it was not
+used to tune prompts, thresholds, schemas, glossary entries, or retrieval
+settings.
+
+The RAG corpus consists of public encyclopedia passages, patent abstracts, and
+glossary entries. It was deduplicated against frozen test texts with a fixed
+8-gram overlap protocol. Thus, test passages do not enter the demonstration
+pool or RAG corpus, and the system does not retrieve the held-out test passage
+itself as evidence.
+
+Freezing the split does not mean that all 170 test passages received mutually
+blind independent double annotation and formal adjudication. Such a complete
+frozen-test annotation chain is unavailable. We therefore do not describe v1
+as fully independently double-annotated human gold, and we do not report a
+frozen-test formal IAA value.
+
+\subsection{Entity Types and Metrics}
+
+\begin{table}[ht]
+\caption{Entity definitions used in the frozen dataset.}
+\label{tab:entity-types}
+\centering
+\begin{tabular}{>{\ttfamily}p{2.3cm}p{8.2cm}}
+\toprule
+\normalfont Entity type & Definition \\
+\midrule
+EQUIPMENT & An equipment item, weapon system, platform, or model name. \\
+MODULE & A component, module, subsystem, or constituent unit. \\
+TECH\_SCHEME & A technical scheme, system, method, or mechanism. \\
+METRIC & A performance metric, parameter, or measurement expression. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+An entity prediction is counted as a true positive only when both its span
+boundary and type exactly match the reference annotation. We report
+entity-level micro precision, recall, and F1, together with the false-positive
+entity count. The latter is a count of incorrect predicted entities. Dividing
+it by all predicted entities would produce an entity-level
+false-discovery-style measure; it is not an open-domain factuality score and is
+not treated as a general hallucination metric in this paper.
+
+\subsection{Fresh Two-Human Non-Test Calibration}
+
+To independently assess the operability of the locked annotation guideline,
+two human annotators independently labeled 20 previously unused non-test
+passages. The passages were not part of the frozen test set. Annotators began
+from blank sheets, received distinct randomized orders and blind identifiers,
+and were compared without modifying, sorting, completing, or adjudicating
+either annotation file. All 20 pairs passed structural checks; there were zero
+structural hard errors and zero blocking review items, and both annotators used
+all four entity types.
+
+Annotators A and B produced 175 and 220 entities, respectively, with 158 exact
+span-plus-type matches. Treating A as the reference for the directional
+precision/recall report gives precision 0.718182, recall 0.902857, and exact
+micro-F1 0.800000; exchanging the reference changes directional precision and
+recall but not F1. Five of 20 passages were exactly identical, while 15
+retained disagreements.
+
+\begin{table}[ht]
+\caption{Fresh two-human calibration on 20 previously unused non-test passages.}
+\label{tab:calibration}
+\centering
+\begin{tabular}{lrrr}
+\toprule
+Entity type & A/B entity count & Exact matches & F1 \\
+\midrule
+\entitytype{EQUIPMENT} & 75/109 & 67 & 0.728261 \\
+\entitytype{MODULE} & 84/94 & 80 & 0.898876 \\
+\entitytype{TECH\_SCHEME} & 6/7 & 1 & 0.153846 \\
+\entitytype{METRIC} & 10/10 & 10 & 1.000000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The overall F1 of 0.8000 exactly met the study's original minimum threshold of
+at least 0.80 and was accepted for progression to manuscript preparation. It
+has no safety margin and did not reach the later, more conservative target of
+at least 0.85. Most importantly, \entitytype{TECH\_SCHEME} F1 is only 0.153846,
+based on 6 and 7 annotations from the two annotators. This reveals substantial
+class ambiguity between technical schemes and physical equipment or modules.
+The result is fresh two-human non-test calibration agreement; it is not
+frozen-test formal IAA and does not establish uniformly reliable agreement
+across all four entity types.

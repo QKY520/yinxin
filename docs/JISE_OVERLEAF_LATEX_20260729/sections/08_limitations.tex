@@ -1,0 +1,28 @@
+\section{LIMITATIONS}
+
+First, the dataset is small: the final test set contains 170 equipment-domain
+passages. The frozen test set lacks full mutually blind double annotation and
+formal adjudication. Although a fresh two-human non-test calibration reached
+exact micro-F1 of 0.8000 and met the original minimum threshold, it did not
+reach the later conservative 0.85 target and cannot substitute for frozen-test
+formal IAA. \entitytype{TECH\_SCHEME} F1 of 0.153846 is the principal
+dataset-quality limitation.
+
+Second, the final ablation covers only A/B/C/D on the self-built domain test
+split at $K=5$ and three seeds, for 12 run units. There are no public-benchmark
+results, $K=1$/$K=10$ scans, or additional seeds. The reported means and sample
+standard deviations describe observed run variation only; they do not justify
+cross-dataset generalization, $K$ robustness, or statistical-significance
+claims.
+
+Third, this is an NER-only experiment. Relation extraction did not enter final
+evaluation, and self-verification/CoVe did not produce positive final test
+evidence. Neither should be interpreted as a verified contribution. Official
+CLUENER test files also lack directly usable offline gold labels, so any future
+public-benchmark extension requires a pre-specified valid evaluation protocol.
+
+Fourth, false-positive entity count is an entity-level extraction-error
+quantity, not an open-domain factuality or broad hallucination metric. The
+qualitative C/D error analysis examines seed 42 only. It is useful for
+interpreting the observed trade-off, but it is insufficient to establish a
+stable error mechanism across seeds, models, or corpora.
