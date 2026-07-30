@@ -13,10 +13,13 @@
 Nothing in this tracker authorizes Python, data processing, prompt generation,
 model/API calls, vLLM, GPU use, `domain_test` access, or any paper edit.
 
-Current gate: `FULL_IE_IMPLEMENTATION_APPROVED` was explicitly granted and
-consumed on 2026-07-30. IE010-IE013 are complete using synthetic fixtures on
-AutoDL no-card mode. This closes F1 but authorizes no later phase. Stop before
-IE020 unless a separate bounded F2 preparation gate is explicitly granted.
+Current gate: `FULL_IE_RELATION_CALIBRATION_PREP_APPROVED` was explicitly
+granted and consumed on 2026-07-30. IE020 is complete using the locked fresh
+20-text non-test entity submissions on AutoDL no-card mode. The A/B relation
+fields remain blank and annotation has not started. Stop before annotation
+unless `FULL_IE_RELATION_CALIBRATION_ANNOTATION_APPROVED` is granted; returned-
+file validation separately requires
+`FULL_IE_RELATION_CALIBRATION_VALIDATION_APPROVED`.
 
 ## Protocol and Implementation
 
@@ -27,8 +30,8 @@ IE020 unless a separate bounded F2 preparation gate is explicitly granted.
 | IE011 | F1 | Implement exact directed triple metrics | Synthetic fixtures | 0 | MUST | DONE | End-to-end exact key, type/FDR/coverage/conditional/zero-relation diagnostics |
 | IE012 | F1 | Extend E/E-prime to relation atoms | Synthetic fixtures | 0 | MUST | DONE | Invalid output keeps atoms; entity drops cascade; legacy NER behavior preserved |
 | IE013 | F1 | Implement aggregation and 60-cell manifest validation | Synthetic fixtures | 0 | MUST | DONE | Literal 30+30 inventory, hashes/statuses/arithmetic, three-seed mean/sample-SD |
-| IE020 | F2 | Prepare non-test relation-calibration sheets | Existing fresh 20-text calibration set | 0 | MUST | PLANNED | Requires separate `FULL_IE_RELATION_CALIBRATION_PREP_APPROVED`; no prior relation/model visibility |
-| IE021 | F2 | Validate relation calibration | Exact directed endpoint/type triples | 0 | MUST | PLANNED | Separate validation approval; report diagnostic, not frozen-test IAA |
+| IE020 | F2 | Prepare non-test relation-calibration sheets | Existing fresh 20-text calibration set | 0 | MUST | DONE | A/B own locked entities only; 20+20 blank relation rows isolated and hash-audited |
+| IE021 | F2 | Validate relation calibration | Exact directed endpoint/type triples | 0 | MUST | PLANNED | Annotation not started; separate annotation and validation approvals; diagnostic, not frozen-test IAA |
 | IE030 | F3 | Freeze domain dev configs | A-E-prime, K=5, seed42 | 6 | MUST | PLANNED | Dev paths only |
 | IE031 | F3 | Build CLUENER support bank and glossary | train_pool only | 0 | MUST | PLANNED | Fixed 30-record bank; record type coverage |
 | IE032 | F3 | Build/dedup CLUENER RAG corpus | labels-stripped train_pool | 0 | MUST | PLANNED | Exclude support/tune/dev overlap |
@@ -115,3 +118,22 @@ Missing report cells = 48
 - Evidence accounting is unchanged: RE and relation-aware E/E-prime are
   implemented but not model-run or evaluated; complete full-IE cells remain
   `0/60` and the existing `12/60` are Stage N only.
+
+## F2 Preparation Closeout
+
+- Gate: `FULL_IE_RELATION_CALIBRATION_PREP_APPROVED` was bounded to IE020 and
+  is consumed. It did not authorize annotation or returned-file validation.
+- Inputs: locked A/B fresh human entity CSV files and the coordinator map were
+  verified against fixed SHA256 values; 20 texts aligned exactly.
+- Outputs: A/B each have 20 independently ordered rows containing only their
+  own locked entities, an index guide, and blank relation fields. Delivery
+  directories exclude the other role and coordinator map.
+- Verification: 6 preparation/audit synthetic tests and all 158 repository
+  tests passed remotely; the real package audit passed with 40/40 relation rows
+  blank and locked entity cells preserved.
+- Backup: remote and local 10-file packages match SHA256; root manifest is
+  `5d2c55c60e24a1cdec12335f567ab5457dd8ee24e1d111ed1692694a48a840a4`.
+- Safety/cost: AutoDL was GPU-free; no `domain_test`, prompt, model/API, vLLM,
+  paper, or GitHub action occurred. Paid GPU cost was `0 CNY`.
+- Evidence accounting remains `0/60`; preparation is not relation evidence.
+  Stop before `FULL_IE_RELATION_CALIBRATION_ANNOTATION_APPROVED`.

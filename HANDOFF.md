@@ -17,8 +17,8 @@ Hard rules in `AGENTS.md` and `AGENT_PLAYBOOK.md` still apply.
 Synchronization note (2026-07-30): `AGENTS.md`, `AGENT_PLAYBOOK.md`,
 `实验实施指导文档_综合版.md`, and this file have been aligned to the latest
 full-IE route decision, accepted `0.8000` calibration decision, current
-claim boundary, full-matrix accounting, F1 implementation closeout, and
-execution red lines.
+claim boundary, full-matrix accounting, F1 implementation closeout, F2
+relation-calibration preparation closeout, and execution red lines.
 
 Latest route decision (2026-07-30): the human wants to expand the project into
 the originally intended complete equipment-domain IE paper rather than submit
@@ -32,7 +32,11 @@ complete. The bounded `FULL_IE_IMPLEMENTATION_APPROVED` gate was subsequently
 granted and consumed using synthetic fixtures on AutoDL no-card mode. It added
 implementation and tests only: no model/API call, vLLM startup, GPU use,
 `domain_test` access, real-data prompt generation, or manuscript propagation
-occurred, and no later phase is authorized.
+occurred, and that gate authorized no later phase. The separate bounded
+`FULL_IE_RELATION_CALIBRATION_PREP_APPROVED` gate was then granted and consumed:
+isolated A/B relation-calibration packages now exist from the locked fresh
+20-text non-test human entity submissions, but all relation fields are blank
+and annotation has not started.
 
 ## 0. Executive Snapshot For A New Session
 
@@ -49,6 +53,9 @@ paper packages; M1 paired audit; M2 G/Z dev baselines; and a design-only
 two-stage full-IE plan plus tracker. The bounded F1 implementation gate is also
 complete: Stage R foundations, exact directed relation metrics, relation-aware
 E/E-prime logic, manifest validation, and synthetic tests are implemented.
+IE020 preparation is complete: two isolated, hash-audited 20-row relation
+calibration packages preserve A/B's own locked entities and blank relation
+fields.
 
 **Current evidence**: A/B/C/D NER F1 is `0.534645`, `0.555169`, `0.568858`, and
 `0.565764`. C/D are an F1 near-tie; D has higher precision and 55 fewer FP.
@@ -56,19 +63,21 @@ This does not support RE, positive CoVe, public generalization, K robustness, or
 full-matrix claims. Human calibration `0.8000` is not frozen-test formal IAA;
 `TECH_SCHEME` F1 is only `0.153846`.
 
-**Current breakpoint**: F1 implementation and synthetic verification are
-complete, but no real-data Stage R or relation-aware verifier run has started.
+**Current breakpoint**: F1 implementation and IE020 relation-calibration
+preparation are complete. Human relation annotation has not started, and no
+real-data Stage R or relation-aware verifier run has started.
 The matrix remains `0/60` complete full-IE cells: 12 domain cells have reusable
 NER-only Stage N outputs, 48 reported cells are absent, and all 30 domain cells
 still need Stage R results. E v1 failed on dev, E v2 was mixed/negative,
 E-prime was never model-run, and E v3 was preparation only.
 
-**Next step**: stop and wait for a separately bounded F2 preparation gate,
-proposed as `FULL_IE_RELATION_CALIBRATION_PREP_APPROVED`. Until that exact gate
-is granted, only documentation, Git, and lightweight read-only inspection are
-allowed. F1 does not authorize relation calibration, support/dev/test prompt
-generation, model/API/vLLM calls, GPU use, experimental runs, manuscript edits,
-or GitHub synchronization.
+**Next step**: stop and wait for
+`FULL_IE_RELATION_CALIBRATION_ANNOTATION_APPROVED`. That gate may authorize only
+independent human completion of the already prepared role-specific sheets.
+Returned-file validation still requires the separate
+`FULL_IE_RELATION_CALIBRATION_VALIDATION_APPROVED` gate. Neither preparation nor
+annotation authorizes support/dev/test prompt generation, model/API/vLLM calls,
+GPU use, experimental runs, manuscript edits, or GitHub synchronization.
 
 **Red lines**: never run project Python locally on Windows; never tune from
 frozen test; preserve every negative row; never call E-prime failed; never
@@ -191,6 +200,25 @@ runner gate enforcement, and legacy NER compatibility are covered. No frozen
 data, real-data prompt, model/API/vLLM, GPU, or paper artifact was used. This is
 implemented infrastructure, not RE, CoVe, public-generalization, or matrix
 evidence. Paid-GPU cost was `0 CNY`.
+
+Completed latest step (2026-07-30): **bounded no-card F2 relation-calibration
+preparation (IE020)**. The gate used only the fixed fresh 20-text non-test human
+entity submissions: A SHA256 `6906142d...5f8877`, B SHA256
+`40428a8e...b732e`, and coordinator map SHA256 `6a902ab6...64e18`. Each
+annotator's delivery has 20 rows in that annotator's existing blind order, only
+that annotator's locked entity JSON plus an index guide, and three blank
+relation fields. A/B delivery directories are physically isolated from each
+other and from the coordinator-only map.
+
+The preparation/audit suite passed `6/6`; the full remote repository suite
+passed `158/158`. The real-package read-only audit passed with 20 aligned texts,
+40/40 blank relation rows, different A/B orders, exact locked-entity-cell
+preservation, isolated inventories, and zero forbidden filename hits. Remote
+and local 10-file copies match SHA256. The root package manifest is
+`5d2c55c60e24a1cdec12335f567ab5457dd8ee24e1d111ed1692694a48a840a4`;
+see `docs/FULL_IE_RELATION_CALIBRATION_PREPARATION_20260730.md`. No annotation,
+returned-file scoring, `domain_test`, prompt, model/API/vLLM, GPU, paper, or
+GitHub action occurred. Cost was `0 CNY`; evidence remains `0/60` full-IE cells.
 
 Completion accounting for a new session:
 
@@ -329,14 +357,15 @@ because of rendering/encoding problems. Future writing defaults to UTF-8
 Markdown unless the user explicitly asks otherwise.
 
 No further Python execution, paid GPU, vLLM launch, dry-run, model/API call,
-frozen-test prompt generation, real-data prompt generation, calibration work,
-frozen-data correction, aggregation, re-evaluation, baseline run, or new
-experiment is currently authorized. The fresh annotation, validation, M1
-aggregation, M2 G/protocol-freeze, M2 Z execution/closeout, and full-IE F1
-implementation gates are consumed. The next possible step is the separately
-bounded GPU-free F2 preparation gate described in Section 7. LaTeX was
-deliberately not changed; any result propagation into a manuscript requires a
-later, separate approval after result-to-claim.
+frozen-test prompt generation, real-data prompt generation, returned-file
+validation, frozen-data correction, aggregation, re-evaluation, baseline run,
+or new experiment is currently authorized. The fresh entity annotation and
+validation, M1 aggregation, M2 G/protocol-freeze, M2 Z execution/closeout,
+full-IE F1 implementation, and IE020 preparation gates are consumed. The next
+possible step is independent human relation annotation under the separately
+bounded gate described in Section 7. LaTeX was deliberately not changed; any
+result propagation into a manuscript requires a later, separate approval after
+result-to-claim.
 
 ## 2. What Is Already Completed
 
@@ -1043,6 +1072,7 @@ Use these as the paper-facing evidence base:
 - `docs/P6_QA1R_FRESH_CALIBRATION_ANNOTATION_START_20260727.md`
 - `docs/P6_QA1R_FRESH_CALIBRATION_VALIDATION_20260727.md`
 - `docs/M1_PAIRED_EVIDENCE_AUDIT_20260729.md`
+- `docs/FULL_IE_RELATION_CALIBRATION_PREPARATION_20260730.md`
 - `refine-logs/m1_paired_evidence_20260729/`
 - `docs/M2_BASELINE_PREPARATION_20260729.md`
 - `refine-logs/m2_domain_dev_g_exact_glossary_20260729/`
@@ -1070,9 +1100,9 @@ P0 paper repair already completed:
 - All Python, tests, data processing, inference, evaluation, and aggregation
   must run on AutoDL through SSH alias `autodl-paper`.
 - Until a new gate is approved, current work is local documentation/Git and
-  lightweight read-only inspection only. `FULL_IE_IMPLEMENTATION_APPROVED` is
-  consumed; its Python/tests ran on AutoDL GPU-free/no-card mode, never on
-  Windows.
+  lightweight read-only inspection only. `FULL_IE_IMPLEMENTATION_APPROVED` and
+  `FULL_IE_RELATION_CALIBRATION_PREP_APPROVED` are consumed; their Python/tests
+  ran on AutoDL GPU-free/no-card mode, never on Windows.
 - Use paid GPU only for model inference/training and only after explicit human
   approval for one bounded step.
 - After every GPU phase: stop vLLM, verify GPU memory returns to 0 MiB, back up,
@@ -1088,6 +1118,9 @@ P0 paper repair already completed:
 - Do not distribute any coordinator map to annotators. The prior 24-row human
   calibration gate is consumed; do not edit or rescore those same rows as a new
   independent round.
+- The new relation-calibration A/B sheets are prepared but unstarted. Do not
+  deliver both roles together, fill any relation field, compare sheets, or
+  validate returned files before their exact separate gates.
 - Guideline v4 is locked. Do not use the lock gate to generate or start a
   fresh calibration round; that requires
   `P6_QA1R_FRESH_CALIBRATION_PREP_APPROVED`.
@@ -1167,10 +1200,12 @@ Remote:
 - Project venv: `/root/autodl-tmp/venvs/equipment-ie`
 - Status verified during F1 closeout on 2026-07-30: remote Git HEAD remains
   `863c701`. The eight approved implementation/test files were manually synced
-  for no-card testing; the remote worktree also retains pre-existing manually
-  synced modified/untracked P6 files because GitHub sync is unavailable. Do not
-  clean or reset that worktree, and do not overwrite its divergent handoff.
-- Last verified mode during F1 closeout on 2026-07-30: GPU-free/no-card
+  for no-card testing. Five IE020 code/test/guideline files were later manually
+  synced for no-card preparation and audit; the remote worktree also retains
+  pre-existing manually synced modified/untracked P6 files because GitHub sync
+  is unavailable. Do not clean or reset that worktree, and do not overwrite its
+  divergent handoff.
+- Last verified mode during IE020 closeout on 2026-07-30: GPU-free/no-card
   (`nvidia-smi -L` returned `No devices found` and `/dev/nvidia0` was absent),
   with no vLLM, Qwen, extraction, or verifier process. Confirm again before any
   later remote action.
@@ -1185,31 +1220,34 @@ ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status -
 
 The route decision is complete: pursue the minimum defensible full-IE extension
 and retain the narrow JISE NER package as fallback. The design and inventory are
-prepared, and the bounded F1 implementation gate is complete and consumed.
-There are still `0/60` complete full-IE cells, so stop here. A new session must
-not infer experimental authority from tested infrastructure or from the user's
-general desire to complete IE.
+prepared, and the bounded F1 implementation and IE020 material-preparation gates
+are complete and consumed. There are still `0/60` complete full-IE cells, so
+stop here. A new session must not infer annotation, validation, or experimental
+authority from prepared files or from the user's general desire to complete IE.
 
-### Next proposed bounded gate: F2 relation-calibration preparation
+### Next proposed bounded gate: F2 human relation annotation
 
-No F2 action is currently authorized. The human must explicitly approve a
-separate gate, proposed as `FULL_IE_RELATION_CALIBRATION_PREP_APPROVED`, before
-the agent prepares blinded relation-only calibration sheets from the fixed
-previously unused non-test text pool. Preparation and returned-annotation
-validation should remain separate approvals. The exact gate must restate data
-scope, annotator independence, outputs, and the prohibition on frozen test,
-models/APIs/vLLM, GPU, paper edits, final configs, and GitHub synchronization.
+IE020 preparation is complete; it did not authorize either annotator to begin.
+The human must explicitly approve
+`FULL_IE_RELATION_CALIBRATION_ANNOTATION_APPROVED` before the coordinator
+delivers A only the A directory and B only the B directory. Both annotators must
+independently complete all 20 rows without discussion, AI/LLM, coordinator map,
+the other role's entities, dev gold, prior relations, model output, or
+intermediate scoring. The four read-only columns must not change.
 
-Until that approval, the agent may perform only documentation, Git, and
-lightweight read-only inspection. It must not execute the newly implemented
-Stage R or relation-aware verifier on real records, generate support/dev/test
-prompts, initiate annotation, or enter F3/F4. The F1 code is infrastructure,
-not evidence that RE or CoVe works.
+After both completed sheets are returned and independently SHA256-locked, stop
+again. Parsing, structural checks, cross-annotator comparison, exact directed
+relation diagnostics, or reconciliation require the separate
+`FULL_IE_RELATION_CALIBRATION_VALIDATION_APPROVED` gate. Until annotation is
+approved, the agent may perform only documentation, Git, and lightweight read-
+only inspection. It must not edit the sheets, execute Stage R or the relation-
+aware verifier on real records, generate support/dev/test prompts, or enter
+F3/F4.
 
 ### Later sequence: planned, not authorized
 
-1. F2: under separate preparation and validation approvals, prepare and
-   complete fresh two-human non-test relation calibration; disclose it as
+1. F2: under separate annotation and validation approvals, complete and score
+   the prepared two-human non-test relation calibration; disclose it as
    calibration, not frozen-test formal IAA.
 2. F3: freeze domain-dev and CLUENER-tune resources/configs without test access.
 3. F4: run one bounded paid domain-dev IE sanity and CLUENER-tune sanity; allow
