@@ -10,27 +10,25 @@ and aggregation. Use a paid GPU boot only for model inference or training.
 After every GPU phase: verify outputs, back up, sync lightweight artifacts to
 `D:\yinsir`, report cost, and remind the human to shut down the instance.
 
-**CURRENT GATE (2026-07-27)**: The live status is maintained in `HANDOFF.md`.
-P0/P1/P2 are complete, the self-built domain split is frozen, P3/P4 domain-dev
-sanity is complete, and the bounded P5 `domain_test` A/B/C/D K=5 seeds
-42/43/44 block is complete. P6 quality repair produced a fresh, structurally
-valid 20-passage non-test calibration independently completed by two humans:
-exact span+type micro-F1 is `0.8000`. The human explicitly accepted the
-original `>=0.80` minimum as passing and closed the QA issue for the current
-paper route. The later conservative v4 target `>=0.85` was not met, and this
-result is not frozen-test formal IAA; `TECH_SCHEME` F1 is only `0.153846`.
-Result-to-claim remains `partial`: the supported claim is narrow low-label
-Chinese equipment-domain NER, not full IE, RE, CoVe, public-benchmark
-generalization, K-scan robustness, or a complete P5 matrix. The scoped
-experiment package is closed for manuscript writing. The current task is
-GPU-free refinement of the Markdown paper and pre-submission claim/evidence
-audit. No further paid GPU, vLLM, dry-run, model call, new experiment, or
-frozen-test prompt generation is authorized without a new explicit bounded
-human gate. The original full matrix is technically possible as a later
-expansion, but it is neither complete nor the default next step. The user's
-total project budget target is 400 CNY; the last reported 4090 price is 2.7
-CNY/hour. The real host and port live only in the user's local SSH config; use
-the non-secret alias `autodl-paper` in project files and commands.
+**CURRENT GATE (2026-07-30)**: The live status is maintained in `HANDOFF.md`.
+P0/P1/P2, domain freeze, P3/P4 dev sanity, the bounded P5 `domain_test`
+A/B/C/D K=5 seeds 42/43/44 NER block, P6 human calibration, manuscript
+preparation, M1 paired audit, and M2 dev baselines are complete. Current
+result-to-claim remains `partial`: only narrow low-label Chinese
+equipment-domain NER is supported. RE, CoVe gains, public generalization, K
+robustness, and a complete matrix are not current evidence. The human has now
+selected the original full-IE expansion as the target; the narrow JISE NER
+package remains a fallback. A two-stage Stage N + Stage R plan and 60-cell
+tracker exist under `refine-logs/FULL_IE_MINIMUM_*_20260730.md`, but the route
+decision is not execution authority. The immediate state is documentation-only
+while waiting for explicit `FULL_IE_IMPLEMENTATION_APPROVED`. If granted, that
+single gate permits only AutoDL no-card implementation of Stage R, exact
+directed relation metrics, relation-aware E/E-prime, manifest validation, and
+synthetic tests. It still forbids `domain_test`, real-data prompt generation,
+model/API/vLLM calls, GPU use, paper edits, and GitHub sync. The user's total
+project budget target is 400 CNY; the last reported 4090 price is 2.7 CNY/hour.
+The real host and port live only in the user's local SSH config; use the
+non-secret alias `autodl-paper` in project files and commands.
 
 ## Execution Authority
 
@@ -87,7 +85,7 @@ Project workflow mapping:
 | Check evidence before claims | `$result-to-claim` | Decide which claims are supported and identify missing evidence before paper writing |
 | Refine extra ablations | `$ablation-planner` | Use only after main results and result-to-claim; preserve the fixed clean comparisons in this file |
 | Build paper outline | `$paper-plan` | Convert verified results and limitations into a claims-evidence outline |
-| Draft final manuscript | `$paper-writing` | Plain GPU-free Markdown refinement is current; workflow branches requiring model calls, secondary review, LaTeX, or a venue template need explicit approval |
+| Draft final manuscript | `$paper-writing` | The narrow manuscript is a fallback; do not invoke paper rewriting for planned full-IE claims until final evidence and a separate paper gate exist |
 
 Generic Skill defaults are overridden as follows:
 
@@ -141,6 +139,13 @@ the broader design, but they are not supported positive contributions in the
 current manuscript. Never promote the original goal into a completed-result
 claim.
 
+Route update (2026-07-30): the human selected a minimum defensible full-IE
+extension as the target and retained the narrow manuscript as fallback. The
+selected design is two-stage: preserve/reuse Stage N NER outputs, then run a
+relation-only Stage R over predicted entities. This changes the planned next
+work, not the current evidence. No manuscript may claim full IE until the
+dev-first protocol, final matrix, aggregation, and result-to-claim gates pass.
+
 ## Paper Strategy Lock - 2026-07-20
 
 The user clarified and approved the publication target and practical objective:
@@ -178,6 +183,11 @@ Current paper-facing framing, updated 2026-07-27:
    CoVe, public generalization, K sensitivity, significance, and the full
    A..E-prime matrix are not supported current contributions.
 
+Selected extension target, updated 2026-07-30: complete 30 domain cells with
+NER plus end-to-end exact directed relation metrics, complete 30 gold-bearing
+CLUENER NER cells, retain E/E-prime even if negative, and run result-to-claim
+before rewriting the manuscript. This is a target inventory, not a result.
+
 ## Key Research Context
 
 - **Primary language/domain**: Chinese equipment and military-technology text.
@@ -201,13 +211,13 @@ Current paper-facing framing, updated 2026-07-27:
 
 ## Current Priority And State
 
-Current step: **Paper-writing / pre-submission preparation, GPU-free only**.
-The experiment evidence is sufficient for a narrow SCI-Q4-oriented applied NER
-paper draft, but it is not a complete P5 matrix. The human accepted the fresh
-two-human non-test calibration F1 `0.8000` under the original minimum and asked
-to proceed with paper refinement. Preserve the stricter validator result
-(`0.85` not met), the `TECH_SCHEME` limitation, and the absence of formal
-frozen-test IAA.
+Current step: **full-IE planning complete; waiting for the bounded no-card F1
+implementation gate**. Until `FULL_IE_IMPLEMENTATION_APPROVED` is explicitly
+granted, only documentation, Git, and lightweight read-only inspection are
+allowed. The narrow SCI-Q4-oriented NER draft remains valid fallback evidence,
+but it is not a complete P5/IE matrix. Preserve the accepted fresh human
+calibration F1 `0.8000`, the stricter `0.85` miss, the `TECH_SCHEME` limitation,
+and the absence of formal frozen-test IAA.
 
 - Local workspace: `D:\yinsir`.
 - Git repository: `main` tracks `origin/main`. As of the latest handoff, local
@@ -314,8 +324,9 @@ frozen-test IAA.
   complete, leaving at least 48 model cells. A strict full-IE interpretation
   would additionally require a dev-first relation-enabled protocol/reruns;
   CLUENER also needs a valid labeled evaluation protocol because official test
-  gold is unavailable. This work is technically feasible but not authorized or
-  recommended before the current manuscript audit.
+  gold is unavailable. The human has selected this expansion, but only the plan
+  exists: all 30 domain cells still need Stage R, and no implementation or run
+  is authorized until its exact bounded gate is approved.
 - Current paper artifacts are Markdown, not DOCX. All generated `.docx` files
   under the project docs were deleted on 2026-07-25 at the user's request after
   encoding/rendering problems. The current editable draft is
@@ -332,8 +343,10 @@ frozen-test IAA.
 Stop for explicit approval before any further paid GPU work, vLLM launch, model
 call, P5 E/E-prime, CLUENER run, K=1/K=10 scan, more seeds, dry-run, or any
 operation that reads frozen `domain_test` to produce new prompts/config outputs.
-The allowed current work is GPU-free manuscript editing, documentation, and
-lightweight artifact inspection.
+Before `FULL_IE_IMPLEMENTATION_APPROVED`, the allowed current work is
+documentation, Git, and lightweight read-only artifact inspection. That F1
+gate, if granted, is AutoDL no-card synthetic implementation only and does not
+authorize any item in the preceding stop list or any manuscript edit.
 
 ## Fixed Technology Decisions
 
@@ -606,8 +619,9 @@ statements in `results/summary.md`.
 
 - Aggregate results, verify backups, report best config, largest F1 contributor,
   largest hallucination reducer, total cost, and open questions.
-- Current status: result-to-claim and fresh human calibration review are
-  complete for the narrow route; manuscript refinement is now in progress.
+- Current status: result-to-claim, fresh human calibration, and manuscript
+  preparation are complete for the narrow fallback. The selected full-IE route
+  is waiting for its no-card F1 implementation gate.
 
 ### P7 - Optional QLoRA
 
@@ -771,14 +785,14 @@ Before any GPU job:
 
 ## Cost And Fallback Rules
 
-- Verify the live 4090 price; the documents estimate about 2.08 CNY/hour.
+- Verify the live 4090 price; the last reported price is 2.7 CNY/hour.
 - Use GPU-free mode whenever the GPU is not actively needed.
-- Approaching 300 CNY cumulative spend: stop and report spend plus remaining plan.
-- Absolute planned ceiling: 500 CNY unless the human approves more.
+- Stop for a new decision before additional full-IE spend exceeds 300 CNY or
+  total project spend approaches the current 400 CNY target.
 - If 14B improves few-shot F1 by less than 2 points, use 7B thereafter.
 - If E versus A reduces hallucination rate by less than 10 percentage points,
-  shrink RAG chunks, use type-specific glossary injection, refine verification
-  questions, and rerun only D/E/E-prime where cache permits.
+  diagnose and revise only on dev under a new gate; never use frozen-test
+  results to shrink RAG chunks, alter glossary injection, or tune verification.
 - On RTX 4090 OOM: lower GPU-memory utilization to 0.85, then reduce max model
   length, then use the available AWQ model. Propose A40/A800 only after those
   steps and wait for cost approval.

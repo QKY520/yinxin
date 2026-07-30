@@ -14,10 +14,65 @@ chat history. Read these files before doing any project work:
 If older docs conflict with this file on status chronology, this file is newer.
 Hard rules in `AGENTS.md` and `AGENT_PLAYBOOK.md` still apply.
 
-Synchronization note (2026-07-27): `AGENTS.md`, `AGENT_PLAYBOOK.md`,
-`实验实施指导文档_综合版.md`, and this file have been aligned to the same
-paper-writing status, accepted `0.8000` calibration decision, claim boundary,
-full-matrix feasibility assessment, and execution red lines.
+Synchronization note (2026-07-30): `AGENTS.md`, `AGENT_PLAYBOOK.md`,
+`实验实施指导文档_综合版.md`, and this file have been aligned to the latest
+full-IE route decision, accepted `0.8000` calibration decision, current
+claim boundary, full-matrix accounting, and execution red lines.
+
+Latest route decision (2026-07-30): the human wants to expand the project into
+the originally intended complete equipment-domain IE paper rather than submit
+the current narrow NER manuscript as though it were full IE. The current
+NER/JISE manuscript and submission package remain a valid fallback, but they
+must not be updated with planned IE claims or invented results. A minimum
+defensible two-stage extension plan and tracker now exist at
+`refine-logs/FULL_IE_MINIMUM_EXPERIMENT_PLAN_20260730.md` and
+`refine-logs/FULL_IE_MINIMUM_EXPERIMENT_TRACKER_20260730.md`. Planning is
+complete enough to define the next gate; no implementation, Python, model/API
+call, vLLM startup, GPU use, `domain_test` access, real-data prompt generation,
+or manuscript propagation has been authorized by this route decision.
+
+## 0. Executive Snapshot For A New Session
+
+**Task**: extend the existing low-label Chinese equipment-domain NER project
+into the minimum defensible full IE paper: domain NER+RE, E/E-prime and CoVe,
+K=1/5/10 sensitivity, a gold-bearing CLUENER NER protocol, the literal 60-cell
+matrix, paired aggregation, and result-to-claim. The completed narrow JISE NER
+package is a fallback, not the target claim.
+
+**Completed**: P0/P1/P2 and the frozen 30/50/170 domain split; P3/P4 dev sanity;
+12 frozen P5 domain-test NER Stage N cells (A/B/C/D, K=5, seeds 42/43/44); fresh
+two-human non-test entity calibration F1 `0.8000`; narrow Chinese/English/JISE
+paper packages; M1 paired audit; M2 G/Z dev baselines; and a design-only
+two-stage full-IE plan plus tracker.
+
+**Current evidence**: A/B/C/D NER F1 is `0.534645`, `0.555169`, `0.568858`, and
+`0.565764`. C/D are an F1 near-tie; D has higher precision and 55 fewer FP.
+This does not support RE, positive CoVe, public generalization, K robustness, or
+full-matrix claims. Human calibration `0.8000` is not frozen-test formal IAA;
+`TECH_SCHEME` F1 is only `0.153846`.
+
+**Current breakpoint**: planning and handoff synchronization only. No Stage R,
+relation metric, relation-aware verifier, config, prompt, model run, or paper
+propagation has started. The matrix remains 12 NER-only Stage N cells out of 60
+reported cells; 48 reported cells are absent and all 30 domain cells need Stage
+R. E v1 failed on dev, E v2 was mixed/negative, E-prime was never model-run,
+and E v3 was preparation only.
+
+**Next step**: wait for explicit `FULL_IE_IMPLEMENTATION_APPROVED`. That gate
+may authorize only AutoDL no-card implementation of Stage R, exact directed
+relation metrics, relation-aware E/E-prime, 60-cell manifest validation, and
+synthetic tests. It may not read `domain_test`, generate real-data prompts,
+call a model/API/vLLM, use a GPU, edit a manuscript, or sync GitHub. Stop after
+implementation verification and a local Git commit; every later phase needs a
+new gate.
+
+**Red lines**: never run project Python locally on Windows; never tune from
+frozen test; preserve every negative row; never call E-prime failed; never
+rewrite the `0.8000` provenance; do not modify/delete/execute the five untracked
+P6 user scripts; do not clean/reset the dirty remote worktree; use only SSH
+alias `autodl-paper`; and after every future paid phase stop vLLM, verify GPU
+release, back up, sync lightweight artifacts, report cost, and remind the human
+to switch off paid hardware.
 
 Latest paper-preparation note (2026-07-28): after the approved GPU-free
 target-journal screening and reference-authenticity audit, the human selected
@@ -91,9 +146,46 @@ B001 and B003 are complete; B002/B004 remain unauthorized.
 
 ## 1. What We Are Doing Now
 
-We are preparing a practical SCI-Q4-oriented applied/engineering paper about
-few-shot Chinese equipment-domain NER using a reproducible local-LLM extraction
-pipeline.
+We are transitioning from a submission-ready narrow NER fallback to a planned
+SCI-Q4-oriented **full information extraction (NER+RE) extension**. The target
+is the original 60-cell A/B/C/D/E/E-prime matrix across the domain set and a
+gold-bearing CLUENER NER protocol, with K sensitivity and honest CoVe rows.
+Current evidence is still NER-only, so the paper must retain its narrow claims
+until the new experiments are complete and audited.
+
+Completed latest planning step (2026-07-30): **minimum defensible full-IE
+extension design**. The proposed implementation is two-stage: Stage N preserves
+the frozen NER extractor and reuses the 12 existing A/B/C/D K=5 three-seed NER
+outputs by hash; Stage R receives the source text plus Stage N predicted
+entities and predicts only directed `USES`, `HAS_METRIC`, and `PART_OF`
+relations. Domain reporting uses end-to-end exact directed relation-triple
+micro P/R/F1. E verifies D entity and relation atoms; E-prime verifies C atoms;
+deleting an entity also deletes its incident relations. This plan is recorded
+in the two `FULL_IE_MINIMUM_*_20260730.md` files. It is a plan, not execution
+authority.
+
+Completion accounting for a new session:
+
+- the literal matrix contains 60 reported cells: 30 domain and 30 CLUENER;
+- 12 cells currently have valid NER Stage N only, so 48 reported cells are
+  absent and none of the 30 domain cells has a valid Stage R result;
+- adding only domain K=5 E/E-prime would complete that narrow six-row NER block
+  at 18/18, but the overall matrix would still be only 18/60, with 42 reported
+  cells absent and domain RE still incomplete;
+- domain gold contains 74 support, 133 dev, and 427 test relations;
+- CLUENER official test has no offline gold; the planned final public
+  evaluation is the complete labeled official dev split (1,343 rows), with a
+  frozen train-derived support/glossary/RAG protocol.
+
+Historical verifier evidence must be understood precisely. E v1 and E v2 ran
+only as NER verification sanity on `domain_dev50`, K=5, seed 42. E v1 was a
+clear method failure: F1 fell from D's `0.5415` to `0.4264`, and 18/20 audited
+drops were wrong. E v2 repaired the catastrophic over-deletion but remained a
+mixed/negative result: F1 `0.5367` versus D `0.5415`, with 7/13 wrong drops,
+5/13 correct drops, and 1/13 unclear. E-prime was prepared but never executed
+with model calls. E v3 was prompt/dry-run preparation only and is not evidence.
+The future relation-aware E/E-prime implementation is therefore a new dev-first
+protocol and must not reuse v1/v2 as though they passed.
 
 Completed latest step (2026-07-30): **M2 dev baseline audit and closeout**. G
 is a very weak exact-glossary lower bound on `domain_dev50` (F1 `0.014706`,
@@ -192,26 +284,30 @@ Current editable paper drafts:
 - `docs/EQUIPMENT_IE_PAPER_DRAFT_V3_REVIEW_POLISH_20260725.md`
 
 The human selected JISE and completed the bounded English-Markdown and Markdown
-submission-package gates. Before an actual submission, the author still needs
+submission-package gates. That package is now the narrow NER fallback while the
+full-IE extension is pursued. Before any eventual submission, the author still needs
 an institution-level JCR check for the exact journal title/ISSN, including JCR
 year, category, rank, quartile, and the institution's quartile rule, plus the
 author/declaration and journal-policy confirmations recorded in the package.
 The approved LaTeX/template-conversion gate is now consumed. The current work
-does not authorize DOCX conversion, actual journal submission, or any new
-experiment. Overleaf compilation and visual proofing are permitted within the
-approved gate, but uploading the resulting PDF to JISE is not.
+does not authorize DOCX conversion, actual journal submission, implementation,
+or any new experiment. Do not edit the manuscript to describe full IE until
+verified results exist. Overleaf compilation and visual proofing are permitted
+within the prior gate, but uploading the resulting PDF to JISE is not.
 
 All generated `.docx` files were deleted on 2026-07-25 at the user's request
 because of rendering/encoding problems. Future writing defaults to UTF-8
 Markdown unless the user explicitly asks otherwise.
 
-No paid GPU, vLLM launch, dry-run, model call, frozen-test prompt generation,
-further calibration editing/comparison, re-annotation, adjudication,
-frozen-data correction, additional aggregation, re-evaluation, baseline run,
-or new experiment is currently authorized. The fresh annotation, validation,
-M1 aggregation, M2 G/protocol-freeze, and M2 Z execution/closeout gates are
-consumed. LaTeX was deliberately not changed after M1/M2; any result
-propagation into LaTeX requires the human's next explicit approval.
+No Python execution, paid GPU, vLLM launch, dry-run, model/API call, frozen-test
+prompt generation, real-data prompt generation, further calibration work,
+frozen-data correction, implementation, aggregation, re-evaluation, baseline
+run, or new experiment is currently authorized. The fresh annotation,
+validation, M1 aggregation, M2 G/protocol-freeze, and M2 Z execution/closeout
+gates are consumed. The next possible step is the separately bounded GPU-free
+F1 implementation gate described in Section 7. LaTeX was deliberately not
+changed after M1/M2; any result propagation into any manuscript requires a
+later, separate approval after result-to-claim.
 
 ## 2. What Is Already Completed
 
@@ -864,10 +960,24 @@ Not supported by current evidence:
 - supervised-SOTA-style claims;
 - any claim that C significantly beats D.
 
+Target after the newly selected extension, **not a current claim**:
+
+- reproducible two-stage domain NER+RE with exact directed relation metrics;
+- complete A/B/C/D/E/E-prime K=5 comparisons and pre-specified A/E K scans;
+- relation-aware CoVe evaluated as a potentially positive or negative ablation;
+- public NER portability on the complete labeled CLUENER dev split; and
+- paired uncertainty and result-to-claim analysis over the complete inventory.
+
+Completing rows does not guarantee that RE, CoVe, RAG, glossary injection, or K
+robustness will be positive. Only observed results and intervals can support a
+benefit claim. Until that evidence exists, the current `partial` verdict and
+narrow NER wording continue to control every paper-facing statement.
+
 Paper positioning:
 
-- Main task: NER.
-- RE: auxiliary background only unless new dev-first evidence is created later.
+- Current demonstrated task: NER.
+- Selected target task: full domain IE, with NER primary and RE formally
+  evaluated as an auxiliary evidence line after dev-first validation.
 - Contribution style: applied/reproducible engineering pipeline plus small
   equipment-domain dataset and honest ablation evidence.
 - Target: one-month SCI-Q4-oriented manuscript route, Chinese draft first and
@@ -876,6 +986,11 @@ Paper positioning:
 ## 4. Current Paper And Review Artifacts
 
 Use these as the paper-facing evidence base:
+
+- `refine-logs/FULL_IE_MINIMUM_EXPERIMENT_PLAN_20260730.md` (planning only;
+  authoritative full-IE scope and gates, not paper evidence)
+- `refine-logs/FULL_IE_MINIMUM_EXPERIMENT_TRACKER_20260730.md` (planning only;
+  cell inventory and status)
 
 - `docs/JISE_SUBMISSION_PACKAGE_20260728/`
 - `docs/JISE_ENGLISH_MANUSCRIPT_DRAFT_V1_20260728.md`
@@ -925,7 +1040,9 @@ P0 paper repair already completed:
   lightweight artifact checks.
 - All Python, tests, data processing, inference, evaluation, and aggregation
   must run on AutoDL through SSH alias `autodl-paper`.
-- Use AutoDL GPU-free/no-card mode for current work.
+- Until a new gate is approved, current work is local documentation/Git only.
+  If `FULL_IE_IMPLEMENTATION_APPROVED` is explicitly granted, implementation
+  and tests must run on AutoDL GPU-free/no-card mode, never on Windows.
 - Use paid GPU only for model inference/training and only after explicit human
   approval for one bounded step.
 - After every GPU phase: stop vLLM, verify GPU memory returns to 0 MiB, back up,
@@ -933,8 +1050,10 @@ P0 paper repair already completed:
   to shut down or switch to no-card mode.
 - Never use `domain_test` for prompt tuning, glossary tuning, RAG tuning,
   threshold changes, or verification tuning.
-- Do not run E/E-prime, CLUENER, K=1/K=10, full P5, more seeds, dry-runs, model
-  calls, or new `domain_test` prompt generation without a new explicit gate.
+- Do not implement or run Stage R, E/E-prime, CLUENER, K=1/K=10, full P5, more
+  seeds, dry-runs, model calls, or new `domain_test` prompt generation without
+  the exact next bounded gate. The F1 implementation gate, if granted, permits
+  synthetic fixtures only and still forbids every model/final-evaluation action.
 - Do not distribute any coordinator map to annotators. The prior 24-row human
   calibration gate is consumed; do not edit or rescore those same rows as a new
   independent round.
@@ -957,9 +1076,10 @@ P0 paper repair already completed:
 - Never overwrite frozen `v1`. Any corrected gold must be independently
   adjudicated, versioned as `v2`, re-frozen, and assigned new hashes.
 - Preserve negative and mixed results; do not rerun them away.
-- The scoped experiment package is closed for manuscript writing, but the full
-  P5 gate remains incomplete. Never write that all planned experiments or the
-  entire A..E-prime matrix passed.
+- The narrow experiment package is closed and retained as a fallback. The
+  selected full-IE extension remains planning-only and incomplete. Never write
+  that all planned experiments, RE, CoVe, public generalization, or the entire
+  A..E-prime matrix passed.
 - The real AutoDL host/port/passwords live only in the user's local SSH config.
   Use only the alias `autodl-paper` in docs and commands.
 
@@ -981,7 +1101,11 @@ Local:
   intentionally paused. The M2 closeout artifacts and Z hash-verified package
   are captured by the local closeout commit. M1 analysis code, focused tests,
   report, and output directory remain untracked for a later separately scoped
-  commit.
+  commit. The generic untracked `refine-logs/EXPERIMENT_PLAN.md` and
+  `refine-logs/EXPERIMENT_TRACKER.md` belong to the earlier evidence-
+  strengthening route; do not mistake them for the live full-IE plan, delete
+  them, or commit them without a separate decision. The dated
+  `FULL_IE_MINIMUM_EXPERIMENT_*_20260730.md` pair is the current route plan.
   Five user-owned annotation helper scripts remain untracked:
   `p6_annotate_complete.py`, `p6_cal_b_annotate.py`,
   `p6_cal_b_annotate_v4.py`, `p6_complete_annotate.py`, and
@@ -1022,83 +1146,87 @@ ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status -
 
 ## 7. Recommended Next Step
 
-The threshold decision, focused Chinese Markdown refinement, three-journal
-screening, reference-authenticity verification, JISE selection, English
-Markdown conversion, JISE Markdown submission package, official-template
-LaTeX conversion, the bounded M1 audit, and the dev-only M2 G/Z baseline audit
-are complete. The user reported that the first Overleaf compile appears clean;
-the compile log/PDF proof and author-only fields are still human-owned tasks.
+The route decision is complete: pursue the minimum defensible full-IE extension
+and retain the narrow JISE NER package as fallback. The design and inventory are
+prepared, but **no implementation gate has been granted**. A new session must
+not infer execution authority from the existence of the plan or from the user's
+general desire to complete IE.
 
-The recommended next machine step is a separately approved GPU-free
-paper-facing evidence propagation audit. It should decide exactly where the M1
-intervals and M2 dev-only diagnostics belong in the English Markdown and JISE
-LaTeX manuscript, preserve G/Z outside the frozen-test A/B/C/D result table,
-and keep all cross-split comparisons explicitly descriptive. This current
-closeout gate does not authorize that edit. B002/B004 frozen-test baseline
-scoring, a new independently annotated/adjudicated holdout, or any other new
-experiment remains optional and requires a separate bounded human gate.
+### Immediate bounded gate: F1 implementation
 
-The human/corresponding author should separately:
+Human action: explicitly approve the following exact scope before any code or
+remote Python work:
 
-1. retain the first Overleaf compile log/PDF proof and report any template-
-   specific warnings or visual issues before layout edits;
-2. query the institution's current Journal Citation Reports for JISE and record
-   JCR year, category, rank, quartile, query date, and institutional quartile
-   rule;
-3. fill and approve author names/order, affiliations, emails, ORCIDs, funding,
-   conflicts, CRediT roles, ethics determination, and data/code availability;
-4. run the documented conflict check for Makoto P. Kato and Berlin Chen;
-5. send or adapt the editorial-office query to confirm the 12-versus-25-page
-   wording, all charges, and the disclosed AI-assisted workflow; and
-6. resolve all `[[...]]` Markdown blockers and all LaTeX
-   `[AUTHOR INPUT: ...]` blockers.
+> 批准无卡执行“FULL-IE F1 实现门禁” (`FULL_IE_IMPLEMENTATION_APPROVED`)：仅在
+> AutoDL 无卡模式实现 Stage R、exact relation metrics、relation-aware E/E′、
+> 60-cell manifest validation 和合成单元测试；不读取 domain_test、不生成真实数据
+> prompt、不运行模型/API/vLLM、不使用 GPU、不修改论文、不进行 GitHub sync。
 
-The two screened backups should be checked only if JISE fails the JCR, scope,
-fee, AI-policy, or author-side gate:
+After that approval only, the agent should:
 
-1. Journal of Information Science and Engineering - current first choice;
-2. KSII Transactions on Internet and Information Systems - first backup;
-3. Computer Science and Information Systems - second backup.
+1. re-read the four authority documents and inspect local/remote Git status;
+2. confirm AutoDL is in no-card mode with no vLLM/model process;
+3. implement Stage R, exact directed relation metrics, relation-aware E/E-prime,
+   config/manifest validation, and focused aggregation interfaces;
+4. test only with synthetic fixtures on AutoDL, including malformed triples,
+   directionality, duplicates, invalid verifier answers, entity-drop relation
+   cascades, and legacy NER compatibility;
+5. verify that old NER-only behavior is unchanged and that no `domain_test`
+   path, real-data prompt artifact, model/API call, or paper file was touched;
+6. sync only the approved lightweight code/test artifacts back to `D:\yinsir`,
+   commit them locally, report verification and cost (`0` paid GPU), and stop.
 
-The public checks confirm SCIE/SCI claims but do not prove current JCR Q4. Do
-not substitute JIF, CiteScore, or SJR quartiles. The bounded English,
-submission-package, and LaTeX-conversion gates have been consumed. Overleaf
-compilation and PDF proofing are authorized; actual JISE-system upload and
-submission are not. The package references are source-checked, but their final
-template punctuation and page layout remain pending local retention and visual
-audit of the first Overleaf PDF/log.
+This F1 gate does not authorize relation calibration, support/dev data prompt
+generation, paid dev sanity, final evaluation, E/E-prime model calls, CLUENER,
+K scans, manuscript edits, or GitHub synchronization.
 
-No new experiment is currently authorized. The M2 G, Z, and closeout gates are
-fully consumed. Frozen-test baseline scoring, formal test audit, K scans,
-holdout evaluation, model-backed writing/review, external API use, and
-secondary-agent review remain unauthorized.
+### Later sequence: planned, not authorized
 
-### Full-Matrix Feasibility
+1. F2: separately prepare and complete fresh two-human non-test relation
+   calibration; disclose it as calibration, not frozen-test formal IAA.
+2. F3: freeze domain-dev and CLUENER-tune resources/configs without test access.
+3. F4: run one bounded paid domain-dev IE sanity and CLUENER-tune sanity; allow
+   at most one dev-only protocol revision.
+4. F5/F6: freeze hashes and prepare leakage-safe replay artifacts in no-card
+   mode under separate gates.
+5. F7: run the 30 domain final cells in bounded paid batches, reusing the 12
+   existing Stage N outputs and adding Stage R.
+6. F8: run the 30 CLUENER NER cells on complete labeled official dev.
+7. F9: aggregate, perform paired uncertainty/result-to-claim, then request a
+   separate manuscript-propagation gate.
 
-The original written matrix is technically feasible as a future project, but
-it is not a simple completion of a few rows:
+The plan estimates `125-295 CNY` of additional paid compute, with large
+uncertainty because Stage R and atomic verification have not been benchmarked.
+Stop for a new budget decision before additional spend exceeds 300 CNY or the
+project total approaches the existing 400 CNY target. Platform billing is
+authoritative.
 
-- original contract: 60 model cells (36 K=5 cells plus 24 A/E K-scan cells);
-- completed: 12 `domain_test` A/B/C/D K=5 cells;
-- remaining: at least 48 model cells;
-- the completed domain cells are NER-only, so a strict full-IE claim also needs
-  a dev-first relation-enabled protocol and new runs;
-- CLUENER official test has no offline gold and needs a locked valid evaluation
-  protocol before any run;
-- E verifier variants were negative or mixed on dev, while E-prime remains
-  uncompleted; any future verifier rows must be preserved honestly and never
-  test-tuned into positive results.
+### Full-matrix accounting
 
-Thus full-matrix work is possible only after a new bounded plan defines the
-exact cells, evaluation protocol, estimated time/cost, stopping rules, and
-paper claim it would support. It is not currently authorized and should not
-delay the first manuscript-refinement pass.
+- original contract: 60 reported cells = 30 domain + 30 CLUENER;
+- existing: 12 domain A/B/C/D K=5 cells with NER Stage N only;
+- absent: 48 reported cells;
+- required RE work: all 30 domain cells need Stage R;
+- after adding only K=5 E/E-prime NER rows: 18/60 reported cells, 42 still
+  absent, and the domain relation table still incomplete;
+- CLUENER official unlabeled test is never offline gold; use the locked labeled
+  dev protocol only after its own tune/resource freeze;
+- E v1/v2 are preserved negative/mixed NER dev evidence, E-prime is unexecuted,
+  and relation-aware verification has not yet been implemented or evaluated.
+
+The JISE author/JCR/fee/AI-policy/template blockers remain valid but are not the
+immediate machine step while the full-IE extension is being pursued. Actual
+journal submission remains unauthorized.
 
 ## 8. Lessons Worth Remembering
 
-- The project is now paper-first, not experiment-first.
-- The experiment package is closed for the narrow domain NER submission claim;
-  it is not a completed full-matrix IE experiment.
+- The human has selected a full-IE extension; the narrow NER/JISE package is a
+  fallback, not permission to describe the current evidence as full IE.
+- A route decision or experiment plan is not an execution gate. Every no-card,
+  paid-dev, final-evaluation, aggregation, and paper-propagation phase still
+  needs its own bounded approval.
+- The existing narrow experiment package is closed and reproducible, but it is
+  not a completed full-matrix IE experiment.
 - The fresh human calibration solved the immediate `>=0.80` credibility gate
   for proceeding with the paper. It did not create frozen-test formal IAA or
   erase class-specific ambiguity.
@@ -1156,8 +1284,21 @@ delay the first manuscript-refinement pass.
 - P5 A/B/C/D were NER-only configs (`schema.task: ner`, empty relation types);
   zero relation predictions are expected and are not evidence that RE failed as
   a tested module.
-- Verification v1/v2 over-killed or failed to beat D on dev. Keep it as a
-  limitation/negative result unless new evidence is produced.
+- Verification E v1 was a clear dev method failure (`0.4264` F1 versus D
+  `0.5415`; 18/20 audited drops wrong). E v2 was mixed/negative (`0.5367`;
+  7/13 wrong drops, 5/13 correct, 1/13 unclear). E-prime never received model
+  calls, and E v3 was preparation only. Never summarize all of them as “E and
+  E-prime both failed.”
+- CoVe is deletion-only in the current design: it cannot recover missed
+  entities or repair boundaries/types. It improves F1 only when dropped units
+  are overwhelmingly false positives. For future relation-aware verification,
+  dropping an entity also removes incident relations, so over-deletion has a
+  larger error cascade.
+- Completing all 60 rows proves evaluation completeness, not positive module
+  gains. Negative RE, CoVe, RAG, glossary, public-transfer, or K-sensitivity
+  findings must remain visible and control the final claims.
+- The 12 frozen A/B/C/D K=5 outputs can reuse Stage N by hash, but none counts
+  as a full-IE cell until Stage R and exact directed relation metrics exist.
 - AutoDL no-card mode may have tight memory limits. Avoid loading BGE-M3 unless
   needed; prefer cached/replay artifacts when they preserve comparisons.
 - DOCX output caused encoding/rendering trouble in this workflow. Use Markdown

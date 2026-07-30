@@ -1,5 +1,36 @@
 # Findings
 
+## 2026-07-30 - Full-IE Route Decision And Verifier Evidence
+
+- The human selected a minimum defensible full-IE extension; the narrow NER/JISE
+  package remains a fallback and must not be presented as completed IE.
+- Planning artifacts:
+  `refine-logs/FULL_IE_MINIMUM_EXPERIMENT_PLAN_20260730.md` and
+  `refine-logs/FULL_IE_MINIMUM_EXPERIMENT_TRACKER_20260730.md`.
+- Proposed architecture: preserve/reuse Stage N NER outputs, then run a
+  relation-only Stage R over predicted entities. Domain RE uses end-to-end exact
+  directed relation-triple micro P/R/F1. Relation-aware E verifies D; E-prime
+  verifies C; dropping an entity removes its incident relations.
+- Accounting: 60 reported cells total; 12 have valid NER Stage N only, 48 are
+  absent, and all 30 domain cells still need Stage R. Adding only domain K=5
+  E/E-prime would leave the project at 18/60 reported cells with 42 absent.
+- Historical E evidence is NER dev sanity, not final test or relation-aware
+  verification. E v1 was clearly negative: F1 `0.4264` versus D `0.5415`, with
+  18/20 audited drops wrong. E v2 was mixed/negative: F1 `0.5367`, with 7/13
+  drops wrong, 5/13 correct, and 1/13 unclear. E-prime was never executed with
+  model calls; E v3 was preparation only.
+- CoVe is deletion-only. It cannot recover false negatives or repair entity
+  boundaries/types, and relation-aware over-deletion also removes incident
+  relations. A positive claim requires a dev drop audit with at least 70%
+  genuine errors among deleted units; below 50% stops the positive route.
+- Current authorization: planning/documentation only. The next possible gate is
+  `FULL_IE_IMPLEMENTATION_APPROVED`, limited to AutoDL no-card Stage R/metric/
+  verifier implementation and synthetic tests. It does not authorize data
+  prompts, `domain_test`, model/API/vLLM/GPU use, paper edits, or GitHub sync.
+- Completing the matrix guarantees only evaluation completeness. Positive RE,
+  CoVe, RAG, glossary, public-transfer, or K-robustness claims still depend on
+  observed results and uncertainty; all negative rows must be retained.
+
 ## 2026-07-25 - P5 Domain A/B/C/D Result-To-Claim Verdict
 
 - Verdict: `partial`
