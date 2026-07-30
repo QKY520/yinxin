@@ -17,7 +17,8 @@ Hard rules in `AGENTS.md` and `AGENT_PLAYBOOK.md` still apply.
 Synchronization note (2026-07-30): `AGENTS.md`, `AGENT_PLAYBOOK.md`,
 `实验实施指导文档_综合版.md`, and this file have been aligned to the latest
 full-IE route decision, accepted `0.8000` calibration decision, current
-claim boundary, full-matrix accounting, and execution red lines.
+claim boundary, full-matrix accounting, F1 implementation closeout, and
+execution red lines.
 
 Latest route decision (2026-07-30): the human wants to expand the project into
 the originally intended complete equipment-domain IE paper rather than submit
@@ -27,9 +28,11 @@ must not be updated with planned IE claims or invented results. A minimum
 defensible two-stage extension plan and tracker now exist at
 `refine-logs/FULL_IE_MINIMUM_EXPERIMENT_PLAN_20260730.md` and
 `refine-logs/FULL_IE_MINIMUM_EXPERIMENT_TRACKER_20260730.md`. Planning is
-complete enough to define the next gate; no implementation, Python, model/API
-call, vLLM startup, GPU use, `domain_test` access, real-data prompt generation,
-or manuscript propagation has been authorized by this route decision.
+complete. The bounded `FULL_IE_IMPLEMENTATION_APPROVED` gate was subsequently
+granted and consumed using synthetic fixtures on AutoDL no-card mode. It added
+implementation and tests only: no model/API call, vLLM startup, GPU use,
+`domain_test` access, real-data prompt generation, or manuscript propagation
+occurred, and no later phase is authorized.
 
 ## 0. Executive Snapshot For A New Session
 
@@ -43,7 +46,9 @@ package is a fallback, not the target claim.
 12 frozen P5 domain-test NER Stage N cells (A/B/C/D, K=5, seeds 42/43/44); fresh
 two-human non-test entity calibration F1 `0.8000`; narrow Chinese/English/JISE
 paper packages; M1 paired audit; M2 G/Z dev baselines; and a design-only
-two-stage full-IE plan plus tracker.
+two-stage full-IE plan plus tracker. The bounded F1 implementation gate is also
+complete: Stage R foundations, exact directed relation metrics, relation-aware
+E/E-prime logic, manifest validation, and synthetic tests are implemented.
 
 **Current evidence**: A/B/C/D NER F1 is `0.534645`, `0.555169`, `0.568858`, and
 `0.565764`. C/D are an F1 near-tie; D has higher precision and 55 fewer FP.
@@ -51,20 +56,19 @@ This does not support RE, positive CoVe, public generalization, K robustness, or
 full-matrix claims. Human calibration `0.8000` is not frozen-test formal IAA;
 `TECH_SCHEME` F1 is only `0.153846`.
 
-**Current breakpoint**: planning and handoff synchronization only. No Stage R,
-relation metric, relation-aware verifier, config, prompt, model run, or paper
-propagation has started. The matrix remains 12 NER-only Stage N cells out of 60
-reported cells; 48 reported cells are absent and all 30 domain cells need Stage
-R. E v1 failed on dev, E v2 was mixed/negative, E-prime was never model-run,
-and E v3 was preparation only.
+**Current breakpoint**: F1 implementation and synthetic verification are
+complete, but no real-data Stage R or relation-aware verifier run has started.
+The matrix remains `0/60` complete full-IE cells: 12 domain cells have reusable
+NER-only Stage N outputs, 48 reported cells are absent, and all 30 domain cells
+still need Stage R results. E v1 failed on dev, E v2 was mixed/negative,
+E-prime was never model-run, and E v3 was preparation only.
 
-**Next step**: wait for explicit `FULL_IE_IMPLEMENTATION_APPROVED`. That gate
-may authorize only AutoDL no-card implementation of Stage R, exact directed
-relation metrics, relation-aware E/E-prime, 60-cell manifest validation, and
-synthetic tests. It may not read `domain_test`, generate real-data prompts,
-call a model/API/vLLM, use a GPU, edit a manuscript, or sync GitHub. Stop after
-implementation verification and a local Git commit; every later phase needs a
-new gate.
+**Next step**: stop and wait for a separately bounded F2 preparation gate,
+proposed as `FULL_IE_RELATION_CALIBRATION_PREP_APPROVED`. Until that exact gate
+is granted, only documentation, Git, and lightweight read-only inspection are
+allowed. F1 does not authorize relation calibration, support/dev/test prompt
+generation, model/API/vLLM calls, GPU use, experimental runs, manuscript edits,
+or GitHub synchronization.
 
 **Red lines**: never run project Python locally on Windows; never tune from
 frozen test; preserve every negative row; never call E-prime failed; never
@@ -153,7 +157,7 @@ gold-bearing CLUENER NER protocol, with K sensitivity and honest CoVe rows.
 Current evidence is still NER-only, so the paper must retain its narrow claims
 until the new experiments are complete and audited.
 
-Completed latest planning step (2026-07-30): **minimum defensible full-IE
+Completed preceding planning step (2026-07-30): **minimum defensible full-IE
 extension design**. The proposed implementation is two-stage: Stage N preserves
 the frozen NER extractor and reuses the 12 existing A/B/C/D K=5 three-seed NER
 outputs by hash; Stage R receives the source text plus Stage N predicted
@@ -163,6 +167,30 @@ micro P/R/F1. E verifies D entity and relation atoms; E-prime verifies C atoms;
 deleting an entity also deletes its incident relations. This plan is recorded
 in the two `FULL_IE_MINIMUM_*_20260730.md` files. It is a plan, not execution
 authority.
+
+Completed latest step (2026-07-30): **bounded no-card F1 implementation**.
+The approved implementation uses fixed relation-only prompt/resource contracts,
+an approved directed relation matrix, exact end-to-end triple metrics,
+relation-aware deletion-only verification, entity-to-relation cascade removal,
+and literal 30-domain plus 30-CLUENER manifest validation. The approved files
+are:
+
+- `src/equipment_ie/full_ie.py`;
+- `src/equipment_ie/full_ie_manifest.py`;
+- `scripts/run_stage_r.py`;
+- `scripts/run_full_ie_verification.py`;
+- `scripts/validate_full_ie_manifest.py`;
+- `tests/test_full_ie.py`;
+- `tests/test_full_ie_manifest.py`; and
+- `tests/test_full_ie_runners.py`.
+
+On AutoDL no-card mode, 28 new synthetic full-IE tests and 38 focused legacy
+extraction/verification/schema tests passed (`66/66`). Invalid triples,
+direction errors, duplicates, invalid verifier output, entity-drop cascades,
+runner gate enforcement, and legacy NER compatibility are covered. No frozen
+data, real-data prompt, model/API/vLLM, GPU, or paper artifact was used. This is
+implemented infrastructure, not RE, CoVe, public-generalization, or matrix
+evidence. Paid-GPU cost was `0 CNY`.
 
 Completion accounting for a new session:
 
@@ -184,7 +212,8 @@ drops were wrong. E v2 repaired the catastrophic over-deletion but remained a
 mixed/negative result: F1 `0.5367` versus D `0.5415`, with 7/13 wrong drops,
 5/13 correct drops, and 1/13 unclear. E-prime was prepared but never executed
 with model calls. E v3 was prompt/dry-run preparation only and is not evidence.
-The future relation-aware E/E-prime implementation is therefore a new dev-first
+The new relation-aware E/E-prime code has passed synthetic tests but has not
+been model-run or evaluated. Any future execution remains a new dev-first
 protocol and must not reuse v1/v2 as though they passed.
 
 Completed latest step (2026-07-30): **M2 dev baseline audit and closeout**. G
@@ -299,14 +328,14 @@ All generated `.docx` files were deleted on 2026-07-25 at the user's request
 because of rendering/encoding problems. Future writing defaults to UTF-8
 Markdown unless the user explicitly asks otherwise.
 
-No Python execution, paid GPU, vLLM launch, dry-run, model/API call, frozen-test
-prompt generation, real-data prompt generation, further calibration work,
-frozen-data correction, implementation, aggregation, re-evaluation, baseline
-run, or new experiment is currently authorized. The fresh annotation,
-validation, M1 aggregation, M2 G/protocol-freeze, and M2 Z execution/closeout
-gates are consumed. The next possible step is the separately bounded GPU-free
-F1 implementation gate described in Section 7. LaTeX was deliberately not
-changed after M1/M2; any result propagation into any manuscript requires a
+No further Python execution, paid GPU, vLLM launch, dry-run, model/API call,
+frozen-test prompt generation, real-data prompt generation, calibration work,
+frozen-data correction, aggregation, re-evaluation, baseline run, or new
+experiment is currently authorized. The fresh annotation, validation, M1
+aggregation, M2 G/protocol-freeze, M2 Z execution/closeout, and full-IE F1
+implementation gates are consumed. The next possible step is the separately
+bounded GPU-free F2 preparation gate described in Section 7. LaTeX was
+deliberately not changed; any result propagation into a manuscript requires a
 later, separate approval after result-to-claim.
 
 ## 2. What Is Already Completed
@@ -989,8 +1018,8 @@ Use these as the paper-facing evidence base:
 
 - `refine-logs/FULL_IE_MINIMUM_EXPERIMENT_PLAN_20260730.md` (planning only;
   authoritative full-IE scope and gates, not paper evidence)
-- `refine-logs/FULL_IE_MINIMUM_EXPERIMENT_TRACKER_20260730.md` (planning only;
-  cell inventory and status)
+- `refine-logs/FULL_IE_MINIMUM_EXPERIMENT_TRACKER_20260730.md` (live cell
+  inventory and F1 implementation status; not experimental evidence)
 
 - `docs/JISE_SUBMISSION_PACKAGE_20260728/`
 - `docs/JISE_ENGLISH_MANUSCRIPT_DRAFT_V1_20260728.md`
@@ -1040,9 +1069,10 @@ P0 paper repair already completed:
   lightweight artifact checks.
 - All Python, tests, data processing, inference, evaluation, and aggregation
   must run on AutoDL through SSH alias `autodl-paper`.
-- Until a new gate is approved, current work is local documentation/Git only.
-  If `FULL_IE_IMPLEMENTATION_APPROVED` is explicitly granted, implementation
-  and tests must run on AutoDL GPU-free/no-card mode, never on Windows.
+- Until a new gate is approved, current work is local documentation/Git and
+  lightweight read-only inspection only. `FULL_IE_IMPLEMENTATION_APPROVED` is
+  consumed; its Python/tests ran on AutoDL GPU-free/no-card mode, never on
+  Windows.
 - Use paid GPU only for model inference/training and only after explicit human
   approval for one bounded step.
 - After every GPU phase: stop vLLM, verify GPU memory returns to 0 MiB, back up,
@@ -1050,10 +1080,11 @@ P0 paper repair already completed:
   to shut down or switch to no-card mode.
 - Never use `domain_test` for prompt tuning, glossary tuning, RAG tuning,
   threshold changes, or verification tuning.
-- Do not implement or run Stage R, E/E-prime, CLUENER, K=1/K=10, full P5, more
-  seeds, dry-runs, model calls, or new `domain_test` prompt generation without
-  the exact next bounded gate. The F1 implementation gate, if granted, permits
-  synthetic fixtures only and still forbids every model/final-evaluation action.
+- Do not run Stage R or relation-aware E/E-prime on real data, or run CLUENER,
+  K=1/K=10, full P5, more seeds, dry-runs, model calls, or new `domain_test`
+  prompt generation without the exact next bounded gate. The consumed F1 gate
+  permitted synthetic fixtures only and still authorizes no model or final-
+  evaluation action.
 - Do not distribute any coordinator map to annotators. The prior 24-row human
   calibration gate is consumed; do not edit or rescore those same rows as a new
   independent round.
@@ -1077,9 +1108,9 @@ P0 paper repair already completed:
   adjudicated, versioned as `v2`, re-frozen, and assigned new hashes.
 - Preserve negative and mixed results; do not rerun them away.
 - The narrow experiment package is closed and retained as a fallback. The
-  selected full-IE extension remains planning-only and incomplete. Never write
-  that all planned experiments, RE, CoVe, public generalization, or the entire
-  A..E-prime matrix passed.
+  selected full-IE extension now has tested infrastructure but remains
+  experimentally incomplete. Never write that all planned experiments, RE,
+  CoVe, public generalization, or the entire A..E-prime matrix passed.
 - The real AutoDL host/port/passwords live only in the user's local SSH config.
   Use only the alias `autodl-paper` in docs and commands.
 
@@ -1091,6 +1122,9 @@ Local:
 - Branch: `main`
 - Git remote: `https://github.com/QKY520/yinxin.git`
 - Git identity for this repo: `yly <714520833@qq.com>`
+- The F1 closeout adds only the eight approved Stage R/manifest runner and test
+  files listed in Section 1, this handoff, and the dated full-IE tracker. It
+  leaves all untracked P6, M1, M2, and old-plan artifacts untouched.
 - JISE Markdown submission-package commit:
   `d5ba7ca docs: prepare JISE submission package`.
 - JISE-oriented English working-draft commit:
@@ -1131,12 +1165,15 @@ Remote:
 - Remote code: `/root/project`
 - Remote data/model/backup root: `/root/autodl-tmp`
 - Project venv: `/root/autodl-tmp/venvs/equipment-ie`
-- Status verified after M2 closeout on 2026-07-30: remote Git HEAD is `863c701`; the
-  remote worktree contains manually synced modified/untracked P6 files because
-  GitHub sync is unavailable. Do not clean or reset that worktree.
-- Last verified mode after M2 closeout on 2026-07-30: GPU-free/no-card
-  (`No devices were found`), with no vLLM or extraction process. Confirm again
-  before doing anything remote.
+- Status verified during F1 closeout on 2026-07-30: remote Git HEAD remains
+  `863c701`. The eight approved implementation/test files were manually synced
+  for no-card testing; the remote worktree also retains pre-existing manually
+  synced modified/untracked P6 files because GitHub sync is unavailable. Do not
+  clean or reset that worktree, and do not overwrite its divergent handoff.
+- Last verified mode during F1 closeout on 2026-07-30: GPU-free/no-card
+  (`nvidia-smi -L` returned `No devices found` and `/dev/nvidia0` was absent),
+  with no vLLM, Qwen, extraction, or verifier process. Confirm again before any
+  later remote action.
 
 Useful no-Python status command:
 
@@ -1148,42 +1185,32 @@ ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status -
 
 The route decision is complete: pursue the minimum defensible full-IE extension
 and retain the narrow JISE NER package as fallback. The design and inventory are
-prepared, but **no implementation gate has been granted**. A new session must
-not infer execution authority from the existence of the plan or from the user's
+prepared, and the bounded F1 implementation gate is complete and consumed.
+There are still `0/60` complete full-IE cells, so stop here. A new session must
+not infer experimental authority from tested infrastructure or from the user's
 general desire to complete IE.
 
-### Immediate bounded gate: F1 implementation
+### Next proposed bounded gate: F2 relation-calibration preparation
 
-Human action: explicitly approve the following exact scope before any code or
-remote Python work:
+No F2 action is currently authorized. The human must explicitly approve a
+separate gate, proposed as `FULL_IE_RELATION_CALIBRATION_PREP_APPROVED`, before
+the agent prepares blinded relation-only calibration sheets from the fixed
+previously unused non-test text pool. Preparation and returned-annotation
+validation should remain separate approvals. The exact gate must restate data
+scope, annotator independence, outputs, and the prohibition on frozen test,
+models/APIs/vLLM, GPU, paper edits, final configs, and GitHub synchronization.
 
-> 批准无卡执行“FULL-IE F1 实现门禁” (`FULL_IE_IMPLEMENTATION_APPROVED`)：仅在
-> AutoDL 无卡模式实现 Stage R、exact relation metrics、relation-aware E/E′、
-> 60-cell manifest validation 和合成单元测试；不读取 domain_test、不生成真实数据
-> prompt、不运行模型/API/vLLM、不使用 GPU、不修改论文、不进行 GitHub sync。
-
-After that approval only, the agent should:
-
-1. re-read the four authority documents and inspect local/remote Git status;
-2. confirm AutoDL is in no-card mode with no vLLM/model process;
-3. implement Stage R, exact directed relation metrics, relation-aware E/E-prime,
-   config/manifest validation, and focused aggregation interfaces;
-4. test only with synthetic fixtures on AutoDL, including malformed triples,
-   directionality, duplicates, invalid verifier answers, entity-drop relation
-   cascades, and legacy NER compatibility;
-5. verify that old NER-only behavior is unchanged and that no `domain_test`
-   path, real-data prompt artifact, model/API call, or paper file was touched;
-6. sync only the approved lightweight code/test artifacts back to `D:\yinsir`,
-   commit them locally, report verification and cost (`0` paid GPU), and stop.
-
-This F1 gate does not authorize relation calibration, support/dev data prompt
-generation, paid dev sanity, final evaluation, E/E-prime model calls, CLUENER,
-K scans, manuscript edits, or GitHub synchronization.
+Until that approval, the agent may perform only documentation, Git, and
+lightweight read-only inspection. It must not execute the newly implemented
+Stage R or relation-aware verifier on real records, generate support/dev/test
+prompts, initiate annotation, or enter F3/F4. The F1 code is infrastructure,
+not evidence that RE or CoVe works.
 
 ### Later sequence: planned, not authorized
 
-1. F2: separately prepare and complete fresh two-human non-test relation
-   calibration; disclose it as calibration, not frozen-test formal IAA.
+1. F2: under separate preparation and validation approvals, prepare and
+   complete fresh two-human non-test relation calibration; disclose it as
+   calibration, not frozen-test formal IAA.
 2. F3: freeze domain-dev and CLUENER-tune resources/configs without test access.
 3. F4: run one bounded paid domain-dev IE sanity and CLUENER-tune sanity; allow
    at most one dev-only protocol revision.
@@ -1212,7 +1239,8 @@ authoritative.
 - CLUENER official unlabeled test is never offline gold; use the locked labeled
   dev protocol only after its own tune/resource freeze;
 - E v1/v2 are preserved negative/mixed NER dev evidence, E-prime is unexecuted,
-  and relation-aware verification has not yet been implemented or evaluated.
+  and relation-aware verification is synthetically tested but not model-run or
+  evaluated.
 
 The JISE author/JCR/fee/AI-policy/template blockers remain valid but are not the
 immediate machine step while the full-IE extension is being pursued. Actual
@@ -1291,14 +1319,15 @@ journal submission remains unauthorized.
   E-prime both failed.”
 - CoVe is deletion-only in the current design: it cannot recover missed
   entities or repair boundaries/types. It improves F1 only when dropped units
-  are overwhelmingly false positives. For future relation-aware verification,
+  are overwhelmingly false positives. In the implemented relation-aware path,
   dropping an entity also removes incident relations, so over-deletion has a
-  larger error cascade.
+  larger error cascade; this behavior is tested synthetically, not evaluated.
 - Completing all 60 rows proves evaluation completeness, not positive module
   gains. Negative RE, CoVe, RAG, glossary, public-transfer, or K-sensitivity
   findings must remain visible and control the final claims.
-- The 12 frozen A/B/C/D K=5 outputs can reuse Stage N by hash, but none counts
-  as a full-IE cell until Stage R and exact directed relation metrics exist.
+- The 12 frozen A/B/C/D K=5 outputs can reuse Stage N by hash. Stage R and exact
+  directed metric infrastructure now exist, but none of those outputs counts as
+  a full-IE cell until a separately authorized Stage R result is produced.
 - AutoDL no-card mode may have tight memory limits. Avoid loading BGE-M3 unless
   needed; prefer cached/replay artifacts when they preserve comparisons.
 - DOCX output caused encoding/rendering trouble in this workflow. Use Markdown

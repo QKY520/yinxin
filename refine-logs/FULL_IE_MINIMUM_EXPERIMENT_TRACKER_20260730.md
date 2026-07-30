@@ -13,21 +13,22 @@
 Nothing in this tracker authorizes Python, data processing, prompt generation,
 model/API calls, vLLM, GPU use, `domain_test` access, or any paper edit.
 
-Current gate: the full-IE route is selected and the plan is prepared, but
-`FULL_IE_IMPLEMENTATION_APPROVED` is still closed. The next session must stop
-before IE010-IE013 unless that exact bounded gate is explicitly granted.
+Current gate: `FULL_IE_IMPLEMENTATION_APPROVED` was explicitly granted and
+consumed on 2026-07-30. IE010-IE013 are complete using synthetic fixtures on
+AutoDL no-card mode. This closes F1 but authorizes no later phase. Stop before
+IE020 unless a separate bounded F2 preparation gate is explicitly granted.
 
 ## Protocol and Implementation
 
 | Run ID | Milestone | Purpose | Scope | Cells | Priority | Status | Gate / notes |
 | --- | --- | --- | --- | ---: | --- | --- | --- |
-| IE000 | F0 | Confirm two-stage IE design | Plan only | 0 | MUST | PREPARED | Full-IE target selected; implementation gate still closed |
-| IE010 | F1 | Implement Stage R relation-only runner | Synthetic fixtures and legacy metadata only | 0 | MUST | PLANNED | `FULL_IE_IMPLEMENTATION_APPROVED`; AutoDL no-card only |
-| IE011 | F1 | Implement exact directed triple metrics | Synthetic fixtures | 0 | MUST | PLANNED | No project Python locally |
-| IE012 | F1 | Extend E/E-prime to relation atoms | Synthetic fixtures | 0 | MUST | PLANNED | Preserve entity-only legacy behavior |
-| IE013 | F1 | Implement aggregation and 60-cell manifest validation | Synthetic fixtures | 0 | MUST | PLANNED | No frozen evaluation rows |
-| IE020 | F2 | Prepare non-test relation-calibration sheets | Existing fresh 20-text calibration set | 0 | MUST | PLANNED | Separate human gate; no prior relation/model visibility |
-| IE021 | F2 | Validate relation calibration | Exact directed endpoint/type triples | 0 | MUST | PLANNED | Report diagnostic; not frozen-test IAA |
+| IE000 | F0 | Confirm two-stage IE design | Plan only | 0 | MUST | DONE | Full-IE target and literal inventory confirmed |
+| IE010 | F1 | Implement Stage R relation-only runner | Synthetic fixtures and legacy metadata only | 0 | MUST | DONE | Fixed prompt order, replay contract, deterministic skips, and future model gate |
+| IE011 | F1 | Implement exact directed triple metrics | Synthetic fixtures | 0 | MUST | DONE | End-to-end exact key, type/FDR/coverage/conditional/zero-relation diagnostics |
+| IE012 | F1 | Extend E/E-prime to relation atoms | Synthetic fixtures | 0 | MUST | DONE | Invalid output keeps atoms; entity drops cascade; legacy NER behavior preserved |
+| IE013 | F1 | Implement aggregation and 60-cell manifest validation | Synthetic fixtures | 0 | MUST | DONE | Literal 30+30 inventory, hashes/statuses/arithmetic, three-seed mean/sample-SD |
+| IE020 | F2 | Prepare non-test relation-calibration sheets | Existing fresh 20-text calibration set | 0 | MUST | PLANNED | Requires separate `FULL_IE_RELATION_CALIBRATION_PREP_APPROVED`; no prior relation/model visibility |
+| IE021 | F2 | Validate relation calibration | Exact directed endpoint/type triples | 0 | MUST | PLANNED | Separate validation approval; report diagnostic, not frozen-test IAA |
 | IE030 | F3 | Freeze domain dev configs | A-E-prime, K=5, seed42 | 6 | MUST | PLANNED | Dev paths only |
 | IE031 | F3 | Build CLUENER support bank and glossary | train_pool only | 0 | MUST | PLANNED | Fixed 30-record bank; record type coverage |
 | IE032 | F3 | Build/dedup CLUENER RAG corpus | labels-stripped train_pool | 0 | MUST | PLANNED | Exclude support/tune/dev overlap |
@@ -99,3 +100,18 @@ Existing full cells  = 0
 Existing NER stages  = 12 (reusable only after adding Stage R)
 Missing report cells = 48
 ```
+
+## F1 Closeout
+
+- AutoDL mode: GPU-free/no-card; `nvidia-smi -L` returned `No devices found`,
+  `/dev/nvidia0` was absent, and no vLLM/Qwen/extraction/verifier process ran.
+- Verification: 28 new full-IE synthetic tests and 38 focused legacy
+  extraction/verification/schema tests passed (`66/66`).
+- Safety audit: no `domain_test`, support/dev/test prompt artifact, model/API,
+  vLLM, GPU, manuscript, frozen data, or GitHub synchronization was used.
+- Sync audit: approved code/tests have identical local/remote SHA256 values;
+  old NER core and regression-test SHA256 values remain unchanged.
+- Cost: `0 CNY` paid GPU; platform paid resources were not used.
+- Evidence accounting is unchanged: RE and relation-aware E/E-prime are
+  implemented but not model-run or evaluated; complete full-IE cells remain
+  `0/60` and the existing `12/60` are Stage N only.
