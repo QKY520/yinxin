@@ -1,0 +1,84 @@
+run_id: m2-domain-dev50-g-exact-glossary-20260729
+system_name: G_exact_frozen_glossary_alias_matcher
+
+execution:
+  phase: M2_BASELINE_PREP
+  authorized: true
+  human_gate: M2_BASELINE_PREP_APPROVED
+  approval_record: "2026-07-29 human approved the next no-card step: run the deterministic exact-glossary baseline on domain_dev and freeze the schema-only zero-shot protocol; no frozen test, model/vLLM/API call, GPU, or LaTeX edit."
+  model_calls_allowed: false
+  gpu_required: false
+  explicit_exclusions:
+    - domain_test
+    - model_calls
+    - vllm
+    - api_calls
+    - paid_gpu
+    - prompt_or_config_tuning_from_test
+    - latex_edits
+
+data:
+  dataset: domain_dev50
+  query_path: /root/autodl-tmp/data/domain_dev.jsonl
+  expected_records: 50
+  expected_sha256: ade6eda3547349117b5fa212c6567bd76722bb1996844b0de4f2d5a01ffc0c6b
+  forbidden_path_fragments:
+    - domain_test
+
+glossary:
+  path: /root/project/data/domain_dict.jsonl
+  expected_records: 73
+  expected_sha256: 01b857822894bb09268cbb7fb14ad0988630137bb7efae0b9d90f7d75a2f3ef6
+  provenance: "Frozen P3 dictionary; no dev/test label statistics were used to build or change it."
+
+schema:
+  task: ner
+  entity_types:
+    EQUIPMENT: "Complete equipment, weapon platform, system, or model name."
+    MODULE: "Equipment component, subsystem, sensor, payload, or functional module."
+    TECH_SCHEME: "Technical regime, guidance mode, operational/test/improvement scheme, or capability scheme."
+    METRIC: "Numeric indicator, performance parameter, range, speed, weight, time, or quantity expression."
+  relation_types: {}
+
+matching:
+  match_mode: literal_substring
+  case_sensitive: true
+  include_terms: true
+  include_aliases: true
+  min_surface_chars: 2
+  occurrence_policy: all
+  overlap_policy: longest_first_nonoverlap
+  tie_breakers:
+    - surface_length_desc
+    - dictionary_priority_desc
+    - start_offset_asc
+    - surface_lexicographic
+    - entity_type_order
+    - dictionary_row_asc
+  type_order:
+    - EQUIPMENT
+    - MODULE
+    - TECH_SCHEME
+    - METRIC
+  normalization: none
+  fuzzy_matching: false
+
+evaluation:
+  metric: exact_span_plus_type_entity_micro
+  report:
+    - precision
+    - recall
+    - f1
+    - tp
+    - fp
+    - fn
+    - fdr
+    - fp_per_passage
+    - per_type
+    - zero_gold_overlabeling
+
+outputs:
+  predictions: /root/autodl-tmp/backup/m2/m2_domain_dev_g_exact_glossary_20260729/predictions.jsonl
+  per_query: /root/autodl-tmp/backup/m2/m2_domain_dev_g_exact_glossary_20260729/per_query.jsonl
+  summary: /root/autodl-tmp/backup/m2/m2_domain_dev_g_exact_glossary_20260729/summary.json
+  manifest: /root/autodl-tmp/backup/m2/m2_domain_dev_g_exact_glossary_20260729/manifest.json

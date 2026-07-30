@@ -50,6 +50,9 @@ P5_EXECUTION_GATES = frozenset(
     }
 )
 
+M2_EXECUTION_GATE = "M2_DOMAIN_DEV_Z_APPROVED"
+M2_EXECUTION_PHASE = "M2_DOMAIN_DEV_Z_EXECUTION"
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
@@ -119,8 +122,14 @@ def validate_execution_gate(execution: dict[str, Any]) -> None:
         if not phase.startswith("P5"):
             raise RuntimeError("P5 human gate requires execution.phase to start with P5")
         return
+    if human_gate == M2_EXECUTION_GATE:
+        if phase != M2_EXECUTION_PHASE:
+            raise RuntimeError(
+                f"{M2_EXECUTION_GATE} requires execution.phase={M2_EXECUTION_PHASE}"
+            )
+        return
 
-    allowed = sorted(P3_EXECUTION_GATES | P5_EXECUTION_GATES)
+    allowed = sorted(P3_EXECUTION_GATES | P5_EXECUTION_GATES | {M2_EXECUTION_GATE})
     raise RuntimeError(f"non-dry extraction human_gate must be one of: {allowed}")
 
 
@@ -605,7 +614,6 @@ def build_query_plan(
     dict[str, Any],
     dict[str, Any],
 ]:
-    support_records = load_records(config["data"]["support_path"])
     query_records = load_records(config["data"]["query_path"])
     if dry_run:
         max_queries = int(config.get("dry_run", {}).get("max_queries", len(query_records)))
@@ -613,6 +621,31 @@ def build_query_plan(
     example_config = config["examples"]
     select_glossary, glossary_metadata = build_glossary_selector(config)
     select_rag, rag_metadata = build_rag_selector(config)
+    if example_config["mode"] == "none":
+        if int(example_config.get("k", -1)) != 0:
+            raise ValueError("examples.mode=none requires k=0")
+        metadata = {
+            "mode": "none",
+            "k": 0,
+            "seed": int(example_config["seed"]),
+            "example_ids": [],
+        }
+        return (
+            [],
+            query_records,
+            lambda _record: [],
+            select_glossary,
+            select_rag,
+            sha256_file(config_path),
+            metadata,
+            glossary_metadata,
+            rag_metadata,
+        )
+
+    support_path = config["data"].get("support_path")
+    if not isinstance(support_path, str) or not support_path:
+        raise ValueError("non-zero-shot example modes require data.support_path")
+    support_records = load_records(support_path)
     if example_config["mode"] == "fixed_random":
         examples = select_fixed_random_examples(
             support_records,
@@ -730,7 +763,7 @@ def run_dry(config: dict[str, Any], config_path: Path) -> int:
         "config_sha256": config_hash,
         "dataset": config["data"]["dataset"],
         "query_path": config["data"]["query_path"],
-        "support_path": config["data"]["support_path"],
+        "support_path": config["data"].get("support_path"),
         "query_records": len(query_records),
         "example_selection": example_metadata,
         "glossary_selection": glossary_metadata,

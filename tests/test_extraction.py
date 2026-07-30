@@ -187,6 +187,27 @@ class ExtractionTest(unittest.TestCase):
             }
         )
 
+    def test_validate_execution_gate_accepts_m2_domain_dev_z_gate(self) -> None:
+        validate_execution_gate(
+            {
+                "authorized": True,
+                "model_calls_allowed": True,
+                "phase": "M2_DOMAIN_DEV_Z_EXECUTION",
+                "human_gate": "M2_DOMAIN_DEV_Z_APPROVED",
+            }
+        )
+
+    def test_validate_execution_gate_rejects_m2_gate_for_other_phase(self) -> None:
+        with self.assertRaisesRegex(RuntimeError, "requires execution.phase"):
+            validate_execution_gate(
+                {
+                    "authorized": True,
+                    "model_calls_allowed": True,
+                    "phase": "M2_OTHER",
+                    "human_gate": "M2_DOMAIN_DEV_Z_APPROVED",
+                }
+            )
+
     def test_validate_execution_gate_requires_model_calls_allowed(self) -> None:
         with self.assertRaisesRegex(RuntimeError, "model_calls_allowed"):
             validate_execution_gate(

@@ -1,0 +1,50 @@
+{
+  "config_sha256": "b73066c4fbb405fa63603da53dfff7885ebbadb1975cde48df9529df1288f107",
+  "elapsed_seconds": 160.59,
+  "entity_micro": {
+    "f1": 0.42153846153846153,
+    "fn": 170,
+    "fp": 206,
+    "precision": 0.39941690962099125,
+    "recall": 0.44625407166123776,
+    "tp": 137
+  },
+  "example_selection": {
+    "example_ids": [],
+    "k": 0,
+    "mode": "none",
+    "seed": 42
+  },
+  "generated_at": "2026-07-29T11:57:28.967965+00:00",
+  "glossary_selection": {
+    "enabled": false
+  },
+  "parse_failure_rate": 0.0,
+  "parse_failures": 0,
+  "per_query": "/root/project/results/m2/m2_domain_dev50_z_schema_only_per_query.jsonl",
+  "per_query_sha256": "b75c87cd994e52ac3e01ce3b10579b115233292cdef414deeba46b792bc3110b",
+  "phase": "P3",
+  "query_records": 50,
+  "rag_selection": {
+    "enabled": false
+  },
+  "run_id": "m2-domain-dev50-z-schema-only-protocol-locked-20260729",
+  "sanitized_unit_events": 38,
+  "stage": "extraction_execution",
+  "timing_means_ms": {
+    "example_selection_ms": 0.002,
+    "glossary_selection_ms": 0.001,
+    "llm_latency_ms": 3205.255,
+    "prompt_build_ms": 0.024,
+    "rag_selection_ms": 0.001,
+    "total_record_ms": 3211.686
+  },
+  "timing_totals_ms": {
+    "example_selection_ms": 0.079,
+    "glossary_selection_ms": 0.046,
+    "llm_latency_ms": 160262.739,
+    "prompt_build_ms": 1.194,
+    "rag_selection_ms": 0.043,
+    "total_record_ms": 160584.28
+  }
+}

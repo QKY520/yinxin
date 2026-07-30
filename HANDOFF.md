@@ -1,6 +1,6 @@
 # HANDOFF.md - New Conversation Handoff
 
-Date: 2026-07-28
+Date: 2026-07-30
 Workspace: `D:\yinsir`
 
 This file is the latest operational state for a new Codex/agent session with no
@@ -55,8 +55,39 @@ for all 11 included section files, 17 cited/17 defined bibliography entries,
 labels/references, five tables, required result literals, and archive layout.
 No local PDF was compiled because Windows/WSL had no TeX installation, AutoDL
 SSH was unavailable, and a temporary no-install Tectonic download timed out.
-The first real compile is therefore a human Overleaf action; it is not an
-actual journal submission.
+The human later imported the package into Overleaf and reported that Recompile
+produced the English article with no apparent error indicator. The full log and
+PDF visual audit have not been archived locally; the compile is not an actual
+journal submission.
+
+Latest experiment-refinement note (2026-07-29): the human opened and completed
+a bounded M1 gate for read-only statistical aggregation on AutoDL in GPU-free
+mode. Existing frozen-v1 test gold, A/B/C/D predictions, summaries, and logs
+were read without changing any data, prediction, prompt, or config. A paired
+10,000-replicate passage-cluster bootstrap found that B-A and C-B have positive
+observed F1 deltas but 95% intervals crossing zero. D-C F1 remains near-tied
+(`-0.003094`, CI `[-0.026037, 0.019494]`), while its FP delta is `-55.0`
+with CI `[-98.667, -12.0]`. D-A precision and FP intervals also exclude zero.
+Sanitizer association, seed agreement, stratified metrics, balanced C/D
+transitions, and online-versus-replay runtime were audited. No model/API/vLLM
+call, GPU, new experiment, or LaTeX edit occurred. The M1 gate is consumed;
+further baseline, K-scan, holdout, model, or LaTeX work needs a new explicit
+gate.
+
+Latest M2 note (2026-07-30): after the no-card G/protocol-freeze step, the
+human separately approved one bounded paid-card Qwen2.5-7B schema-only Z run
+on `domain_dev50`. Z used K=0 with no support, glossary, RAG, verification,
+dry-run, prompt/config tuning, or `domain_test` access. All 50 rows completed:
+TP=137, FP=206, FN=170, precision `0.399417`, recall `0.446254`, F1
+`0.421538`, FDR `0.600583`, and zero final parse failures. Thirteen initial
+parse failures were repaired by the fixed retry ladder, producing 63 requests
+with 63 HTTP 200 responses. The remote 74-file audit package was copied to
+`refine-logs/m2_domain_dev_z_schema_only_20260729/`; local file count, byte
+sizes, and SHA256 values all matched the manifest. vLLM was stopped, and the
+2026-07-30 closeout found no GPU and no related process. The observed vLLM log
+window was about 5 minutes 9 seconds, approximately 0.23 CNY at 2.7 CNY/hour;
+platform billing is authoritative. No LaTeX or frozen artifact was changed.
+B001 and B003 are complete; B002/B004 remain unauthorized.
 
 ## 1. What We Are Doing Now
 
@@ -64,13 +95,34 @@ We are preparing a practical SCI-Q4-oriented applied/engineering paper about
 few-shot Chinese equipment-domain NER using a reproducible local-LLM extraction
 pipeline.
 
+Completed latest step (2026-07-30): **M2 dev baseline audit and closeout**. G
+is a very weak exact-glossary lower bound on `domain_dev50` (F1 `0.014706`,
+233 FP, FDR `0.983122`). The separately gated schema-only Z run completed all
+50 dev passages at F1 `0.421538`, with 206 FP, FDR `0.600583`, and zero final
+parse failures. Z remained K=0 with no support, glossary, RAG, verification,
+dry-run, tuning, or `domain_test`. The remote audit package is locally copied
+and independently hash-verified. B001 and B003 are `DONE`; no frozen-test
+baseline cell is complete or authorized.
+
+Completed latest step (2026-07-29): **M1 paired evidence and integrity audit**.
+All 12 existing A/B/C/D K=5 seed cells were recomputed from hash-verified
+artifacts. Passage-level bootstrap uncertainty, per-type/source/length/density
+diagnostics, balanced C/D transitions, proposal-sanitizer association, seed
+agreement, and runtime were reported in
+`docs/M1_PAIRED_EVIDENCE_AUDIT_20260729.md`. The strongest added evidence is
+D-C FP `-55.0` with 95% CI `[-98.667, -12.0]`, plus D-A precision
+`+0.041068` with CI `[0.006710, 0.075562]`. B-A and C-B F1 remain positive
+observed trends whose intervals cross zero. M1 used AutoDL GPU-free Python
+only, changed no frozen or run artifact, and did not edit LaTeX.
+
 Completed latest step (2026-07-29): **GPU-free JISE LaTeX/Overleaf conversion**.
 The evidence-locked English manuscript has been transferred into the official
 JISE LaTeX structure, split into modular source files, connected to 17
 source-checked BibTeX entries, and packaged for Overleaf upload. The source
-still displays deliberate `[AUTHOR INPUT: ...]` blockers and has not yet
-received its first Overleaf compile or visual proof. No actual submission was
-performed.
+still displays deliberate `[AUTHOR INPUT: ...]` blockers. The human imported
+the package into Overleaf and reported a clean-looking Recompile, but the full
+compile log and PDF visual audit are not archived locally. No actual submission
+was performed.
 
 Completed preceding step (2026-07-28): **GPU-free JISE Markdown submission-
 package preparation**. The package contains the submission-text branch, cover
@@ -115,15 +167,18 @@ This decision must be recorded precisely:
 - the `0.8000` overall score has no margin, and `TECH_SCHEME` remains a serious
   class-specific limitation (`F1=0.153846`).
 
-The experiment phase is therefore **closed for the current narrow SCI-Q4 NER
-submission route**, but the original full experimental plan is not complete.
-Only the bounded P5 `domain_test` A/B/C/D, K=5, seeds 42/43/44 block exists.
-Do not translate "ready to refine the paper" into "the full P5 matrix passed."
+The original scoped P5 phase remains closed, while the separate evidence-
+strengthening track has now completed M1 plus the dev-only M2 G and Z baselines.
+The original full experimental plan is still not complete. Only the bounded P5
+`domain_test` A/B/C/D, K=5, seeds 42/43/44 block exists for model-backed test
+evidence. Do not translate "ready to refine the paper" or the dev-only G/Z
+results into "the full P5 matrix passed."
 
 Current editable paper drafts:
 
 - `docs/JISE_OVERLEAF_LATEX_20260729/` (official-template LaTeX/Overleaf
-  project; author placeholders and first Overleaf compile remain pending);
+  project; the human reported a clean-looking first compile, while author
+  placeholders and local compile-log/PDF proof remain pending);
 
 - `docs/JISE_OVERLEAF_LATEX_20260729.zip` (upload-ready Overleaf archive);
 
@@ -152,10 +207,11 @@ Markdown unless the user explicitly asks otherwise.
 
 No paid GPU, vLLM launch, dry-run, model call, frozen-test prompt generation,
 further calibration editing/comparison, re-annotation, adjudication,
-frozen-data correction, re-evaluation, or new experiment is currently
-authorized. The fresh annotation and validation gates are consumed. No formal
-test audit is required for the next manuscript-editing step and none is
-authorized by the acceptance decision.
+frozen-data correction, additional aggregation, re-evaluation, baseline run,
+or new experiment is currently authorized. The fresh annotation, validation,
+M1 aggregation, M2 G/protocol-freeze, and M2 Z execution/closeout gates are
+consumed. LaTeX was deliberately not changed after M1/M2; any result
+propagation into LaTeX requires the human's next explicit approval.
 
 ## 2. What Is Already Completed
 
@@ -286,6 +342,78 @@ P5 paid run note:
   2026-07-24 18:16:34-19:27:50 CST.
 - Estimated cost was about 3.2 CNY at 2.7 CNY/hour.
 - vLLM was stopped after the run and GPU memory was verified at 0 MiB.
+
+### M1 - Paired Evidence and Integrity Audit
+
+Complete under the human-approved 2026-07-29 read-only aggregation gate. The
+analysis was run on AutoDL in GPU-free mode and read only the already frozen
+test gold, predictions, summaries, and logs.
+
+- All 12 A/B/C/D K=5 seed cells were reloaded and recomputed: 170 passages per
+  cell and zero parse failures.
+- Paired passage-cluster bootstrap: 10,000 replicates, analysis seed
+  `20260729`, percentile 95% intervals, aligned across configs and seeds.
+- B-A F1 `+0.020524`, CI `[-0.006771, 0.047215]`; C-B F1 `+0.013689`, CI
+  `[-0.013210, 0.043711]`; D-C F1 `-0.003094`, CI
+  `[-0.026037, 0.019494]`. All three F1 intervals include zero.
+- D-C FP `-55.0`, CI `[-98.667, -12.000]`; D-A precision `+0.041068`, CI
+  `[0.006710, 0.075562]`; D-A FP `-84.333`, CI `[-141.000, -27.333]`.
+- Balanced C-to-D transitions per seed: 181 FP removed, 126 introduced, 548
+  TP retained, 62-64 TP lost, and 37 TP gained; 111/170 passages changed.
+- D sanitizer flags occur on 52 passages per seed. Those passages account for
+  36 net fewer FP, while passages without a D flag account for 19. This is an
+  association only; no unsanitized counterfactual exists.
+- Seed agreement: D is identical on all 170 passages across every seed pair;
+  B and C are also largely deterministic. The bootstrap is therefore
+  passage-sampling uncertainty conditional on fixed outputs, not broad
+  stochastic-seed robustness.
+- Runtime audit: D seed 42 online CPU retrieval elapsed `6237.211 s`, with
+  `5800.662 s` beyond LLM time; D seeds 43/44 replayed in about 435 s.
+- M1 added 0 paid-GPU CNY. No model, API, vLLM, GPU, prompt, config, label,
+  prediction, or LaTeX artifact was modified.
+
+Full report: `docs/M1_PAIRED_EVIDENCE_AUDIT_20260729.md`. Hash-verified
+machine-readable outputs: `refine-logs/m1_paired_evidence_20260729/`.
+
+### M2 - Dev Baseline Audit
+
+Complete for B001 and B003 under two separately bounded gates on 2026-07-29,
+with local closeout verification completed on 2026-07-30.
+
+- G used the frozen 73-entry glossary (88 eligible term/alias surfaces),
+  literal case-sensitive matching, all occurrences, a two-character minimum,
+  no normalization/fuzzy matching, and deterministic longest-first
+  non-overlap.
+- The 50-record `domain_dev` SHA256 remained
+  `ade6eda3547349117b5fa212c6567bd76722bb1996844b0de4f2d5a01ffc0c6b`;
+  the glossary SHA256 remained
+  `01b857822894bb09268cbb7fb14ad0988630137bb7efae0b9d90f7d75a2f3ef6`.
+- G produced 237 predictions: TP=4, FP=233, FN=303, precision `0.016878`,
+  recall `0.013029`, F1 `0.014706`, FDR `0.983122`, and 4.66 FP/passage.
+- Only four passages had a TP and all TPs were EQUIPMENT. MODULE,
+  TECH_SCHEME, and METRIC had zero TP. Both zero-gold passages had predictions.
+- Z used the locked Qwen2.5-7B schema-only protocol with K=0, temperature 0,
+  no support read, glossary, RAG, or verification, and the shared proposal-
+  stage sanitizer. The locked protocol SHA256 is
+  `2ad29153ca0d5bc377d8cd3618fb3880566a3fa190a883a975f54d91b13267a0`.
+- Z produced 343 predictions: TP=137, FP=206, FN=170, precision `0.399417`,
+  recall `0.446254`, F1 `0.421538`, FDR `0.600583`, and 4.12 FP/passage.
+- Z per-type F1 is EQUIPMENT `0.486301`, MODULE `0.488000`, TECH_SCHEME
+  `0.085106`, and METRIC `0.098361`. Both zero-gold passages had predictions,
+  with 11 predictions total.
+- Thirteen initial parse failures were repaired by the fixed retry ladder. All
+  63 requests received HTTP 200 and the final parse-failure count was zero.
+- The Z audit verified the dev hash, embedded gold, recomputed metrics, cache
+  set, request/HTTP counts, protocol exclusions, and absence of a dry-run
+  prompt artifact. Local closeout independently matched all 74 manifest-listed
+  file sizes and SHA256 values.
+- Post-run checks showed no GPU and no relevant process. No frozen test,
+  label/prediction edit, prompt/config tuning, or LaTeX change occurred.
+
+Full report: `docs/M2_BASELINE_PREPARATION_20260729.md`. Hash-verified outputs:
+`refine-logs/m2_domain_dev_g_exact_glossary_20260729/` and
+`refine-logs/m2_domain_dev_z_schema_only_20260729/`. The Z manifest SHA256 is
+`49479141750af9b44bd03226454b0d42081c6997490676f8ceb69210f7505109`.
 
 ### P6-QA0 - Frozen-Gold Audit Preparation
 
@@ -696,6 +824,23 @@ Supported claim:
 > evidence preserves near-tied F1 and improves precision / reduces
 > false-positive entity predictions.
 
+M1 refines the strength of this claim: the observed B-A and C-B F1 increases
+are positive but their paired passage-bootstrap intervals include zero. The
+most defensible interval-supported result is the RAG operating-point change:
+D-C reduces FP by 55.0 with CI `[-98.667, -12.000]` while F1 remains near-tied;
+D-A improves precision by 0.041068 and reduces FP by 84.333 with intervals
+excluding zero. Use "observed increase" or "associated with" for B/C, and do
+not use "significant" for their F1 changes.
+
+M2 adds two dev-side baselines only. G's dev F1 is `0.014706` with 233 FP and
+FDR `0.983122`; Z's dev F1 is `0.421538` with 206 FP and FDR `0.600583`.
+This supports describing exact frozen-glossary matching as inadequate and Z as
+a substantially stronger schema-only baseline on the same dev split. It does
+not add a paper-facing frozen-test baseline row, permit comparison of Z's dev
+score with A/B/C/D test scores as if they shared an evaluation split, or
+authorize post-hoc tuning. Z's TECH_SCHEME and METRIC F1 values are only
+`0.085106` and `0.098361`, respectively, and must remain visible limitations.
+
 This result statement is conditional on the current frozen `v1` labels. The
 paper may report the fresh two-human non-test calibration agreement exactly as
 performed: 20 previously unused non-test passages, exact span+type micro-F1
@@ -753,6 +898,11 @@ Use these as the paper-facing evidence base:
 - `docs/P6_QA1R_FRESH_CALIBRATION_PREPARATION_20260727.md`
 - `docs/P6_QA1R_FRESH_CALIBRATION_ANNOTATION_START_20260727.md`
 - `docs/P6_QA1R_FRESH_CALIBRATION_VALIDATION_20260727.md`
+- `docs/M1_PAIRED_EVIDENCE_AUDIT_20260729.md`
+- `refine-logs/m1_paired_evidence_20260729/`
+- `docs/M2_BASELINE_PREPARATION_20260729.md`
+- `refine-logs/m2_domain_dev_g_exact_glossary_20260729/`
+- `refine-logs/m2_domain_dev_z_schema_only_20260729/`
 - `findings.md`
 - `logs/p5_c_vs_d_fp_qualitative_20260725.json`
 - `logs/p5_c_vs_d_fp_qualitative_20260725.csv`
@@ -827,9 +977,12 @@ Local:
   `fea7c43 docs: add JISE English manuscript draft`.
 - Latest completed guidance commit before the manuscript-refinement pass:
   `87d2e8c docs: synchronize paper-stage project guidance`.
-- At the start of the manuscript-refinement pass, local `main` was 27 commits
-  ahead of `origin/main`. Five user-owned annotation helper scripts were
-  untracked:
+- Local `main` remains ahead of `origin/main`, and GitHub synchronization is
+  intentionally paused. The M2 closeout artifacts and Z hash-verified package
+  are captured by the local closeout commit. M1 analysis code, focused tests,
+  report, and output directory remain untracked for a later separately scoped
+  commit.
+  Five user-owned annotation helper scripts remain untracked:
   `p6_annotate_complete.py`, `p6_cal_b_annotate.py`,
   `p6_cal_b_annotate_v4.py`, `p6_complete_annotate.py`, and
   `p6_fresh_b_annotate.py`. Preserve them; do not execute, modify, delete, or
@@ -854,11 +1007,12 @@ Remote:
 - Remote code: `/root/project`
 - Remote data/model/backup root: `/root/autodl-tmp`
 - Project venv: `/root/autodl-tmp/venvs/equipment-ie`
-- Read-only status verified on 2026-07-27: remote Git HEAD is `863c701`; the
+- Status verified after M2 closeout on 2026-07-30: remote Git HEAD is `863c701`; the
   remote worktree contains manually synced modified/untracked P6 files because
   GitHub sync is unavailable. Do not clean or reset that worktree.
-- Last verified mode on 2026-07-27: GPU-free/no-card (`No devices were found`).
-  Confirm again before doing anything remote.
+- Last verified mode after M2 closeout on 2026-07-30: GPU-free/no-card
+  (`No devices were found`), with no vLLM or extraction process. Confirm again
+  before doing anything remote.
 
 Useful no-Python status command:
 
@@ -870,13 +1024,24 @@ ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status -
 
 The threshold decision, focused Chinese Markdown refinement, three-journal
 screening, reference-authenticity verification, JISE selection, English
-Markdown conversion, JISE Markdown submission package, and official-template
-LaTeX conversion are complete. The immediate next step is the first Overleaf
-compile and visual proof using `docs/JISE_OVERLEAF_LATEX_20260729.zip`; it does
-not require an experiment or GPU. The human/corresponding author should:
+Markdown conversion, JISE Markdown submission package, official-template
+LaTeX conversion, the bounded M1 audit, and the dev-only M2 G/Z baseline audit
+are complete. The user reported that the first Overleaf compile appears clean;
+the compile log/PDF proof and author-only fields are still human-owned tasks.
 
-1. upload the ZIP to Overleaf, select `main.tex` and PDFLaTeX, compile, and
-   return the first compile log/PDF observations for template-specific fixes;
+The recommended next machine step is a separately approved GPU-free
+paper-facing evidence propagation audit. It should decide exactly where the M1
+intervals and M2 dev-only diagnostics belong in the English Markdown and JISE
+LaTeX manuscript, preserve G/Z outside the frozen-test A/B/C/D result table,
+and keep all cross-split comparisons explicitly descriptive. This current
+closeout gate does not authorize that edit. B002/B004 frozen-test baseline
+scoring, a new independently annotated/adjudicated holdout, or any other new
+experiment remains optional and requires a separate bounded human gate.
+
+The human/corresponding author should separately:
+
+1. retain the first Overleaf compile log/PDF proof and report any template-
+   specific warnings or visual issues before layout edits;
 2. query the institution's current Journal Citation Reports for JISE and record
    JCR year, category, rank, quartile, query date, and institutional quartile
    rule;
@@ -900,13 +1065,13 @@ not substitute JIF, CiteScore, or SJR quartiles. The bounded English,
 submission-package, and LaTeX-conversion gates have been consumed. Overleaf
 compilation and PDF proofing are authorized; actual JISE-system upload and
 submission are not. The package references are source-checked, but their final
-template punctuation and page layout remain pending the first Overleaf compile.
+template punctuation and page layout remain pending local retention and visual
+audit of the first Overleaf PDF/log.
 
-No new experiment or formal test audit is the default next step. Those remain
-optional supplements only if the human explicitly opens a new bounded gate or
-a concrete target journal/reviewer requires them. Paid GPU, model-backed
-writing/review, external API use, and secondary-agent review remain
-unauthorized.
+No new experiment is currently authorized. The M2 G, Z, and closeout gates are
+fully consumed. Frozen-test baseline scoring, formal test audit, K scans,
+holdout evaluation, model-backed writing/review, external API use, and
+secondary-agent review remain unauthorized.
 
 ### Full-Matrix Feasibility
 
@@ -978,6 +1143,13 @@ delay the first manuscript-refinement pass.
 - The stronger paper is the honest one: do not overclaim RE, CoVe, public
   generalization, or statistical significance.
 - Glossary helps recall/F1 but can add false positives.
+- The exact frozen-glossary matcher is not a competitive standalone system on
+  dev: F1 `0.014706`, 233 FP, and FDR `0.983122`. Preserve this negative lower
+  bound; do not tune it after the fact under the same G name.
+- The locked schema-only Z baseline completed on dev at F1 `0.421538`, with
+  206 FP and FDR `0.600583`. It is dev-only and must not be inserted into the
+  frozen-test A/B/C/D table or compared across splits as though it were a test
+  result. TECH_SCHEME and METRIC remain weak at F1 `0.085106` and `0.098361`.
 - RAG is slower because CPU embedding/reranking dominated D's wall time; future
   RAG runs need replay manifests or timing hygiene if more experiments are ever
   approved.
@@ -993,9 +1165,10 @@ delay the first manuscript-refinement pass.
 - The current Chinese/English drafts, JISE Markdown package, and official-style
   LaTeX/Overleaf project include the accepted fresh-calibration result,
   explicit dataset-quality caveats, exact P5 values, and a consistent claim
-  boundary. The LaTeX package still needs its first Overleaf compile, author
-  identity/declaration completion, and target-specific JCR, fee, AI-policy,
-  and final-format confirmation before submission.
+  boundary. The human reported a clean-looking first Overleaf compile, but its
+  log/PDF proof still needs local retention and visual audit. Author identity/
+  declaration completion and target-specific JCR, fee, AI-policy, and final-
+  format confirmation remain required before submission.
 - Backups and hashes matter. Never leave the only copy of data/results on the
   AutoDL instance.
 - Every new paid action needs an explicit bounded human gate, even if it seems

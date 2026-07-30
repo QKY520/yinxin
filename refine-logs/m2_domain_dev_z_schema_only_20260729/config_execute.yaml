@@ -1,0 +1,79 @@
+run_id: m2-domain-dev50-z-schema-only-protocol-locked-20260729
+config_name: Z_schema_only_zero_shot_domain_dev_protocol_locked
+
+execution:
+  phase: M2_DOMAIN_DEV_Z_EXECUTION
+  authorized: true
+  human_gate: M2_DOMAIN_DEV_Z_APPROVED
+  approval_record: "2026-07-29 human switched AutoDL to paid GPU mode and approved one locked schema-only Qwen2.5-7B zero-shot run on domain_dev50 only; no dry-run, domain_test, tuning, LaTeX edit, GitHub sync, or secondary reviewer."
+  protocol_source: /root/project/configs/m2_domain_dev_z_schema_only_protocol_locked_20260729.yaml
+  protocol_source_sha256: 2ad29153ca0d5bc377d8cd3618fb3880566a3fa190a883a975f54d91b13267a0
+  gpu_hour_cap: 0.5
+  cost_cap_cny: 1.35
+  model_calls_allowed: true
+  gpu_required: true
+  explicit_exclusions:
+    - dry_run
+    - domain_test
+    - frozen_test
+    - support_data
+    - glossary
+    - rag
+    - verification
+    - prompt_tuning
+    - config_tuning
+    - latex_edits
+    - github_sync
+    - secondary_reviewer
+
+data:
+  dataset: domain_dev50
+  support_path: null
+  query_path: /root/autodl-tmp/data/domain_dev.jsonl
+  expected_records: 50
+  expected_sha256: ade6eda3547349117b5fa212c6567bd76722bb1996844b0de4f2d5a01ffc0c6b
+
+schema:
+  task: ner
+  entity_types:
+    EQUIPMENT: 完整装备、武器平台、系统或型号名称。
+    MODULE: 装备的部件、组件、子系统、传感器、载荷或功能模块。
+    TECH_SCHEME: 技术体制、制导方式、作战/测试/改进方案或能力方案。
+    METRIC: 数值指标、性能参数、射程、速度、重量、时间或数量表达。
+  relation_types: {}
+
+examples:
+  mode: none
+  k: 0
+  seed: 42
+
+prompt:
+  output_instruction: "只返回JSON,不要任何解释,不要markdown代码块"
+  retry_suffix: "只返回合法JSON"
+  retry_mode: parser_error_aware
+
+parsing:
+  drop_invalid_entities: true
+  mode: proposal_stage_sanitize
+  note: "Keep the A/B/C/D proposal-stage sanitizer for metric comparability; report all flags."
+
+model:
+  name: /root/autodl-tmp/models/qwen2.5-7b
+  base_url: http://127.0.0.1:8000
+  timeout_seconds: 300
+  api_key: EMPTY
+
+generation:
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 768
+  seed: 42
+
+cache:
+  dir: /root/project/cache/m2_zero_shot
+
+outputs:
+  dry_run_prompts: /root/project/logs/m2_domain_dev50_z_schema_only_prompts.jsonl
+  manifest: /root/project/logs/m2_domain_dev50_z_schema_only_manifest.json
+  per_query: /root/project/results/m2/m2_domain_dev50_z_schema_only_per_query.jsonl
+  summary: /root/project/results/m2/m2_domain_dev50_z_schema_only_summary.json
