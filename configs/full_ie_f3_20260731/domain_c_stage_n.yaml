@@ -1,0 +1,72 @@
+run_id: full-ie-f4-domain-dev-c-stage-n-k5-seed42
+config_name: C
+prepared_under_gate: FULL_IE_F3_CONFIG_PREP_APPROVED
+execution:
+  phase: FULL_IE_DOMAIN_DEV_SANITY
+  authorized: false
+  human_gate: FULL_IE_DOMAIN_DEV_SANITY_APPROVED
+  approval_record: Prepared under FULL_IE_F3_CONFIG_PREP_APPROVED; future paid execution is not authorized.
+  model_calls_allowed: false
+  gpu_required: true
+  explicit_exclusions:
+  - domain_test
+  - cluener_dev_final_evaluation
+  - cluener_test_unlabeled
+  - paper_edits
+  - github_sync
+data:
+  dataset: domain
+  support_path: /root/autodl-tmp/data/domain_support.jsonl
+  query_path: /root/autodl-tmp/data/domain_dev.jsonl
+schema:
+  task: ner
+  entity_types:
+    EQUIPMENT: A complete or independently functional equipment item, platform, system, device, weapon, or identified model. Organization, location, deployment mode, and country or force names are not equipment.
+    MODULE: A physical or functional subsystem, component, unit, payload, munition, warhead, launcher, or part explicitly playing a constituent role in context. A term that can be independent equipment may be MODULE when the current sentence presents it as a component of a larger platform.
+    TECH_SCHEME: A non-physical technical method, architecture, operating regime, algorithm, process, information state, parameter concept, capability concept, or named engineering approach.
+    METRIC: A self-contained technical specification containing an attribute and its value, range, threshold, grade, or necessary local condition. Numeric weapon components such as warheads or charges are MODULE, not METRIC.
+  relation_types: {}
+examples:
+  mode: knn_replay
+  k: 5
+  seed: 42
+  source_per_query_path: /root/project/results/full_ie/f4/domain_dev/b_stage_n_per_query.jsonl
+  source_note: Replay B example_ids so C-B and D-C remain clean comparisons.
+prompt:
+  output_instruction: 只返回JSON,不要任何解释,不要markdown代码块
+  retry_suffix: 只返回合法JSON
+  retry_mode: parser_error_aware
+parsing:
+  drop_invalid_entities: true
+  mode: proposal_stage_sanitize
+  note: Locked for F4 dev/tune sanity; final semantics require F5 freeze.
+model:
+  name: /root/autodl-tmp/models/qwen2.5-7b
+  base_url: http://127.0.0.1:8000
+  timeout_seconds: 300
+  api_key: EMPTY
+generation:
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 768
+  seed: 42
+cache:
+  dir: /root/project/cache/full_ie/f4/domain
+outputs:
+  per_query: /root/project/results/full_ie/f4/domain_dev/c_stage_n_per_query.jsonl
+  summary: /root/project/results/full_ie/f4/domain_dev/c_stage_n_summary.json
+glossary:
+  path: /root/project/data/domain_dict.jsonl
+  max_entries: 20
+  match_mode: substring
+  source_note: Frozen domain glossary
+resource_lock:
+  glossary:
+    path: /root/project/data/domain_dict.jsonl
+    sha256: 01b857822894bb09268cbb7fb14ad0988630137bb7efae0b9d90f7d75a2f3ef6
+  query:
+    path: /root/autodl-tmp/data/domain_dev.jsonl
+    sha256: ade6eda3547349117b5fa212c6567bd76722bb1996844b0de4f2d5a01ffc0c6b
+  support:
+    path: /root/autodl-tmp/data/domain_support.jsonl
+    sha256: 9633c7f6ceee8592408034e26834233e3f03b2f58a104783757ae664a4bab22a

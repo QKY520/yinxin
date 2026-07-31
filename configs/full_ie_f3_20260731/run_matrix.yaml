@@ -1,0 +1,122 @@
+phase: F3
+prepared_under_gate: FULL_IE_F3_CONFIG_PREP_APPROVED
+status: PREPARED_NOT_AUTHORIZED
+reported_dev_tune_cells: 12
+runner_configs: 16
+cells:
+- cell_id: F4-domain-A
+  dataset: domain
+  variant: A
+  k: 5
+  seed: 42
+  status: PREPARED_NOT_AUTHORIZED
+  steps:
+  - runner: scripts/run_p3_extraction.py
+    config_key: domain_a_stage_n
+  - runner: scripts/run_stage_r.py
+    config_key: domain_a_stage_r
+- cell_id: F4-domain-B
+  dataset: domain
+  variant: B
+  k: 5
+  seed: 42
+  status: PREPARED_NOT_AUTHORIZED
+  steps:
+  - runner: scripts/run_p3_extraction.py
+    config_key: domain_b_stage_n
+  - runner: scripts/run_stage_r.py
+    config_key: domain_b_stage_r
+- cell_id: F4-domain-C
+  dataset: domain
+  variant: C
+  k: 5
+  seed: 42
+  status: PREPARED_NOT_AUTHORIZED
+  steps:
+  - runner: scripts/run_p3_extraction.py
+    config_key: domain_c_stage_n
+  - runner: scripts/run_stage_r.py
+    config_key: domain_c_stage_r
+- cell_id: F4-domain-D
+  dataset: domain
+  variant: D
+  k: 5
+  seed: 42
+  status: PREPARED_NOT_AUTHORIZED
+  steps:
+  - runner: scripts/run_p3_extraction.py
+    config_key: domain_d_stage_n
+  - runner: scripts/run_stage_r.py
+    config_key: domain_d_stage_r
+- cell_id: F4-domain-E
+  dataset: domain
+  variant: E
+  k: 5
+  seed: 42
+  status: PREPARED_NOT_AUTHORIZED
+  steps:
+  - runner: scripts/run_full_ie_verification.py
+    config_key: domain_e_verify
+- cell_id: F4-domain-E-prime
+  dataset: domain
+  variant: E-prime
+  k: 5
+  seed: 42
+  status: PREPARED_NOT_AUTHORIZED
+  steps:
+  - runner: scripts/run_full_ie_verification.py
+    config_key: domain_eprime_verify
+- cell_id: F4-cluener-A
+  dataset: cluener
+  variant: A
+  k: 5
+  seed: 42
+  status: PREPARED_NOT_AUTHORIZED
+  steps:
+  - runner: scripts/run_p3_extraction.py
+    config_key: cluener_a_stage_n
+- cell_id: F4-cluener-B
+  dataset: cluener
+  variant: B
+  k: 5
+  seed: 42
+  status: PREPARED_NOT_AUTHORIZED
+  steps:
+  - runner: scripts/run_p3_extraction.py
+    config_key: cluener_b_stage_n
+- cell_id: F4-cluener-C
+  dataset: cluener
+  variant: C
+  k: 5
+  seed: 42
+  status: PREPARED_NOT_AUTHORIZED
+  steps:
+  - runner: scripts/run_p3_extraction.py
+    config_key: cluener_c_stage_n
+- cell_id: F4-cluener-D
+  dataset: cluener
+  variant: D
+  k: 5
+  seed: 42
+  status: PREPARED_NOT_AUTHORIZED
+  steps:
+  - runner: scripts/run_p3_extraction.py
+    config_key: cluener_d_stage_n
+- cell_id: F4-cluener-E
+  dataset: cluener
+  variant: E
+  k: 5
+  seed: 42
+  status: PREPARED_NOT_AUTHORIZED
+  steps:
+  - runner: scripts/run_full_ie_verification.py
+    config_key: cluener_e_verify
+- cell_id: F4-cluener-E-prime
+  dataset: cluener
+  variant: E-prime
+  k: 5
+  seed: 42
+  status: PREPARED_NOT_AUTHORIZED
+  steps:
+  - runner: scripts/run_full_ie_verification.py
+    config_key: cluener_eprime_verify

@@ -19,7 +19,8 @@ Synchronization note (2026-07-30): `AGENTS.md`, `AGENT_PLAYBOOK.md`,
 full-IE route decision, accepted `0.8000` calibration decision, current
 claim boundary, full-matrix accounting, F1 implementation closeout, F2
 relation-calibration preparation closeout, blocked IE021 validation, completed
-IE022 revalidation, and execution red lines.
+IE022 revalidation, completed F3 configuration/resource preparation, and
+execution red lines.
 
 Latest route decision (2026-07-30): the human wants to expand the project into
 the originally intended complete equipment-domain IE paper rather than submit
@@ -44,6 +45,9 @@ passed with zero structural errors and 20/20 valid pairs after correcting a
 shared implementation defect that treated semicolons as sentence terminators.
 The complete exact-directed file-concordance F1 is only `0.417391`, so this
 completes/discloses F2 but does not support a high-quality relation-label claim.
+The separately approved `FULL_IE_F3_CONFIG_PREP_APPROVED` gate is now also
+consumed: no-card resources, hashes, and future F4 configs are prepared, with
+no model calls or prompt artifacts.
 
 ## 0. Executive Snapshot For A New Session
 
@@ -64,7 +68,10 @@ IE020 preparation is complete. IE021 validation infrastructure and tests are
 also complete; its failed first return is preserved. IE022 versioned
 revalidation is complete: the human-revised A/B files pass structural checks
 on all 20 paired non-test texts, and all disagreements and the low complete F1
-`0.417391` are disclosed.
+`0.417391` are disclosed. F3 configuration/resource preparation is complete:
+16 future runner configs, a 12-cell dev/tune matrix, a 30-record support bank,
+a 50-record tune subset, and a 9,584-row labels-stripped CLUENER RAG corpus
+were hash-verified on AutoDL no-card mode.
 
 **Current evidence**: A/B/C/D NER F1 is `0.534645`, `0.555169`, `0.568858`, and
 `0.565764`. C/D are an F1 near-tie; D has higher precision and 55 fewer FP.
@@ -74,8 +81,9 @@ frozen-test formal IAA; `TECH_SCHEME` F1 is only `0.153846`. The post-feedback
 relation file-concordance F1 `0.417391` is also not formal IAA and specifically
 exposes weak `PART_OF` agreement (`0.246154`).
 
-**Current breakpoint**: F1 implementation, IE020 preparation, and IE022 F2
-revalidation are complete. IE021 remains the preserved failed first attempt;
+**Current breakpoint**: F1 implementation, IE020 preparation, IE022 F2
+revalidation, and F3 config/resource preparation are complete. IE021 remains
+the preserved failed first attempt;
 IE022 has 0 structural errors, 20/20 valid pairs, and complete exact-directed
 F1 `0.417391` (TP=24, FP=47, FN=20). No real-data Stage R or relation-aware
 verifier run started. The matrix remains `0/60` complete full-IE cells: 12
@@ -84,11 +92,11 @@ absent, and all 30 domain cells still need Stage R results. E v1 failed on dev,
 E v2 was mixed/negative, E-prime was never model-run, and E v3 was preparation
 only.
 
-**Next step**: stop. The revalidation gate is consumed and no next execution
-gate is open. The next planned phase is F3 no-card domain-dev/CLUENER-tune
-configuration, hash, and resource-manifest preparation, but it requires a new
-separately bounded approval. F4 model/API/vLLM calls, GPU use, `domain_test`,
-paper edits, and GitHub synchronization remain unauthorized.
+**Next step**: stop. The revalidation and F3 preparation gates are consumed and
+no F4 execution gate is open. The next planned phase is one bounded paid F4
+domain-dev/CLUENER-tune sanity run using the locked configs. F4 model/API/vLLM
+calls, GPU use, `domain_test`, paper edits, and GitHub synchronization remain
+unauthorized until a separate explicit F4 gate.
 
 **Red lines**: never run project Python locally on Windows; never tune from
 frozen test; preserve every negative row; never call E-prime failed; never
@@ -98,6 +106,35 @@ clean/reset the dirty remote worktree; use only SSH
 alias `autodl-paper`; and after every future paid phase stop vLLM, verify GPU
 release, back up, sync lightweight artifacts, report cost, and remind the human
 to switch off paid hardware.
+
+### F3 Full-IE Config And Resource Preparation
+
+Complete on 2026-07-31 under `FULL_IE_F3_CONFIG_PREP_APPROVED` in AutoDL
+GPU-free/no-card mode. This is preparation, not an empirical experiment.
+
+- Prepared `16` future runner configs and one literal `12`-cell F4 dev/tune
+  matrix covering domain and CLUENER A/B/C/D/E/E-prime at K=5 seed42. Every
+  config remains `authorized=false` and `model_calls_allowed=false`.
+- Prepared one deterministic all-type CLUENER support bank (`30` records), one
+  all-type tune subset (`50`), and a support-only exact glossary (`61` entries).
+- Built a labels-stripped CLUENER train-pool RAG corpus with `9,584` records.
+  Fixed 8-gram containment at threshold `0.80` removed `89`: 30 exact support
+  IDs, 34 tune overlaps, 24 CLUENER-dev text overlaps, and 1 support overlap.
+- CLUENER official dev was used only as a text-only deduplication blocklist; no
+  prompt, metric, or tuning result was generated from it. `domain_test` was not
+  read. No prompt/per-query artifact exists in the F3 package.
+- Validation: F3 tests `5/5`, affected runner tests `9/9`, full suite `173/173`;
+  independent manifest validation checked `74` files. Manifest SHA256:
+  `6302052aca1602d73bb96b53b1d702bebabc548f0e9fa694a7d317b0f2e7aa44`.
+- Remote resources/configs/backups are under
+  `/root/autodl-tmp/data/full_ie/f3_config_prep_20260731/`,
+  `/root/project/configs/full_ie_f3_20260731/`, and
+  `/root/autodl-tmp/backup/full_ie/f3_config_prep_20260731/`. Lightweight
+  configs and the backup package were mirrored locally under
+  `configs/full_ie_f3_20260731/` and
+  `backups/FULL_IE/f3_config_prep_20260731/`.
+- No model/API/vLLM/GPU/paper/GitHub action occurred. Cost impact: `0 CNY`.
+  Evidence accounting remains `0/60`.
 
 Latest paper-preparation note (2026-07-28): after the approved GPU-free
 target-journal screening and reference-authenticity audit, the human selected
@@ -425,10 +462,11 @@ correction, reannotation, frozen-data correction, aggregation, re-evaluation,
 baseline run, or new experiment is currently authorized. The fresh entity
 annotation/validation, M1, M2, full-IE F1, IE020 preparation, and IE021
 validation gates are consumed; IE022 revalidation is also consumed and F2 is
-complete with a disclosed low-agreement result. The next planned action is a
-new bounded F3 no-card configuration/resource-preparation gate, not F4 model
-execution. LaTeX was deliberately not changed; any result propagation into a
-manuscript requires a later, separate approval after result-to-claim.
+complete with a disclosed low-agreement result. The F3 no-card
+configuration/resource-preparation gate is also consumed. The next planned
+action is a new bounded F4 paid dev/tune sanity gate, not final evaluation.
+LaTeX was deliberately not changed; any result propagation into a manuscript
+requires a later, separate approval after result-to-claim.
 
 ## 2. What Is Already Completed
 
@@ -1166,8 +1204,9 @@ P0 paper repair already completed:
   must run on AutoDL through SSH alias `autodl-paper`.
 - Until a new gate is approved, current work is local documentation/Git and
   lightweight read-only inspection only. `FULL_IE_IMPLEMENTATION_APPROVED` and
-  all F2 preparation/validation/revalidation gates are consumed; their
-  Python/tests ran on AutoDL GPU-free/no-card mode, never on Windows.
+  all F2 preparation/validation/revalidation gates and
+  `FULL_IE_F3_CONFIG_PREP_APPROVED` are consumed; their Python/tests ran on
+  AutoDL GPU-free/no-card mode, never on Windows.
 - Use paid GPU only for model inference/training and only after explicit human
   approval for one bounded step.
 - After every GPU phase: stop vLLM, verify GPU memory returns to 0 MiB, back up,
@@ -1289,12 +1328,13 @@ ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status -
 The route decision is complete: pursue the minimum defensible full-IE extension
 and retain the narrow JISE NER package as fallback. The design and inventory are
 prepared, and the bounded F1 implementation, IE020 preparation, IE021 initial
-validation, and IE022 revalidation gates are consumed. IE021 remains a
-preserved blocked first attempt; IE022 completes F2 under the pre-specified
-zero-structural-error/full-disclosure criterion. There are still `0/60`
-complete full-IE cells. A new session must not infer F3/F4 or experimental
-authority from completion of F2 or from the user's general desire to complete
-IE.
+validation, IE022 revalidation, and F3 config/resource-preparation gates are
+consumed. IE021 remains a preserved blocked first attempt; IE022 completes F2
+under the pre-specified zero-structural-error/full-disclosure criterion. F3
+prepared no-card resources and future-run configs but produced no empirical
+model result. There are still `0/60` complete full-IE cells. A new session must
+not infer F4 or experimental authority from completion of F3 or from the user's
+general desire to complete IE.
 
 ### Current state: F2 complete with a low-agreement limitation
 
@@ -1306,15 +1346,16 @@ fixed and regression-tested without relaxing the no-cross-sentence rule.
 
 Complete exact-directed file concordance is only F1 `0.417391`, with
 `PART_OF=0.246154`; this is not formal IAA or support for a high-quality
-relation-label claim. It is a disclosed calibration limitation. The next
-planned machine step is F3 no-card domain-dev/CLUENER-tune config, hash, and
-resource-manifest preparation. No F3 gate is currently open. Do not execute
-Stage R or the relation-aware verifier on real records, generate real
-support/dev/test prompts, use GPU/model calls, or enter F4.
+relation-label claim. It is a disclosed calibration limitation. F3 no-card
+domain-dev/CLUENER-tune config, hash, and resource-manifest preparation is now
+complete. The next planned machine step is bounded paid F4 dev/tune sanity, but
+no F4 gate is currently open. Do not execute Stage R or the relation-aware
+verifier on real records, generate real prompts, use GPU/model calls, or enter
+F4 without that separate approval.
 
 ### Later sequence: planned, not authorized
 
-1. F3: freeze domain-dev and CLUENER-tune resources/configs without test access.
+1. F3: complete; domain-dev and CLUENER-tune resources/configs are prepared.
 2. F4: run one bounded paid domain-dev IE sanity and CLUENER-tune sanity; allow
    at most one dev-only protocol revision.
 3. F5/F6: freeze hashes and prepare leakage-safe replay artifacts in no-card

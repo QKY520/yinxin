@@ -82,6 +82,41 @@ class FullIERunnerTest(unittest.TestCase):
             }
         )
 
+    def test_f3_gate_cannot_authorize_any_model_runner(self) -> None:
+        execution = {
+            "authorized": True,
+            "model_calls_allowed": True,
+            "phase": "FULL_IE_F3_CONFIG_PREP",
+            "human_gate": "FULL_IE_F3_CONFIG_PREP_APPROVED",
+        }
+        with self.assertRaisesRegex(RuntimeError, "human_gate"):
+            run_stage_r.validate_execution_gate(execution)
+        with self.assertRaisesRegex(RuntimeError, "human_gate"):
+            run_full_ie_verification.validate_execution_gate(execution)
+
+    def test_cluener_future_gate_and_evidence_mode_are_bounded(self) -> None:
+        run_full_ie_verification.validate_execution_gate(
+            {
+                "authorized": True,
+                "model_calls_allowed": True,
+                "phase": "FULL_IE_CLUENER_TUNE_SANITY",
+                "human_gate": "FULL_IE_CLUENER_TUNE_SANITY_APPROVED",
+            }
+        )
+        row = {"id": "q1", "rag_passages": ["r1", "r2", "r3"]}
+        self.assertEqual(
+            run_full_ie_verification.select_evidence(
+                row,
+                config_name="E",
+                evidence_config={
+                    "mode": "reuse_source_rag_passages",
+                    "max_passages": 3,
+                },
+                dataset="cluener",
+            ),
+            ["r1", "r2", "r3"],
+        )
+
     def test_f1_implementation_gate_cannot_authorize_verifier_model_calls(self) -> None:
         config = {
             "execution": {

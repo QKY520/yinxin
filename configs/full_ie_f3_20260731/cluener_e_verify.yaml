@@ -1,0 +1,57 @@
+run_id: full-ie-f4-cluener-dev-e-verification-k5-seed42
+config_name: E
+source_config: D
+prepared_under_gate: FULL_IE_F3_CONFIG_PREP_APPROVED
+execution:
+  phase: FULL_IE_CLUENER_TUNE_SANITY
+  authorized: false
+  human_gate: FULL_IE_CLUENER_TUNE_SANITY_APPROVED
+  approval_record: Prepared under FULL_IE_F3_CONFIG_PREP_APPROVED; future paid execution is not authorized.
+  model_calls_allowed: false
+  gpu_required: true
+  explicit_exclusions:
+  - domain_test
+  - cluener_dev_final_evaluation
+  - cluener_test_unlabeled
+  - paper_edits
+  - github_sync
+data:
+  dataset: cluener
+input:
+  per_query_path: /root/project/results/full_ie/f4/cluener_tune50/d_stage_n_per_query.jsonl
+  expected_rows: 50
+schema:
+  entity_types:
+    address: 地址、地点或具体位置。
+    book: 图书、作品或出版物名称。
+    company: 公司、企业或商业组织名称。
+    game: 游戏名称。
+    government: 政府机构或行政机关名称。
+    movie: 电影、影视作品名称。
+    name: 人名。
+    organization: 组织、机构或团体名称。
+    position: 职位、职务或身份称谓。
+    scene: 景点、景区或场景名称。
+  relation_types: {}
+evidence:
+  mode: reuse_source_rag_passages
+  max_passages: 3
+prompt:
+  version: full_ie_atomic_source_first_v1
+  output_instruction: 只回答yes或no
+  decision_policy: Drop only valid no; keep invalid output.
+model:
+  name: /root/autodl-tmp/models/qwen2.5-7b
+  base_url: http://127.0.0.1:8000
+  timeout_seconds: 300
+  api_key: EMPTY
+generation:
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 8
+  seed: 42
+cache:
+  dir: /root/project/cache/full_ie/f4/cluener_verification
+outputs:
+  per_query: /root/project/results/full_ie/f4/cluener_tune50/e_verified_per_query.jsonl
+  summary: /root/project/results/full_ie/f4/cluener_tune50/e_verified_summary.json

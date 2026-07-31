@@ -13,17 +13,19 @@
 Nothing in this tracker authorizes Python, data processing, prompt generation,
 model/API calls, vLLM, GPU use, `domain_test` access, or any paper edit.
 
-Current gate: `FULL_IE_RELATION_CALIBRATION_REVALIDATION_APPROVED` was explicitly
-granted and consumed on 2026-07-31. The blocked IE021 first attempt remains
-preserved. Under IE022, human-revised A/B files were locked as `revised_v2`; a
-shared sentence-boundary defect that treated semicolons as sentence terminators
-was diagnosed and covered by a regression test. Final revalidation has zero
-structural errors and 20/20 valid pairs. Exact-directed file concordance is
-TP=24, FP=47, FN=20, precision `0.338028`, recall `0.545455`, F1 `0.417391`;
-`PART_OF` F1 is only `0.246154`. The user attested that both files are
-human-produced, but this post-feedback result is not frozen-test formal IAA and
-does not establish high relation agreement. F2 is disclosed and complete under
-its pre-specified structural criterion. No F3/F4, model, GPU, or paper gate is
+The `FULL_IE_RELATION_CALIBRATION_REVALIDATION_APPROVED` and
+`FULL_IE_F3_CONFIG_PREP_APPROVED` gates were explicitly granted and consumed on
+2026-07-31. The blocked IE021 first attempt remains preserved. Under IE022,
+human-revised A/B files were locked as `revised_v2`; a shared sentence-boundary
+defect that treated semicolons as sentence terminators was diagnosed and covered
+by a regression test. Final revalidation has zero structural errors and 20/20
+valid pairs. Exact-directed file concordance is TP=24, FP=47, FN=20, precision
+`0.338028`, recall `0.545455`, F1 `0.417391`; `PART_OF` F1 is only `0.246154`.
+The user attested that both files are human-produced, but this post-feedback
+result is not frozen-test formal IAA and does not establish high relation
+agreement. F2 is disclosed and complete under its pre-specified structural
+criterion. F3 configuration/resource preparation is complete and hash-audited;
+all future runner configs remain unauthorized. No F4/model/GPU/paper gate is
 open.
 
 ## Protocol and Implementation
@@ -38,10 +40,33 @@ open.
 | IE020 | F2 | Prepare non-test relation-calibration sheets | Existing fresh 20-text calibration set | 0 | MUST | DONE | A/B own locked entities only; 20+20 blank relation rows isolated and hash-audited |
 | IE021 | F2 | Validate relation calibration | Exact directed endpoint/type triples | 0 | MUST | BLOCKED | 90 structural errors; 7/20 valid pairs; partial F1 0.454545 is not reportable; provenance unverified |
 | IE022 | F2 | Revalidate human-revised relation calibration | Versioned `revised_v2` exact directed triples | 0 | MUST | DONE | 0 structural errors; 20/20 pairs; F1 0.417391; PART_OF F1 0.246154; not formal IAA |
-| IE030 | F3 | Freeze domain dev configs | A-E-prime, K=5, seed42 | 6 | MUST | PLANNED | Dev paths only |
-| IE031 | F3 | Build CLUENER support bank and glossary | train_pool only | 0 | MUST | PLANNED | Fixed 30-record bank; record type coverage |
-| IE032 | F3 | Build/dedup CLUENER RAG corpus | labels-stripped train_pool | 0 | MUST | PLANNED | Exclude support/tune/dev overlap |
-| IE033 | F3 | Freeze CLUENER tune configs | A-E-prime, K=5, seed42 | 6 | MUST | PLANNED | Tune only; no official dev/test prompt output |
+| IE030 | F3 | Freeze domain dev configs | A-E-prime, K=5, seed42 | 6 | DONE | 16 runner configs + 12-cell matrix; all unauthorized and hash-locked |
+| IE031 | F3 | Build CLUENER support bank and glossary | train_pool only | 0 | DONE | 30-record all-type bank; 61 support-only glossary entries |
+| IE032 | F3 | Build/dedup CLUENER RAG corpus | labels-stripped train_pool | 0 | DONE | 9,584 rows; 89 removed by fixed 8-gram/0.80 blocklist |
+| IE033 | F3 | Freeze CLUENER tune configs | A-E-prime, K=5, seed42 | 6 | DONE | 50-record all-type tune subset; no prompt artifacts |
+
+### F3 Closeout (2026-07-31)
+
+- Gate: `FULL_IE_F3_CONFIG_PREP_APPROVED`; AutoDL remained no-card (`No devices
+  found`, `/dev/nvidia0` absent), with no vLLM/Qwen/extraction/verifier process.
+- Resource package: support bank `30`, tune subset `50`, support-only glossary
+  `61`, labels-stripped CLUENER RAG `9,584`; fixed 8-gram containment threshold
+  `0.80` removed `89` rows (`30` exact support IDs, `34` tune overlaps, `24`
+  CLUENER-dev text overlaps, `1` support overlap).
+- Config package: `16` executable future runner YAMLs plus one `12`-cell run
+  matrix (domain and CLUENER A/B/C/D/E/E-prime, K=5, seed42). Every config has
+  `authorized=false` and `model_calls_allowed=false`; no final-evaluation path
+  appears in the YAMLs and no prompt/per-query file was generated.
+- The CLUENER official dev file was used only as a text-only deduplication
+  blocklist; no labels, metrics, prompts, or tuning decisions were derived from
+  it. `domain_test` was not read.
+- Verification: F3 synthetic tests `5/5`, affected runner tests `9/9`, full
+  AutoDL test suite `173/173`, independent F3 manifest validation `74` files.
+- Report and manifest are under
+  `backups/FULL_IE/f3_config_prep_20260731/`; report SHA256 is recorded in
+  `docs/FULL_IE_CONFIG_PREP_20260731.md`.
+- Cost: `0 CNY`. F3 creates no empirical result and does not change the `0/60`
+  full-IE evidence count.
 
 ## Dev and Tune Gates
 
@@ -164,8 +189,8 @@ Missing report cells = 48
   AutoDL no-card mode.
 - Safety/cost: no `domain_test`, prompt, model/API, vLLM, GPU, paper, or GitHub
   action occurred; paid GPU cost was `0 CNY`.
-- Evidence accounting remains `0/60`. No correction, reannotation, F3/F4, or
-  paper gate is open.
+- Evidence accounting remained `0/60` at IE021 closeout. That gate authorized
+  no correction, reannotation, F3/F4, or paper action.
 
 ## F2 Revalidation Closeout
 
@@ -202,5 +227,5 @@ Missing report cells = 48
   see `docs/FULL_IE_RELATION_CALIBRATION_REVALIDATION_20260731.md`.
 - Safety/cost: no prompt, model/API, vLLM, GPU, paper, P6 user-script, or
   GitHub action occurred; paid GPU cost was `0 CNY`.
-- Evidence accounting remains `0/60`. F3 configuration/resource preparation
-  requires a new bounded approval.
+- Evidence accounting remained `0/60` at IE022 closeout. F3 later received its
+  own bounded approval and is recorded as complete above; F4 remains closed.

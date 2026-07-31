@@ -1,0 +1,68 @@
+run_id: full-ie-f4-cluener-dev-a-stage-n-k5-seed42
+config_name: A
+prepared_under_gate: FULL_IE_F3_CONFIG_PREP_APPROVED
+execution:
+  phase: FULL_IE_CLUENER_TUNE_SANITY
+  authorized: false
+  human_gate: FULL_IE_CLUENER_TUNE_SANITY_APPROVED
+  approval_record: Prepared under FULL_IE_F3_CONFIG_PREP_APPROVED; future paid execution is not authorized.
+  model_calls_allowed: false
+  gpu_required: true
+  explicit_exclusions:
+  - domain_test
+  - cluener_dev_final_evaluation
+  - cluener_test_unlabeled
+  - paper_edits
+  - github_sync
+data:
+  dataset: cluener
+  support_path: /root/autodl-tmp/data/full_ie/f3_config_prep_20260731/cluener_support_bank30_seed42.jsonl
+  query_path: /root/autodl-tmp/data/full_ie/f3_config_prep_20260731/cluener_tune_subset50_seed42.jsonl
+schema:
+  task: ner
+  entity_types:
+    address: 地址、地点或具体位置。
+    book: 图书、作品或出版物名称。
+    company: 公司、企业或商业组织名称。
+    game: 游戏名称。
+    government: 政府机构或行政机关名称。
+    movie: 电影、影视作品名称。
+    name: 人名。
+    organization: 组织、机构或团体名称。
+    position: 职位、职务或身份称谓。
+    scene: 景点、景区或场景名称。
+  relation_types: {}
+examples:
+  mode: fixed_random
+  k: 5
+  seed: 42
+prompt:
+  output_instruction: 只返回JSON,不要任何解释,不要markdown代码块
+  retry_suffix: 只返回合法JSON
+  retry_mode: parser_error_aware
+parsing:
+  drop_invalid_entities: true
+  mode: proposal_stage_sanitize
+  note: Locked for F4 dev/tune sanity; final semantics require F5 freeze.
+model:
+  name: /root/autodl-tmp/models/qwen2.5-7b
+  base_url: http://127.0.0.1:8000
+  timeout_seconds: 300
+  api_key: EMPTY
+generation:
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 768
+  seed: 42
+cache:
+  dir: /root/project/cache/full_ie/f4/cluener
+outputs:
+  per_query: /root/project/results/full_ie/f4/cluener_tune50/a_stage_n_per_query.jsonl
+  summary: /root/project/results/full_ie/f4/cluener_tune50/a_stage_n_summary.json
+resource_lock:
+  query:
+    path: /root/autodl-tmp/data/full_ie/f3_config_prep_20260731/cluener_tune_subset50_seed42.jsonl
+    sha256: 7264b03d3e34a3213281cc1858d073fe86104d5f8d055050ba658ee950d8ade5
+  support:
+    path: /root/autodl-tmp/data/full_ie/f3_config_prep_20260731/cluener_support_bank30_seed42.jsonl
+    sha256: abd6a338bf393426f35e12a08d073c6661e59131bc52ae77ca9f96d8859a5219

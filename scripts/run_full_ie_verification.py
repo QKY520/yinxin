@@ -40,6 +40,8 @@ from equipment_ie.schema import iter_jsonl, sha256_file, validate_record  # noqa
 VERIFICATION_GATE_PHASES = {
     "FULL_IE_DOMAIN_DEV_SANITY_APPROVED": "FULL_IE_DOMAIN_DEV_SANITY",
     "FULL_IE_DOMAIN_FINAL_BATCH_APPROVED": "FULL_IE_DOMAIN_FINAL_BATCH",
+    "FULL_IE_CLUENER_TUNE_SANITY_APPROVED": "FULL_IE_CLUENER_TUNE_SANITY",
+    "FULL_IE_CLUENER_FINAL_BATCH_APPROVED": "FULL_IE_CLUENER_FINAL_BATCH",
 }
 SOURCE_CONFIG = {"E": "D", "E-prime": "C"}
 FIXED_OUTPUT_INSTRUCTION = "只回答yes或no"
@@ -158,14 +160,20 @@ def select_evidence(
     *,
     config_name: str,
     evidence_config: dict[str, Any],
+    dataset: str = "domain",
 ) -> list[str]:
     mode = evidence_config.get("mode")
     if config_name == "E-prime":
         if mode != "source_text_only":
             raise ValueError("E-prime requires evidence.mode=source_text_only")
         return []
-    if mode != "reuse_stage_r_rag_passages":
-        raise ValueError("E requires evidence.mode=reuse_stage_r_rag_passages")
+    required_mode = (
+        "reuse_stage_r_rag_passages"
+        if dataset == "domain"
+        else "reuse_source_rag_passages"
+    )
+    if mode != required_mode:
+        raise ValueError(f"E requires evidence.mode={required_mode} for {dataset}")
     raw_passages = row.get("rag_passages", [])
     if not isinstance(raw_passages, list) or any(
         not isinstance(passage, str) for passage in raw_passages
@@ -237,8 +245,9 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
         raise ValueError("config_name must be E or E-prime")
     if config.get("source_config") != source_config:
         raise ValueError(f"{config_name} must verify source_config={source_config}")
-    if config.get("data", {}).get("dataset") != "domain":
-        raise ValueError("relation-aware verification is defined only for domain")
+    dataset = config.get("data", {}).get("dataset")
+    if dataset not in {"domain", "cluener"}:
+        raise ValueError("full-IE verification dataset must be domain or cluener")
 
     input_config = config["input"]
     rows = load_per_query_rows(
@@ -247,7 +256,12 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
     )
     schema = config["schema"]
     entity_definitions = normalize_entity_definitions(schema["entity_types"])
-    relation_types = validate_approved_relation_matrix(schema["relation_types"])
+    if dataset == "domain":
+        relation_types = validate_approved_relation_matrix(schema["relation_types"])
+    else:
+        relation_types = schema.get("relation_types", {})
+        if relation_types:
+            raise ValueError("CLUENER verification must use an empty relation schema")
     evidence_config = config["evidence"]
     prompt_config = config["prompt"]
     output_instruction = prompt_config.get("output_instruction", FIXED_OUTPUT_INSTRUCTION)
@@ -270,7 +284,7 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
     cascade_dropped_relations = 0
     started = time.monotonic()
     for row in rows:
-        if row.get("dataset") != "domain" or row.get("config") != source_config:
+        if row.get("dataset") != dataset or row.get("config") != source_config:
             raise ValueError(f"row {row.get('id')}: dataset/source config mismatch")
         gold = row.get("gold")
         if not isinstance(gold, dict):
@@ -281,6 +295,7 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
             row,
             config_name=str(config_name),
             evidence_config=evidence_config,
+            dataset=str(dataset),
         )
         decisions: list[dict[str, Any]] = []
         for entity_index, entity in enumerate(pred_raw["entities"]):
@@ -312,6 +327,8 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
                     cache_dir=cache_dir,
                 )
             )
+        if dataset == "cluener" and pred_raw["relations"]:
+            raise ValueError(f"row {row['id']}: CLUENER prediction contains relations")
         for relation_index, _relation in enumerate(pred_raw["relations"]):
             prompt = build_relation_verification_prompt(
                 record=pred_raw,
@@ -387,15 +404,23 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
         "verified_entity_micro": entity_micro_counts(
             gold_records, verified_records
         ).report(),
-        "raw_relation": relation_evaluation_report(
-            gold_records,
-            raw_records,
-            relation_types=tuple(relation_types),
+        "raw_relation": (
+            relation_evaluation_report(
+                gold_records,
+                raw_records,
+                relation_types=tuple(relation_types),
+            )
+            if dataset == "domain"
+            else None
         ),
-        "verified_relation": relation_evaluation_report(
-            gold_records,
-            verified_records,
-            relation_types=tuple(relation_types),
+        "verified_relation": (
+            relation_evaluation_report(
+                gold_records,
+                verified_records,
+                relation_types=tuple(relation_types),
+            )
+            if dataset == "domain"
+            else None
         ),
         "elapsed_seconds": round(time.monotonic() - started, 3),
         "per_query": outputs["per_query"],

@@ -1,0 +1,83 @@
+run_id: full-ie-f4-domain-dev-b-stage-r-k5-seed42
+config_name: B
+prepared_under_gate: FULL_IE_F3_CONFIG_PREP_APPROVED
+execution:
+  phase: FULL_IE_DOMAIN_DEV_SANITY
+  authorized: false
+  human_gate: FULL_IE_DOMAIN_DEV_SANITY_APPROVED
+  approval_record: Prepared under FULL_IE_F3_CONFIG_PREP_APPROVED; future paid execution is not authorized.
+  model_calls_allowed: false
+  gpu_required: true
+  explicit_exclusions:
+  - domain_test
+  - cluener_dev_final_evaluation
+  - cluener_test_unlabeled
+  - paper_edits
+  - github_sync
+data:
+  dataset: domain
+replay:
+  reuse_stage_n_metadata: true
+input:
+  stage_n_per_query_path: /root/project/results/full_ie/f4/domain_dev/b_stage_n_per_query.jsonl
+  support_path: /root/autodl-tmp/data/domain_support.jsonl
+  expected_rows: 50
+schema:
+  entity_types:
+    EQUIPMENT: A complete or independently functional equipment item, platform, system, device, weapon, or identified model. Organization, location, deployment mode, and country or force names are not equipment.
+    MODULE: A physical or functional subsystem, component, unit, payload, munition, warhead, launcher, or part explicitly playing a constituent role in context. A term that can be independent equipment may be MODULE when the current sentence presents it as a component of a larger platform.
+    TECH_SCHEME: A non-physical technical method, architecture, operating regime, algorithm, process, information state, parameter concept, capability concept, or named engineering approach.
+    METRIC: A self-contained technical specification containing an attribute and its value, range, threshold, grade, or necessary local condition. Numeric weapon components such as warheads or charges are MODULE, not METRIC.
+  relation_types:
+    USES:
+      definition: The head explicitly uses, adopts, carries, mounts, deploys, equips, installs, or configures the tail for a function. For EQUIPMENT-to-EQUIPMENT relations, carrying/mounting/deployment wording such as 搭载/部署/挂载/装备/配装 is USES, not PART_OF. Do not reverse control or scheduling semantics to force a USES relation.
+      head_types:
+      - EQUIPMENT
+      - MODULE
+      tail_types:
+      - EQUIPMENT
+      - MODULE
+      - TECH_SCHEME
+    HAS_METRIC:
+      definition: The tail explicitly describes a specification, capability, parameter concept, or measurable technical attribute of the head.
+      head_types:
+      - EQUIPMENT
+      - MODULE
+      tail_types:
+      - METRIC
+      - TECH_SCHEME
+    PART_OF:
+      definition: The head is explicitly a constituent of the tail; direction is part to whole. For EQUIPMENT-to-EQUIPMENT relations, PART_OF requires explicit composition wording such as 组成/包括/是...的一部分/归属. The head must be the smaller component or member and the tail must be the larger whole, system, platform, or assembly.
+      head_types:
+      - EQUIPMENT
+      - MODULE
+      tail_types:
+      - EQUIPMENT
+      - MODULE
+prompt:
+  output_instruction: 只返回JSON,不要任何解释,不要markdown代码块
+  retry_suffix: 只返回合法JSON
+  version: stage_r_same_sentence_v1
+parsing:
+  drop_invalid_relations: false
+  direction_is_exact: true
+  duplicate_policy: deduplicate_exact
+model:
+  name: /root/autodl-tmp/models/qwen2.5-7b
+  base_url: http://127.0.0.1:8000
+  timeout_seconds: 300
+  api_key: EMPTY
+generation:
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 768
+  seed: 42
+cache:
+  dir: /root/project/cache/full_ie/f4/domain_stage_r
+outputs:
+  per_query: /root/project/results/full_ie/f4/domain_dev/b_stage_r_per_query.jsonl
+  summary: /root/project/results/full_ie/f4/domain_dev/b_stage_r_summary.json
+resource_lock:
+  support:
+    path: /root/autodl-tmp/data/domain_support.jsonl
+    sha256: 9633c7f6ceee8592408034e26834233e3f03b2f58a104783757ae664a4bab22a

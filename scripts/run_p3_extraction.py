@@ -53,6 +53,11 @@ P5_EXECUTION_GATES = frozenset(
 M2_EXECUTION_GATE = "M2_DOMAIN_DEV_Z_APPROVED"
 M2_EXECUTION_PHASE = "M2_DOMAIN_DEV_Z_EXECUTION"
 
+FULL_IE_EXECUTION_GATES = {
+    "FULL_IE_DOMAIN_DEV_SANITY_APPROVED": "FULL_IE_DOMAIN_DEV_SANITY",
+    "FULL_IE_CLUENER_TUNE_SANITY_APPROVED": "FULL_IE_CLUENER_TUNE_SANITY",
+}
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
@@ -129,7 +134,18 @@ def validate_execution_gate(execution: dict[str, Any]) -> None:
             )
         return
 
-    allowed = sorted(P3_EXECUTION_GATES | P5_EXECUTION_GATES | {M2_EXECUTION_GATE})
+    required_phase = FULL_IE_EXECUTION_GATES.get(human_gate)
+    if required_phase is not None:
+        if phase != required_phase:
+            raise RuntimeError(f"{human_gate} requires execution.phase={required_phase}")
+        return
+
+    allowed = sorted(
+        P3_EXECUTION_GATES
+        | P5_EXECUTION_GATES
+        | {M2_EXECUTION_GATE}
+        | set(FULL_IE_EXECUTION_GATES)
+    )
     raise RuntimeError(f"non-dry extraction human_gate must be one of: {allowed}")
 
 
