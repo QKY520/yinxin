@@ -1,6 +1,6 @@
 # Minimum Full-IE Extension Tracker
 
-**Date**: 2026-07-30
+**Date**: 2026-07-31
 
 **Status semantics**:
 
@@ -13,13 +13,15 @@
 Nothing in this tracker authorizes Python, data processing, prompt generation,
 model/API calls, vLLM, GPU use, `domain_test` access, or any paper edit.
 
-Current gate: `FULL_IE_RELATION_CALIBRATION_PREP_APPROVED` was explicitly
-granted and consumed on 2026-07-30. IE020 is complete using the locked fresh
-20-text non-test entity submissions on AutoDL no-card mode. The A/B relation
-fields remain blank and annotation has not started. Stop before annotation
-unless `FULL_IE_RELATION_CALIBRATION_ANNOTATION_APPROVED` is granted; returned-
-file validation separately requires
-`FULL_IE_RELATION_CALIBRATION_VALIDATION_APPROVED`.
+Current gate: `FULL_IE_RELATION_CALIBRATION_VALIDATION_APPROVED` was explicitly
+granted and consumed on 2026-07-31. IE021 is `BLOCKED`: the returned A/B files
+preserve all locked columns and align across 20 texts, but contain 90 structural
+errors (70 cross-sentence relations, 18 relation type/direction matrix errors,
+and 2 invalid uncertainty codes). Only 7/20 paired rows were structurally
+scoreable, so their F1 `0.454545` is an incomplete diagnostic and not a valid
+relation-calibration result. Human independence and no-script provenance are
+not established by file validation. Stop before correction, reannotation,
+F3/F4, model execution, or paper propagation; no next gate is open.
 
 ## Protocol and Implementation
 
@@ -31,7 +33,7 @@ file validation separately requires
 | IE012 | F1 | Extend E/E-prime to relation atoms | Synthetic fixtures | 0 | MUST | DONE | Invalid output keeps atoms; entity drops cascade; legacy NER behavior preserved |
 | IE013 | F1 | Implement aggregation and 60-cell manifest validation | Synthetic fixtures | 0 | MUST | DONE | Literal 30+30 inventory, hashes/statuses/arithmetic, three-seed mean/sample-SD |
 | IE020 | F2 | Prepare non-test relation-calibration sheets | Existing fresh 20-text calibration set | 0 | MUST | DONE | A/B own locked entities only; 20+20 blank relation rows isolated and hash-audited |
-| IE021 | F2 | Validate relation calibration | Exact directed endpoint/type triples | 0 | MUST | PLANNED | Annotation not started; separate annotation and validation approvals; diagnostic, not frozen-test IAA |
+| IE021 | F2 | Validate relation calibration | Exact directed endpoint/type triples | 0 | MUST | BLOCKED | 90 structural errors; 7/20 valid pairs; partial F1 0.454545 is not reportable; provenance unverified |
 | IE030 | F3 | Freeze domain dev configs | A-E-prime, K=5, seed42 | 6 | MUST | PLANNED | Dev paths only |
 | IE031 | F3 | Build CLUENER support bank and glossary | train_pool only | 0 | MUST | PLANNED | Fixed 30-record bank; record type coverage |
 | IE032 | F3 | Build/dedup CLUENER RAG corpus | labels-stripped train_pool | 0 | MUST | PLANNED | Exclude support/tune/dev overlap |
@@ -136,4 +138,27 @@ Missing report cells = 48
 - Safety/cost: AutoDL was GPU-free; no `domain_test`, prompt, model/API, vLLM,
   paper, or GitHub action occurred. Paid GPU cost was `0 CNY`.
 - Evidence accounting remains `0/60`; preparation is not relation evidence.
-  Stop before `FULL_IE_RELATION_CALIBRATION_ANNOTATION_APPROVED`.
+  The later annotation and validation gates do not change this accounting.
+
+## F2 Validation Closeout
+
+- Gate: `FULL_IE_RELATION_CALIBRATION_VALIDATION_APPROVED` was bounded to
+  returned-file validation and is consumed.
+- Input integrity: A/B each contain 20 rows; all four read-only fields, row
+  orders, entity hashes/counts, blind IDs, text hashes, and coordinator mapping
+  are preserved.
+- Stop condition: 90 hard errors comprise 70 cross-sentence relations, 18
+  relation type/direction matrix violations, and 2 invalid `METRIC_SCOPE`
+  uncertainty codes. IE021 is `BLOCKED`.
+- Incomplete diagnostic: only 7 paired rows were structurally valid (TP=10,
+  FP=15, FN=9, precision `0.400000`, recall `0.526316`, F1 `0.454545`). It is
+  not a complete calibration score and must not enter paper evidence.
+- Provenance: file validation cannot establish two independent humans or
+  absence of AI/scripts. The newly untracked user file
+  `p6_relation_annotate.py` was not read, executed, modified, or committed.
+- Verification: 6/6 new synthetic tests and 164/164 repository tests passed on
+  AutoDL no-card mode.
+- Safety/cost: no `domain_test`, prompt, model/API, vLLM, GPU, paper, or GitHub
+  action occurred; paid GPU cost was `0 CNY`.
+- Evidence accounting remains `0/60`. No correction, reannotation, F3/F4, or
+  paper gate is open.
