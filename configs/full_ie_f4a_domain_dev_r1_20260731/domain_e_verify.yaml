@@ -18,7 +18,7 @@ execution:
 data:
   dataset: domain
 input:
-  per_query_path: /root/project/results/full_ie/f4/domain_dev/d_stage_r_per_query.jsonl
+  per_query_path: /root/project/results/full_ie/f4/domain_dev_r1/d_stage_r_per_query.jsonl
   expected_rows: 50
 schema:
   entity_types:
@@ -72,5 +72,5 @@ generation:
 cache:
   dir: /root/project/cache/full_ie/f4/domain_verification
 outputs:
-  per_query: /root/project/results/full_ie/f4/domain_dev/e_verified_per_query.jsonl
-  summary: /root/project/results/full_ie/f4/domain_dev/e_verified_summary.json
+  per_query: /root/project/results/full_ie/f4/domain_dev_r1/e_verified_per_query.jsonl
+  summary: /root/project/results/full_ie/f4/domain_dev_r1/e_verified_summary.json

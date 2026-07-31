@@ -6,6 +6,7 @@ parent_config_dir: configs/full_ie_f4a_domain_dev_20260731
 revision_count: 1
 revision_scope: Set parsing.drop_invalid_relations=true for A/B/C/D Stage R only.
 revision_reason: Initial A Stage R had 38/50 failed rows; cached offline replay reduced failures to 1/50 without changing prompts or model outputs.
+versioned_output_dir: /root/project/results/full_ie/f4/domain_dev_r1
 dataset: domain
 split: domain_dev50
 k: 5

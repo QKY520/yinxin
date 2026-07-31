@@ -76,8 +76,8 @@ generation:
 cache:
   dir: /root/project/cache/full_ie/f4/domain_stage_r
 outputs:
-  per_query: /root/project/results/full_ie/f4/domain_dev/d_stage_r_per_query.jsonl
-  summary: /root/project/results/full_ie/f4/domain_dev/d_stage_r_summary.json
+  per_query: /root/project/results/full_ie/f4/domain_dev_r1/d_stage_r_per_query.jsonl
+  summary: /root/project/results/full_ie/f4/domain_dev_r1/d_stage_r_summary.json
 resource_lock:
   support:
     path: /root/autodl-tmp/data/domain_support.jsonl
