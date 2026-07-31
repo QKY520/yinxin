@@ -191,6 +191,24 @@ class FullIECoreTest(unittest.TestCase):
                 self.assertEqual(parsed["relations"], [])
                 self.assertEqual(flags[0]["kind"], "RELATION_DROPPED_INVALID_UNIT")
 
+    def test_stage_r_parser_keeps_relation_across_intra_sentence_semicolon(
+        self,
+    ) -> None:
+        semicolon_record = make_record(
+            "q-semicolon",
+            "甲平台包括控制单元；并采用乙模块。",
+            [("甲平台", "EQUIPMENT"), ("乙模块", "MODULE")],
+        )
+        parsed = parse_stage_r_output(
+            '{"relations":[{"head":0,"tail":1,"type":"USES"}]}',
+            stage_n_record=semicolon_record,
+            relation_types=DEFAULT_RELATION_TYPES,
+        )
+        self.assertEqual(
+            parsed["relations"],
+            [{"head": 0, "tail": 1, "type": "USES"}],
+        )
+
     def test_exact_relation_metric_counts_reversed_direction_as_fp_and_fn(self) -> None:
         gold = dict(self.query)
         gold["relations"] = [{"head": 0, "tail": 1, "type": "USES"}]

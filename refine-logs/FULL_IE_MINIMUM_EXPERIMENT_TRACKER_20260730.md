@@ -13,15 +13,18 @@
 Nothing in this tracker authorizes Python, data processing, prompt generation,
 model/API calls, vLLM, GPU use, `domain_test` access, or any paper edit.
 
-Current gate: `FULL_IE_RELATION_CALIBRATION_VALIDATION_APPROVED` was explicitly
-granted and consumed on 2026-07-31. IE021 is `BLOCKED`: the returned A/B files
-preserve all locked columns and align across 20 texts, but contain 90 structural
-errors (70 cross-sentence relations, 18 relation type/direction matrix errors,
-and 2 invalid uncertainty codes). Only 7/20 paired rows were structurally
-scoreable, so their F1 `0.454545` is an incomplete diagnostic and not a valid
-relation-calibration result. Human independence and no-script provenance are
-not established by file validation. Stop before correction, reannotation,
-F3/F4, model execution, or paper propagation; no next gate is open.
+Current gate: `FULL_IE_RELATION_CALIBRATION_REVALIDATION_APPROVED` was explicitly
+granted and consumed on 2026-07-31. The blocked IE021 first attempt remains
+preserved. Under IE022, human-revised A/B files were locked as `revised_v2`; a
+shared sentence-boundary defect that treated semicolons as sentence terminators
+was diagnosed and covered by a regression test. Final revalidation has zero
+structural errors and 20/20 valid pairs. Exact-directed file concordance is
+TP=24, FP=47, FN=20, precision `0.338028`, recall `0.545455`, F1 `0.417391`;
+`PART_OF` F1 is only `0.246154`. The user attested that both files are
+human-produced, but this post-feedback result is not frozen-test formal IAA and
+does not establish high relation agreement. F2 is disclosed and complete under
+its pre-specified structural criterion. No F3/F4, model, GPU, or paper gate is
+open.
 
 ## Protocol and Implementation
 
@@ -34,6 +37,7 @@ F3/F4, model execution, or paper propagation; no next gate is open.
 | IE013 | F1 | Implement aggregation and 60-cell manifest validation | Synthetic fixtures | 0 | MUST | DONE | Literal 30+30 inventory, hashes/statuses/arithmetic, three-seed mean/sample-SD |
 | IE020 | F2 | Prepare non-test relation-calibration sheets | Existing fresh 20-text calibration set | 0 | MUST | DONE | A/B own locked entities only; 20+20 blank relation rows isolated and hash-audited |
 | IE021 | F2 | Validate relation calibration | Exact directed endpoint/type triples | 0 | MUST | BLOCKED | 90 structural errors; 7/20 valid pairs; partial F1 0.454545 is not reportable; provenance unverified |
+| IE022 | F2 | Revalidate human-revised relation calibration | Versioned `revised_v2` exact directed triples | 0 | MUST | DONE | 0 structural errors; 20/20 pairs; F1 0.417391; PART_OF F1 0.246154; not formal IAA |
 | IE030 | F3 | Freeze domain dev configs | A-E-prime, K=5, seed42 | 6 | MUST | PLANNED | Dev paths only |
 | IE031 | F3 | Build CLUENER support bank and glossary | train_pool only | 0 | MUST | PLANNED | Fixed 30-record bank; record type coverage |
 | IE032 | F3 | Build/dedup CLUENER RAG corpus | labels-stripped train_pool | 0 | MUST | PLANNED | Exclude support/tune/dev overlap |
@@ -162,3 +166,41 @@ Missing report cells = 48
   action occurred; paid GPU cost was `0 CNY`.
 - Evidence accounting remains `0/60`. No correction, reannotation, F3/F4, or
   paper gate is open.
+
+## F2 Revalidation Closeout
+
+- Gate: `FULL_IE_RELATION_CALIBRATION_REVALIDATION_APPROVED` was bounded to
+  version-locking and validating the human-revised non-test A/B files; it is
+  consumed.
+- Negative-result preservation: the IE021 input/report and the first revised
+  revalidation output were retained. Nothing was deleted, overwritten, or
+  filtered to manufacture a pass.
+- Input lock: A revised SHA256 `579a1a36...a63fe3`; B revised SHA256
+  `4acc4b05...24861f`; original blank sheets and coordinator map remained
+  unchanged.
+- Implementation diagnosis: the shared sentence helper incorrectly treated
+  `；;` as sentence-final punctuation. This rejected four identical A/B
+  relations inside one semicolon-delimited Chinese equipment list. The helper
+  now uses true sentence-final punctuation/newlines; full-stop cross-sentence
+  rejection remains covered.
+- Final structure: zero hard errors and 20/20 complete valid pairs. A has 44
+  relations, B has 71, 9/20 rows match exactly, and 11/20 contain disclosed
+  disagreements.
+- Exact-directed concordance: overall TP=24, FP=47, FN=20, P `0.338028`, R
+  `0.545455`, F1 `0.417391`; `USES` F1 `0.650000`, `HAS_METRIC` F1 `0.600000`,
+  and `PART_OF` F1 `0.246154`.
+- Provenance/claim boundary: the user attested both files are human-produced.
+  Because these are post-feedback revisions, the result remains file
+  concordance rather than a new blind first-pass or frozen-test formal IAA.
+  The low score weakens, rather than supports, a relation-quality claim.
+- Verification: Stage R core tests `14/14`, relation-validator tests `7/7`, and
+  the final AutoDL no-card repository suite `166/166` passed. Real
+  `domain_test` was not read; similarly named test paths were temporary
+  synthetic fixtures only.
+- Successful artifact report SHA256 is
+  `9fc15cf720f470b5f37366eb70fb1657eb42d52527e7859ebf44ee52ebb6bef8`;
+  see `docs/FULL_IE_RELATION_CALIBRATION_REVALIDATION_20260731.md`.
+- Safety/cost: no prompt, model/API, vLLM, GPU, paper, P6 user-script, or
+  GitHub action occurred; paid GPU cost was `0 CNY`.
+- Evidence accounting remains `0/60`. F3 configuration/resource preparation
+  requires a new bounded approval.

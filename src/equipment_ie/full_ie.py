@@ -30,7 +30,8 @@ DEFAULT_RELATION_TYPES: dict[str, dict[str, Any]] = {
     },
 }
 
-_SENTENCE_BOUNDARIES = frozenset("。！？!?；;\n\r")
+# Chinese semicolons commonly separate clauses in one equipment-list sentence.
+_SENTENCE_BOUNDARIES = frozenset("。！？!?\n\r")
 RelationKey = tuple[int, int, str, str, int, int, str]
 
 

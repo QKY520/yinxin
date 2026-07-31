@@ -37,12 +37,21 @@ from equipment_ie.full_ie import (
 
 
 GATE_NAME = "FULL_IE_RELATION_CALIBRATION_VALIDATION_APPROVED"
+REVALIDATION_GATE_NAME = "FULL_IE_RELATION_CALIBRATION_REVALIDATION_APPROVED"
+INITIAL_INPUT_PROFILE = "initial_v1"
+REVISED_INPUT_PROFILE = "revised_v2"
 EXPECTED_ROWS = 20
 EXPECTED_COMPLETED_A_SHA256 = (
     "444f46428f8b3d3bc61c39cda7bd1330ab80b4ebd6d1fc4f83b92fb31083726a"
 )
 EXPECTED_COMPLETED_B_SHA256 = (
     "5489aa8128494e12655893dc54a6124250535f5116ed11417ed19733cab46066"
+)
+EXPECTED_REVISED_COMPLETED_A_SHA256 = (
+    "579a1a368e492fa1f3d49f13f3fb4dabe4129eb4ac8b6ecfeea9829d92a63fe3"
+)
+EXPECTED_REVISED_COMPLETED_B_SHA256 = (
+    "4acc4b05358027cb61b4e9ddd3e0d72c10b48468547ad9e06db49f727a24861f"
 )
 EXPECTED_BLANK_A_SHA256 = (
     "44157617b377178aba0a1a6a2881cfb759b9927526dbbd536deb1dc04dc57411"
@@ -118,6 +127,21 @@ class ExpectedHashes:
     coordinator_map: str = EXPECTED_MAP_SHA256
 
 
+INPUT_PROFILES = {
+    INITIAL_INPUT_PROFILE: (
+        GATE_NAME,
+        ExpectedHashes(),
+    ),
+    REVISED_INPUT_PROFILE: (
+        REVALIDATION_GATE_NAME,
+        ExpectedHashes(
+            annotator_a_completed=EXPECTED_REVISED_COMPLETED_A_SHA256,
+            annotator_b_completed=EXPECTED_REVISED_COMPLETED_B_SHA256,
+        ),
+    ),
+}
+
+
 def parse_args() -> argparse.Namespace:
     prepared = "/root/autodl-tmp/backup/full_ie/f2_relation_calibration_20260730"
     returned = (
@@ -154,6 +178,12 @@ def parse_args() -> argparse.Namespace:
             "f2_relation_calibration_validation_20260731"
         ),
     )
+    parser.add_argument(
+        "--input-profile",
+        choices=tuple(INPUT_PROFILES),
+        default=INITIAL_INPUT_PROFILE,
+        help="Select a versioned, hard-locked returned-file hash profile.",
+    )
     return parser.parse_args()
 
 
@@ -179,9 +209,9 @@ def require_hash(path: Path, expected: str, label: str) -> None:
         raise ValueError(f"{label} SHA256 mismatch: expected {expected}, got {actual}")
 
 
-def require_gate() -> None:
-    if os.environ.get(GATE_NAME) != "1":
-        raise PermissionError(f"set {GATE_NAME}=1 for this bounded validation gate")
+def require_gate(gate_name: str) -> None:
+    if os.environ.get(gate_name) != "1":
+        raise PermissionError(f"set {gate_name}=1 for this bounded validation gate")
 
 
 def reject_forbidden_path(path: Path, label: str) -> None:
@@ -654,8 +684,10 @@ def validate_relation_calibration(
     *,
     expected_hashes: ExpectedHashes = ExpectedHashes(),
     expected_rows: int = EXPECTED_ROWS,
+    gate_name: str = GATE_NAME,
+    input_profile: str = INITIAL_INPUT_PROFILE,
 ) -> dict[str, Any]:
-    require_gate()
+    require_gate(gate_name)
     if config.output_dir.exists():
         raise FileExistsError(f"refusing to overwrite output: {config.output_dir}")
     locked_inputs = (
@@ -865,6 +897,8 @@ def validate_relation_calibration(
         "phase": "FULL-IE-F2-RELATION-CALIBRATION-VALIDATION",
         "status": "completed_diagnostic" if completed else "blocked_structural_errors",
         "created_at": created_at,
+        "gate": gate_name,
+        "input_profile": input_profile,
         "scope": {
             "source": "locked_fresh_20_text_non_test_human_entity_submissions",
             "expected_rows_per_annotator": expected_rows,
@@ -875,6 +909,12 @@ def validate_relation_calibration(
             "vllm_used": False,
             "gpu_used": False,
             "labels_modified_or_repaired": False,
+            "input_annotations_revised_after_prior_validation": (
+                input_profile == REVISED_INPUT_PROFILE
+            ),
+            "prior_failed_validation_preserved": (
+                input_profile == REVISED_INPUT_PROFILE
+            ),
             "formal_frozen_test_iaa": False,
             "human_independence_provenance_assessed_by_validator": False,
         },
@@ -941,7 +981,8 @@ def validate_relation_calibration(
         }
         manifest = {
             "phase": report["phase"],
-            "gate": GATE_NAME,
+            "gate": gate_name,
+            "input_profile": input_profile,
             "status": report["status"],
             "created_at": created_at,
             "inputs": {
@@ -985,6 +1026,7 @@ def validate_relation_calibration(
 
 def main() -> int:
     args = parse_args()
+    gate_name, expected_hashes = INPUT_PROFILES[args.input_profile]
     config = ValidationConfig(
         annotator_a_completed=Path(args.annotator_a_completed),
         annotator_b_completed=Path(args.annotator_b_completed),
@@ -993,7 +1035,12 @@ def main() -> int:
         coordinator_map=Path(args.coordinator_map),
         output_dir=Path(args.output_dir),
     )
-    report = validate_relation_calibration(config)
+    report = validate_relation_calibration(
+        config,
+        expected_hashes=expected_hashes,
+        gate_name=gate_name,
+        input_profile=args.input_profile,
+    )
     concordance = report["exact_directed_file_concordance"]
     print(
         json.dumps(
@@ -1007,6 +1054,7 @@ def main() -> int:
                 "precision": concordance["precision"],
                 "recall": concordance["recall"],
                 "f1": concordance["f1"],
+                "input_profile": args.input_profile,
                 "output_dir": str(config.output_dir),
             },
             ensure_ascii=False,

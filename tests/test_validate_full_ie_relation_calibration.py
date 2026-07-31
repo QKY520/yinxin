@@ -304,6 +304,53 @@ class ValidateFullIERelationCalibrationTests(unittest.TestCase):
             with self.assertRaises(FileExistsError):
                 self.validate(config, hashes)
 
+    def test_revised_profile_has_separate_gate_and_locked_hashes(self) -> None:
+        revised_gate, revised_hashes = MODULE.INPUT_PROFILES[
+            MODULE.REVISED_INPUT_PROFILE
+        ]
+        self.assertEqual(revised_gate, MODULE.REVALIDATION_GATE_NAME)
+        self.assertEqual(
+            revised_hashes.annotator_a_completed,
+            MODULE.EXPECTED_REVISED_COMPLETED_A_SHA256,
+        )
+        self.assertEqual(
+            revised_hashes.annotator_b_completed,
+            MODULE.EXPECTED_REVISED_COMPLETED_B_SHA256,
+        )
+
+        with tempfile.TemporaryDirectory() as temporary:
+            config, synthetic_hashes = self.make_package(Path(temporary))
+            with patch.dict(os.environ, {MODULE.GATE_NAME: "1"}, clear=True):
+                with self.assertRaises(PermissionError):
+                    MODULE.validate_relation_calibration(
+                        config,
+                        expected_hashes=synthetic_hashes,
+                        expected_rows=2,
+                        gate_name=MODULE.REVALIDATION_GATE_NAME,
+                        input_profile=MODULE.REVISED_INPUT_PROFILE,
+                    )
+
+            with patch.dict(
+                os.environ, {MODULE.REVALIDATION_GATE_NAME: "1"}, clear=True
+            ):
+                report = MODULE.validate_relation_calibration(
+                    config,
+                    expected_hashes=synthetic_hashes,
+                    expected_rows=2,
+                    gate_name=MODULE.REVALIDATION_GATE_NAME,
+                    input_profile=MODULE.REVISED_INPUT_PROFILE,
+                )
+
+            self.assertEqual(report["gate"], MODULE.REVALIDATION_GATE_NAME)
+            self.assertEqual(report["input_profile"], MODULE.REVISED_INPUT_PROFILE)
+            self.assertTrue(
+                report["scope"]["input_annotations_revised_after_prior_validation"]
+            )
+            self.assertTrue(report["scope"]["prior_failed_validation_preserved"])
+            manifest = json.loads((config.output_dir / "manifest.json").read_text())
+            self.assertEqual(manifest["gate"], MODULE.REVALIDATION_GATE_NAME)
+            self.assertEqual(manifest["input_profile"], MODULE.REVISED_INPUT_PROFILE)
+
 
 if __name__ == "__main__":
     unittest.main()

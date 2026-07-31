@@ -18,8 +18,8 @@ Synchronization note (2026-07-30): `AGENTS.md`, `AGENT_PLAYBOOK.md`,
 `实验实施指导文档_综合版.md`, and this file have been aligned to the latest
 full-IE route decision, accepted `0.8000` calibration decision, current
 claim boundary, full-matrix accounting, F1 implementation closeout, F2
-relation-calibration preparation closeout, blocked IE021 validation, and
-execution red lines.
+relation-calibration preparation closeout, blocked IE021 validation, completed
+IE022 revalidation, and execution red lines.
 
 Latest route decision (2026-07-30): the human wants to expand the project into
 the originally intended complete equipment-domain IE paper rather than submit
@@ -37,7 +37,13 @@ occurred, and that gate authorized no later phase. The separate bounded
 `FULL_IE_RELATION_CALIBRATION_PREP_APPROVED` gate was then granted and consumed.
 The later annotation and validation gates were also opened. The returned A/B
 files preserved the locked columns, but IE021 validation found 90 structural
-errors and is `BLOCKED`; the partial 7-row F1 is not valid relation evidence.
+errors and remains a preserved `BLOCKED` first attempt. The user then attested
+that both files were human-produced and supplied human-revised returns under
+`FULL_IE_RELATION_CALIBRATION_REVALIDATION_APPROVED`. IE022 final revalidation
+passed with zero structural errors and 20/20 valid pairs after correcting a
+shared implementation defect that treated semicolons as sentence terminators.
+The complete exact-directed file-concordance F1 is only `0.417391`, so this
+completes/discloses F2 but does not support a high-quality relation-label claim.
 
 ## 0. Executive Snapshot For A New Session
 
@@ -55,31 +61,34 @@ two-stage full-IE plan plus tracker. The bounded F1 implementation gate is also
 complete: Stage R foundations, exact directed relation metrics, relation-aware
 E/E-prime logic, manifest validation, and synthetic tests are implemented.
 IE020 preparation is complete. IE021 validation infrastructure and tests are
-also complete, but the returned relation annotations failed the structural
-gate and are preserved as a blocked result.
+also complete; its failed first return is preserved. IE022 versioned
+revalidation is complete: the human-revised A/B files pass structural checks
+on all 20 paired non-test texts, and all disagreements and the low complete F1
+`0.417391` are disclosed.
 
 **Current evidence**: A/B/C/D NER F1 is `0.534645`, `0.555169`, `0.568858`, and
 `0.565764`. C/D are an F1 near-tie; D has higher precision and 55 fewer FP.
-This does not support RE, positive CoVe, public generalization, K robustness, or
-full-matrix claims. Human calibration `0.8000` is not frozen-test formal IAA;
-`TECH_SCHEME` F1 is only `0.153846`.
+This does not support model RE, positive CoVe, public generalization, K
+robustness, or full-matrix claims. Human entity calibration `0.8000` is not
+frozen-test formal IAA; `TECH_SCHEME` F1 is only `0.153846`. The post-feedback
+relation file-concordance F1 `0.417391` is also not formal IAA and specifically
+exposes weak `PART_OF` agreement (`0.246154`).
 
-**Current breakpoint**: F1 implementation and IE020 preparation are complete.
-IE021 returned-file validation is blocked by 70 cross-sentence relations, 18
-type/direction matrix violations, and 2 invalid uncertainty codes. Only 7/20
-paired rows were structurally scoreable; their F1 `0.454545` is not a complete
-calibration result. No real-data Stage R or relation-aware verifier run started.
-The matrix remains `0/60` complete full-IE cells: 12 domain cells have reusable
-NER-only Stage N outputs, 48 reported cells are absent, and all 30 domain cells
-still need Stage R results. E v1 failed on dev, E v2 was mixed/negative,
-E-prime was never model-run, and E v3 was preparation only.
+**Current breakpoint**: F1 implementation, IE020 preparation, and IE022 F2
+revalidation are complete. IE021 remains the preserved failed first attempt;
+IE022 has 0 structural errors, 20/20 valid pairs, and complete exact-directed
+F1 `0.417391` (TP=24, FP=47, FN=20). No real-data Stage R or relation-aware
+verifier run started. The matrix remains `0/60` complete full-IE cells: 12
+domain cells have reusable NER-only Stage N outputs, 48 reported cells are
+absent, and all 30 domain cells still need Stage R results. E v1 failed on dev,
+E v2 was mixed/negative, E-prime was never model-run, and E v3 was preparation
+only.
 
-**Next step**: stop. The validation gate is consumed and no next execution gate
-is open. The human must first clarify whether the two returned relation sheets
-were independently completed by two humans without AI/LLM, scripts, discussion,
-or cross-file access. Any correction, replacement calibration set,
-reannotation, F3/F4, model/API/vLLM call, GPU use, experiment, manuscript edit,
-or GitHub synchronization requires a new separately bounded gate.
+**Next step**: stop. The revalidation gate is consumed and no next execution
+gate is open. The next planned phase is F3 no-card domain-dev/CLUENER-tune
+configuration, hash, and resource-manifest preparation, but it requires a new
+separately bounded approval. F4 model/API/vLLM calls, GPU use, `domain_test`,
+paper edits, and GitHub synchronization remain unauthorized.
 
 **Red lines**: never run project Python locally on Windows; never tune from
 frozen test; preserve every negative row; never call E-prime failed; never
@@ -240,6 +249,40 @@ was not read, executed, modified, or committed. Six new synthetic tests and all
 model/API/vLLM, GPU, paper, or GitHub action occurred; cost was `0 CNY`. See
 `docs/FULL_IE_RELATION_CALIBRATION_VALIDATION_20260731.md`.
 
+Completed latest step (2026-07-31): **bounded no-card IE022 relation-
+calibration revalidation**. The user attested that both A/B submissions were
+produced by humans and supplied human-revised files, locked as `revised_v2` at
+SHA256 `579a1a36...a63fe3` and `4acc4b05...24861f`. All four read-only columns,
+row orders, 20-text alignment, entity hashes/counts, original blank sheets, and
+coordinator map remained unchanged. Because the files were revised after
+structural feedback, this is not a new blind first-pass or frozen-test formal
+IAA.
+
+The first revised revalidation reported eight cross-sentence errors, all on
+`domain-candidate-0050`. A/B had identical relations and both treated a
+semicolon-delimited equipment list as one sentence. Inspection found a shared
+F1 implementation defect: `same_sentence()` treated `；;` as sentence-final
+punctuation even though the locked guideline only excludes genuinely
+cross-sentence relations. The core helper was corrected to retain semicolons as
+intra-sentence punctuation; full stops, question/exclamation marks, and
+newlines remain boundaries. A new Stage R regression test covers the case. The
+failed intermediate output and the original IE021 failure are both preserved.
+
+Final IE022 revalidation passed with zero structural errors and 20/20 valid
+pairs. Exact-directed file concordance is TP=24, FP=47, FN=20, precision
+`0.338028`, recall `0.545455`, F1 `0.417391`; 9/20 texts match exactly and 11
+disagree. Per-type F1 is `USES=0.650000`, `HAS_METRIC=0.600000`, and
+`PART_OF=0.246154`. A has 44 relations and B has 71. This satisfies the
+pre-specified F2 structural/disclosure criterion but is low agreement and
+weakens any relation-quality claim. It is not a model RE result.
+
+Stage R core tests passed `14/14`, validator tests passed `7/7`, and the final
+AutoDL repository suite passed `166/166`. AutoDL remained no-card with no model
+process; no real `domain_test`, real prompt, model/API/vLLM, GPU, paper, P6
+user-script, or GitHub action occurred. Cost was `0 CNY`. The successful report
+SHA256 is `9fc15cf720f470b5f37366eb70fb1657eb42d52527e7859ebf44ee52ebb6bef8`;
+see `docs/FULL_IE_RELATION_CALIBRATION_REVALIDATION_20260731.md`.
+
 Completion accounting for a new session:
 
 - the literal matrix contains 60 reported cells: 30 domain and 30 CLUENER;
@@ -381,10 +424,11 @@ frozen-test prompt generation, real-data prompt generation, returned-file
 correction, reannotation, frozen-data correction, aggregation, re-evaluation,
 baseline run, or new experiment is currently authorized. The fresh entity
 annotation/validation, M1, M2, full-IE F1, IE020 preparation, and IE021
-validation gates are consumed. IE021 is blocked, so the next human action is
-provenance clarification and a new bounded remediation decision; it is not
-F3/F4 execution. LaTeX was deliberately not changed; any result propagation
-into a manuscript requires a later, separate approval after result-to-claim.
+validation gates are consumed; IE022 revalidation is also consumed and F2 is
+complete with a disclosed low-agreement result. The next planned action is a
+new bounded F3 no-card configuration/resource-preparation gate, not F4 model
+execution. LaTeX was deliberately not changed; any result propagation into a
+manuscript requires a later, separate approval after result-to-claim.
 
 ## 2. What Is Already Completed
 
@@ -1092,6 +1136,8 @@ Use these as the paper-facing evidence base:
 - `docs/P6_QA1R_FRESH_CALIBRATION_VALIDATION_20260727.md`
 - `docs/M1_PAIRED_EVIDENCE_AUDIT_20260729.md`
 - `docs/FULL_IE_RELATION_CALIBRATION_PREPARATION_20260730.md`
+- `docs/FULL_IE_RELATION_CALIBRATION_VALIDATION_20260731.md`
+- `docs/FULL_IE_RELATION_CALIBRATION_REVALIDATION_20260731.md`
 - `refine-logs/m1_paired_evidence_20260729/`
 - `docs/M2_BASELINE_PREPARATION_20260729.md`
 - `refine-logs/m2_domain_dev_g_exact_glossary_20260729/`
@@ -1120,8 +1166,8 @@ P0 paper repair already completed:
   must run on AutoDL through SSH alias `autodl-paper`.
 - Until a new gate is approved, current work is local documentation/Git and
   lightweight read-only inspection only. `FULL_IE_IMPLEMENTATION_APPROVED` and
-  `FULL_IE_RELATION_CALIBRATION_PREP_APPROVED` are consumed; their Python/tests
-  ran on AutoDL GPU-free/no-card mode, never on Windows.
+  all F2 preparation/validation/revalidation gates are consumed; their
+  Python/tests ran on AutoDL GPU-free/no-card mode, never on Windows.
 - Use paid GPU only for model inference/training and only after explicit human
   approval for one bounded step.
 - After every GPU phase: stop vLLM, verify GPU memory returns to 0 MiB, back up,
@@ -1137,9 +1183,10 @@ P0 paper repair already completed:
 - Do not distribute any coordinator map to annotators. The prior 24-row human
   calibration gate is consumed; do not edit or rescore those same rows as a new
   independent round.
-- The new relation-calibration A/B sheets are prepared but unstarted. Do not
-  deliver both roles together, fill any relation field, compare sheets, or
-  validate returned files before their exact separate gates.
+- The relation-calibration A/B workflow is complete through IE022. Do not edit
+  either locked `revised_v2` file, rescore it under a new rule, or delete the
+  IE021/intermediate failures. Future relation-gold adjudication or a fresh
+  calibration round requires a separate gate and version.
 - Guideline v4 is locked. Do not use the lock gate to generate or start a
   fresh calibration round; that requires
   `P6_QA1R_FRESH_CALIBRATION_PREP_APPROVED`.
@@ -1217,15 +1264,16 @@ Remote:
 - Remote code: `/root/project`
 - Remote data/model/backup root: `/root/autodl-tmp`
 - Project venv: `/root/autodl-tmp/venvs/equipment-ie`
-- Status verified again during IE021 validation on 2026-07-31: remote Git HEAD remains
+- Status verified again during IE022 revalidation on 2026-07-31: remote Git HEAD remains
   `863c701`. The eight approved implementation/test files were manually synced
   for no-card testing. Five IE020 code/test/guideline files were later manually
   synced for no-card preparation and audit; the IE021 validator and test were
-  then incrementally synced. The remote worktree also retains
+  then incrementally synced. IE022 additionally synced the versioned validator
+  lock/test and the shared Stage R sentence-boundary fix/test. The remote worktree also retains
   pre-existing manually synced modified/untracked P6 files because GitHub sync
   is unavailable. Do not clean or reset that worktree, and do not overwrite its
   divergent handoff.
-- Last verified mode during IE021 validation on 2026-07-31: GPU-free/no-card
+- Last verified mode during IE022 revalidation on 2026-07-31: GPU-free/no-card
   (`nvidia-smi -L` returned `No devices found` and `/dev/nvidia0` was absent),
   with no vLLM, Qwen, extraction, or verifier process. Confirm again before any
   later remote action.
@@ -1240,44 +1288,41 @@ ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status -
 
 The route decision is complete: pursue the minimum defensible full-IE extension
 and retain the narrow JISE NER package as fallback. The design and inventory are
-prepared, and the bounded F1 implementation, IE020 preparation, and IE021
-validation gates are consumed. IE021 is `BLOCKED`; there are still `0/60`
-complete full-IE cells. A new session must not infer correction, reannotation,
-F3/F4, or experimental authority from the returned files or from the user's
-general desire to complete IE.
+prepared, and the bounded F1 implementation, IE020 preparation, IE021 initial
+validation, and IE022 revalidation gates are consumed. IE021 remains a
+preserved blocked first attempt; IE022 completes F2 under the pre-specified
+zero-structural-error/full-disclosure criterion. There are still `0/60`
+complete full-IE cells. A new session must not infer F3/F4 or experimental
+authority from completion of F2 or from the user's general desire to complete
+IE.
 
-### Current blocker: relation annotation integrity and provenance
+### Current state: F2 complete with a low-agreement limitation
 
-The returned A/B files preserve all four locked columns and align over 20 texts,
-but contain 90 structural errors: 70 cross-sentence relations, 18 relation
-type/direction matrix violations, and 2 invalid uncertainty codes. Only 7/20
-paired rows are structurally scoreable, and their F1 `0.454545` is an incomplete
-diagnostic, not a calibration result. The failed files and report are locked by
-hash and must not be repaired in place or selectively filtered.
+The initial A/B returns and 90-error IE021 report remain locked negative
+evidence. The user attested both submissions were human-produced. Human-revised
+`revised_v2` files preserve all locked columns and now pass with zero structural
+errors over 20/20 texts. A semicolon sentence-boundary implementation bug was
+fixed and regression-tested without relaxing the no-cross-sentence rule.
 
-File validation cannot prove independent two-human completion without AI/LLM,
-scripts, discussion, or cross-file access. The human must clarify that
-provenance before selecting a remediation. The defensible default is to retire
-this attempt and use fresh unused non-test passages for a newly blinded,
-independent two-human calibration under separately named preparation,
-annotation, and validation gates. No such gate is currently open. Do not edit
-the returned sheets, execute Stage R or the relation-aware verifier on real
-records, generate support/dev/test prompts, or enter F3/F4.
+Complete exact-directed file concordance is only F1 `0.417391`, with
+`PART_OF=0.246154`; this is not formal IAA or support for a high-quality
+relation-label claim. It is a disclosed calibration limitation. The next
+planned machine step is F3 no-card domain-dev/CLUENER-tune config, hash, and
+resource-manifest preparation. No F3 gate is currently open. Do not execute
+Stage R or the relation-aware verifier on real records, generate real
+support/dev/test prompts, use GPU/model calls, or enter F4.
 
 ### Later sequence: planned, not authorized
 
-1. F2 remediation: after provenance clarification and new explicit gates,
-   produce a structurally valid independent two-human non-test relation
-   calibration; preserve and disclose the blocked first attempt.
-2. F3: freeze domain-dev and CLUENER-tune resources/configs without test access.
-3. F4: run one bounded paid domain-dev IE sanity and CLUENER-tune sanity; allow
+1. F3: freeze domain-dev and CLUENER-tune resources/configs without test access.
+2. F4: run one bounded paid domain-dev IE sanity and CLUENER-tune sanity; allow
    at most one dev-only protocol revision.
-4. F5/F6: freeze hashes and prepare leakage-safe replay artifacts in no-card
+3. F5/F6: freeze hashes and prepare leakage-safe replay artifacts in no-card
    mode under separate gates.
-5. F7: run the 30 domain final cells in bounded paid batches, reusing the 12
+4. F7: run the 30 domain final cells in bounded paid batches, reusing the 12
    existing Stage N outputs and adding Stage R.
-6. F8: run the 30 CLUENER NER cells on complete labeled official dev.
-7. F9: aggregate, perform paired uncertainty/result-to-claim, then request a
+5. F8: run the 30 CLUENER NER cells on complete labeled official dev.
+6. F9: aggregate, perform paired uncertainty/result-to-claim, then request a
    separate manuscript-propagation gate.
 
 The plan estimates `125-295 CNY` of additional paid compute, with large
@@ -1346,6 +1391,14 @@ journal submission remains unauthorized.
 - The coordinator explicitly attested that the final fresh A/B files are human
   annotations. Use that accepted provenance; do not reopen the earlier
   script-origin dispute for these final files.
+- The relation `revised_v2` files are also coordinator-attested human work and
+  structurally valid, but their exact-directed concordance F1 is only
+  `0.417391` (`PART_OF=0.246154`). Treat this as a disclosed relation-quality
+  limitation, not formal IAA or positive RE evidence.
+- Chinese semicolons delimit clauses inside an orthographic sentence and are
+  common in equipment/patent enumerations. Shared Stage R sentence logic must
+  not treat `；;` as a sentence terminator; true full-stop cross-sentence and
+  pronoun-based links remain forbidden.
 - Reconciliation found 119 events across 23/24 rows. The dominant fix is not a
   looser metric; it is an explicit inclusion/exclusion policy, object-versus-
   method decision order, evidence-based EQUIPMENT/MODULE role, alias role
