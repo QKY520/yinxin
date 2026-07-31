@@ -72,10 +72,10 @@ open.
 
 | Run ID | Milestone | Purpose | Dataset / split | Cells | Priority | Status | Gate / notes |
 | --- | --- | --- | --- | ---: | --- | --- | --- |
-| DDEV1 | F4 | Relation-enabled A-D sanity | domain_dev50, K=5, seed42 | 4 | MUST | PLANNED | Paid gate; NER+RE metrics |
-| DDEV2 | F4 | Entity+relation verification sanity | domain_dev50 E/E-prime, K=5, seed42 | 2 | MUST | PLANNED | Audit up to 20 dropped units per class |
-| CDEV1 | F4 | Public NER A-D sanity | fixed CLUENER tune subset, K=5, seed42 | 4 | MUST | PLANNED | No official dev/test evaluation |
-| CDEV2 | F4 | Public verifier E/E-prime sanity | fixed CLUENER tune subset, K=5, seed42 | 2 | MUST | PLANNED | Entity atoms only |
+| DDEV1 | F4 | Relation-enabled A-D sanity | domain_dev50, K=5, seed42 | 4 | MUST | PLANNED | Requires `FULL_IE_DOMAIN_DEV_SANITY_APPROVED`; NER+RE metrics |
+| DDEV2 | F4 | Entity+relation verification sanity | domain_dev50 E/E-prime, K=5, seed42 | 2 | MUST | PLANNED | Same domain gate; audit up to 20 dropped units per class |
+| CDEV1 | F4 | Public NER A-D sanity | fixed CLUENER tune subset, K=5, seed42 | 4 | MUST | PLANNED | Later separate `FULL_IE_CLUENER_TUNE_SANITY_APPROVED` |
+| CDEV2 | F4 | Public verifier E/E-prime sanity | fixed CLUENER tune subset, K=5, seed42 | 2 | MUST | PLANNED | Same CLUENER gate; entity atoms only |
 | FREEZE | F5 | Lock final protocol | Prompts/configs/resources/metrics/seeds | 0 | MUST | PLANNED | Required before any final evaluation access |
 
 ## Domain Final Matrix: 30 Reported Cells

@@ -76,7 +76,9 @@ Local package:
 
 ## Next Gate
 
-F4 remains closed. A separately bounded paid approval is required to launch the
-locked domain-dev and CLUENER-tune sanity. F4 must stop after dev/tune metrics
-and the required verifier drop audit; it does not authorize `domain_test`, final
-CLUENER evaluation, F5/F6, paper edits, or GitHub sync.
+F4 remains closed. The immediate next subgate is
+`FULL_IE_DOMAIN_DEV_SANITY_APPROVED`, limited to DDEV1/DDEV2. It must stop after
+domain-dev metrics and the required verifier drop audit. CLUENER tune sanity
+requires the later separate `FULL_IE_CLUENER_TUNE_SANITY_APPROVED` gate. Neither
+gate authorizes `domain_test`, final CLUENER evaluation, F5/F6, paper edits, or
+GitHub sync.

@@ -93,10 +93,11 @@ E v2 was mixed/negative, E-prime was never model-run, and E v3 was preparation
 only.
 
 **Next step**: stop. The revalidation and F3 preparation gates are consumed and
-no F4 execution gate is open. The next planned phase is one bounded paid F4
-domain-dev/CLUENER-tune sanity run using the locked configs. F4 model/API/vLLM
-calls, GPU use, `domain_test`, paper edits, and GitHub synchronization remain
-unauthorized until a separate explicit F4 gate.
+no F4 execution gate is open. The immediate planned subgate is the paid
+`FULL_IE_DOMAIN_DEV_SANITY_APPROVED` gate for DDEV1/DDEV2 only. If it passes,
+CLUENER tune sanity still requires the separate
+`FULL_IE_CLUENER_TUNE_SANITY_APPROVED` gate. F4 model/API/vLLM calls, GPU use,
+`domain_test`, paper edits, and GitHub synchronization remain unauthorized.
 
 **Red lines**: never run project Python locally on Windows; never tune from
 frozen test; preserve every negative row; never call E-prime failed; never
@@ -464,7 +465,9 @@ annotation/validation, M1, M2, full-IE F1, IE020 preparation, and IE021
 validation gates are consumed; IE022 revalidation is also consumed and F2 is
 complete with a disclosed low-agreement result. The F3 no-card
 configuration/resource-preparation gate is also consumed. The next planned
-action is a new bounded F4 paid dev/tune sanity gate, not final evaluation.
+action is the bounded `FULL_IE_DOMAIN_DEV_SANITY_APPROVED` paid gate for DDEV1
+and DDEV2, not CLUENER or final evaluation. CLUENER tune sanity later requires
+its own `FULL_IE_CLUENER_TUNE_SANITY_APPROVED` gate.
 LaTeX was deliberately not changed; any result propagation into a manuscript
 requires a later, separate approval after result-to-claim.
 
@@ -1348,22 +1351,25 @@ Complete exact-directed file concordance is only F1 `0.417391`, with
 `PART_OF=0.246154`; this is not formal IAA or support for a high-quality
 relation-label claim. It is a disclosed calibration limitation. F3 no-card
 domain-dev/CLUENER-tune config, hash, and resource-manifest preparation is now
-complete. The next planned machine step is bounded paid F4 dev/tune sanity, but
-no F4 gate is currently open. Do not execute Stage R or the relation-aware
-verifier on real records, generate real prompts, use GPU/model calls, or enter
-F4 without that separate approval.
+complete. The next planned machine step is bounded paid domain-dev F4 sanity
+under `FULL_IE_DOMAIN_DEV_SANITY_APPROVED`, but that gate is currently closed.
+It does not authorize CLUENER tune sanity, which has its own later gate. Do not
+execute Stage R or the relation-aware verifier on real records, generate real
+prompts, use GPU/model calls, or enter F4 without the exact approval.
 
 ### Later sequence: planned, not authorized
 
 1. F3: complete; domain-dev and CLUENER-tune resources/configs are prepared.
-2. F4: run one bounded paid domain-dev IE sanity and CLUENER-tune sanity; allow
-   at most one dev-only protocol revision.
-3. F5/F6: freeze hashes and prepare leakage-safe replay artifacts in no-card
+2. F4a: under `FULL_IE_DOMAIN_DEV_SANITY_APPROVED`, run bounded paid domain-dev
+   IE sanity and allow at most one dev-only protocol revision.
+3. F4b: only after a separate `FULL_IE_CLUENER_TUNE_SANITY_APPROVED`, run the
+   fixed CLUENER tune sanity.
+4. F5/F6: freeze hashes and prepare leakage-safe replay artifacts in no-card
    mode under separate gates.
-4. F7: run the 30 domain final cells in bounded paid batches, reusing the 12
+5. F7: run the 30 domain final cells in bounded paid batches, reusing the 12
    existing Stage N outputs and adding Stage R.
-5. F8: run the 30 CLUENER NER cells on complete labeled official dev.
-6. F9: aggregate, perform paired uncertainty/result-to-claim, then request a
+6. F8: run the 30 CLUENER NER cells on complete labeled official dev.
+7. F9: aggregate, perform paired uncertainty/result-to-claim, then request a
    separate manuscript-propagation gate.
 
 The plan estimates `125-295 CNY` of additional paid compute, with large
