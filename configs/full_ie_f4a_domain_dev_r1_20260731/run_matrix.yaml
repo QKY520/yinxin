@@ -1,0 +1,68 @@
+phase: F4a
+authorized_under_gate: FULL_IE_DOMAIN_DEV_SANITY_APPROVED
+status: AUTHORIZED_DOMAIN_DEV_ONLY
+protocol_revision: r1_drop_invalid_relation_units
+parent_config_dir: configs/full_ie_f4a_domain_dev_20260731
+revision_count: 1
+revision_scope: Set parsing.drop_invalid_relations=true for A/B/C/D Stage R only.
+revision_reason: Initial A Stage R had 38/50 failed rows; cached offline replay reduced failures to 1/50 without changing prompts or model outputs.
+dataset: domain
+split: domain_dev50
+k: 5
+seed: 42
+reported_dev_cells: 6
+runner_configs: 10
+explicit_exclusions:
+- domain_test
+- cluener_tune
+- cluener_dev_final_evaluation
+- cluener_test_unlabeled
+- F5
+- F6
+- paper_edits
+- github_sync
+cells:
+- cell_id: F4a-domain-A
+  run_id: DDEV1-A
+  variant: A
+  steps:
+  - runner: scripts/run_p3_extraction.py
+    config: domain_a_stage_n.yaml
+  - runner: scripts/run_stage_r.py
+    config: domain_a_stage_r.yaml
+- cell_id: F4a-domain-B
+  run_id: DDEV1-B
+  variant: B
+  steps:
+  - runner: scripts/run_p3_extraction.py
+    config: domain_b_stage_n.yaml
+  - runner: scripts/run_stage_r.py
+    config: domain_b_stage_r.yaml
+- cell_id: F4a-domain-C
+  run_id: DDEV1-C
+  variant: C
+  steps:
+  - runner: scripts/run_p3_extraction.py
+    config: domain_c_stage_n.yaml
+  - runner: scripts/run_stage_r.py
+    config: domain_c_stage_r.yaml
+- cell_id: F4a-domain-D
+  run_id: DDEV1-D
+  variant: D
+  steps:
+  - runner: scripts/run_p3_extraction.py
+    config: domain_d_stage_n.yaml
+  - runner: scripts/run_stage_r.py
+    config: domain_d_stage_r.yaml
+- cell_id: F4a-domain-E-prime
+  run_id: DDEV2-E-prime
+  variant: E-prime
+  steps:
+  - runner: scripts/run_full_ie_verification.py
+    config: domain_eprime_verify.yaml
+- cell_id: F4a-domain-E
+  run_id: DDEV2-E
+  variant: E
+  steps:
+  - runner: scripts/run_full_ie_verification.py
+    config: domain_e_verify.yaml
