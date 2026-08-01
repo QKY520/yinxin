@@ -1,6 +1,6 @@
 # Minimum Full-IE Extension Tracker
 
-**Date**: 2026-07-31
+**Date**: 2026-08-01
 
 **Status semantics**:
 
@@ -13,9 +13,10 @@
 Nothing in this tracker authorizes Python, data processing, prompt generation,
 model/API calls, vLLM, GPU use, `domain_test` access, or any paper edit.
 
-The `FULL_IE_RELATION_CALIBRATION_REVALIDATION_APPROVED` and
-`FULL_IE_F3_CONFIG_PREP_APPROVED` gates were explicitly granted and consumed on
-2026-07-31. The blocked IE021 first attempt remains preserved. Under IE022,
+The `FULL_IE_RELATION_CALIBRATION_REVALIDATION_APPROVED`,
+`FULL_IE_F3_CONFIG_PREP_APPROVED`, and
+`FULL_IE_DOMAIN_DEV_SANITY_APPROVED` gates were explicitly granted and are
+consumed. The blocked IE021 first attempt remains preserved. Under IE022,
 human-revised A/B files were locked as `revised_v2`; a shared sentence-boundary
 defect that treated semicolons as sentence terminators was diagnosed and covered
 by a regression test. Final revalidation has zero structural errors and 20/20
@@ -24,9 +25,10 @@ valid pairs. Exact-directed file concordance is TP=24, FP=47, FN=20, precision
 The user attested that both files are human-produced, but this post-feedback
 result is not frozen-test formal IAA and does not establish high relation
 agreement. F2 is disclosed and complete under its pre-specified structural
-criterion. F3 configuration/resource preparation is complete and hash-audited;
-all future runner configs remain unauthorized. No F4/model/GPU/paper gate is
-open.
+criterion. F3 configuration/resource preparation is complete and hash-audited.
+F4a DDEV1/DDEV2 are also complete with limitations: exact RE remains very weak,
+D has a `6%` relation parse-failure rate, E-prime is locally positive, and E is
+negative. No CLUENER, final-evaluation, F5/F6, paper, or GitHub gate is open.
 
 ## Protocol and Implementation
 
@@ -72,11 +74,46 @@ open.
 
 | Run ID | Milestone | Purpose | Dataset / split | Cells | Priority | Status | Gate / notes |
 | --- | --- | --- | --- | ---: | --- | --- | --- |
-| DDEV1 | F4 | Relation-enabled A-D sanity | domain_dev50, K=5, seed42 | 4 | MUST | PLANNED | Requires `FULL_IE_DOMAIN_DEV_SANITY_APPROVED`; NER+RE metrics |
-| DDEV2 | F4 | Entity+relation verification sanity | domain_dev50 E/E-prime, K=5, seed42 | 2 | MUST | PLANNED | Same domain gate; audit up to 20 dropped units per class |
+| DDEV1 | F4 | Relation-enabled A-D sanity | domain_dev50, K=5, seed42 | 4 | MUST | DONE | A-D exact RE F1 `0.056680/0.040404/0.039024/0.010989`; D parse failure `6%` |
+| DDEV2 | F4 | Entity+relation verification sanity | domain_dev50 E/E-prime, K=5, seed42 | 2 | MUST | DONE | E-prime NER/RE F1 positive; E NER/RE F1 negative; full deletion audit retained |
 | CDEV1 | F4 | Public NER A-D sanity | fixed CLUENER tune subset, K=5, seed42 | 4 | MUST | PLANNED | Later separate `FULL_IE_CLUENER_TUNE_SANITY_APPROVED` |
 | CDEV2 | F4 | Public verifier E/E-prime sanity | fixed CLUENER tune subset, K=5, seed42 | 2 | MUST | PLANNED | Same CLUENER gate; entity atoms only |
 | FREEZE | F5 | Lock final protocol | Prompts/configs/resources/metrics/seeds | 0 | MUST | PLANNED | Required before any final evaluation access |
+
+### F4a Closeout (2026-08-01)
+
+- Gate: `FULL_IE_DOMAIN_DEV_SANITY_APPROVED`; bounded to `domain_dev50`, K=5,
+  seed42 DDEV1/DDEV2, and now consumed.
+- Preserved v0 failure: strict A Stage R rejected `38/50` relation responses.
+  The sole allowed dev revision changed only `drop_invalid_relations` to `true`;
+  prompt, schema, model outputs, exact direction, and duplicate policy did not
+  change. No second revision is allowed.
+- DDEV1 NER F1 A/B/C/D: `0.527273/0.506135/0.523169/0.501548`. Exact RE F1:
+  `0.056680/0.040404/0.039024/0.010989`. Aggregate RE parse failures are
+  `7/200 = 3.5%`, but D is `3/50 = 6%` and fails the per-config `<5%` gate.
+- The relation sanitizer removed `577` invalid atoms. No A-D configuration has
+  a `HAS_METRIC` true positive. D is below C on both NER and RE F1, while its
+  RAG path adds about `8.19 s/query` during Stage N.
+- E-prime improves NER F1 `0.523169 -> 0.540816` and exact RE F1
+  `0.039024 -> 0.051613`. Correct-drop rates are `65/81 = 80.25%` for entities
+  and `50/50 = 100%` for unique relation drops; its local positive gate passes.
+- E changes NER F1 `0.501548 -> 0.495479` and exact RE F1
+  `0.010989 -> 0.000000`. Its drop audits pass (`68/93 = 73.12%` entities,
+  `26/27 = 96.30%` relations), but the F1 gate fails; this is a mixed/negative
+  result.
+- Validation: targeted tests `5/5`, full AutoDL suite `178/178`; 1,403 backup
+  files verified. Summary SHA256 is
+  `c5e9df2c6a0c8d083670c64e604b2b881b23c33f3ac183a7d365433628d1309d`.
+- Safety: `domain_test` was not read; CLUENER was not run; no paper or GitHub
+  action occurred. Final mode was no-card with no vLLM/model/runner process.
+- Cost: observable vLLM windows are about `46m23s`, approximately `2.1 CNY` at
+  `2.7 CNY/hour`, but this is not the platform bill. The longer paid-mode
+  envelope means actual cost may be higher; AutoDL billing is authoritative.
+- These six dev sanity rows are not final reported cells. Matrix accounting
+  remains `0/60`. Full report:
+  `docs/FULL_IE_DOMAIN_DEV_SANITY_20260801.md`.
+- Next planned gate: `FULL_IE_CLUENER_TUNE_SANITY_APPROVED` for CDEV1/CDEV2
+  only. It is closed until explicitly granted.
 
 ## Domain Final Matrix: 30 Reported Cells
 
@@ -227,5 +264,6 @@ Missing report cells = 48
   see `docs/FULL_IE_RELATION_CALIBRATION_REVALIDATION_20260731.md`.
 - Safety/cost: no prompt, model/API, vLLM, GPU, paper, P6 user-script, or
   GitHub action occurred; paid GPU cost was `0 CNY`.
-- Evidence accounting remained `0/60` at IE022 closeout. F3 later received its
-  own bounded approval and is recorded as complete above; F4 remains closed.
+- Evidence accounting remained `0/60` at IE022 closeout. F3 and F4a later
+  received their own bounded approvals and are recorded as complete above;
+  F4b and all final-evaluation gates remain closed.

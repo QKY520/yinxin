@@ -1,6 +1,6 @@
 # HANDOFF.md - New Conversation Handoff
 
-Date: 2026-07-31
+Date: 2026-08-01
 Workspace: `D:\yinsir`
 
 This file is the latest operational state for a new Codex/agent session with no
@@ -14,13 +14,13 @@ chat history. Read these files before doing any project work:
 If older docs conflict with this file on status chronology, this file is newer.
 Hard rules in `AGENTS.md` and `AGENT_PLAYBOOK.md` still apply.
 
-Synchronization note (2026-07-30): `AGENTS.md`, `AGENT_PLAYBOOK.md`,
+Synchronization note (2026-08-01): `AGENTS.md`, `AGENT_PLAYBOOK.md`,
 `实验实施指导文档_综合版.md`, and this file have been aligned to the latest
 full-IE route decision, accepted `0.8000` calibration decision, current
 claim boundary, full-matrix accounting, F1 implementation closeout, F2
 relation-calibration preparation closeout, blocked IE021 validation, completed
-IE022 revalidation, completed F3 configuration/resource preparation, and
-execution red lines.
+IE022 revalidation, completed F3 configuration/resource preparation, completed
+F4a domain-dev sanity, and execution red lines.
 
 Latest route decision (2026-07-30): the human wants to expand the project into
 the originally intended complete equipment-domain IE paper rather than submit
@@ -47,7 +47,11 @@ The complete exact-directed file-concordance F1 is only `0.417391`, so this
 completes/discloses F2 but does not support a high-quality relation-label claim.
 The separately approved `FULL_IE_F3_CONFIG_PREP_APPROVED` gate is now also
 consumed: no-card resources, hashes, and future F4 configs are prepared, with
-no model calls or prompt artifacts.
+no model calls or prompt artifacts. The later bounded
+`FULL_IE_DOMAIN_DEV_SANITY_APPROVED` gate is also consumed. DDEV1/DDEV2 ran on
+`domain_dev50` only and closed with limitations: all A-D exact RE F1 values are
+below `0.057`, E-prime has a local positive NER/RE dev signal, E is negative,
+and D's relation parse-failure rate is `6%`.
 
 ## 0. Executive Snapshot For A New Session
 
@@ -71,7 +75,10 @@ on all 20 paired non-test texts, and all disagreements and the low complete F1
 `0.417391` are disclosed. F3 configuration/resource preparation is complete:
 16 future runner configs, a 12-cell dev/tune matrix, a 30-record support bank,
 a 50-record tune subset, and a 9,584-row labels-stripped CLUENER RAG corpus
-were hash-verified on AutoDL no-card mode.
+were hash-verified on AutoDL no-card mode. F4a domain-dev sanity is complete:
+A-D Stage R and E/E-prime relation-aware verification ran at K=5 seed42, were
+independently recomputed from per-query rows, and were backed up and hash-
+verified before the instance returned to no-card mode.
 
 **Current evidence**: A/B/C/D NER F1 is `0.534645`, `0.555169`, `0.568858`, and
 `0.565764`. C/D are an F1 near-tie; D has higher precision and 55 fewer FP.
@@ -79,25 +86,25 @@ This does not support model RE, positive CoVe, public generalization, K
 robustness, or full-matrix claims. Human entity calibration `0.8000` is not
 frozen-test formal IAA; `TECH_SCHEME` F1 is only `0.153846`. The post-feedback
 relation file-concordance F1 `0.417391` is also not formal IAA and specifically
-exposes weak `PART_OF` agreement (`0.246154`).
+exposes weak `PART_OF` agreement (`0.246154`). F4a adds dev-only diagnostics,
+not final evidence: A/B/C/D exact RE F1 is `0.056680/0.040404/0.039024/0.010989`;
+E-prime improves dev NER/RE F1, while E lowers both.
 
-**Current breakpoint**: F1 implementation, IE020 preparation, IE022 F2
-revalidation, and F3 config/resource preparation are complete. IE021 remains
-the preserved failed first attempt;
-IE022 has 0 structural errors, 20/20 valid pairs, and complete exact-directed
-F1 `0.417391` (TP=24, FP=47, FN=20). No real-data Stage R or relation-aware
-verifier run started. The matrix remains `0/60` complete full-IE cells: 12
-domain cells have reusable NER-only Stage N outputs, 48 reported cells are
-absent, and all 30 domain cells still need Stage R results. E v1 failed on dev,
-E v2 was mixed/negative, E-prime was never model-run, and E v3 was preparation
-only.
+**Current breakpoint**: F1, F2, F3, and F4a DDEV1/DDEV2 are complete. IE021
+remains the preserved failed first relation-calibration attempt. F4a also
+preserves its strict v0 A Stage R failure (`38/50` relation parse failures) and
+consumed the sole allowed dev revision by changing only
+`drop_invalid_relations` to `true`. Final r1 has `7/200 = 3.5%` aggregate parse
+failures, but D is `3/50 = 6%` and misses the strict per-config gate. E-prime is
+locally positive on dev; E is mixed/negative. These are sanity rows, so the
+matrix remains `0/60`: 12 domain cells still have reusable NER-only Stage N
+outputs, 48 report cells are absent, and all 30 final domain cells still need
+Stage R results.
 
-**Next step**: stop. The revalidation and F3 preparation gates are consumed and
-no F4 execution gate is open. The immediate planned subgate is the paid
-`FULL_IE_DOMAIN_DEV_SANITY_APPROVED` gate for DDEV1/DDEV2 only. If it passes,
-CLUENER tune sanity still requires the separate
-`FULL_IE_CLUENER_TUNE_SANITY_APPROVED` gate. F4 model/API/vLLM calls, GPU use,
-`domain_test`, paper edits, and GitHub synchronization remain unauthorized.
+**Next step**: stop. The F4a gate is consumed. The immediate planned subgate is
+`FULL_IE_CLUENER_TUNE_SANITY_APPROVED` for CDEV1/CDEV2 only, and it is currently
+closed. No CLUENER run, `domain_test`, final evaluation, F5/F6, paper edit, or
+GitHub synchronization is authorized.
 
 **Red lines**: never run project Python locally on Windows; never tune from
 frozen test; preserve every negative row; never call E-prime failed; never
@@ -136,6 +143,39 @@ GPU-free/no-card mode. This is preparation, not an empirical experiment.
   `backups/FULL_IE/f3_config_prep_20260731/`.
 - No model/API/vLLM/GPU/paper/GitHub action occurred. Cost impact: `0 CNY`.
   Evidence accounting remains `0/60`.
+
+### F4a Full-IE Domain Dev Sanity
+
+Complete on 2026-08-01 under `FULL_IE_DOMAIN_DEV_SANITY_APPROVED`. This is a
+dev-only empirical sanity, not a final matrix batch.
+
+- DDEV1 A/B/C/D NER F1 is `0.527273/0.506135/0.523169/0.501548`; exact directed
+  RE F1 is `0.056680/0.040404/0.039024/0.010989`.
+- The strict v0 A attempt with `38/50` relation parse failures is preserved.
+  The only allowed dev revision changed `drop_invalid_relations` from `false`
+  to `true`, retaining prompt/schema/model output and exact metric rules.
+- Final aggregate RE parse failures are `7/200 = 3.5%`; D alone is `6%`, so the
+  every-config `<5%` gate did not pass. The sanitizer removed `577` invalid
+  relation atoms, and every A-D configuration has zero `HAS_METRIC` TP.
+- E-prime improves NER F1 `0.523169 -> 0.540816` and RE F1
+  `0.039024 -> 0.051613`; its entity/relation correct-drop rates are
+  `80.25%/100%`, so its local positive gate passes.
+- E lowers NER F1 `0.501548 -> 0.495479` and RE F1
+  `0.010989 -> 0.000000`. Its drop audit passes (`73.12%/96.30%`), but its F1
+  gate fails, making it a mixed/negative dev result.
+- D's RAG selection adds about `8.19 s/query` and D is below C on both NER and
+  RE F1. F4a therefore supplies no positive D-over-C RAG relation signal.
+- Independent summarization verifies hashes, 50-row alignment, Stage N entity
+  preservation, exact metrics, verifier drops/cascades, and sanitizer events.
+  Targeted tests passed `5/5`; the full AutoDL suite passed `178/178`.
+- The 1,403-file remote/local backup manifest is fully verified. Summary SHA256:
+  `c5e9df2c6a0c8d083670c64e604b2b881b23c33f3ac183a7d365433628d1309d`.
+  Full report: `docs/FULL_IE_DOMAIN_DEV_SANITY_20260801.md`.
+- No `domain_test` or CLUENER run, paper edit, or GitHub sync occurred. Final
+  mode was no-card with no vLLM/model/runner process. Observable vLLM activity
+  was about `46m23s` (`~2.1 CNY` at `2.7 CNY/hour`), but the paid-mode envelope
+  was longer and the AutoDL platform bill is authoritative.
+- Matrix accounting remains `0/60`.
 
 Latest paper-preparation note (2026-07-28): after the approved GPU-free
 target-journal screening and reference-authenticity audit, the human selected
@@ -461,13 +501,10 @@ No further Python execution, paid GPU, vLLM launch, dry-run, model/API call,
 frozen-test prompt generation, real-data prompt generation, returned-file
 correction, reannotation, frozen-data correction, aggregation, re-evaluation,
 baseline run, or new experiment is currently authorized. The fresh entity
-annotation/validation, M1, M2, full-IE F1, IE020 preparation, and IE021
-validation gates are consumed; IE022 revalidation is also consumed and F2 is
-complete with a disclosed low-agreement result. The F3 no-card
-configuration/resource-preparation gate is also consumed. The next planned
-action is the bounded `FULL_IE_DOMAIN_DEV_SANITY_APPROVED` paid gate for DDEV1
-and DDEV2, not CLUENER or final evaluation. CLUENER tune sanity later requires
-its own `FULL_IE_CLUENER_TUNE_SANITY_APPROVED` gate.
+annotation/validation, M1, M2, full-IE F1, F2, F3, and F4a DDEV1/DDEV2 gates
+are consumed. The next planned action is the separate bounded
+`FULL_IE_CLUENER_TUNE_SANITY_APPROVED` gate for CDEV1/CDEV2 only; it is closed
+until explicitly granted and is not a final-evaluation gate.
 LaTeX was deliberately not changed; any result propagation into a manuscript
 requires a later, separate approval after result-to-claim.
 
@@ -1306,16 +1343,17 @@ Remote:
 - Remote code: `/root/project`
 - Remote data/model/backup root: `/root/autodl-tmp`
 - Project venv: `/root/autodl-tmp/venvs/equipment-ie`
-- Status verified again during IE022 revalidation on 2026-07-31: remote Git HEAD remains
-  `863c701`. The eight approved implementation/test files were manually synced
+- Status verified again during F4a closeout on 2026-08-01: remote Git HEAD
+  remains `863c701`. The eight approved implementation/test files were manually synced
   for no-card testing. Five IE020 code/test/guideline files were later manually
   synced for no-card preparation and audit; the IE021 validator and test were
   then incrementally synced. IE022 additionally synced the versioned validator
-  lock/test and the shared Stage R sentence-boundary fix/test. The remote worktree also retains
+  lock/test and the shared Stage R sentence-boundary fix/test. F3/F4a approved
+  code, configs, and tests were then manually synced without GitHub. The remote worktree also retains
   pre-existing manually synced modified/untracked P6 files because GitHub sync
   is unavailable. Do not clean or reset that worktree, and do not overwrite its
   divergent handoff.
-- Last verified mode during IE022 revalidation on 2026-07-31: GPU-free/no-card
+- Last verified mode during F4a closeout at 2026-08-01 20:15 CST: GPU-free/no-card
   (`nvidia-smi -L` returned `No devices found` and `/dev/nvidia0` was absent),
   with no vLLM, Qwen, extraction, or verifier process. Confirm again before any
   later remote action.
@@ -1329,17 +1367,14 @@ ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status -
 ## 7. Recommended Next Step
 
 The route decision is complete: pursue the minimum defensible full-IE extension
-and retain the narrow JISE NER package as fallback. The design and inventory are
-prepared, and the bounded F1 implementation, IE020 preparation, IE021 initial
-validation, IE022 revalidation, and F3 config/resource-preparation gates are
-consumed. IE021 remains a preserved blocked first attempt; IE022 completes F2
-under the pre-specified zero-structural-error/full-disclosure criterion. F3
-prepared no-card resources and future-run configs but produced no empirical
-model result. There are still `0/60` complete full-IE cells. A new session must
-not infer F4 or experimental authority from completion of F3 or from the user's
-general desire to complete IE.
+and retain the narrow JISE NER package as fallback. F1-F3 and F4a domain-dev
+sanity are consumed. IE021 remains a preserved blocked first attempt; IE022
+completes F2 under its structural/full-disclosure criterion. F4a ran real
+`domain_dev50` Stage R and relation-aware verification, but it did not create a
+final report cell. There are still `0/60` complete full-IE cells. A new session
+must not infer CLUENER, final-evaluation, F5/F6, or paper authority from F4a.
 
-### Current state: F2 complete with a low-agreement limitation
+### Current state: F4a complete with relation-quality limitations
 
 The initial A/B returns and 90-error IE021 report remain locked negative
 evidence. The user attested both submissions were human-produced. Human-revised
@@ -1349,19 +1384,19 @@ fixed and regression-tested without relaxing the no-cross-sentence rule.
 
 Complete exact-directed file concordance is only F1 `0.417391`, with
 `PART_OF=0.246154`; this is not formal IAA or support for a high-quality
-relation-label claim. It is a disclosed calibration limitation. F3 no-card
-domain-dev/CLUENER-tune config, hash, and resource-manifest preparation is now
-complete. The next planned machine step is bounded paid domain-dev F4 sanity
-under `FULL_IE_DOMAIN_DEV_SANITY_APPROVED`, but that gate is currently closed.
-It does not authorize CLUENER tune sanity, which has its own later gate. Do not
-execute Stage R or the relation-aware verifier on real records, generate real
-prompts, use GPU/model calls, or enter F4 without the exact approval.
+relation-label claim. It is a disclosed calibration limitation. F4a reinforces
+the risk: A-D dev exact RE F1 is at most `0.056680`, and no configuration has a
+`HAS_METRIC` TP. E-prime gives a local positive dev signal, but E is negative;
+D is slower and below C. The next planned machine step is bounded paid CLUENER
+tune sanity under `FULL_IE_CLUENER_TUNE_SANITY_APPROVED`, but that gate is
+currently closed. Do not generate CLUENER prompts, use GPU/model calls, access
+`domain_test`, enter F5/F6, or edit the paper without the exact later approval.
 
 ### Later sequence: planned, not authorized
 
 1. F3: complete; domain-dev and CLUENER-tune resources/configs are prepared.
-2. F4a: under `FULL_IE_DOMAIN_DEV_SANITY_APPROVED`, run bounded paid domain-dev
-   IE sanity and allow at most one dev-only protocol revision.
+2. F4a: complete; bounded domain-dev IE sanity consumed its one allowed
+   protocol revision and closed with limitations.
 3. F4b: only after a separate `FULL_IE_CLUENER_TUNE_SANITY_APPROVED`, run the
    fixed CLUENER tune sanity.
 4. F5/F6: freeze hashes and prepare leakage-safe replay artifacts in no-card
@@ -1372,8 +1407,10 @@ prompts, use GPU/model calls, or enter F4 without the exact approval.
 7. F9: aggregate, perform paired uncertainty/result-to-claim, then request a
    separate manuscript-propagation gate.
 
-The plan estimates `125-295 CNY` of additional paid compute, with large
-uncertainty because Stage R and atomic verification have not been benchmarked.
+The original plan estimates `125-295 CNY` of additional paid compute. F4a now
+provides a first dev benchmark, but the estimate still has large uncertainty
+and must be recalculated before final batches because final split sizes, cache
+reuse, RAG latency, and paid-mode idle time differ from the bounded sanity.
 Stop for a new budget decision before additional spend exceeds 300 CNY or the
 project total approaches the existing 400 CNY target. Platform billing is
 authoritative.
@@ -1388,9 +1425,9 @@ authoritative.
   absent, and the domain relation table still incomplete;
 - CLUENER official unlabeled test is never offline gold; use the locked labeled
   dev protocol only after its own tune/resource freeze;
-- E v1/v2 are preserved negative/mixed NER dev evidence, E-prime is unexecuted,
-  and relation-aware verification is synthetically tested but not model-run or
-  evaluated.
+- E v1/v2 remain preserved negative/mixed historical NER dev evidence. F4a now
+  adds relation-aware dev runs: E-prime is locally positive and E is negative.
+  Neither is a final matrix cell.
 
 The JISE author/JCR/fee/AI-policy/template blockers remain valid but are not the
 immediate machine step while the full-IE extension is being pursued. Actual
@@ -1472,20 +1509,22 @@ journal submission remains unauthorized.
   a tested module.
 - Verification E v1 was a clear dev method failure (`0.4264` F1 versus D
   `0.5415`; 18/20 audited drops wrong). E v2 was mixed/negative (`0.5367`;
-  7/13 wrong drops, 5/13 correct, 1/13 unclear). E-prime never received model
-  calls, and E v3 was preparation only. Never summarize all of them as “E and
-  E-prime both failed.”
+  7/13 wrong drops, 5/13 correct, 1/13 unclear), and E v3 was preparation only.
+  F4a is a distinct relation-aware protocol: E-prime improved dev NER/RE F1,
+  while E lowered both. Never collapse these versions into one result.
 - CoVe is deletion-only in the current design: it cannot recover missed
   entities or repair boundaries/types. It improves F1 only when dropped units
   are overwhelmingly false positives. In the implemented relation-aware path,
   dropping an entity also removes incident relations, so over-deletion has a
-  larger error cascade; this behavior is tested synthetically, not evaluated.
+  larger error cascade. F4a confirms both outcomes: E-prime's deletion precision
+  raises dev F1, while E deletes its only relation TP and lowers dev F1.
 - Completing all 60 rows proves evaluation completeness, not positive module
   gains. Negative RE, CoVe, RAG, glossary, public-transfer, or K-sensitivity
   findings must remain visible and control the final claims.
 - The 12 frozen A/B/C/D K=5 outputs can reuse Stage N by hash. Stage R and exact
-  directed metric infrastructure now exist, but none of those outputs counts as
-  a full-IE cell until a separately authorized Stage R result is produced.
+  directed metric infrastructure now have a real dev sanity, but no dev output
+  counts as a final full-IE cell. Final Stage R still requires separately
+  authorized frozen-protocol execution.
 - AutoDL no-card mode may have tight memory limits. Avoid loading BGE-M3 unless
   needed; prefer cached/replay artifacts when they preserve comparisons.
 - DOCX output caused encoding/rendering trouble in this workflow. Use Markdown
