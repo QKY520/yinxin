@@ -10,25 +10,26 @@ and aggregation. Use a paid GPU boot only for model inference or training.
 After every GPU phase: verify outputs, back up, sync lightweight artifacts to
 `D:\yinsir`, report cost, and remind the human to shut down the instance.
 
-**CURRENT GATE (2026-07-30)**: The live status is maintained in `HANDOFF.md`.
-P0/P1/P2, domain freeze, P3/P4 dev sanity, the bounded P5 `domain_test`
-A/B/C/D K=5 seeds 42/43/44 NER block, P6 human calibration, manuscript
-preparation, M1 paired audit, and M2 dev baselines are complete. Current
-result-to-claim remains `partial`: only narrow low-label Chinese
-equipment-domain NER is supported. RE, CoVe gains, public generalization, K
-robustness, and a complete matrix are not current evidence. The human has now
-selected the original full-IE expansion as the target; the narrow JISE NER
-package remains a fallback. A two-stage Stage N + Stage R plan and 60-cell
-tracker exist under `refine-logs/FULL_IE_MINIMUM_*_20260730.md`, but the route
-decision is not execution authority. The immediate state is documentation-only
-while waiting for explicit `FULL_IE_IMPLEMENTATION_APPROVED`. If granted, that
-single gate permits only AutoDL no-card implementation of Stage R, exact
-directed relation metrics, relation-aware E/E-prime, manifest validation, and
-synthetic tests. It still forbids `domain_test`, real-data prompt generation,
-model/API/vLLM calls, GPU use, paper edits, and GitHub sync. The user's total
-project budget target is 400 CNY; the last reported 4090 price is 2.7 CNY/hour.
-The real host and port live only in the user's local SSH config; use the
-non-secret alias `autodl-paper` in project files and commands.
+**CURRENT GATE (2026-08-01)**: The live status is maintained in `HANDOFF.md`.
+P0-P6 for the narrow NER route, F1 implementation, F2 relation calibration, F3
+resource/config preparation, and F4a domain-dev IE sanity are complete. Current
+result-to-claim remains `partial`: frozen-test evidence supports narrow
+low-label Chinese equipment-domain NER only. F4a is dev-only: A-D exact RE F1
+is at most `0.056680`, E-prime has a local positive NER/RE signal, E is
+negative, and D relation parse failure is `6%`. These sanity rows are not final
+cells; the 60-cell matrix remains `0/60`.
+
+The human explicitly granted `FULL_IE_CLUENER_TUNE_SANITY_APPROVED` on
+2026-08-01. This single live gate authorizes only F4b CDEV1/CDEV2 on the
+deterministic 50-record `cluener_tune` subset: A/B/C/D/E/E-prime, K=5, seed42,
+NER/entity-only verification. Post-approval SSH preflight still found no GPU
+(`No devices found`, `/dev/nvidia0` absent), no vLLM/Qwen/runner process, and no
+screen session, so F4b has not started and has incurred no new cost. Wait for
+the human to boot the 4090 24 GB and report the live hourly price; the agent
+must not rent or switch hardware. The gate forbids official CLUENER dev/test,
+`domain_test`, F5/F6, final matrix work, paper edits, and GitHub sync. The total
+project budget target remains 400 CNY; the last reported 4090 price is 2.7
+CNY/hour. Use only the non-secret SSH alias `autodl-paper`.
 
 ## Execution Authority
 
@@ -38,6 +39,10 @@ Read these files before any project work:
 2. `实验实施指导文档_综合版.md` - human-facing rationale and operational guide.
 3. `AGENTS.md` - durable repository and collaboration rules.
 4. `HANDOFF.md` - latest operational state and current next step.
+5. `refine-logs/FULL_IE_MINIMUM_EXPERIMENT_PLAN_20260730.md` - approved
+   full-IE route, phase design, and gate boundaries.
+6. `refine-logs/FULL_IE_MINIMUM_EXPERIMENT_TRACKER_20260730.md` - live
+   cell inventory, gate state, and completion accounting.
 
 If the documents differ, `AGENT_PLAYBOOK.md` controls execution. This file may
 clarify comparisons or local workflow but must not silently replace fixed model,
@@ -205,19 +210,20 @@ before rewriting the manuscript. This is a target inventory, not a result.
 - **Error metric**: false-positive entities divided by all predicted entities
   is an entity-level false-discovery-style rate, not a broad factuality score.
   The current verified table reports precision and FP counts for A/B/C/D; do
-  not claim verifier pre/post improvement without completed E/E-prime evidence.
+  not promote F4a's dev-only E-prime improvement into a final/paper CoVe claim.
 - **Optional fine-tuning**: QLoRA with LLaMA-Factory only in P7 and only after
   explicit human approval following P6.
 
 ## Current Priority And State
 
-Current step: **full-IE planning complete; waiting for the bounded no-card F1
-implementation gate**. Until `FULL_IE_IMPLEMENTATION_APPROVED` is explicitly
-granted, only documentation, Git, and lightweight read-only inspection are
-allowed. The narrow SCI-Q4-oriented NER draft remains valid fallback evidence,
-but it is not a complete P5/IE matrix. Preserve the accepted fresh human
-calibration F1 `0.8000`, the stricter `0.85` miss, the `TECH_SCHEME` limitation,
-and the absence of formal frozen-test IAA.
+Current step: **F4b CLUENER tune sanity is authorized but waiting for the human
+to boot the 4090**. `FULL_IE_CLUENER_TUNE_SANITY_APPROVED` is already granted;
+do not request or infer a broader gate. Until the GPU is visible and the human
+reports the live price, only documentation, Git, and read-only inspection are
+allowed. Once preflight passes, run only CDEV1/CDEV2 on the frozen 50-record
+`cluener_tune` subset at K=5 seed42. The narrow SCI-Q4-oriented NER draft remains
+fallback evidence, not a complete IE matrix. Preserve calibration F1 `0.8000`,
+the stricter `0.85` miss, weak `TECH_SCHEME`, and absent formal test IAA.
 
 - Local workspace: `D:\yinsir`.
 - Git repository: `main` tracks `origin/main`. As of the latest handoff, local
@@ -296,6 +302,11 @@ and the absence of formal frozen-test IAA.
   `domain_dev50`; D(RAG) was the strongest positive dev result, while verifier
   E variants were negative or mixed and are not recommended for more paid GPU by
   default.
+- Full-IE F4a domain-dev sanity is complete and committed at `72065fe`. A-D
+  exact RE F1 is `0.056680/0.040404/0.039024/0.010989`; D has `6%` relation
+  parse failures and all A-D rows have zero `HAS_METRIC` TP. Relation-aware
+  E-prime improves dev NER/RE F1, while E lowers both. The strict v0 A failure
+  and sole r1 parser revision are preserved. These are dev diagnostics only.
 - P5 M0 config preparation is complete, followed by two bounded paid gates:
   `P5_DOMAIN_PILOT_APPROVED` for A/B/C/D K=5 seed 42 and
   `P5_DOMAIN_REPLICATION_APPROVED` for A/B/C/D K=5 seeds 43/44 on
@@ -319,14 +330,13 @@ and the absence of formal frozen-test IAA.
   EQUIPMENT `0.728261`, MODULE `0.898876`, TECH_SCHEME `0.153846`, METRIC
   `1.000000`. The human accepted the original `>=0.80` minimum for manuscript
   progression. This is valid calibration agreement, not frozen-test formal IAA.
-- Full-matrix feasibility: the original run contract contains 60 model cells
-  (36 K=5 cells plus 24 A/E K-scan cells). Twelve domain A/B/C/D K=5 cells are
-  complete, leaving at least 48 model cells. A strict full-IE interpretation
-  would additionally require a dev-first relation-enabled protocol/reruns;
-  CLUENER also needs a valid labeled evaluation protocol because official test
-  gold is unavailable. The human has selected this expansion, but only the plan
-  exists: all 30 domain cells still need Stage R, and no implementation or run
-  is authorized until its exact bounded gate is approved.
+- Full-matrix accounting: the original contract contains 60 final model cells
+  (36 K=5 cells plus 24 A/E K-scan cells). Twelve domain A/B/C/D K=5 cells have
+  reusable Stage N only; none is a complete full-IE cell, so final accounting is
+  `0/60`. F4a's six dev rows do not count. All 30 domain final cells still need
+  Stage R, and CLUENER final evaluation must use labeled official dev rather
+  than its unlabeled official test. Only the bounded F4b tune gate is currently
+  open; every freeze/final/aggregation/paper phase needs a later gate.
 - Current paper artifacts are Markdown, not DOCX. All generated `.docx` files
   under the project docs were deleted on 2026-07-25 at the user's request after
   encoding/rendering problems. The current editable draft is
@@ -340,13 +350,14 @@ and the absence of formal frozen-test IAA.
   2026-07-24 18:16:34-19:27:50 CST, about 3.2 CNY at 2.7 CNY/hour. Platform
   billing remains authoritative. vLLM was stopped after paid runs.
 
-Stop for explicit approval before any further paid GPU work, vLLM launch, model
-call, P5 E/E-prime, CLUENER run, K=1/K=10 scan, more seeds, dry-run, or any
-operation that reads frozen `domain_test` to produce new prompts/config outputs.
-Before `FULL_IE_IMPLEMENTATION_APPROVED`, the allowed current work is
-documentation, Git, and lightweight read-only artifact inspection. That F1
-gate, if granted, is AutoDL no-card synthetic implementation only and does not
-authorize any item in the preceding stop list or any manuscript edit.
+The sole current exception to the general stop is the already granted
+`FULL_IE_CLUENER_TUNE_SANITY_APPROVED` gate. It permits paid GPU/vLLM/model calls
+only for fixed F4b CDEV1/CDEV2 (`cluener_tune50`, A-D plus E/E-prime, K=5,
+seed42). It does not permit official CLUENER dev/test, `domain_test`, K=1/K=10,
+more seeds, F5/F6, final evaluation, paper edits, or GitHub sync. Before the
+human boots the 4090, remain documentation/read-only. After the run, stop vLLM,
+back up and hash-verify, sync lightweight artifacts, report cost, and ask the
+human to return the instance to no-card mode.
 
 ## Fixed Technology Decisions
 
@@ -621,7 +632,7 @@ statements in `results/summary.md`.
   largest hallucination reducer, total cost, and open questions.
 - Current status: result-to-claim, fresh human calibration, and manuscript
   preparation are complete for the narrow fallback. The selected full-IE route
-  is waiting for its no-card F1 implementation gate.
+  has completed F1-F4a; F4b is authorized and waiting for human GPU startup.
 
 ### P7 - Optional QLoRA
 

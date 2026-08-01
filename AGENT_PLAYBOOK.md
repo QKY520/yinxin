@@ -6,7 +6,7 @@
 >
 > PAPER STRATEGY UPDATE (2026-07-20): The project is now framed for a practical SCI-Q4 submission within roughly one month and a 400 CNY target budget. The original route is retained: equipment-domain small annotated dataset + reproducible few-shot IE pipeline + RAG/glossary/schema constraints + verification to reduce hallucination + ablation evidence. Draft Chinese first, then produce the English SCI manuscript. NER is the main evidence line; RE is auxiliary.
 >
-> EXECUTION STATUS UPDATE (2026-07-30): P0/P1/P2, domain freeze, P3/P4 dev sanity, the bounded P5 `domain_test` A/B/C/D K=5 three-seed NER block, P6 calibration, manuscript preparation, M1 paired audit, and M2 dev baselines are complete. Current result-to-claim remains `partial`: usable evidence supports only narrow low-label Chinese equipment-domain NER; RE, CoVe gains, CLUENER/public generalization, K robustness, significance, and the full A..E′ matrix remain unsupported. The human has selected a minimum defensible full-IE extension as the target and retained the narrow JISE manuscript as fallback. The two-stage Stage N + Stage R plan and 60-cell tracker are in `refine-logs/FULL_IE_MINIMUM_*_20260730.md`, but planning does not authorize execution. Current work is documentation-only while waiting for explicit `FULL_IE_IMPLEMENTATION_APPROVED`. If granted, that single gate permits only AutoDL no-card implementation of Stage R, exact directed relation metrics, relation-aware E/E′, manifest validation, and synthetic tests; it forbids `domain_test`, real-data prompts, model/API/vLLM calls, GPU, manuscript edits, and GitHub sync. See `HANDOFF.md` before acting.
+> EXECUTION STATUS UPDATE (2026-08-01): P0-P6 for the narrow NER route, F1 implementation, F2 relation calibration, F3 resources/configs, and F4a domain-dev IE sanity are complete. Current result-to-claim remains `partial`: frozen-test evidence supports only narrow low-label Chinese equipment-domain NER. F4a is dev-only and exposes weak RE (A-D exact F1 at most `0.056680`), a local positive E′ signal, a negative E result, and D relation parse failure `6%`; it creates no final matrix cell, so accounting remains `0/60`. The human explicitly granted `FULL_IE_CLUENER_TUNE_SANITY_APPROVED` on 2026-08-01 for F4b CDEV1/CDEV2 only. Post-approval preflight still found AutoDL in no-card mode (`No devices found`, `/dev/nvidia0` absent), with no vLLM/Qwen/runner process or screen session. F4b is therefore authorized but not started and is waiting for the human to boot the 4090 and report the live hourly price. Once the GPU is visible, the gate permits only A/B/C/D/E/E′, K=5 seed42 on the deterministic 50-record `cluener_tune` subset; it forbids official CLUENER dev/test, `domain_test`, F5/F6, final matrix work, manuscript edits, and GitHub sync. See `HANDOFF.md` before acting.
 
 ---
 
@@ -23,12 +23,16 @@
 9. **SECURITY/COMPLIANCE**: only public, non-classified corpora (licenses: CMNEE per repo, Few-NERD CC BY-SA 4.0, CLUENER Apache 2.0). If the human ever supplies non-public documents, PAUSE and ask for explicit confirmation of compliance before any processing.
 10. **PAUSE GATES** (`⏸️`): stop and ask the human. **VERIFY GATES** (`✅`): machine-checkable; all conditions must pass before the next phase. On gate failure, follow the FIX branch; if no branch fires, pause and report.
 11. **CURRENT STOP**: the historical P0-P7 commands below are reference
-    contracts, not live authorization. No paid GPU, vLLM, dry-run, model call,
-    new frozen-test prompt, or new experiment is allowed without a new explicit
-    bounded human gate. Until `FULL_IE_IMPLEMENTATION_APPROVED`, only
-    documentation/Git/read-only inspection is live. That F1 gate, if granted,
-    authorizes only the synthetic AutoDL no-card implementation scope described
-    above; every data, prompt, model, evaluation, and paper phase remains gated.
+    contracts, not live authorization. The only live experiment authority is
+    `FULL_IE_CLUENER_TUNE_SANITY_APPROVED`, bounded exactly to F4b CDEV1/CDEV2
+    on the frozen 50-record `cluener_tune` subset at K=5 seed42. The agent must
+    not create, rent, or switch hardware. Until the human boots the 4090 and
+    reports its live price, only documentation/Git/read-only inspection is
+    allowed. After GPU preflight, execute only versioned F4b copies of the
+    hash-locked F3 configs, preserve raw/cache/per-query outputs, then stop
+    vLLM, back up, verify, report cost, and return to no-card mode. Official
+    CLUENER dev/test, `domain_test`, F5/F6, final evaluation, paper edits, and
+    GitHub sync remain forbidden.
 
 ---
 
@@ -249,13 +253,14 @@ non-test calibration F1 `0.8000` under the original minimum, but the manuscript
 must retain the `0.85` miss, low `TECH_SCHEME` agreement, and absence of formal
 test IAA. Frame C and D as near-tied on F1, with C marginally ahead on
 recall/F1 and D clearly better on precision and false-positive reduction. Do
-not claim significant superiority, relation extraction success, verification
-gains, public generalization, K robustness, or full-matrix completion. The
-selected target is the planned full-IE extension, but the next action is blocked
-on explicit `FULL_IE_IMPLEMENTATION_APPROVED`. Before that approval, perform
-documentation/read-only work only. After approval, execute only the AutoDL
-no-card synthetic implementation gate defined in `HANDOFF.md`; do not skip
-ahead to data prompts, model calls, final evaluation, or paper edits.
+not claim significant superiority, relation extraction success, final
+verification gains, public generalization, K robustness, or full-matrix
+completion. F4a adds only dev evidence: E′ improved while E degraded, and RE
+remained extremely weak. The next action is F4b under the already granted
+`FULL_IE_CLUENER_TUNE_SANITY_APPROVED` gate, currently waiting for the human to
+boot the 4090. Execute only the deterministic 50-record CLUENER tune sanity in
+`HANDOFF.md`; do not skip to official dev/test, `domain_test`, F5/F6, final
+evaluation, or paper edits.
 
 ## 10. OPTIONAL PHASE P7 — QLoRA fine-tune (only if human approves after P6)
 
