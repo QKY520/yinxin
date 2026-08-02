@@ -1,6 +1,6 @@
 # Minimum Full-IE Extension Tracker
 
-**Date**: 2026-08-01
+**Date**: 2026-08-02
 
 **Status semantics**:
 
@@ -34,8 +34,11 @@ negative. F4b CDEV1/CDEV2 is now complete under the consumed
 `FULL_IE_CLUENER_TUNE_SANITY_APPROVED` gate. A-D tune NER F1 is
 `0.524444/0.563107/0.571429/0.638889`; all parse/type checks pass. E-prime is
 negative and E is only slightly positive on F1, while both deletion audits miss
-the `70%` positive-claim threshold. No official CLUENER dev/test,
-final-evaluation, F5/F6, paper, or GitHub gate is open.
+the `70%` positive-claim threshold. F5 is now complete under the consumed
+`FULL_IE_F5_PROTOCOL_FREEZE_APPROVED` gate: all 60 config IDs, 13 resources, 34
+source files, 12 P5 Stage N reuse locks, metrics, prompts, seeds, and output
+paths are frozen with model calls disabled. No final-evaluation, F6, paper, or
+GitHub gate is open.
 
 ## Protocol and Implementation
 
@@ -85,7 +88,7 @@ final-evaluation, F5/F6, paper, or GitHub gate is open.
 | DDEV2 | F4 | Entity+relation verification sanity | domain_dev50 E/E-prime, K=5, seed42 | 2 | MUST | DONE | E-prime NER/RE F1 positive; E NER/RE F1 negative; full deletion audit retained |
 | CDEV1 | F4 | Public NER A-D sanity | fixed CLUENER tune subset, K=5, seed42 | 4 | MUST | DONE | A-D F1 `0.524444/0.563107/0.571429/0.638889`; zero parse failures/unsupported types |
 | CDEV2 | F4 | Public verifier E/E-prime sanity | fixed CLUENER tune subset, K=5, seed42 | 2 | MUST | DONE | E-prime F1 `0.571429 -> 0.546512`; E `0.638889 -> 0.644444`; both drop-audit gates fail |
-| FREEZE | F5 | Lock final protocol | Prompts/configs/resources/metrics/seeds | 0 | MUST | PLANNED | Required before any final evaluation access |
+| FREEZE | F5 | Lock final protocol | Prompts/configs/resources/metrics/seeds | 0 | MUST | DONE | 60 IDs frozen; 12 Stage N reuse locks; all execution unauthorized |
 
 ### F4a Closeout (2026-08-01)
 
@@ -197,9 +200,45 @@ final-evaluation, F5/F6, paper, or GitHub gate is open.
 - Safety: official CLUENER dev/test, `domain_test`, K=1/K=10, seeds 43/44,
   F5/F6, final matrix, manuscript, and GitHub operations did not occur.
 - Evidence: F4b is tune-only and creates no final cell. Matrix accounting stays
-  `0/60`. No next gate is open; F5 protocol freeze remains planned and requires
-  separate bounded human approval. Full report:
+  `0/60`. At F4b closeout no next gate was open; F5 later received its own
+  bounded approval and is recorded below. Full report:
   `docs/FULL_IE_CLUENER_TUNE_SANITY_20260802.md`.
+
+### F5 Closeout (2026-08-02)
+
+- Gate: `FULL_IE_F5_PROTOCOL_FREEZE_APPROVED`; bounded to no-card protocol,
+  hash, manifest, and remote-test work, now consumed.
+- Frozen inventory: 60 unique final config IDs, 120 unique final output paths,
+  48 Stage N nodes (`12` reused, `36` planned), 24 domain Stage R nodes, and 24
+  E/E-prime verification nodes. All remain unauthorized with model calls
+  disabled.
+- Reuse audit: all `2,040` P5 Stage N rows passed semantic checks against
+  frozen `domain_test`, including legacy metadata mapping, exact gold/ID
+  alignment, prompt/raw hashes, five demonstrations, B/C/D replay, and three D
+  RAG passages per row. Historical P5 rows were not edited.
+- Verification policy: original atomic valid-`no` deletion only; invalid output
+  keeps atoms; type gating remains disabled. F4b E `69.44%` and E-prime
+  `65.79%` deletion precision remain negative/mixed evidence, not a positive
+  CoVe claim.
+- Validation: focused F3/manifest/freeze tests `21/21`; corrected full tracked
+  AutoDL suite `185/185`; independent file-lock validation and local/remote
+  artifact checks passed. One earlier full-suite invocation from the wrong
+  working directory produced a disclosed import error before the corrected
+  clean run.
+- Manifest SHA256 is
+  `592949022da8fa0743ce821efc8dae9deac22825eeb2b9b2c230f9390422237e`;
+  canonical SHA256 is
+  `e7187f5607b2b9f4e351ea45bb41902304e7049b99d80fc6bcd5fa4ef50258ae`.
+- Backup: 12/12 files verified remotely and locally. Backup manifest SHA256 is
+  `381dcbbac20ddfdb7eb1862583c7cf1650de5d72e144e48e49e15a3d85d0956b`;
+  archive SHA256 is
+  `b2a2afe2ab767b9c1f981ac0b1f74df483fbb4f43d6f22d7ec2a0e8922e29e93`.
+- Safety/cost: AutoDL remained no-card with no vLLM/model/runner/screen process;
+  model calls `0`, paid GPU cost `0 CNY`. F6, final evaluation, aggregation,
+  paper edits, and GitHub sync did not occur.
+- Evidence accounting remains `0/60`; the freeze validates future identities
+  and reuse dependencies but completes no final cell. Full report:
+  `docs/FULL_IE_F5_PROTOCOL_FREEZE_20260802.md`.
 
 ## Domain Final Matrix: 30 Reported Cells
 
@@ -350,6 +389,6 @@ Missing report cells = 48
   see `docs/FULL_IE_RELATION_CALIBRATION_REVALIDATION_20260731.md`.
 - Safety/cost: no prompt, model/API, vLLM, GPU, paper, P6 user-script, or
   GitHub action occurred; paid GPU cost was `0 CNY`.
-- Evidence accounting remained `0/60` at IE022 closeout. F3, F4a, and F4b
+- Evidence accounting remained `0/60` at IE022 closeout. F3, F4a, F4b, and F5
   later received their own bounded approvals and are recorded as complete
   above. All final-evaluation and later-phase gates remain closed.

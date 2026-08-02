@@ -18,14 +18,14 @@ chat history. Read these files before doing any project work:
 If older docs conflict with this file on status chronology, this file is newer.
 Hard rules in `AGENTS.md` and `AGENT_PLAYBOOK.md` still apply.
 
-Synchronization note (2026-08-01): `AGENTS.md`, `AGENT_PLAYBOOK.md`,
+Synchronization note (2026-08-02): `AGENTS.md`, `AGENT_PLAYBOOK.md`,
 `实验实施指导文档_综合版.md`, and this file have been aligned to the latest
 full-IE route decision, accepted `0.8000` calibration decision, current
 claim boundary, full-matrix accounting, F1 implementation closeout, F2
 relation-calibration preparation closeout, blocked IE021 validation, completed
 IE022 revalidation, completed F3 configuration/resource preparation, completed
-F4a domain-dev sanity, completed F4b CLUENER tune sanity, and execution red
-lines.
+F4a domain-dev sanity, completed F4b CLUENER tune sanity, completed F5 protocol
+freeze, and execution red lines.
 
 Latest route decision (2026-07-30): the human wants to expand the project into
 the originally intended complete equipment-domain IE paper rather than submit
@@ -61,8 +61,12 @@ explicitly granted `FULL_IE_CLUENER_TUNE_SANITY_APPROVED` for F4b CDEV1/CDEV2
 only. On 2026-08-02 the human booted an RTX 4090 24 GB and reported
 `2.8 CNY/hour`. F4b then completed exactly the authorized 50-record K=5 seed42
 scope, preserved all prompt/cache/raw/per-query artifacts, passed CDEV1
-structural checks, and exposed negative/mixed verifier evidence. The gate is
-consumed, the instance is back in no-card mode, and no later gate is open.
+structural checks, and exposed negative/mixed verifier evidence. The user then
+explicitly granted `FULL_IE_F5_PROTOCOL_FREEZE_APPROVED`. F5 completed in
+no-card mode: the 60 final config IDs, resources, source files, metrics, seeds,
+reuse dependencies, and output paths are hash-locked with all model calls and
+execution disabled. The F5 gate is consumed, the instance remains no-card, and
+no F6/final-evaluation/paper gate is open.
 
 ## 0. Executive Snapshot For A New Session
 
@@ -92,7 +96,11 @@ independently recomputed from per-query rows, and were backed up and hash-
 verified before the instance returned to no-card mode. F4b CLUENER tune sanity
 is also complete: A/B/C/D and entity-only E/E-prime ran on the deterministic
 50-record tune subset at K=5 seed42, were independently audited, and were
-backed up locally/remotely with all 489 manifest entries verified.
+backed up locally/remotely with all 489 manifest entries verified. F5 protocol
+freeze is complete: one immutable 60-cell inventory now locks 60 unique config
+IDs, 120 output paths, 13 resources, 34 source files, 12 reusable P5 Stage N
+artifacts, the original deletion-only verifier, and all future gate boundaries.
+It ran zero model calls and completes no final cell.
 
 **Current evidence**: A/B/C/D NER F1 is `0.534645`, `0.555169`, `0.568858`, and
 `0.565764`. C/D are an F1 near-tie; D has higher precision and 55 fewer FP.
@@ -110,7 +118,8 @@ diagnostics: A/B/C/D NER F1 is
 verification threshold, so public generalization and positive CoVe remain
 unsupported.
 
-**Current breakpoint**: F1, F2, F3, and F4a DDEV1/DDEV2 are complete. IE021
+**Current breakpoint**: F1, F2, F3, F4a DDEV1/DDEV2, F4b CDEV1/CDEV2, and F5
+protocol freeze are complete. IE021
 remains the preserved failed first relation-calibration attempt. F4a also
 preserves its strict v0 A Stage R failure (`38/50` relation parse failures) and
 consumed the sole allowed dev revision by changing only
@@ -119,14 +128,16 @@ failures, but D is `3/50 = 6%` and misses the strict per-config gate. E-prime is
 locally positive on dev; E is mixed/negative. These are sanity rows, so the
 matrix remains `0/60`: 12 domain cells still have reusable NER-only Stage N
 outputs, 48 report cells are absent, and all 30 final domain cells still need
-Stage R results. F4b CDEV1/CDEV2 is complete and its
-`FULL_IE_CLUENER_TUNE_SANITY_APPROVED` gate is consumed. It creates no final
-matrix cell. AutoDL is in no-card mode with no model/runner/screen process.
+Stage R results. The consumed `FULL_IE_F5_PROTOCOL_FREEZE_APPROVED` gate froze
+identities and dependencies only; it creates no final matrix cell and grants no
+execution authority. AutoDL is in no-card mode with no model/runner/screen
+process.
 
 **Next step**: stop and wait for a new bounded human gate. The planned next
-phase is F5 protocol freeze in no-card mode, but it is not authorized by the
-consumed F4b gate. Official CLUENER dev/test, `domain_test`, final evaluation,
-F5/F6, paper edits, and GitHub synchronization remain unauthorized.
+phase is F6 leakage-safe RAG replay preparation in no-card mode, but it is not
+authorized by the consumed F5 gate. Official CLUENER evaluation, new
+`domain_test` prompt/model work, final evaluation, F6-F9, paper edits, and
+GitHub synchronization remain unauthorized.
 
 **Red lines**: never run project Python locally on Windows; never tune from
 frozen test; preserve every negative row; never call E-prime failed; never
@@ -239,7 +250,43 @@ Complete on 2026-08-02 under the now-consumed
 - Official CLUENER dev/test, `domain_test`, K=1/K=10, seeds 43/44, F5/F6,
   final-matrix, manuscript, and GitHub actions did not occur.
 - Full report: `docs/FULL_IE_CLUENER_TUNE_SANITY_20260802.md`. F4b creates no
-  final cell, so accounting remains `0/60`; no later gate is open.
+  final cell, so accounting remains `0/60`. At F4b closeout no later gate was
+  open; F5 later received its own bounded approval and is recorded below.
+
+### F5 Full-IE Protocol Freeze Closeout
+
+Complete on 2026-08-02 under the now-consumed
+`FULL_IE_F5_PROTOCOL_FREEZE_APPROVED` gate.
+
+- F5 froze 60 unique final config IDs and 120 unique output paths: 30 domain
+  NER+RE cells and 30 CLUENER NER cells.
+- The dependency graph contains 48 Stage N nodes (`12` P5 reuse locks and `36`
+  planned), 24 domain Stage R nodes, and 24 E/E-prime verifier nodes. Every node
+  remains unauthorized with `model_calls_allowed=false`.
+- All `2,040` reused P5 rows passed semantic validation against frozen
+  `domain_test`: exact IDs/gold, prompt/raw hashes, five demonstrations,
+  fixed-random A sets, B/C/D replay, and exactly three D RAG passages per row.
+  A bounded legacy-name map validates historical metadata without changing old
+  rows or canonical F5 cell IDs.
+- The original deletion-only verifier is retained with type gating disabled.
+  F4b E `69.44%` and E-prime `65.79%` remain negative/mixed evidence and do not
+  support a positive CoVe claim.
+- Focused F3/manifest/freeze tests passed `21/21`; the corrected full tracked
+  AutoDL suite passed `185/185`. One earlier invocation from outside the
+  workspace produced a disclosed import error before the clean rerun.
+- Freeze manifest SHA256:
+  `592949022da8fa0743ce821efc8dae9deac22825eeb2b9b2c230f9390422237e`;
+  canonical SHA256:
+  `e7187f5607b2b9f4e351ea45bb41902304e7049b99d80fc6bcd5fa4ef50258ae`.
+- Remote/local technical backups pass `12/12`. Manifest SHA256:
+  `381dcbbac20ddfdb7eb1862583c7cf1650de5d72e144e48e49e15a3d85d0956b`;
+  archive SHA256:
+  `b2a2afe2ab767b9c1f981ac0b1f74df483fbb4f43d6f22d7ec2a0e8922e29e93`.
+- AutoDL remained no-card with no vLLM/model/runner/screen process. Model calls
+  and paid GPU cost are both zero. F6, final evaluation, aggregation, paper,
+  and GitHub operations did not occur.
+- Full report: `docs/FULL_IE_F5_PROTOCOL_FREEZE_20260802.md`. Matrix accounting
+  remains `0/60`; F6 requires a separate bounded approval.
 
 Latest paper-preparation note (2026-07-28): after the approved GPU-free
 target-journal screening and reference-authenticity audit, the human selected
@@ -564,13 +611,14 @@ All generated `.docx` files were deleted on 2026-07-25 at the user's request
 because of rendering/encoding problems. Future writing defaults to UTF-8
 Markdown unless the user explicitly asks otherwise.
 
-No Python/paid-GPU/model gate is currently open. F4b completed and consumed
-`FULL_IE_CLUENER_TUNE_SANITY_APPROVED`; the instance is now no-card. Frozen-test
-prompt generation, official CLUENER dev/test, `domain_test`, returned-file
-correction, reannotation, frozen-data correction, aggregation, baseline runs,
-K scan, extra seeds, F5/F6, and other experiments remain unauthorized. The
-fresh entity annotation/validation, M1, M2, full-IE F1, F2, F3, F4a, and F4b
-gates are consumed.
+No Python/paid-GPU/model gate is currently open. F4b and F5 completed and
+consumed `FULL_IE_CLUENER_TUNE_SANITY_APPROVED` and
+`FULL_IE_F5_PROTOCOL_FREEZE_APPROVED`; the instance is no-card. Frozen-test
+prompt/model generation, official CLUENER evaluation, returned-file correction,
+reannotation, frozen-data correction, aggregation, baseline runs, K scan, extra
+seeds, F6-F9, and other experiments remain unauthorized. The fresh entity
+annotation/validation, M1, M2, full-IE F1, F2, F3, F4a, F4b, and F5 gates are
+consumed.
 LaTeX was deliberately not changed; any result propagation into a manuscript
 requires a later, separate approval after result-to-claim.
 
@@ -1282,6 +1330,10 @@ Use these as the paper-facing evidence base:
 - `docs/FULL_IE_RELATION_CALIBRATION_PREPARATION_20260730.md`
 - `docs/FULL_IE_RELATION_CALIBRATION_VALIDATION_20260731.md`
 - `docs/FULL_IE_RELATION_CALIBRATION_REVALIDATION_20260731.md`
+- `docs/FULL_IE_CONFIG_PREP_20260731.md`
+- `docs/FULL_IE_DOMAIN_DEV_SANITY_20260801.md`
+- `docs/FULL_IE_CLUENER_TUNE_SANITY_20260802.md`
+- `docs/FULL_IE_F5_PROTOCOL_FREEZE_20260802.md`
 - `refine-logs/m1_paired_evidence_20260729/`
 - `docs/M2_BASELINE_PREPARATION_20260729.md`
 - `refine-logs/m2_domain_dev_g_exact_glossary_20260729/`
@@ -1309,10 +1361,10 @@ P0 paper repair already completed:
 - All Python, tests, data processing, inference, evaluation, and aggregation
   must run on AutoDL through SSH alias `autodl-paper`.
 - Until a new gate is approved, current work is local documentation/Git and
-  lightweight read-only inspection only. `FULL_IE_IMPLEMENTATION_APPROVED` and
-  all F2 preparation/validation/revalidation gates and
-  `FULL_IE_F3_CONFIG_PREP_APPROVED` are consumed; their Python/tests ran on
-  AutoDL GPU-free/no-card mode, never on Windows.
+  lightweight read-only inspection only. All bounded gates through F5 are
+  consumed. F1/F2/F3/F5 Python and tests ran on AutoDL GPU-free/no-card mode;
+  F4a/F4b paid inference was separately closed, backed up, and returned to
+  no-card. Nothing ran on Windows.
 - Use paid GPU only for model inference/training and only after explicit human
   approval for one bounded step.
 - After every GPU phase: stop vLLM, verify GPU memory returns to 0 MiB, back up,
@@ -1368,6 +1420,8 @@ Local:
 - Git identity for this repo: `yly <714520833@qq.com>`
 - F4a closeout commit:
   `72065fe full-ie: close F4a domain dev sanity`.
+- F4b closeout commit:
+  `6ad6070 exp: close out F4b CLUENER tune sanity`.
 - The F1 closeout adds only the eight approved Stage R/manifest runner and test
   files listed in Section 1, this handoff, and the dated full-IE tracker. It
   leaves all untracked P6, M1, M2, and old-plan artifacts untouched.
@@ -1426,9 +1480,14 @@ Remote:
 - F4b additionally synced its dated execution configs, summarizer, and focused
   test without GitHub. Remote Git HEAD remains older than authoritative local
   tracked history; do not clean/reset the dirty worktree.
-- Last verified mode at F4b closeout on 2026-08-02: GPU-free/no-card
+- F5 used a tracked-only independent workspace at
+  `/root/autodl-tmp/full_ie/f5_protocol_freeze_20260802/workspace`; it did not
+  overwrite `/root/project` or its existing dirty files. The verified technical
+  backup is under
+  `/root/autodl-tmp/backup/full_ie/f5_protocol_freeze_20260802/`.
+- Last verified mode at F5 closeout on 2026-08-02: GPU-free/no-card
   (`No devices were found`), with no vLLM, Qwen, extraction, verifier process,
-  or screen session. The complete F4b backup is under
+  Python runner, or screen session. The complete F4b backup remains under
   `/root/autodl-tmp/backup/full_ie/f4b_cluener_tune_20260802/`.
 
 Useful no-Python status command:
@@ -1440,16 +1499,15 @@ ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status -
 ## 7. Recommended Next Step
 
 The route decision is complete: pursue the minimum defensible full-IE extension
-and retain the narrow JISE NER package as fallback. F1-F3 and F4a domain-dev
-sanity plus F4b CLUENER tune sanity are consumed. IE021 remains a preserved
-blocked first attempt; IE022
-completes F2 under its structural/full-disclosure criterion. F4a ran real
-`domain_dev50` Stage R and relation-aware verification, but it did not create a
-final report cell. There are still `0/60` complete full-IE cells. A new session
-must not infer final-evaluation, F5/F6, or paper authority from F4a/F4b. Both
-sanity gates are consumed and no later gate is open.
+and retain the narrow JISE NER package as fallback. F1-F3, F4a domain-dev
+sanity, F4b CLUENER tune sanity, and F5 protocol freeze are consumed. IE021
+remains a preserved blocked first attempt; IE022 completes F2 under its
+structural/full-disclosure criterion. F4a/F4b ran only sanity data, while F5
+froze identities and dependencies without running a final cell. There are
+still `0/60` complete full-IE cells. A new session must not infer F6,
+final-evaluation, aggregation, or paper authority from the consumed F5 gate.
 
-### Current state: F4b complete, stopped at the F5 boundary
+### Current state: F5 complete, stopped at the F6 boundary
 
 The initial A/B returns and 90-error IE021 report remain locked negative
 evidence. The user attested both submissions were human-produced. Human-revised
@@ -1465,9 +1523,11 @@ the risk: A-D dev exact RE F1 is at most `0.056680`, and no configuration has a
 D is slower and below C. F4b then shows D strongest on the 50-record CLUENER
 tune subset, but its E-prime row is negative and E's small positive F1 delta
 does not pass the deletion-audit gate. F4b is tune-only, not public benchmark
-generalization. AutoDL is no-card and its gate is consumed. Stop until the
-human separately authorizes F5; do not access official CLUENER dev/test or
-`domain_test`, enter F5/F6, or edit the paper.
+generalization. F5 now locks the literal 60-cell protocol, but all 60 cell
+configs and execution nodes remain unauthorized. AutoDL is no-card and the F5
+gate is consumed. Stop until the human separately authorizes F6; do not create
+replay artifacts, run official CLUENER evaluation or new `domain_test`
+prompt/model work, enter F6-F9, or edit the paper.
 
 ### Later sequence: planned, not authorized
 
@@ -1476,12 +1536,14 @@ human separately authorizes F5; do not access official CLUENER dev/test or
    protocol revision and closed with limitations.
 3. F4b: complete under the consumed `FULL_IE_CLUENER_TUNE_SANITY_APPROVED`
    gate; fixed CLUENER tune sanity is audited, backed up, and stopped.
-4. F5/F6: freeze hashes and prepare leakage-safe replay artifacts in no-card
-   mode under separate gates.
-5. F7: run the 30 domain final cells in bounded paid batches, reusing the 12
+4. F5: complete under the consumed `FULL_IE_F5_PROTOCOL_FREEZE_APPROVED` gate;
+   60 identities and all dependency/resource/source locks are frozen.
+5. F6: prepare leakage-safe replay artifacts in no-card mode only after its own
+   bounded approval.
+6. F7: run the 30 domain final cells in bounded paid batches, reusing the 12
    existing Stage N outputs and adding Stage R.
-6. F8: run the 30 CLUENER NER cells on complete labeled official dev.
-7. F9: aggregate, perform paired uncertainty/result-to-claim, then request a
+7. F8: run the 30 CLUENER NER cells on complete labeled official dev.
+8. F9: aggregate, perform paired uncertainty/result-to-claim, then request a
    separate manuscript-propagation gate.
 
 The original plan estimates `125-295 CNY` of additional paid compute. F4a now
@@ -1501,6 +1563,8 @@ authoritative.
 - F4b adds six tune-sanity rows only, not reported cells; final accounting is
   still `0/60`, with 12 reusable domain Stage N outputs and 48 report cells
   wholly absent;
+- F5 freezes all 60 report identities and validates the 12 reuse artifacts, but
+  adds no Stage R, verifier, CLUENER-final, or complete-cell result;
 - CLUENER official unlabeled test is never offline gold; use the locked labeled
   dev protocol only after its own tune/resource freeze;
 - E v1/v2 remain preserved negative/mixed historical NER dev evidence. F4a now

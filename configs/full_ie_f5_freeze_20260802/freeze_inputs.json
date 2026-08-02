@@ -1,0 +1,227 @@
+{
+  "approved_gate": "FULL_IE_F5_PROTOCOL_FREEZE_APPROVED",
+  "authorization": {
+    "f6_allowed": false,
+    "final_evaluation_allowed": false,
+    "github_sync_allowed": false,
+    "gpu_required": false,
+    "model_calls_allowed": false,
+    "paper_edits_allowed": false
+  },
+  "freeze_date": "2026-08-02",
+  "freeze_version": "full-ie-f5-freeze-v1",
+  "resources": {
+    "cluener_dev": {
+      "path": "/root/autodl-tmp/data/cluener_dev.jsonl",
+      "role": "final_labeled_public_evaluation",
+      "rows": 1343,
+      "sha256": "f452c4199fd4b0656b05e0070aea2f00190a127ff3cd7d29e5760605e5260a5e"
+    },
+    "cluener_glossary": {
+      "path": "/root/autodl-tmp/data/full_ie/f3_config_prep_20260731/cluener_support_glossary_seed42.jsonl",
+      "role": "support_only_exact_surface_type_glossary",
+      "rows": 61,
+      "sha256": "0ac4dc41ceb9c458250354fef3826c8b21a9d128c9491a6477b2171f03ba3a9b"
+    },
+    "cluener_rag_corpus": {
+      "path": "/root/autodl-tmp/data/full_ie/f3_config_prep_20260731/cluener_rag_corpus_labels_stripped.jsonl",
+      "role": "labels_stripped_deduplicated_train_text",
+      "rows": 9584,
+      "sha256": "f0b0cef66415bff65537076d1ab16552038dcb4388ed22c133255057ac2eb7ee"
+    },
+    "cluener_rag_dedup_report": {
+      "path": "/root/autodl-tmp/data/full_ie/f3_config_prep_20260731/cluener_rag_dedup_report.json",
+      "role": "public_rag_leakage_audit",
+      "rows": null,
+      "sha256": "c9f610d3a51ff7978c14f1bab16e284d4281ca3774f470acc56c70dab8de471c"
+    },
+    "cluener_support": {
+      "path": "/root/autodl-tmp/data/full_ie/f3_config_prep_20260731/cluener_support_bank30_seed42.jsonl",
+      "role": "frozen_public_support_bank",
+      "rows": 30,
+      "sha256": "abd6a338bf393426f35e12a08d073c6661e59131bc52ae77ca9f96d8859a5219"
+    },
+    "domain_dedup_log": {
+      "path": "/root/project/logs/dedup.json",
+      "role": "domain_leakage_audit",
+      "rows": null,
+      "sha256": "ebc0a79dbe5167f0e7daa0523242f99889e0280383981470de09ff9154c54768"
+    },
+    "domain_frozen_marker": {
+      "path": "/root/autodl-tmp/data/FROZEN",
+      "role": "domain_freeze_marker",
+      "rows": null,
+      "sha256": "e12517324c90a7261fcb46df698112dac8f83c2f5c6441e39c4340ada2cee0dd"
+    },
+    "domain_glossary": {
+      "path": "/root/project/data/domain_dict.jsonl",
+      "role": "frozen_domain_glossary",
+      "rows": 73,
+      "sha256": "01b857822894bb09268cbb7fb14ad0988630137bb7efae0b9d90f7d75a2f3ef6"
+    },
+    "domain_rag_corpus": {
+      "path": "/root/autodl-tmp/data/domain_rag_corpus.jsonl",
+      "role": "deduplicated_domain_rag_corpus",
+      "rows": 230,
+      "sha256": "92658eeab6952eba6b160f15b43ec37e98fb37830becc449ca62376e9979368a"
+    },
+    "domain_support": {
+      "path": "/root/autodl-tmp/data/domain_support.jsonl",
+      "role": "frozen_domain_support",
+      "rows": 30,
+      "sha256": "9633c7f6ceee8592408034e26834233e3f03b2f58a104783757ae664a4bab22a"
+    },
+    "domain_test": {
+      "path": "/root/autodl-tmp/data/domain_test.jsonl",
+      "role": "frozen_domain_final_evaluation",
+      "rows": 170,
+      "sha256": "42f6ecbbfd1eb57937cd74a04e5b8362fe0976b5bf108e52523a4778dd53bfd0"
+    },
+    "model_file_manifest": {
+      "path": "/root/autodl-tmp/backup/p0/model_files.sha256",
+      "role": "p0_fixed_model_file_inventory",
+      "rows": 65,
+      "sha256": "8df4badf7649609ece84a7f35555101c2f9d28537f74b418db819d32b6c5bd63"
+    },
+    "model_manifest_metadata": {
+      "path": "/root/autodl-tmp/backup/p0/model_manifest_metadata.sha256",
+      "role": "p0_model_manifest_metadata_lock",
+      "rows": 2,
+      "sha256": "9ea7700024b7ba046d924dd2c965fe574f0b0c1756783d0d6eb7f533b1b8ac0e"
+    }
+  },
+  "reused_stage_n": [
+    {
+      "artifact_kind": "stage_n_per_query",
+      "cell_id": "domain:A:k5:s42",
+      "path": "/root/project/results/p5/p5_domain_test_a_k5_seed42_per_query.jsonl",
+      "role": "locked_p5_stage_n_reuse",
+      "rows": 170,
+      "sha256": "343f192e6c5bc2a3bd0c720af1d9241836c01dd53584a454c787a5ccfb99e8ab"
+    },
+    {
+      "artifact_kind": "stage_n_per_query",
+      "cell_id": "domain:B:k5:s42",
+      "path": "/root/project/results/p5/p5_domain_test_b_knn_k5_seed42_per_query.jsonl",
+      "role": "locked_p5_stage_n_reuse",
+      "rows": 170,
+      "sha256": "cbf5b907a421c904e4c121e4e4203dd1451c6fb698032809805de4928ee9f75e"
+    },
+    {
+      "artifact_kind": "stage_n_per_query",
+      "cell_id": "domain:C:k5:s42",
+      "path": "/root/project/results/p5/p5_domain_test_c_glossary_k5_seed42_per_query.jsonl",
+      "role": "locked_p5_stage_n_reuse",
+      "rows": 170,
+      "sha256": "a0c1dd65193b4e6259af0aa542763e3c9940fa26949df8dc29fa7252afac17a4"
+    },
+    {
+      "artifact_kind": "stage_n_per_query",
+      "cell_id": "domain:D:k5:s42",
+      "path": "/root/project/results/p5/p5_domain_test_d_rag_k5_seed42_per_query.jsonl",
+      "role": "locked_p5_stage_n_reuse",
+      "rows": 170,
+      "sha256": "ebaa68c940223ff8688377f63a3f9dbafefaf561382b6a3445c5cdda354a1ed0"
+    },
+    {
+      "artifact_kind": "stage_n_per_query",
+      "cell_id": "domain:A:k5:s43",
+      "path": "/root/project/results/p5/p5_domain_test_a_k5_seed43_per_query.jsonl",
+      "role": "locked_p5_stage_n_reuse",
+      "rows": 170,
+      "sha256": "358ddfac801240260ace896c13a4eced2668245b518c95466efda5e11e38c164"
+    },
+    {
+      "artifact_kind": "stage_n_per_query",
+      "cell_id": "domain:B:k5:s43",
+      "path": "/root/project/results/p5/p5_domain_test_b_knn_k5_seed43_per_query.jsonl",
+      "role": "locked_p5_stage_n_reuse",
+      "rows": 170,
+      "sha256": "37de8978b361c5e279e30dbcba3a341055b018199da5213109f3cb13b32c112a"
+    },
+    {
+      "artifact_kind": "stage_n_per_query",
+      "cell_id": "domain:C:k5:s43",
+      "path": "/root/project/results/p5/p5_domain_test_c_glossary_k5_seed43_per_query.jsonl",
+      "role": "locked_p5_stage_n_reuse",
+      "rows": 170,
+      "sha256": "2c75820dc65ac3595aaa2eb1c73b32f2dff499ac667704ce3d3ace9381752478"
+    },
+    {
+      "artifact_kind": "stage_n_per_query",
+      "cell_id": "domain:D:k5:s43",
+      "path": "/root/project/results/p5/p5_domain_test_d_rag_k5_seed43_per_query.jsonl",
+      "role": "locked_p5_stage_n_reuse",
+      "rows": 170,
+      "sha256": "90ce8bed50005bd7f93f0e8db58f8b44874f0fa67ca6c4c06063f15dbe3d83ab"
+    },
+    {
+      "artifact_kind": "stage_n_per_query",
+      "cell_id": "domain:A:k5:s44",
+      "path": "/root/project/results/p5/p5_domain_test_a_k5_seed44_per_query.jsonl",
+      "role": "locked_p5_stage_n_reuse",
+      "rows": 170,
+      "sha256": "1b46b3213aa95ef2175c80e17324530729eca0a77cb0d518c01134cf0b684310"
+    },
+    {
+      "artifact_kind": "stage_n_per_query",
+      "cell_id": "domain:B:k5:s44",
+      "path": "/root/project/results/p5/p5_domain_test_b_knn_k5_seed44_per_query.jsonl",
+      "role": "locked_p5_stage_n_reuse",
+      "rows": 170,
+      "sha256": "cad10220e98518d56ed08f0b61b823a9f01f76165dc063835da9ef28c7945cbb"
+    },
+    {
+      "artifact_kind": "stage_n_per_query",
+      "cell_id": "domain:C:k5:s44",
+      "path": "/root/project/results/p5/p5_domain_test_c_glossary_k5_seed44_per_query.jsonl",
+      "role": "locked_p5_stage_n_reuse",
+      "rows": 170,
+      "sha256": "1b8fc7b3633ddfe6ce1567596efca3cd44505670e45c7a98498d5ad7175f8ccb"
+    },
+    {
+      "artifact_kind": "stage_n_per_query",
+      "cell_id": "domain:D:k5:s44",
+      "path": "/root/project/results/p5/p5_domain_test_d_rag_k5_seed44_per_query.jsonl",
+      "role": "locked_p5_stage_n_reuse",
+      "rows": 170,
+      "sha256": "9415c935b271ebdc4f93650a88f135fa4b1883072a2e0ac06cb1be35da6d754a"
+    }
+  ],
+  "source_paths": [
+    "AGENT_PLAYBOOK.md",
+    "AGENTS.md",
+    "configs/full_ie_f4a_domain_dev_r1_20260731/domain_a_stage_n.yaml",
+    "configs/full_ie_f4a_domain_dev_r1_20260731/domain_a_stage_r.yaml",
+    "configs/full_ie_f4a_domain_dev_r1_20260731/domain_b_stage_n.yaml",
+    "configs/full_ie_f4a_domain_dev_r1_20260731/domain_b_stage_r.yaml",
+    "configs/full_ie_f4a_domain_dev_r1_20260731/domain_c_stage_n.yaml",
+    "configs/full_ie_f4a_domain_dev_r1_20260731/domain_c_stage_r.yaml",
+    "configs/full_ie_f4a_domain_dev_r1_20260731/domain_d_stage_n.yaml",
+    "configs/full_ie_f4a_domain_dev_r1_20260731/domain_d_stage_r.yaml",
+    "configs/full_ie_f4a_domain_dev_r1_20260731/domain_e_verify.yaml",
+    "configs/full_ie_f4a_domain_dev_r1_20260731/domain_eprime_verify.yaml",
+    "configs/full_ie_f4a_domain_dev_r1_20260731/run_matrix.yaml",
+    "configs/full_ie_f4b_cluener_tune_20260802/cluener_a_stage_n.yaml",
+    "configs/full_ie_f4b_cluener_tune_20260802/cluener_b_stage_n.yaml",
+    "configs/full_ie_f4b_cluener_tune_20260802/cluener_c_stage_n.yaml",
+    "configs/full_ie_f4b_cluener_tune_20260802/cluener_d_stage_n.yaml",
+    "configs/full_ie_f4b_cluener_tune_20260802/cluener_e_verify.yaml",
+    "configs/full_ie_f4b_cluener_tune_20260802/cluener_eprime_verify.yaml",
+    "configs/full_ie_f5_freeze_20260802/freeze_inputs.json",
+    "refine-logs/FULL_IE_MINIMUM_EXPERIMENT_PLAN_20260730.md",
+    "requirements.lock.txt",
+    "scripts/prepare_full_ie_f5.py",
+    "scripts/run_full_ie_verification.py",
+    "scripts/run_p3_extraction.py",
+    "scripts/run_stage_r.py",
+    "scripts/validate_full_ie_f5.py",
+    "src/equipment_ie/extraction.py",
+    "src/equipment_ie/full_ie.py",
+    "src/equipment_ie/full_ie_f3.py",
+    "src/equipment_ie/full_ie_freeze.py",
+    "src/equipment_ie/full_ie_manifest.py",
+    "src/equipment_ie/llm_labeling.py",
+    "src/equipment_ie/schema.py"
+  ]
+}
