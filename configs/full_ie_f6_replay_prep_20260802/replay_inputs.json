@@ -1,0 +1,108 @@
+{
+  "authorization": {
+    "aggregation_allowed": false,
+    "final_evaluation_allowed": false,
+    "github_sync_allowed": false,
+    "gpu_required": false,
+    "llm_calls_allowed": false,
+    "paper_edits_allowed": false,
+    "stage_execution_allowed": false
+  },
+  "date": "2026-08-02",
+  "domain_consensus_sources": [
+    {
+      "path": "/root/project/results/p5/p5_domain_test_d_rag_k5_seed42_per_query.jsonl",
+      "rows": 170,
+      "seed": 42,
+      "sha256": "ebaa68c940223ff8688377f63a3f9dbafefaf561382b6a3445c5cdda354a1ed0"
+    },
+    {
+      "path": "/root/project/results/p5/p5_domain_test_d_rag_k5_seed43_per_query.jsonl",
+      "rows": 170,
+      "seed": 43,
+      "sha256": "90ce8bed50005bd7f93f0e8db58f8b44874f0fa67ca6c4c06063f15dbe3d83ab"
+    },
+    {
+      "path": "/root/project/results/p5/p5_domain_test_d_rag_k5_seed44_per_query.jsonl",
+      "rows": 170,
+      "seed": 44,
+      "sha256": "9415c935b271ebdc4f93650a88f135fa4b1883072a2e0ac06cb1be35da6d754a"
+    }
+  ],
+  "f5_manifest": {
+    "repo_relative_path": "configs/full_ie_f5_freeze_20260802/freeze_manifest.json",
+    "sha256": "592949022da8fa0743ce821efc8dae9deac22825eeb2b9b2c230f9390422237e"
+  },
+  "human_gate": "FULL_IE_F6_REPLAY_PREP_APPROVED",
+  "leakage": {
+    "containment_threshold": 0.8,
+    "ngram_size": 8,
+    "reject_source_self_hit": true
+  },
+  "models": {
+    "device": "cpu",
+    "embedding_batch_size": 8,
+    "embedding_path": "/root/autodl-tmp/models/bge-m3",
+    "max_length": 512,
+    "reranker_path": "/root/autodl-tmp/models/bge-reranker",
+    "use_fp16": false
+  },
+  "resources": {
+    "cluener_corpus": {
+      "path": "/root/autodl-tmp/data/full_ie/f3_config_prep_20260731/cluener_rag_corpus_labels_stripped.jsonl",
+      "rows": 9584,
+      "sha256": "f0b0cef66415bff65537076d1ab16552038dcb4388ed22c133255057ac2eb7ee"
+    },
+    "cluener_query": {
+      "path": "/root/autodl-tmp/data/cluener_dev.jsonl",
+      "rows": 1343,
+      "sha256": "f452c4199fd4b0656b05e0070aea2f00190a127ff3cd7d29e5760605e5260a5e"
+    },
+    "domain_corpus": {
+      "path": "/root/autodl-tmp/data/domain_rag_corpus.jsonl",
+      "rows": 230,
+      "sha256": "92658eeab6952eba6b160f15b43ec37e98fb37830becc449ca62376e9979368a"
+    },
+    "domain_query": {
+      "path": "/root/autodl-tmp/data/domain_test.jsonl",
+      "rows": 170,
+      "sha256": "42f6ecbbfd1eb57937cd74a04e5b8362fe0976b5bf108e52523a4778dd53bfd0"
+    },
+    "model_file_manifest": {
+      "path": "/root/autodl-tmp/backup/p0/model_files.sha256",
+      "rows": 65,
+      "sha256": "8df4badf7649609ece84a7f35555101c2f9d28537f74b418db819d32b6c5bd63"
+    },
+    "model_manifest_metadata": {
+      "path": "/root/autodl-tmp/backup/p0/model_manifest_metadata.sha256",
+      "rows": 2,
+      "sha256": "9ea7700024b7ba046d924dd2c965fe574f0b0c1756783d0d6eb7f533b1b8ac0e"
+    }
+  },
+  "retrieval": {
+    "embedding": "BGE-M3 normalized vectors",
+    "glossary_max_entries": 20,
+    "index": "FAISS inner product",
+    "max_passage_chars": 300,
+    "rag_chunk_chars": 260,
+    "rag_overlap_chars": 40,
+    "rerank_top_k": 3,
+    "reranker": "bge-reranker-v2-m3",
+    "retrieve_top_k": 20
+  },
+  "source_paths": [
+    "AGENT_PLAYBOOK.md",
+    "AGENTS.md",
+    "configs/full_ie_f5_freeze_20260802/freeze_manifest.json",
+    "configs/full_ie_f6_replay_prep_20260802/replay_inputs.json",
+    "refine-logs/FULL_IE_MINIMUM_EXPERIMENT_PLAN_20260730.md",
+    "scripts/build_rag_replay_manifest.py",
+    "scripts/prepare_full_ie_f6.py",
+    "scripts/run_p3_extraction.py",
+    "scripts/validate_full_ie_f6.py",
+    "src/equipment_ie/domain_data.py",
+    "src/equipment_ie/full_ie_f6.py",
+    "tests/test_full_ie_f6.py"
+  ],
+  "version": "full-ie-f6-replay-v1"
+}

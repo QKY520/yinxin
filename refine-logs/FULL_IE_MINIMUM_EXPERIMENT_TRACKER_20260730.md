@@ -37,8 +37,13 @@ negative and E is only slightly positive on F1, while both deletion audits miss
 the `70%` positive-claim threshold. F5 is now complete under the consumed
 `FULL_IE_F5_PROTOCOL_FREEZE_APPROVED` gate: all 60 config IDs, 13 resources, 34
 source files, 12 P5 Stage N reuse locks, metrics, prompts, seeds, and output
-paths are frozen with model calls disabled. No final-evaluation, F6, paper, or
-GitHub gate is open.
+paths are frozen with model calls disabled. The later
+`FULL_IE_F6_REPLAY_PREP_APPROVED` gate was granted and consumed at a declared
+resource stop: the 170-row domain replay passed consensus/leakage validation,
+but CLUENER remains `0/1343` because the no-card cgroup limit is 2 GiB versus a
+4.54 GB frozen dual-model weight lower bound. F6 is
+`PARTIAL_BLOCKED_MEMORY`, not complete.
+No recovery, final-evaluation, F7-F9, paper, or GitHub gate is open.
 
 ## Protocol and Implementation
 
@@ -56,6 +61,7 @@ GitHub gate is open.
 | IE031 | F3 | Build CLUENER support bank and glossary | train_pool only | 0 | DONE | 30-record all-type bank; 61 support-only glossary entries |
 | IE032 | F3 | Build/dedup CLUENER RAG corpus | labels-stripped train_pool | 0 | DONE | 9,584 rows; 89 removed by fixed 8-gram/0.80 blocklist |
 | IE033 | F3 | Freeze CLUENER tune configs | A-E-prime, K=5, seed42 | 6 | DONE | 50-record all-type tune subset; no prompt artifacts |
+| IE040 | F6 | Prepare leakage-safe RAG replay | Domain three-seed consensus plus CLUENER dev text retrieval | 0 | MUST | BLOCKED | Domain 170/170 passes; CLUENER 0/1343 stopped because 2 GiB cgroup memory is below the 4.54 GB weight lower bound |
 
 ### F3 Closeout (2026-07-31)
 
@@ -239,6 +245,38 @@ GitHub gate is open.
 - Evidence accounting remains `0/60`; the freeze validates future identities
   and reuse dependencies but completes no final cell. Full report:
   `docs/FULL_IE_F5_PROTOCOL_FREEZE_20260802.md`.
+
+### F6 Partial Closeout (2026-08-02)
+
+- Gate: `FULL_IE_F6_REPLAY_PREP_APPROVED`; bounded to no-card replay
+  preparation with zero Qwen/vLLM/API calls, now consumed at a declared memory
+  stop condition.
+- Domain: all three hash-locked P5 D K=5 seed42/43/44 sources agree exactly on
+  170 rows and 510 passages. Source self-hits, prohibited serialized fields,
+  and fixed 8-gram threshold hits are all zero; maximum containment is
+  `0.529148` and mean containment is `0.003612`.
+- CLUENER: `0/1343`. The first screen exited during model initialization with a
+  zero-byte log and no replay row. A new preflight establishes
+  `memory.max=2,147,483,648` versus a frozen embedding+reranker weight lower
+  bound of `4,544,321,872` bytes and now refuses before model loading. No
+  fallback precision, retriever, hardware, prompt, prediction, or metric was
+  used.
+- Validation: final F6 tests `7/7`; full tracked AutoDL suite `192/192`; P0
+  model manifest `65/65`; source locks `12/12`; nine resources/source replays;
+  final partial backup manifest `24/24` remotely and locally.
+- Backup: remote/local extracted copies are under
+  `backup(s)/full_ie/f6_replay_prep_20260802/`. Partial manifest SHA256 is
+  `b5db900a87cb5791a8327825b5014da82b60a7b831ee0f903514f424468a4f66`;
+  archive SHA256 is
+  `0ad69881c15f423cf0d6dc620427ce73614bbf53209625acd395cf1a731bf28f`.
+- Cost/safety: no-card throughout, paid GPU cost `0 CNY`, model/API calls `0`,
+  and no model/runner/screen process at closeout. No final cell is complete;
+  matrix accounting remains `0/60`.
+- Status: `BLOCKED`, not `DONE`. A recovery needs materially more than the
+  4.54 GB lower bound and a separate
+  `FULL_IE_F6_CLUENER_REPLAY_RECOVERY_APPROVED` gate. F7-F9 and paper work
+  remain unauthorized. Full report:
+  `docs/FULL_IE_F6_REPLAY_PREP_20260802.md`.
 
 ## Domain Final Matrix: 30 Reported Cells
 
