@@ -1,6 +1,6 @@
 # HANDOFF.md - New Conversation Handoff
 
-Date: 2026-08-01
+Date: 2026-08-02
 Workspace: `D:\yinsir`
 
 This file is the latest operational state for a new Codex/agent session with no
@@ -24,8 +24,8 @@ full-IE route decision, accepted `0.8000` calibration decision, current
 claim boundary, full-matrix accounting, F1 implementation closeout, F2
 relation-calibration preparation closeout, blocked IE021 validation, completed
 IE022 revalidation, completed F3 configuration/resource preparation, completed
-F4a domain-dev sanity, the approved-but-not-started F4b checkpoint, and
-execution red lines.
+F4a domain-dev sanity, completed F4b CLUENER tune sanity, and execution red
+lines.
 
 Latest route decision (2026-07-30): the human wants to expand the project into
 the originally intended complete equipment-domain IE paper rather than submit
@@ -58,9 +58,11 @@ no model calls or prompt artifacts. The later bounded
 below `0.057`, E-prime has a local positive NER/RE dev signal, E is negative,
 and D's relation parse-failure rate is `6%`. On 2026-08-01 the human then
 explicitly granted `FULL_IE_CLUENER_TUNE_SANITY_APPROVED` for F4b CDEV1/CDEV2
-only. Immediate SSH preflight still found no GPU, no model/runner process, and
-no screen session. The gate is open, but F4b has not started and is waiting for
-the human to boot the 4090 and report the live hourly price.
+only. On 2026-08-02 the human booted an RTX 4090 24 GB and reported
+`2.8 CNY/hour`. F4b then completed exactly the authorized 50-record K=5 seed42
+scope, preserved all prompt/cache/raw/per-query artifacts, passed CDEV1
+structural checks, and exposed negative/mixed verifier evidence. The gate is
+consumed, the instance is back in no-card mode, and no later gate is open.
 
 ## 0. Executive Snapshot For A New Session
 
@@ -87,7 +89,10 @@ a 50-record tune subset, and a 9,584-row labels-stripped CLUENER RAG corpus
 were hash-verified on AutoDL no-card mode. F4a domain-dev sanity is complete:
 A-D Stage R and E/E-prime relation-aware verification ran at K=5 seed42, were
 independently recomputed from per-query rows, and were backed up and hash-
-verified before the instance returned to no-card mode.
+verified before the instance returned to no-card mode. F4b CLUENER tune sanity
+is also complete: A/B/C/D and entity-only E/E-prime ran on the deterministic
+50-record tune subset at K=5 seed42, were independently audited, and were
+backed up locally/remotely with all 489 manifest entries verified.
 
 **Current evidence**: A/B/C/D NER F1 is `0.534645`, `0.555169`, `0.568858`, and
 `0.565764`. C/D are an F1 near-tie; D has higher precision and 55 fewer FP.
@@ -97,7 +102,13 @@ frozen-test formal IAA; `TECH_SCHEME` F1 is only `0.153846`. The post-feedback
 relation file-concordance F1 `0.417391` is also not formal IAA and specifically
 exposes weak `PART_OF` agreement (`0.246154`). F4a adds dev-only diagnostics,
 not final evidence: A/B/C/D exact RE F1 is `0.056680/0.040404/0.039024/0.010989`;
-E-prime improves dev NER/RE F1, while E lowers both.
+E-prime improves dev NER/RE F1, while E lowers both. F4b adds tune-only public
+diagnostics: A/B/C/D NER F1 is
+`0.524444/0.563107/0.571429/0.638889`; E-prime lowers F1
+`0.571429 -> 0.546512`, while E raises it only
+`0.638889 -> 0.644444`. Both CLUENER deletion audits miss the `70%` positive
+verification threshold, so public generalization and positive CoVe remain
+unsupported.
 
 **Current breakpoint**: F1, F2, F3, and F4a DDEV1/DDEV2 are complete. IE021
 remains the preserved failed first relation-calibration attempt. F4a also
@@ -108,16 +119,14 @@ failures, but D is `3/50 = 6%` and misses the strict per-config gate. E-prime is
 locally positive on dev; E is mixed/negative. These are sanity rows, so the
 matrix remains `0/60`: 12 domain cells still have reusable NER-only Stage N
 outputs, 48 report cells are absent, and all 30 final domain cells still need
-Stage R results. `FULL_IE_CLUENER_TUNE_SANITY_APPROVED` is now explicitly open
-for F4b CDEV1/CDEV2, but no F4b prompt/model call/output exists yet because the
-instance remains no-card.
+Stage R results. F4b CDEV1/CDEV2 is complete and its
+`FULL_IE_CLUENER_TUNE_SANITY_APPROVED` gate is consumed. It creates no final
+matrix cell. AutoDL is in no-card mode with no model/runner/screen process.
 
-**Next step**: wait for the human to boot the AutoDL RTX 4090 24 GB and report
-the live price. Then verify model/free memory and no conflicting process, create
-versioned execution copies of the locked F3 CLUENER configs, and run only the
-fixed 50-record `cluener_tune` A/B/C/D/E/E-prime sanity at K=5 seed42. Official
-CLUENER dev/test, `domain_test`, final evaluation, F5/F6, paper edits, and GitHub
-synchronization remain unauthorized.
+**Next step**: stop and wait for a new bounded human gate. The planned next
+phase is F5 protocol freeze in no-card mode, but it is not authorized by the
+consumed F4b gate. Official CLUENER dev/test, `domain_test`, final evaluation,
+F5/F6, paper edits, and GitHub synchronization remain unauthorized.
 
 **Red lines**: never run project Python locally on Windows; never tune from
 frozen test; preserve every negative row; never call E-prime failed; never
@@ -190,41 +199,47 @@ dev-only empirical sanity, not a final matrix batch.
   was longer and the AutoDL platform bill is authoritative.
 - Matrix accounting remains `0/60`.
 
-### F4b CLUENER Tune Sanity Authorization Checkpoint
+### F4b CLUENER Tune Sanity Closeout
 
-Authorization was granted on 2026-08-01, but execution has not started.
+Complete on 2026-08-02 under the now-consumed
+`FULL_IE_CLUENER_TUNE_SANITY_APPROVED` gate.
 
-- Exact gate: `FULL_IE_CLUENER_TUNE_SANITY_APPROVED`.
-- Authorized cells: CDEV1 A/B/C/D NER and CDEV2 E/E-prime entity-only
-  verification, all on the deterministic 50-record `cluener_tune` subset at
+- Scope stayed exact: CDEV1 A/B/C/D NER and CDEV2 entity-only E-prime over C
+  plus E over D, all on the deterministic 50-record `cluener_tune` subset at
   K=5 seed42.
-- Frozen inputs: F3 support bank `30`, tune subset `50`, support-only glossary
-  `61`, and labels-stripped/deduplicated RAG corpus `9,584`; use the locked
-  resources under `/root/autodl-tmp/data/full_ie/f3_config_prep_20260731/`.
-- Prepared configs are under `/root/project/configs/full_ie_f3_20260731/` and
-  local `configs/full_ie_f3_20260731/`. They remain historical hash-locked
-  `authorized=false` inputs. Do not edit them in place; copy them to a dated
-  F4b execution directory and record the gate plus new output paths.
-- Post-approval preflight: `nvidia-smi -L` returned `No devices found`,
-  `/dev/nvidia0` was absent, and no vLLM/Qwen/extraction/verifier process or
-  screen session existed. No prompt/model call/output was produced; incremental
-  cost is `0 CNY`.
-- Human-only prerequisite: boot the AutoDL RTX 4090 24 GB and report the live
-  hourly price. The agent must not create, rent, switch, stop, or release the
-  resource.
-- After GPU availability: verify GPU model and free memory, confirm no duplicate
-  job, run A then B, replay B demonstrations for C/D, run E-prime over C and E
-  over D, and preserve per-query rows/cache/raw outputs/config hashes.
-- Required sanity checks: all 50 rows reload, zero unsupported CLUENER entity
-  types, parse failure below `5%`, NER P/R/F1 and FP counts, latency, and full
-  E/E-prime entity deletion audit. Any negative result remains visible.
-- Mandatory closeout: stop vLLM; verify no model process; back up and hash-check
-  configs/results/logs/cache; mirror lightweight artifacts to `D:\yinsir`;
-  report observed GPU time, platform-bill uncertainty, and risks; then ask the
-  human to return the instance to no-card mode.
-- Explicit exclusions: official CLUENER dev, unlabeled CLUENER test,
-  `domain_test`, K=1/K=10, seeds 43/44, F5/F6, any final matrix cell, paper
-  changes, and GitHub sync.
+- Preflight found an RTX 4090 with `24,564 MiB`, `0 MiB` used, and no
+  conflicting vLLM/Qwen/runner/screen process. Human-reported price was
+  `2.8 CNY/hour`.
+- Six dated execution configs are under
+  `configs/full_ie_f4b_cluener_tune_20260802/`. The historical F3 configs were
+  not changed. Frozen query/support/glossary/RAG hashes all match their locks.
+- CDEV1 P/R/F1 and FP: A `0.495798/0.556604/0.524444`, FP `60`; B
+  `0.580000/0.547170/0.563107`, FP `42`; C
+  `0.576923/0.566038/0.571429`, FP `44`; D
+  `0.627273/0.650943/0.638889`, FP `41`. Parse failures and unsupported types
+  are zero for all four rows.
+- E-prime changes F1 `0.571429 -> 0.546512`; its correct-drop rate is
+  `25/38 = 65.79%`. E changes F1 `0.638889 -> 0.644444`; its correct-drop rate
+  is `25/36 = 69.44%`. Both miss the `70%` positive-claim threshold. All 74
+  deletions and the negative/mixed outcomes are preserved.
+- The audit maps 219 extraction and 214 verifier requests exactly to 433 cache
+  files with complete prompts, raw content, full responses, and hashes. Focused
+  tests passed `5/5`; the tracked regression set plus F4b tests passed
+  `177/177` remotely.
+- Remote/local backups verify all `489/489` manifest entries. Summary SHA256:
+  `80997aef4e53d5494f5902932ef477d7cbdfb36b59ba13d7959568074bd5c8f1`;
+  manifest SHA256:
+  `6d9f03466a7a46b41d2925e834d627d52481690ddf06548ddc129a659849f7de`;
+  archive SHA256:
+  `75622decfd91bd460e782da4d4694fa6bcba8187e22ec7e0a16cf62cf4d5dd4a`.
+- Observable vLLM time was `3,527 s` (`0.979722 h`), about `2.74 CNY` at
+  `2.8 CNY/hour`; platform billing is authoritative. vLLM stopped, GPU memory
+  returned to zero, and final closeout found AutoDL in no-card mode with no
+  model/runner/screen process.
+- Official CLUENER dev/test, `domain_test`, K=1/K=10, seeds 43/44, F5/F6,
+  final-matrix, manuscript, and GitHub actions did not occur.
+- Full report: `docs/FULL_IE_CLUENER_TUNE_SANITY_20260802.md`. F4b creates no
+  final cell, so accounting remains `0/60`; no later gate is open.
 
 Latest paper-preparation note (2026-07-28): after the approved GPU-free
 target-journal screening and reference-authenticity audit, the human selected
@@ -549,16 +564,13 @@ All generated `.docx` files were deleted on 2026-07-25 at the user's request
 because of rendering/encoding problems. Future writing defaults to UTF-8
 Markdown unless the user explicitly asks otherwise.
 
-The only currently authorized Python/paid-GPU/model activity is F4b under
-`FULL_IE_CLUENER_TUNE_SANITY_APPROVED`, bounded to CDEV1/CDEV2 on the fixed
-50-record CLUENER tune subset at K=5 seed42. It is not a final-evaluation gate
-and has not started because the instance is no-card. Until the human boots the
-4090, documentation/Git/read-only inspection is the only live machine work.
-Frozen-test prompt generation, official CLUENER dev/test, `domain_test`,
-returned-file correction, reannotation, frozen-data correction, aggregation,
-baseline runs, K scan, extra seeds, F5/F6, and other experiments remain
-unauthorized. The fresh entity annotation/validation, M1, M2, full-IE F1, F2,
-F3, and F4a DDEV1/DDEV2 gates are consumed.
+No Python/paid-GPU/model gate is currently open. F4b completed and consumed
+`FULL_IE_CLUENER_TUNE_SANITY_APPROVED`; the instance is now no-card. Frozen-test
+prompt generation, official CLUENER dev/test, `domain_test`, returned-file
+correction, reannotation, frozen-data correction, aggregation, baseline runs,
+K scan, extra seeds, F5/F6, and other experiments remain unauthorized. The
+fresh entity annotation/validation, M1, M2, full-IE F1, F2, F3, F4a, and F4b
+gates are consumed.
 LaTeX was deliberately not changed; any result propagation into a manuscript
 requires a later, separate approval after result-to-claim.
 
@@ -1411,11 +1423,13 @@ Remote:
   pre-existing manually synced modified/untracked P6 files because GitHub sync
   is unavailable. Do not clean or reset that worktree, and do not overwrite its
   divergent handoff.
-- Last verified mode after F4b approval on 2026-08-01: GPU-free/no-card
-  (`nvidia-smi -L` returned `No devices found` and `/dev/nvidia0` was absent),
-  with no vLLM, Qwen, extraction, verifier process, or screen session. F4b has
-  not started. Confirm GPU model/free memory and the absence of conflicting
-  processes after the human switches to paid mode.
+- F4b additionally synced its dated execution configs, summarizer, and focused
+  test without GitHub. Remote Git HEAD remains older than authoritative local
+  tracked history; do not clean/reset the dirty worktree.
+- Last verified mode at F4b closeout on 2026-08-02: GPU-free/no-card
+  (`No devices were found`), with no vLLM, Qwen, extraction, verifier process,
+  or screen session. The complete F4b backup is under
+  `/root/autodl-tmp/backup/full_ie/f4b_cluener_tune_20260802/`.
 
 Useful no-Python status command:
 
@@ -1427,14 +1441,15 @@ ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status -
 
 The route decision is complete: pursue the minimum defensible full-IE extension
 and retain the narrow JISE NER package as fallback. F1-F3 and F4a domain-dev
-sanity are consumed. IE021 remains a preserved blocked first attempt; IE022
+sanity plus F4b CLUENER tune sanity are consumed. IE021 remains a preserved
+blocked first attempt; IE022
 completes F2 under its structural/full-disclosure criterion. F4a ran real
 `domain_dev50` Stage R and relation-aware verification, but it did not create a
 final report cell. There are still `0/60` complete full-IE cells. A new session
-must not infer final-evaluation, F5/F6, or paper authority from F4a. It may rely
-on the explicitly recorded F4b tune-sanity gate, but nothing broader.
+must not infer final-evaluation, F5/F6, or paper authority from F4a/F4b. Both
+sanity gates are consumed and no later gate is open.
 
-### Current state: F4b authorized, waiting for human GPU startup
+### Current state: F4b complete, stopped at the F5 boundary
 
 The initial A/B returns and 90-error IE021 report remain locked negative
 evidence. The user attested both submissions were human-produced. Human-revised
@@ -1447,19 +1462,20 @@ Complete exact-directed file concordance is only F1 `0.417391`, with
 relation-label claim. It is a disclosed calibration limitation. F4a reinforces
 the risk: A-D dev exact RE F1 is at most `0.056680`, and no configuration has a
 `HAS_METRIC` TP. E-prime gives a local positive dev signal, but E is negative;
-D is slower and below C. The bounded paid CLUENER tune sanity gate
-`FULL_IE_CLUENER_TUNE_SANITY_APPROVED` is now open. It has not started because
-the latest preflight found no GPU. Wait for the human to boot the 4090 and
-report the live price, then run only the fixed CDEV1/CDEV2 scope. Do not access
-official CLUENER dev/test or `domain_test`, enter F5/F6, or edit the paper.
+D is slower and below C. F4b then shows D strongest on the 50-record CLUENER
+tune subset, but its E-prime row is negative and E's small positive F1 delta
+does not pass the deletion-audit gate. F4b is tune-only, not public benchmark
+generalization. AutoDL is no-card and its gate is consumed. Stop until the
+human separately authorizes F5; do not access official CLUENER dev/test or
+`domain_test`, enter F5/F6, or edit the paper.
 
 ### Later sequence: planned, not authorized
 
 1. F3: complete; domain-dev and CLUENER-tune resources/configs are prepared.
 2. F4a: complete; bounded domain-dev IE sanity consumed its one allowed
    protocol revision and closed with limitations.
-3. F4b: authorized under `FULL_IE_CLUENER_TUNE_SANITY_APPROVED`; waiting for the
-   human to boot the 4090, then run the fixed CLUENER tune sanity and stop.
+3. F4b: complete under the consumed `FULL_IE_CLUENER_TUNE_SANITY_APPROVED`
+   gate; fixed CLUENER tune sanity is audited, backed up, and stopped.
 4. F5/F6: freeze hashes and prepare leakage-safe replay artifacts in no-card
    mode under separate gates.
 5. F7: run the 30 domain final cells in bounded paid batches, reusing the 12
@@ -1482,13 +1498,16 @@ authoritative.
 - existing: 12 domain A/B/C/D K=5 cells with NER Stage N only;
 - absent: 48 reported cells;
 - required RE work: all 30 domain cells need Stage R;
-- after adding only K=5 E/E-prime NER rows: 18/60 reported cells, 42 still
-  absent, and the domain relation table still incomplete;
+- F4b adds six tune-sanity rows only, not reported cells; final accounting is
+  still `0/60`, with 12 reusable domain Stage N outputs and 48 report cells
+  wholly absent;
 - CLUENER official unlabeled test is never offline gold; use the locked labeled
   dev protocol only after its own tune/resource freeze;
 - E v1/v2 remain preserved negative/mixed historical NER dev evidence. F4a now
   adds relation-aware dev runs: E-prime is locally positive and E is negative.
-  Neither is a final matrix cell.
+  F4b CLUENER tune reverses that pattern: E-prime lowers F1, while E is only
+  slightly positive and misses the deletion-audit threshold. None is a final
+  matrix cell.
 
 The JISE author/JCR/fee/AI-policy/template blockers remain valid but are not the
 immediate machine step while the full-IE extension is being pursued. Actual
@@ -1496,9 +1515,9 @@ journal submission remains unauthorized.
 
 ## 8. Lessons Worth Remembering
 
-- A human gate and a running resource are separate facts. F4b is authorized,
-  but `No devices found` means no experiment has started; never launch or claim
-  progress until the human boots the 4090 and GPU preflight passes.
+- A human gate and a running resource are separate facts. F4b started only
+  after both its bounded approval and a clean RTX 4090 preflight existed; its
+  later no-card state means the run is stopped, not still authorized.
 - Prepared F3 configs are hash-locked provenance. For an approved run, create a
   dated execution copy with the gate record and output paths; do not overwrite
   the prepared originals merely to flip `authorized/model_calls_allowed`.

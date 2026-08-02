@@ -30,10 +30,12 @@ agreement. F2 is disclosed and complete under its pre-specified structural
 criterion. F3 configuration/resource preparation is complete and hash-audited.
 F4a DDEV1/DDEV2 are also complete with limitations: exact RE remains very weak,
 D has a `6%` relation parse-failure rate, E-prime is locally positive, and E is
-negative. The human explicitly granted `FULL_IE_CLUENER_TUNE_SANITY_APPROVED`
-on 2026-08-01. F4b is authorized but not started because AutoDL remains no-card.
-No official CLUENER dev/test, final-evaluation, F5/F6, paper, or GitHub gate is
-open.
+negative. F4b CDEV1/CDEV2 is now complete under the consumed
+`FULL_IE_CLUENER_TUNE_SANITY_APPROVED` gate. A-D tune NER F1 is
+`0.524444/0.563107/0.571429/0.638889`; all parse/type checks pass. E-prime is
+negative and E is only slightly positive on F1, while both deletion audits miss
+the `70%` positive-claim threshold. No official CLUENER dev/test,
+final-evaluation, F5/F6, paper, or GitHub gate is open.
 
 ## Protocol and Implementation
 
@@ -81,8 +83,8 @@ open.
 | --- | --- | --- | --- | ---: | --- | --- | --- |
 | DDEV1 | F4 | Relation-enabled A-D sanity | domain_dev50, K=5, seed42 | 4 | MUST | DONE | A-D exact RE F1 `0.056680/0.040404/0.039024/0.010989`; D parse failure `6%` |
 | DDEV2 | F4 | Entity+relation verification sanity | domain_dev50 E/E-prime, K=5, seed42 | 2 | MUST | DONE | E-prime NER/RE F1 positive; E NER/RE F1 negative; full deletion audit retained |
-| CDEV1 | F4 | Public NER A-D sanity | fixed CLUENER tune subset, K=5, seed42 | 4 | MUST | AUTHORIZED | `FULL_IE_CLUENER_TUNE_SANITY_APPROVED`; waiting for human 4090 boot/live price |
-| CDEV2 | F4 | Public verifier E/E-prime sanity | fixed CLUENER tune subset, K=5, seed42 | 2 | MUST | AUTHORIZED | Same gate; entity atoms only; not started |
+| CDEV1 | F4 | Public NER A-D sanity | fixed CLUENER tune subset, K=5, seed42 | 4 | MUST | DONE | A-D F1 `0.524444/0.563107/0.571429/0.638889`; zero parse failures/unsupported types |
+| CDEV2 | F4 | Public verifier E/E-prime sanity | fixed CLUENER tune subset, K=5, seed42 | 2 | MUST | DONE | E-prime F1 `0.571429 -> 0.546512`; E `0.638889 -> 0.644444`; both drop-audit gates fail |
 | FREEZE | F5 | Lock final protocol | Prompts/configs/resources/metrics/seeds | 0 | MUST | PLANNED | Required before any final evaluation access |
 
 ### F4a Closeout (2026-08-01)
@@ -117,21 +119,23 @@ open.
 - These six dev sanity rows are not final reported cells. Matrix accounting
   remains `0/60`. Full report:
   `docs/FULL_IE_DOMAIN_DEV_SANITY_20260801.md`.
-- Next approved action: F4b CDEV1/CDEV2 under
-  `FULL_IE_CLUENER_TUNE_SANITY_APPROVED`; waiting for human GPU startup.
+- F4b CDEV1/CDEV2 subsequently completed under its separate bounded gate. No
+  later phase is currently authorized.
 
-### F4b Authorization Checkpoint (2026-08-01)
+### Historical F4b Authorization Checkpoint (2026-08-01)
 
 - Human gate: `FULL_IE_CLUENER_TUNE_SANITY_APPROVED` was explicitly granted for
   CDEV1/CDEV2 only. It is not authority for any final-evaluation cell.
-- Current machine state after approval: `nvidia-smi -L` returned
+- Machine state at that checkpoint: `nvidia-smi -L` returned
   `No devices found`, `/dev/nvidia0` was absent, and no vLLM/Qwen/extraction/
   verifier process or screen session existed. No F4b model call or prompt was
   generated and new cost is `0 CNY`.
-- Human-only next action: boot the AutoDL RTX 4090 24 GB and report the live
-  hourly price. The agent must not rent, switch, stop, or release hardware.
-- Agent action after GPU preflight: copy, never overwrite, the hash-locked F3
-  CLUENER configs into a versioned F4b execution directory; change only bounded
+- Human-only prerequisite recorded at that checkpoint: boot the AutoDL RTX 4090
+  24 GB and report the live hourly price. The agent must not rent, switch, stop,
+  or release hardware.
+- Planned agent action after GPU preflight: copy, never overwrite, the
+  hash-locked F3 CLUENER configs into a versioned F4b execution directory;
+  change only bounded
   execution authorization/output paths needed for this gate; run A/B/C/D then
   E/E-prime on the deterministic 50-record tune subset at K=5 seed42.
 - Frozen resources:
@@ -141,12 +145,61 @@ open.
 - Success checks: 50/50 rows reload, zero unsupported entity types, parse
   failure below `5%`, hashes/configs recorded, and E/E-prime deletion audit
   retained. Preserve negative results and do not tune from final data.
-- Mandatory closeout: stop vLLM, verify no model process, back up and hash-check
-  outputs/cache/logs, mirror lightweight artifacts to `D:\yinsir`, report
+- Required closeout recorded at that checkpoint: stop vLLM, verify no model
+  process, back up and hash-check outputs/cache/logs, mirror lightweight
+  artifacts to `D:\yinsir`, report
   observed GPU time and platform-bill uncertainty, then ask the human to return
   to no-card mode.
 - Forbidden: official CLUENER dev/test, `domain_test`, K=1/K=10, extra seeds,
   F5/F6, final matrix work, manuscript edits, and GitHub sync.
+
+### F4b Closeout (2026-08-02)
+
+- Gate: `FULL_IE_CLUENER_TUNE_SANITY_APPROVED`; bounded to CDEV1/CDEV2 on the
+  deterministic 50-record `cluener_tune` subset at K=5 seed42, now consumed.
+- Preflight: RTX 4090 with `24,564 MiB`, `0 MiB` initially used, and no
+  conflicting vLLM/Qwen/runner/screen process. Human-reported price was
+  `2.8 CNY/hour`.
+- Versioning: copied the six hash-locked F3 CLUENER configs into
+  `configs/full_ie_f4b_cluener_tune_20260802/`; F3 files remain unchanged.
+  Query/support/glossary/RAG hashes are `7264b03d...d8ade5`,
+  `abd6a338...9a5219`, `0ac4dc41...3ba3a9b`, and
+  `f0b0cef6...ac2eb7ee`.
+- CDEV1 exact entity P/R/F1 and FP: A
+  `0.495798/0.556604/0.524444`, FP `60`; B
+  `0.580000/0.547170/0.563107`, FP `42`; C
+  `0.576923/0.566038/0.571429`, FP `44`; D
+  `0.627273/0.650943/0.638889`, FP `41`. All four have zero parse failures and
+  zero unsupported entity types.
+- Clean comparisons: C/D replay B's exact per-query demonstrations; D has
+  top-3 RAG evidence on all 50 rows and zero query self-hits. D is strongest on
+  this tune subset but averages `7.609 s/query`, including `6.669 s/query` for
+  CPU RAG selection.
+- CDEV2: E-prime over C changes F1 `0.571429 -> 0.546512`, deleting 38 entities
+  with `25/38 = 65.79%` correct drops. E over D changes F1
+  `0.638889 -> 0.644444`, deleting 36 with `25/36 = 69.44%` correct drops.
+  Both miss the `70%` positive-claim threshold; neither supports a positive
+  verification/CoVe claim. All 74 deletion rows are retained.
+- Provenance audit: 219 extraction requests and 214 verifier requests map
+  exactly to 433 cache files with complete prompt, content, raw response, and
+  hashes; no cache file is missing or orphaned. Focused tests passed `5/5`; the
+  Git-tracked regression suite plus F4b tests passed `177/177` on AutoDL.
+- Backup: remote/local `489/489` manifest entries pass. Summary SHA256 is
+  `80997aef4e53d5494f5902932ef477d7cbdfb36b59ba13d7959568074bd5c8f1`;
+  manifest SHA256 is
+  `6d9f03466a7a46b41d2925e834d627d52481690ddf06548ddc129a659849f7de`;
+  archive SHA256 is
+  `75622decfd91bd460e782da4d4694fa6bcba8187e22ec7e0a16cf62cf4d5dd4a`.
+- Cost/machine: vLLM ran `10:14:16-11:13:03 CST`, `3,527 s`, approximately
+  `2.74 CNY` at `2.8 CNY/hour`; platform billing is authoritative. vLLM was
+  stopped, GPU memory released, and final closeout found no-card mode with no
+  model/runner/screen process.
+- Safety: official CLUENER dev/test, `domain_test`, K=1/K=10, seeds 43/44,
+  F5/F6, final matrix, manuscript, and GitHub operations did not occur.
+- Evidence: F4b is tune-only and creates no final cell. Matrix accounting stays
+  `0/60`. No next gate is open; F5 protocol freeze remains planned and requires
+  separate bounded human approval. Full report:
+  `docs/FULL_IE_CLUENER_TUNE_SANITY_20260802.md`.
 
 ## Domain Final Matrix: 30 Reported Cells
 
@@ -297,7 +350,6 @@ Missing report cells = 48
   see `docs/FULL_IE_RELATION_CALIBRATION_REVALIDATION_20260731.md`.
 - Safety/cost: no prompt, model/API, vLLM, GPU, paper, P6 user-script, or
   GitHub action occurred; paid GPU cost was `0 CNY`.
-- Evidence accounting remained `0/60` at IE022 closeout. F3 and F4a later
-  received their own bounded approvals and are recorded as complete above.
-  F4b is now authorized but not started; all final-evaluation gates remain
-  closed.
+- Evidence accounting remained `0/60` at IE022 closeout. F3, F4a, and F4b
+  later received their own bounded approvals and are recorded as complete
+  above. All final-evaluation and later-phase gates remain closed.
