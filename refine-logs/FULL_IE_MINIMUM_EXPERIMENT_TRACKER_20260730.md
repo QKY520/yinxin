@@ -49,17 +49,19 @@ blocked attempt remains preserved. The human subsequently granted
 `2.8 CNY/hour` solely to unlock 120 GiB container memory. The recovery retained
 CPU FP32 retrieval with CUDA masked, resumed from a verified `479/1343`
 checkpoint, and completed/validated all `1343` CLUENER rows. F6 replay
-preparation is now `DONE`; it completes no final model cell. No final-
-evaluation, F7-F9, paper, or GitHub gate is open.
+preparation is now `DONE`; it completes no final model cell.
 
-The next bounded proposal, F7 Domain Batch 1, is now
-`PREPARED_AWAITING_GATE`. It contains only `domain:A/B/C/D:k5:s42`, reuses
-four locked 170-row P5 Stage N files, and would add Stage R only. Its contract
-SHA256 is
-`0369400022ba15319b54f72def1ad0feb65ec63d0a297eacc6f28f04d2cb9973`.
-The proposal does not open its required
-`FULL_IE_DOMAIN_FINAL_BATCH_APPROVED` gate, does not authorize `domain_test`
-prompt generation or model calls, and leaves matrix accounting at `0/60`.
+The human subsequently granted the exact
+`FULL_IE_DOMAIN_FINAL_BATCH_APPROVED` gate for F7 Domain Batch 1. Its scope is
+only `domain:A/B/C/D:k5:s42`, reusing four locked 170-row P5 Stage N files and
+adding Stage R only. AutoDL no-card preparation generated deterministic
+compatibility views that change only the historical `dataset` and `config`
+metadata fields, then passed real-input batch preflight. The locked execution
+manifest SHA256 is
+`893d79bcba8e5394208de28a0770cd2b9909c4d0361b0dc9015c726355e611b1`.
+F7 is `AUTHORIZED_PREINFERENCE_PREPARED`: no model call or paid GPU use has
+occurred, and matrix accounting remains `0/60`. F8-F9, paper, and GitHub gates
+remain closed.
 
 ## Protocol and Implementation
 
@@ -79,7 +81,7 @@ prompt generation or model calls, and leaves matrix accounting at `0/60`.
 | IE033 | F3 | Freeze CLUENER tune configs | A-E-prime, K=5, seed42 | 6 | DONE | 50-record all-type tune subset; no prompt artifacts |
 | IE040 | F6 | Initial leakage-safe RAG replay preparation | Domain three-seed consensus plus no-card CLUENER dev text retrieval | 0 | MUST | BLOCKED | Preserved resource stop: domain 170/170 passes; CLUENER 0/1343 because 2 GiB was below the 4.54 GB weight lower bound |
 | IE041 | F6 | Recover frozen CLUENER RAG replay | CPU FP32 retrieval on the 1,343-row labeled official dev split; paid card for memory only | 0 | MUST | DONE | Resumed from verified 479-row checkpoint; final 1343 rows/4029 passages; zero self-hit, prohibited fields, or >=0.80 containment hits |
-| IE050 | F7 | Prepare Domain Final Batch 1 contract | A/B/C/D, K=5, seed42; Stage R only over four locked P5 Stage N files | 4 | MUST | PREPARED_AWAITING_GATE | Contract hash locked; execution/model/GPU flags false; requires `FULL_IE_DOMAIN_FINAL_BATCH_APPROVED` |
+| IE050 | F7 | Prepare and execute Domain Final Batch 1 | A/B/C/D, K=5, seed42; Stage R only over four locked P5 Stage N files | 4 | MUST | AUTHORIZED | Gate granted; versioned execution package and 680-row compatibility views preflighted; waiting for RTX 4090 and live price; 0/60 until outputs validate |
 
 ### F3 Closeout (2026-07-31)
 
@@ -309,12 +311,13 @@ prompt generation or model calls, and leaves matrix accounting at `0/60`.
   authoritative. Final inspection found `0 MiB` GPU memory, no compute app,
   Qwen/vLLM/recovery runner, or active screen.
 - Overall F6 status is now `DONE` for replay preparation. No final cell is
-  complete and matrix accounting remains `0/60`. F7-F9 and paper work remain
-  unauthorized. Full initial and recovery reports:
+  complete and matrix accounting remained `0/60`. F7 later received its own
+  bounded gate; F8-F9 and paper work remain unauthorized. Full initial and
+  recovery reports:
   `docs/FULL_IE_F6_REPLAY_PREP_20260802.md` and
   `docs/FULL_IE_F6_CLUENER_REPLAY_RECOVERY_20260803.md`.
 
-### F7 Domain Final Batch 1 Preparation (2026-08-03)
+### F7 Domain Final Batch 1 Authorized Pre-Inference Checkpoint (2026-08-03)
 
 - Proposed cells: `domain:A:k5:s42`, `domain:B:k5:s42`,
   `domain:C:k5:s42`, and `domain:D:k5:s42`.
@@ -323,10 +326,18 @@ prompt generation or model calls, and leaves matrix accounting at `0/60`.
 - Batch contract:
   `configs/full_ie_f7_domain_batch1_20260803/batch_contract.json`; SHA256
   `0369400022ba15319b54f72def1ad0feb65ec63d0a297eacc6f28f04d2cb9973`.
-- The proposal retains the F5 manifest/canonical/inventory hashes and the four
-  frozen cell-contract hashes. It keeps `authorized=false`,
-  `model_calls_allowed=false`, `gpu_allowed=false`, and
-  `final_evaluation_allowed=false`.
+- Human gate: `FULL_IE_DOMAIN_FINAL_BATCH_APPROVED` was explicitly granted for
+  this exact four-cell Stage R-only scope.
+- Historical Stage N metadata is adapted through deterministic compatibility
+  views: only `dataset=domain_test -> domain` and each long-form P5 config name
+  to A/B/C/D change. Original gold, Stage N predictions, examples, glossary,
+  RAG, prompt/raw hashes, and parse metadata are unchanged across all 680 rows.
+- Authorized execution manifest:
+  `configs/full_ie_f7_domain_batch1_exec_20260803/execution_manifest.json`;
+  SHA256
+  `893d79bcba8e5394208de28a0770cd2b9909c4d0361b0dc9015c726355e611b1`.
+  It retains the F5 manifest/canonical/inventory and four frozen cell-contract
+  hashes. Locked source/config files must not be modified in place.
 - F4a Stage R timing was `485.761 s` for 200 A-D rows. Linear scaling estimates
   about `1651.5874 s` (`27.5 min`) for 680 rows, excluding startup, audit,
   backup, and idle time. Proposed hard stop: `2.0` paid hours or `5.6 CNY` at
@@ -335,14 +346,18 @@ prompt generation or model calls, and leaves matrix accounting at `0/60`.
 - Conditional completion is `4/60` only if all four 170-row outputs independently
   reload, recompute, and pass hash validation. Until then accounting is
   `0/60`.
-- SSH returned `Connection refused` during preparation, so the instance was
-  unreachable. No local or remote Python, `domain_test` prompt, vLLM, model,
-  GPU, paper, or GitHub action occurred. Cost impact is `0 CNY`.
-- Full preparation report:
-  `docs/FULL_IE_F7_DOMAIN_BATCH1_PREPARATION_20260803.md`.
-- Next authority remains closed. The human must explicitly grant
-  `FULL_IE_DOMAIN_FINAL_BATCH_APPROVED`, then boot the RTX 4090 and report its
-  live price before the execution preflight can begin.
+- Remote tests passed `4/4` new, `21/21` affected, and `199/199` complete
+  regression cases. Real no-card preparation and batch preflight passed; every
+  result/cache target is absent and model calls remain zero.
+- Current AutoDL state is no-card (`No devices found`) with a 2 GiB cgroup,
+  about 59 GB data-disk free, no active vLLM/Qwen/F7 runner, and only the
+  preserved dead F6 screen. Cost impact is `0 CNY`.
+- Full preparation and authorized checkpoint reports:
+  `docs/FULL_IE_F7_DOMAIN_BATCH1_PREPARATION_20260803.md` and
+  `docs/FULL_IE_F7_DOMAIN_BATCH1_EXECUTION_CHECKPOINT_20260803.md`.
+- Human prerequisite: switch to RTX 4090 24 GB and report the live hourly
+  price. Before a model call, repeat the GPU `<500 MiB`, conflict-process,
+  hash, and output-collision preflight.
 
 ## Domain Final Matrix: 30 Reported Cells
 
@@ -399,7 +414,7 @@ Complete matrix      = 30 + 30 = 60
 Existing full cells  = 0
 Existing NER stages  = 12 (reusable only after adding Stage R)
 Missing report cells = 48
-Prepared F7 Batch 1  = 4 Stage R-only cells, unauthorized and not counted
+Authorized F7 B1     = 4 Stage R-only cells, not run and not counted
 ```
 
 ## F1 Closeout

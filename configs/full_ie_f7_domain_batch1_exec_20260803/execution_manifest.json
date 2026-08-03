@@ -1,0 +1,161 @@
+{
+  "approved_gate": "FULL_IE_DOMAIN_FINAL_BATCH_APPROVED",
+  "authorization": {
+    "authorized": true,
+    "final_evaluation_allowed": true,
+    "gpu_required_for_model_calls": true,
+    "model_calls_allowed": true,
+    "stage_n_rerun_allowed": false,
+    "verification_allowed": false
+  },
+  "base_commit": "f156eea1943936f214a333cb3d1d1bc8959719ae",
+  "batch_contract": {
+    "path": "configs/full_ie_f7_domain_batch1_20260803/batch_contract.json",
+    "sha256": "0369400022ba15319b54f72def1ad0feb65ec63d0a297eacc6f28f04d2cb9973"
+  },
+  "batch_id": "full-ie-f7-domain-final-b01-k5-seed42-abcd",
+  "batch_report_path": "/root/project/results/full_ie/final_v1/batches/f7_domain_batch1_seed42_abcd.json",
+  "cells": [
+    {
+      "cache_dir": "/root/project/cache/full_ie/final_v1/stage_r/domain_a_k5_seed42",
+      "cell_id": "domain:A:k5:s42",
+      "compatibility_view_path": "/root/autodl-tmp/full_ie/f7_domain_batch1_20260803/inputs_v1/domain_a_k5_seed42_stage_n_view.jsonl",
+      "compatibility_view_sha256": "31a09a8e3d48258c335dd4f2bc1b546bf500a61354054d42934a76c7d05cca14",
+      "config": "A",
+      "config_contract_sha256": "bb92697b25db66af334716cc62f8062af3a9a9a1e3228185378f0ba13ee66498",
+      "config_id": "full-ie-final-v1-domain-a-k5-seed42",
+      "execution_config_path": "configs/full_ie_f7_domain_batch1_exec_20260803/domain_a_stage_r.yaml",
+      "execution_config_sha256": "233ec98c3a0f1773c0ba4eaed2eb37bb5176aac987b5449f9df97adf0d51a402",
+      "final_per_query_path": "/root/project/results/full_ie/final_v1/cells/domain_a_k5_seed42_per_query.jsonl",
+      "final_summary_path": "/root/project/results/full_ie/final_v1/cells/domain_a_k5_seed42_summary.json",
+      "original_stage_n_path": "/root/project/results/p5/p5_domain_test_a_k5_seed42_per_query.jsonl",
+      "original_stage_n_sha256": "343f192e6c5bc2a3bd0c720af1d9241836c01dd53584a454c787a5ccfb99e8ab",
+      "rows": 170,
+      "stage_r_per_query_path": "/root/project/results/full_ie/final_v1/stages/stage_r/domain_a_k5_seed42_per_query.jsonl",
+      "stage_r_summary_path": "/root/project/results/full_ie/final_v1/stages/stage_r/domain_a_k5_seed42_summary.json",
+      "template_path": "configs/full_ie_f4a_domain_dev_r1_20260731/domain_a_stage_r.yaml",
+      "template_sha256": "0823a5625a8bf0ee1e563503392ada031a2d1533c48653a0ea8cfaa032eefcfb"
+    },
+    {
+      "cache_dir": "/root/project/cache/full_ie/final_v1/stage_r/domain_b_k5_seed42",
+      "cell_id": "domain:B:k5:s42",
+      "compatibility_view_path": "/root/autodl-tmp/full_ie/f7_domain_batch1_20260803/inputs_v1/domain_b_k5_seed42_stage_n_view.jsonl",
+      "compatibility_view_sha256": "eed657044481a6f10874beedf7249d1a3187916444d9a4344b654b132b914703",
+      "config": "B",
+      "config_contract_sha256": "77364a57808c3cc3e53c36b7198cdcc8da00a81ea5775908b2fb106a7b202649",
+      "config_id": "full-ie-final-v1-domain-b-k5-seed42",
+      "execution_config_path": "configs/full_ie_f7_domain_batch1_exec_20260803/domain_b_stage_r.yaml",
+      "execution_config_sha256": "ea77055d9224ad92cd6a1b94fde9014bdf6c9ea9425406497c9f6341828b833e",
+      "final_per_query_path": "/root/project/results/full_ie/final_v1/cells/domain_b_k5_seed42_per_query.jsonl",
+      "final_summary_path": "/root/project/results/full_ie/final_v1/cells/domain_b_k5_seed42_summary.json",
+      "original_stage_n_path": "/root/project/results/p5/p5_domain_test_b_knn_k5_seed42_per_query.jsonl",
+      "original_stage_n_sha256": "cbf5b907a421c904e4c121e4e4203dd1451c6fb698032809805de4928ee9f75e",
+      "rows": 170,
+      "stage_r_per_query_path": "/root/project/results/full_ie/final_v1/stages/stage_r/domain_b_k5_seed42_per_query.jsonl",
+      "stage_r_summary_path": "/root/project/results/full_ie/final_v1/stages/stage_r/domain_b_k5_seed42_summary.json",
+      "template_path": "configs/full_ie_f4a_domain_dev_r1_20260731/domain_b_stage_r.yaml",
+      "template_sha256": "2b2c81b6aecd5365166656f1604b81b4bf450669b3733d37b5e96ba15d460685"
+    },
+    {
+      "cache_dir": "/root/project/cache/full_ie/final_v1/stage_r/domain_c_k5_seed42",
+      "cell_id": "domain:C:k5:s42",
+      "compatibility_view_path": "/root/autodl-tmp/full_ie/f7_domain_batch1_20260803/inputs_v1/domain_c_k5_seed42_stage_n_view.jsonl",
+      "compatibility_view_sha256": "e1b59f6cc395b7f3c43fb6ccf5a14e794abb48f289c87770c9a47dcdb33b1f94",
+      "config": "C",
+      "config_contract_sha256": "1d686305e19dca206783dea835a1b008d178ce14b4038e04a0622c00e252a3c4",
+      "config_id": "full-ie-final-v1-domain-c-k5-seed42",
+      "execution_config_path": "configs/full_ie_f7_domain_batch1_exec_20260803/domain_c_stage_r.yaml",
+      "execution_config_sha256": "c82683803d5217f519dafc72866c862044d515ce00321ca478be2cd643aff335",
+      "final_per_query_path": "/root/project/results/full_ie/final_v1/cells/domain_c_k5_seed42_per_query.jsonl",
+      "final_summary_path": "/root/project/results/full_ie/final_v1/cells/domain_c_k5_seed42_summary.json",
+      "original_stage_n_path": "/root/project/results/p5/p5_domain_test_c_glossary_k5_seed42_per_query.jsonl",
+      "original_stage_n_sha256": "a0c1dd65193b4e6259af0aa542763e3c9940fa26949df8dc29fa7252afac17a4",
+      "rows": 170,
+      "stage_r_per_query_path": "/root/project/results/full_ie/final_v1/stages/stage_r/domain_c_k5_seed42_per_query.jsonl",
+      "stage_r_summary_path": "/root/project/results/full_ie/final_v1/stages/stage_r/domain_c_k5_seed42_summary.json",
+      "template_path": "configs/full_ie_f4a_domain_dev_r1_20260731/domain_c_stage_r.yaml",
+      "template_sha256": "d444b84016859798cbd18ff6f2f65aac5d108ec11258f44619c367db36869a86"
+    },
+    {
+      "cache_dir": "/root/project/cache/full_ie/final_v1/stage_r/domain_d_k5_seed42",
+      "cell_id": "domain:D:k5:s42",
+      "compatibility_view_path": "/root/autodl-tmp/full_ie/f7_domain_batch1_20260803/inputs_v1/domain_d_k5_seed42_stage_n_view.jsonl",
+      "compatibility_view_sha256": "5d3219e36f7bb7e729a07b9c6e40f3ce48198563b9fe68e5ffb4b965f3c4d62b",
+      "config": "D",
+      "config_contract_sha256": "248e598136bb210596ca5fa29b2ebba2a73e0f50865305fe5c9f3f79e080f0e2",
+      "config_id": "full-ie-final-v1-domain-d-k5-seed42",
+      "execution_config_path": "configs/full_ie_f7_domain_batch1_exec_20260803/domain_d_stage_r.yaml",
+      "execution_config_sha256": "dbe87c85f8f30e2941e1794e34bf1f176f7c10c47735ca34387b10d3c11e172c",
+      "final_per_query_path": "/root/project/results/full_ie/final_v1/cells/domain_d_k5_seed42_per_query.jsonl",
+      "final_summary_path": "/root/project/results/full_ie/final_v1/cells/domain_d_k5_seed42_summary.json",
+      "original_stage_n_path": "/root/project/results/p5/p5_domain_test_d_rag_k5_seed42_per_query.jsonl",
+      "original_stage_n_sha256": "ebaa68c940223ff8688377f63a3f9dbafefaf561382b6a3445c5cdda354a1ed0",
+      "rows": 170,
+      "stage_r_per_query_path": "/root/project/results/full_ie/final_v1/stages/stage_r/domain_d_k5_seed42_per_query.jsonl",
+      "stage_r_summary_path": "/root/project/results/full_ie/final_v1/stages/stage_r/domain_d_k5_seed42_summary.json",
+      "template_path": "configs/full_ie_f4a_domain_dev_r1_20260731/domain_d_stage_r.yaml",
+      "template_sha256": "16f1db3c7f2acb4747542873f64a6816c818a9ec5838e2286451edf1094c15fb"
+    }
+  ],
+  "forbidden": [
+    "rerun Stage N",
+    "E or E-prime verification",
+    "K=1 or K=10",
+    "seeds 43 or 44",
+    "CLUENER final evaluation",
+    "F8 or F9",
+    "aggregation or paper edits",
+    "GitHub synchronization"
+  ],
+  "freeze": {
+    "canonical_sha256": "e7187f5607b2b9f4e351ea45bb41902304e7049b99d80fc6bcd5fa4ef50258ae",
+    "cell_inventory_path": "configs/full_ie_f5_freeze_20260802/cell_inventory.csv",
+    "cell_inventory_sha256": "dec872aa139289e3cc0bcfe32d75f93dfb45e1f7431af8bda6f791e52aa5cc09",
+    "manifest_path": "configs/full_ie_f5_freeze_20260802/freeze_manifest.json",
+    "manifest_sha256": "592949022da8fa0743ce821efc8dae9deac22825eeb2b9b2c230f9390422237e",
+    "support_path": "/root/autodl-tmp/data/domain_support.jsonl",
+    "support_sha256": "9633c7f6ceee8592408034e26834233e3f03b2f58a104783757ae664a4bab22a"
+  },
+  "matrix_after_if_all_cells_validate": "4/60",
+  "matrix_before": "0/60",
+  "prepared_at": "2026-08-03T11:52:33.665152+00:00",
+  "schema_version": "full-ie-f7-domain-batch1-execution-v1",
+  "scope": {
+    "cell_order": [
+      "domain:A:k5:s42",
+      "domain:B:k5:s42",
+      "domain:C:k5:s42",
+      "domain:D:k5:s42"
+    ],
+    "dataset": "domain",
+    "k": 5,
+    "rows_per_cell": 170,
+    "seed": 42,
+    "split": "domain_test",
+    "stage_work": "stage_r_only"
+  },
+  "source_locks": [
+    {
+      "path": "scripts/prepare_full_ie_f7.py",
+      "sha256": "d6a64d740ceea6b5ef931da7b50aee9026318608a287e79474a4fd6a8ae70f88"
+    },
+    {
+      "path": "scripts/finalize_full_ie_f7.py",
+      "sha256": "99353daf482346acc7cd3a8a06de6604ed706bec2d5162bec09d1861c8f6c566"
+    },
+    {
+      "path": "tests/test_full_ie_f7.py",
+      "sha256": "8bbfab02853a6775713e8666498935acd78aaf19006a19b4b838a4f3b2e38f97"
+    }
+  ],
+  "status": "AUTHORIZED_PREINFERENCE",
+  "stop_conditions": [
+    "any frozen hash or row-count mismatch",
+    "any output collision or overwrite risk",
+    "unexpected Stage N, verifier, retrieval, CLUENER, or other out-of-scope call",
+    "runner crash, incomplete row set, duplicate ID, or corrupt per-query output",
+    "relation parse-failure rate reaches 10 percent in a completed cell",
+    "GPU or process conflict appears",
+    "paid-hour or approved CNY cap is reached"
+  ]
+}

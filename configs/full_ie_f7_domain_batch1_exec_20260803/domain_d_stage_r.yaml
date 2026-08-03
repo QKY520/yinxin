@@ -1,0 +1,129 @@
+run_id: full-ie-f7-domain-d-k5-seed42
+config_name: D
+prepared_under_gate: FULL_IE_DOMAIN_FINAL_BATCH_APPROVED
+protocol_revision: r1_drop_invalid_relation_units
+execution:
+  phase: FULL_IE_DOMAIN_FINAL_BATCH
+  authorized: true
+  human_gate: FULL_IE_DOMAIN_FINAL_BATCH_APPROVED
+  approval_record: Human-approved in conversation on 2026-08-03 under the exact F7
+    batch gate.
+  model_calls_allowed: true
+  gpu_required: true
+  explicit_exclusions:
+  - stage_n_rerun
+  - E_or_E-prime
+  - K1_or_K10
+  - seed43_or_seed44
+  - cluener
+  - F8_or_F9
+  - aggregation
+  - paper_edits
+  - github_sync
+data:
+  dataset: domain
+replay:
+  reuse_stage_n_metadata: true
+input:
+  stage_n_per_query_path: /root/autodl-tmp/full_ie/f7_domain_batch1_20260803/inputs_v1/domain_d_k5_seed42_stage_n_view.jsonl
+  support_path: /root/autodl-tmp/data/domain_support.jsonl
+  expected_rows: 170
+schema:
+  entity_types:
+    EQUIPMENT: A complete or independently functional equipment item, platform, system,
+      device, weapon, or identified model. Organization, location, deployment mode,
+      and country or force names are not equipment.
+    MODULE: A physical or functional subsystem, component, unit, payload, munition,
+      warhead, launcher, or part explicitly playing a constituent role in context.
+      A term that can be independent equipment may be MODULE when the current sentence
+      presents it as a component of a larger platform.
+    TECH_SCHEME: A non-physical technical method, architecture, operating regime,
+      algorithm, process, information state, parameter concept, capability concept,
+      or named engineering approach.
+    METRIC: A self-contained technical specification containing an attribute and its
+      value, range, threshold, grade, or necessary local condition. Numeric weapon
+      components such as warheads or charges are MODULE, not METRIC.
+  relation_types:
+    USES:
+      definition: The head explicitly uses, adopts, carries, mounts, deploys, equips,
+        installs, or configures the tail for a function. For EQUIPMENT-to-EQUIPMENT
+        relations, carrying/mounting/deployment wording such as 搭载/部署/挂载/装备/配装 is
+        USES, not PART_OF. Do not reverse control or scheduling semantics to force
+        a USES relation.
+      head_types:
+      - EQUIPMENT
+      - MODULE
+      tail_types:
+      - EQUIPMENT
+      - MODULE
+      - TECH_SCHEME
+    HAS_METRIC:
+      definition: The tail explicitly describes a specification, capability, parameter
+        concept, or measurable technical attribute of the head.
+      head_types:
+      - EQUIPMENT
+      - MODULE
+      tail_types:
+      - METRIC
+      - TECH_SCHEME
+    PART_OF:
+      definition: The head is explicitly a constituent of the tail; direction is part
+        to whole. For EQUIPMENT-to-EQUIPMENT relations, PART_OF requires explicit
+        composition wording such as 组成/包括/是...的一部分/归属. The head must be the smaller
+        component or member and the tail must be the larger whole, system, platform,
+        or assembly.
+      head_types:
+      - EQUIPMENT
+      - MODULE
+      tail_types:
+      - EQUIPMENT
+      - MODULE
+prompt:
+  output_instruction: 只返回JSON,不要任何解释,不要markdown代码块
+  retry_suffix: 只返回合法JSON
+  version: stage_r_same_sentence_v1
+parsing:
+  drop_invalid_relations: true
+  direction_is_exact: true
+  duplicate_policy: deduplicate_exact
+model:
+  name: /root/autodl-tmp/models/qwen2.5-7b
+  base_url: http://127.0.0.1:8000
+  timeout_seconds: 300
+  api_key: EMPTY
+generation:
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 768
+  seed: 42
+cache:
+  dir: /root/project/cache/full_ie/final_v1/stage_r/domain_d_k5_seed42
+outputs:
+  per_query: /root/project/results/full_ie/final_v1/stages/stage_r/domain_d_k5_seed42_per_query.jsonl
+  summary: /root/project/results/full_ie/final_v1/stages/stage_r/domain_d_k5_seed42_summary.json
+resource_lock:
+  support:
+    path: /root/autodl-tmp/data/domain_support.jsonl
+    role: frozen_domain_support
+    rows: 30
+    sha256: 9633c7f6ceee8592408034e26834233e3f03b2f58a104783757ae664a4bab22a
+  original_stage_n:
+    path: /root/project/results/p5/p5_domain_test_d_rag_k5_seed42_per_query.jsonl
+    sha256: ebaa68c940223ff8688377f63a3f9dbafefaf561382b6a3445c5cdda354a1ed0
+    rows: 170
+  compatibility_view:
+    path: /root/autodl-tmp/full_ie/f7_domain_batch1_20260803/inputs_v1/domain_d_k5_seed42_stage_n_view.jsonl
+    sha256: 5d3219e36f7bb7e729a07b9c6e40f3ce48198563b9fe68e5ffb4b965f3c4d62b
+    rows: 170
+    transform: dataset_domain_test_to_domain_and_legacy_config_to_canonical_only
+  freeze_manifest:
+    sha256: 592949022da8fa0743ce821efc8dae9deac22825eeb2b9b2c230f9390422237e
+    canonical_sha256: e7187f5607b2b9f4e351ea45bb41902304e7049b99d80fc6bcd5fa4ef50258ae
+f7_contract:
+  batch_id: full-ie-f7-domain-final-b01-k5-seed42-abcd
+  cell_id: domain:D:k5:s42
+  config_id: full-ie-final-v1-domain-d-k5-seed42
+  config_contract_sha256: 248e598136bb210596ca5fa29b2ebba2a73e0f50865305fe5c9f3f79e080f0e2
+  stage_work: stage_r_only
+  rerun_stage_n: false
+  run_verification: false

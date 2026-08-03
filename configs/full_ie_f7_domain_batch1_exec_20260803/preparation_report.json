@@ -1,0 +1,16 @@
+{
+  "approved_gate": "FULL_IE_DOMAIN_FINAL_BATCH_APPROVED",
+  "cells": 4,
+  "compatibility_transform_fields": [
+    "dataset",
+    "config"
+  ],
+  "execution_manifest_path": "configs/full_ie_f7_domain_batch1_exec_20260803/execution_manifest.json",
+  "execution_manifest_sha256": "893d79bcba8e5394208de28a0770cd2b9909c4d0361b0dc9015c726355e611b1",
+  "gpu_used": false,
+  "matrix_complete_cells": 0,
+  "model_calls": 0,
+  "original_stage_n_predictions_changed": false,
+  "rows_per_cell": 170,
+  "status": "AUTHORIZED_PREINFERENCE_PREPARED"
+}
