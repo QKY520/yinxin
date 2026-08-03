@@ -1,0 +1,1 @@
+0369400022ba15319b54f72def1ad0feb65ec63d0a297eacc6f28f04d2cb9973  batch_contract.json

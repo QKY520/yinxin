@@ -6,6 +6,8 @@
 
 - `PLANNED`: no execution authority.
 - `PREPARED`: artifacts exist but the next gate is closed.
+- `PREPARED_AWAITING_GATE`: an exact bounded execution proposal and hash exist,
+  but all authorization/model-call flags remain false.
 - `AUTHORIZED`: the exact human gate is open, but execution has not begun or is
   waiting for a human-only prerequisite.
 - `RUNNING`: allowed only under the exact recorded human gate.
@@ -50,6 +52,15 @@ checkpoint, and completed/validated all `1343` CLUENER rows. F6 replay
 preparation is now `DONE`; it completes no final model cell. No final-
 evaluation, F7-F9, paper, or GitHub gate is open.
 
+The next bounded proposal, F7 Domain Batch 1, is now
+`PREPARED_AWAITING_GATE`. It contains only `domain:A/B/C/D:k5:s42`, reuses
+four locked 170-row P5 Stage N files, and would add Stage R only. Its contract
+SHA256 is
+`0369400022ba15319b54f72def1ad0feb65ec63d0a297eacc6f28f04d2cb9973`.
+The proposal does not open its required
+`FULL_IE_DOMAIN_FINAL_BATCH_APPROVED` gate, does not authorize `domain_test`
+prompt generation or model calls, and leaves matrix accounting at `0/60`.
+
 ## Protocol and Implementation
 
 | Run ID | Milestone | Purpose | Scope | Cells | Priority | Status | Gate / notes |
@@ -68,6 +79,7 @@ evaluation, F7-F9, paper, or GitHub gate is open.
 | IE033 | F3 | Freeze CLUENER tune configs | A-E-prime, K=5, seed42 | 6 | DONE | 50-record all-type tune subset; no prompt artifacts |
 | IE040 | F6 | Initial leakage-safe RAG replay preparation | Domain three-seed consensus plus no-card CLUENER dev text retrieval | 0 | MUST | BLOCKED | Preserved resource stop: domain 170/170 passes; CLUENER 0/1343 because 2 GiB was below the 4.54 GB weight lower bound |
 | IE041 | F6 | Recover frozen CLUENER RAG replay | CPU FP32 retrieval on the 1,343-row labeled official dev split; paid card for memory only | 0 | MUST | DONE | Resumed from verified 479-row checkpoint; final 1343 rows/4029 passages; zero self-hit, prohibited fields, or >=0.80 containment hits |
+| IE050 | F7 | Prepare Domain Final Batch 1 contract | A/B/C/D, K=5, seed42; Stage R only over four locked P5 Stage N files | 4 | MUST | PREPARED_AWAITING_GATE | Contract hash locked; execution/model/GPU flags false; requires `FULL_IE_DOMAIN_FINAL_BATCH_APPROVED` |
 
 ### F3 Closeout (2026-07-31)
 
@@ -302,6 +314,36 @@ evaluation, F7-F9, paper, or GitHub gate is open.
   `docs/FULL_IE_F6_REPLAY_PREP_20260802.md` and
   `docs/FULL_IE_F6_CLUENER_REPLAY_RECOVERY_20260803.md`.
 
+### F7 Domain Final Batch 1 Preparation (2026-08-03)
+
+- Proposed cells: `domain:A:k5:s42`, `domain:B:k5:s42`,
+  `domain:C:k5:s42`, and `domain:D:k5:s42`.
+- Work is Stage R only over four hash-locked P5 Stage N sources: `680` total
+  rows. Stage N reruns and E/E-prime are excluded.
+- Batch contract:
+  `configs/full_ie_f7_domain_batch1_20260803/batch_contract.json`; SHA256
+  `0369400022ba15319b54f72def1ad0feb65ec63d0a297eacc6f28f04d2cb9973`.
+- The proposal retains the F5 manifest/canonical/inventory hashes and the four
+  frozen cell-contract hashes. It keeps `authorized=false`,
+  `model_calls_allowed=false`, `gpu_allowed=false`, and
+  `final_evaluation_allowed=false`.
+- F4a Stage R timing was `485.761 s` for 200 A-D rows. Linear scaling estimates
+  about `1651.5874 s` (`27.5 min`) for 680 rows, excluding startup, audit,
+  backup, and idle time. Proposed hard stop: `2.0` paid hours or `5.6 CNY` at
+  the last reported `2.8 CNY/hour`, whichever is first; live price and cap must
+  be confirmed before execution.
+- Conditional completion is `4/60` only if all four 170-row outputs independently
+  reload, recompute, and pass hash validation. Until then accounting is
+  `0/60`.
+- SSH returned `Connection refused` during preparation, so the instance was
+  unreachable. No local or remote Python, `domain_test` prompt, vLLM, model,
+  GPU, paper, or GitHub action occurred. Cost impact is `0 CNY`.
+- Full preparation report:
+  `docs/FULL_IE_F7_DOMAIN_BATCH1_PREPARATION_20260803.md`.
+- Next authority remains closed. The human must explicitly grant
+  `FULL_IE_DOMAIN_FINAL_BATCH_APPROVED`, then boot the RTX 4090 and report its
+  live price before the execution preflight can begin.
+
 ## Domain Final Matrix: 30 Reported Cells
 
 | Run ID | Milestone | System / variant | K | Seeds | Reported cells | Stage work | Status |
@@ -357,6 +399,7 @@ Complete matrix      = 30 + 30 = 60
 Existing full cells  = 0
 Existing NER stages  = 12 (reusable only after adding Stage R)
 Missing report cells = 48
+Prepared F7 Batch 1  = 4 Stage R-only cells, unauthorized and not counted
 ```
 
 ## F1 Closeout

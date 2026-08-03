@@ -20,7 +20,8 @@ Hard rules in `AGENTS.md` and `AGENT_PLAYBOOK.md` still apply.
 
 Operational status note (2026-08-03): this file and
 `refine-logs/FULL_IE_MINIMUM_EXPERIMENT_TRACKER_20260730.md` carry the latest
-chronology through completed F6 replay recovery. `AGENT_PLAYBOOK.md`,
+chronology through completed F6 replay recovery and the prepared F7 Domain
+Batch 1 proposal. `AGENT_PLAYBOOK.md`,
 `AGENTS.md`, and `实验实施指导文档_综合版.md` still control their durable
 execution, safety, and claim rules, but any dated current-gate snapshot in
 those files predates this recovery closeout. The accepted `0.8000` calibration
@@ -74,9 +75,15 @@ granted `FULL_IE_F6_CLUENER_REPLAY_RECOVERY_APPROVED`, booted an RTX 4090 at
 `2.8 CNY/hour`, and approved CPU FP32 retrieval with the card used only to
 unlock 120 GiB container memory. The recovery resumed from a verified
 `479/1343` checkpoint and completed/validated all `1343` CLUENER rows with zero
-GPU model execution. F6 replay preparation is now complete. The paid card is
-still visible but idle at `0 MiB`; the human must shut it down. No final-
-evaluation, F7-F9, paper, or GitHub gate is open.
+GPU model execution. F6 replay preparation is now complete. On 2026-08-03,
+F7 Domain Batch 1 was prepared locally as a four-cell Stage R-only proposal:
+`domain:A/B/C/D:k5:s42`. Its contract SHA256 is
+`0369400022ba15319b54f72def1ad0feb65ec63d0a297eacc6f28f04d2cb9973`.
+All authorization/model/GPU/final-evaluation flags remain false, and the
+required `FULL_IE_DOMAIN_FINAL_BATCH_APPROVED` gate has not been granted. At
+`2026-08-03T15:41:24+08:00`, SSH returned `Connection refused`; the instance
+was unreachable and this preparation incurred `0 CNY`. No final-evaluation,
+F7 execution, F8/F9, paper, or GitHub gate is open.
 
 ## 0. Executive Snapshot For A New Session
 
@@ -119,7 +126,8 @@ used a paid 4090 only to unlock 120 GiB container memory, resumed from a
 verified 479-row checkpoint, and completed all `1343` CLUENER rows and `4029`
 passages. Independent validation found zero self-hit, prohibited field, or
 fixed-threshold overlap. F6 ran zero model/API calls and completes no final
-cell.
+cell. F7 Domain Batch 1 is now only a hash-locked proposal for four Stage
+R-only seed42 cells; it has not been authorized or executed.
 
 **Current evidence**: A/B/C/D NER F1 is `0.534645`, `0.555169`, `0.568858`, and
 `0.565764`. C/D are an F1 near-tie; D has higher precision and 55 fewer FP.
@@ -149,15 +157,21 @@ locally positive on dev; E is mixed/negative. These are sanity rows, so the
 matrix remains `0/60`: 12 domain cells still have reusable NER-only Stage N
 outputs, 48 report cells are absent, and all 30 final domain cells still need
 Stage R results. The consumed F5 and F6 gates create no final matrix cell and
-grant no later-phase authority. AutoDL currently exposes the paid RTX 4090 but
-it is idle at `0 MiB`, with no compute app, Qwen/vLLM/recovery runner, or active
-screen. The human must shut down the paid instance.
+grant no later-phase authority. F7 Domain Batch 1 is
+`PREPARED_AWAITING_GATE`: four A/B/C/D K=5 seed42 Stage R cells are scoped, but
+all execution flags remain false and they do not count. The latest SSH check
+returned `Connection refused`; the preceding F6 closeout had verified `0 MiB`
+and no model/runner process.
 
-**Next step**: the human must first shut down the paid 4090. Then stop and wait
-for a new bounded F7 domain-final execution and budget gate. No F7 gate name or
-batch scope has yet been approved. Official CLUENER final evaluation, new
-`domain_test` prompt/model work, F7-F9 execution, aggregation, paper edits, and
-GitHub synchronization remain unauthorized.
+**Next step**: the human must explicitly grant
+`FULL_IE_DOMAIN_FINAL_BATCH_APPROVED` for only
+`domain:A/B/C/D:k5:s42`, Stage R only, with the proposed `2.0` paid-hour /
+`5.6 CNY` cap at the last reported `2.8 CNY/hour`. After the gate, the human
+boots the RTX 4090 and reports the live price; the agent then performs frozen-
+hash, output-collision, GPU-memory, and conflict-process preflight before any
+model call. Official CLUENER final evaluation, other domain cells, Stage N
+reruns, E/E-prime, F8/F9, aggregation, paper edits, and GitHub synchronization
+remain unauthorized.
 
 **Red lines**: never run project Python locally on Windows; never tune from
 frozen test; preserve every negative row; never call E-prime failed; never
@@ -369,6 +383,34 @@ replay preparation is complete.
   accounting remains `0/60`; F7-F9 and paper work require new gates.
 - Full recovery report:
   `docs/FULL_IE_F6_CLUENER_REPLAY_RECOVERY_20260803.md`.
+
+### F7 Domain Final Batch 1 Preparation
+
+Prepared locally on 2026-08-03; execution is not authorized.
+
+- Exact scope: `domain:A:k5:s42`, `domain:B:k5:s42`,
+  `domain:C:k5:s42`, and `domain:D:k5:s42`.
+- Work: Stage R only over four hash-locked P5 Stage N sources, 170 rows each;
+  no Stage N rerun and no E/E-prime verification.
+- Contract:
+  `configs/full_ie_f7_domain_batch1_20260803/batch_contract.json`; SHA256
+  `0369400022ba15319b54f72def1ad0feb65ec63d0a297eacc6f28f04d2cb9973`.
+- Frozen F5 manifest/canonical/inventory hashes and all four source/config
+  hashes are embedded in the proposal. F5 files were not edited.
+- Authorization remains false for final evaluation, model calls, GPU use, and
+  execution-config generation. The exact required gate is
+  `FULL_IE_DOMAIN_FINAL_BATCH_APPROVED`.
+- F4a timing gives a linear runner estimate of `1651.5874 s` (`27.5 min`) for
+  680 rows. Proposed hard stop is `2.0` paid hours or `5.6 CNY` at the last
+  reported `2.8 CNY/hour`, whichever is first. Live price and cap must be
+  confirmed before execution.
+- Conditional accounting is `4/60` only after all four outputs pass row,
+  hash, and metric recomputation. Current accounting remains `0/60`.
+- SSH returned `Connection refused` at preparation time. No Python,
+  `domain_test` prompt, vLLM/model/GPU, paper, or GitHub action occurred; cost
+  impact is `0 CNY`.
+- Full preparation report:
+  `docs/FULL_IE_F7_DOMAIN_BATCH1_PREPARATION_20260803.md`.
 
 Latest paper-preparation note (2026-07-28): after the approved GPU-free
 target-journal screening and reference-authenticity audit, the human selected
@@ -695,13 +737,14 @@ Markdown unless the user explicitly asks otherwise.
 
 No further Python/model-call/paid-experiment gate is currently open. F4b, F5,
 and F6 replay preparation/recovery are complete and their bounded gates are
-consumed. The paid RTX 4090 is still visible but idle at `0 MiB`; only the
-human-authorized hardware shutdown remains. Frozen-test prompt/model
+consumed. F7 Domain Batch 1 is only `PREPARED_AWAITING_GATE`; its four
+authorization flags are false. The latest SSH check returned
+`Connection refused`, so the instance is unreachable. Frozen-test prompt/model
 generation, official CLUENER evaluation, returned-file correction,
 reannotation, frozen-data correction, aggregation, baseline runs, K scan,
-extra seeds, F7-F9, and other experiments remain unauthorized. The fresh
-entity annotation/validation, M1, M2, full-IE F1, F2, F3, F4a, F4b, F5, F6
-initial replay, and F6 recovery gates are consumed.
+extra seeds, F7 execution, F8/F9, and other experiments remain unauthorized.
+The fresh entity annotation/validation, M1, M2, full-IE F1, F2, F3, F4a, F4b,
+F5, F6 initial replay, and F6 recovery gates are consumed.
 LaTeX was deliberately not changed; any result propagation into a manuscript
 requires a later, separate approval after result-to-claim.
 
@@ -1577,10 +1620,13 @@ Remote:
   did not overwrite `/root/project`. Its verified backup is under
   `/root/autodl-tmp/backup/full_ie/f6_cluener_recovery_20260803/`.
 - Last verified mode at F6 recovery closeout on 2026-08-03: the paid RTX 4090
-  remains visible with `0 MiB` used, no compute app, vLLM, Qwen, recovery
+  was visible with `0 MiB` used, no compute app, vLLM, Qwen, recovery
   runner, or active screen. One historical dead screen socket is preserved.
-  The paid-mode cgroup `memory.max` was `128,849,018,880` bytes. The human must
-  shut down the paid instance. The complete F4b backup remains under
+  The paid-mode cgroup `memory.max` was `128,849,018,880` bytes.
+- Current reachability check at `2026-08-03T15:41:24+08:00`: SSH returned
+  `Connection refused`. The instance is therefore unreachable and no current
+  GPU/process state can be queried; no new paid action was started.
+- The complete F4b backup remains under
   `/root/autodl-tmp/backup/full_ie/f4b_cluener_tune_20260802/`.
 
 Useful no-Python status command:
@@ -1598,10 +1644,12 @@ are complete. IE021 and the initial F6 no-card resource stop remain preserved
 blocked attempts; IE022 completes F2 under its structural/full-disclosure
 criterion. F4a/F4b ran only sanity data, F5 froze identities/dependencies, and
 F6 prepared the domain and CLUENER replay dependencies without model calls.
-There are still `0/60` complete full-IE cells. A new session must not infer F7,
-final-evaluation, aggregation, or paper authority from the consumed F6 gates.
+F7 Domain Batch 1 is now scoped and hash-locked, but all execution flags are
+false. There are still `0/60` complete full-IE cells. A new session must not
+infer F7 execution, final-evaluation, aggregation, or paper authority from the
+consumed F6 gates or the prepared proposal.
 
-### Current state: F6 replay complete; no final execution gate
+### Current state: F7 Batch 1 prepared; no final execution gate
 
 The initial A/B returns and 90-error IE021 report remain locked negative
 evidence. The user attested both submissions were human-produced. Human-revised
@@ -1620,10 +1668,12 @@ does not pass the deletion-audit gate. F4b is tune-only, not public benchmark
 generalization. F5 locks the literal 60-cell protocol, but all 60 cell configs
 and execution nodes remain unauthorized. F6 verified the 170-row domain replay
 and the recovered 1,343-row CLUENER replay; this is dependency preparation, not
-evaluation evidence. The paid 4090 is idle at `0 MiB`, pending human shutdown.
-Stop until the human separately authorizes a bounded F7 batch and budget; do
-not run official CLUENER final evaluation or new `domain_test` prompt/model
-work, enter F7-F9, or edit the paper.
+evaluation evidence. The proposed first F7 batch contains only A/B/C/D K=5
+seed42 Stage R over four frozen Stage N files. Its authorization remains false,
+and SSH currently returns `Connection refused`. Stop until the human grants
+`FULL_IE_DOMAIN_FINAL_BATCH_APPROVED` for this exact scope and budget, then
+boots the 4090 and reports the live price. Do not run official CLUENER final
+evaluation, other domain cells, Stage N, E/E-prime, F8/F9, or edit the paper.
 
 ### Later sequence: planned, not authorized
 
@@ -1637,8 +1687,9 @@ work, enter F7-F9, or edit the paper.
 5. F6: complete; domain replay has 170 rows and recovered CLUENER replay has
    1,343 rows. The initial resource stop and the resumed checkpoint are both
    preserved; no model call or final cell was produced.
-6. F7: run the 30 domain final cells in bounded paid batches, reusing the 12
-   existing Stage N outputs and adding Stage R.
+6. F7: Batch 1 proposal is prepared for A/B/C/D K=5 seed42 Stage R only;
+   after its separate gate, run domain final cells in bounded paid batches,
+   reusing the 12 existing Stage N outputs where frozen.
 7. F8: run the 30 CLUENER NER cells on complete labeled official dev.
 8. F9: aggregate, perform paired uncertainty/result-to-claim, then request a
    separate manuscript-propagation gate.
@@ -1662,8 +1713,11 @@ authoritative.
   wholly absent;
 - F5 freezes all 60 report identities and validates the 12 reuse artifacts, but
   adds no Stage R, verifier, CLUENER-final, or complete-cell result;
-- F6 prepares one shared domain replay dependency but no Stage N/R, verifier,
-  CLUENER-final, or complete-cell result; its CLUENER dependency is absent;
+- F6 prepares the shared 170-row domain and 1,343-row CLUENER replay
+  dependencies but no Stage N/R, verifier, CLUENER-final, or complete-cell
+  result;
+- the prepared F7 Batch 1 proposal covers four Stage R-only cells but remains
+  unauthorized and contributes `0` complete cells;
 - CLUENER official unlabeled test is never offline gold; use the locked labeled
   dev protocol only after its own tune/resource freeze;
 - E v1/v2 remain preserved negative/mixed historical NER dev evidence. F4a now

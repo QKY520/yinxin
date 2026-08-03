@@ -1,0 +1,156 @@
+{
+  "batch_id": "full-ie-f7-domain-final-b01-k5-seed42-abcd",
+  "prepared_at": "2026-08-03T15:41:24+08:00",
+  "status": "PREPARED_AWAITING_GATE",
+  "required_gate": "FULL_IE_DOMAIN_FINAL_BATCH_APPROVED",
+  "authorization": {
+    "authorized": false,
+    "execution_configs_created": false,
+    "final_evaluation_allowed": false,
+    "gpu_allowed": false,
+    "model_calls_allowed": false
+  },
+  "scope": {
+    "dataset": "domain",
+    "split": "domain_test",
+    "rows_per_cell": 170,
+    "reported_cells": 4,
+    "stage_work": "stage_r_only",
+    "reuse_stage_n": true,
+    "rerun_stage_n": false,
+    "run_verification": false,
+    "execution_order": [
+      "domain:A:k5:s42",
+      "domain:B:k5:s42",
+      "domain:C:k5:s42",
+      "domain:D:k5:s42"
+    ]
+  },
+  "freeze_locks": {
+    "freeze_manifest_path": "configs/full_ie_f5_freeze_20260802/freeze_manifest.json",
+    "freeze_manifest_sha256": "592949022da8fa0743ce821efc8dae9deac22825eeb2b9b2c230f9390422237e",
+    "canonical_sha256": "e7187f5607b2b9f4e351ea45bb41902304e7049b99d80fc6bcd5fa4ef50258ae",
+    "cell_inventory_path": "configs/full_ie_f5_freeze_20260802/cell_inventory.csv",
+    "cell_inventory_sha256": "dec872aa139289e3cc0bcfe32d75f93dfb45e1f7431af8bda6f791e52aa5cc09"
+  },
+  "stage_r_contract": {
+    "model": "Qwen2.5-7B-Instruct",
+    "server": "vLLM",
+    "dtype": "float16",
+    "prompt_version": "stage_r_same_sentence_v1",
+    "parser_revision": "r1_drop_invalid_relation_units",
+    "drop_invalid_relations": true,
+    "retry_mode": "parser_error_aware_once",
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "max_tokens": 768,
+    "seed": 42,
+    "metadata_replay": [
+      "example_ids",
+      "glossary_terms",
+      "rag_passages"
+    ]
+  },
+  "cells": [
+    {
+      "cell_id": "domain:A:k5:s42",
+      "config_id": "full-ie-final-v1-domain-a-k5-seed42",
+      "config_contract_sha256": "bb92697b25db66af334716cc62f8062af3a9a9a1e3228185378f0ba13ee66498",
+      "stage_n_path": "/root/project/results/p5/p5_domain_test_a_k5_seed42_per_query.jsonl",
+      "stage_n_rows": 170,
+      "stage_n_sha256": "343f192e6c5bc2a3bd0c720af1d9241836c01dd53584a454c787a5ccfb99e8ab",
+      "stage_r_per_query_path": "/root/project/results/full_ie/final_v1/stages/stage_r/domain_a_k5_seed42_per_query.jsonl",
+      "stage_r_summary_path": "/root/project/results/full_ie/final_v1/stages/stage_r/domain_a_k5_seed42_summary.json",
+      "final_per_query_path": "/root/project/results/full_ie/final_v1/cells/domain_a_k5_seed42_per_query.jsonl",
+      "final_summary_path": "/root/project/results/full_ie/final_v1/cells/domain_a_k5_seed42_summary.json"
+    },
+    {
+      "cell_id": "domain:B:k5:s42",
+      "config_id": "full-ie-final-v1-domain-b-k5-seed42",
+      "config_contract_sha256": "77364a57808c3cc3e53c36b7198cdcc8da00a81ea5775908b2fb106a7b202649",
+      "stage_n_path": "/root/project/results/p5/p5_domain_test_b_knn_k5_seed42_per_query.jsonl",
+      "stage_n_rows": 170,
+      "stage_n_sha256": "cbf5b907a421c904e4c121e4e4203dd1451c6fb698032809805de4928ee9f75e",
+      "stage_r_per_query_path": "/root/project/results/full_ie/final_v1/stages/stage_r/domain_b_k5_seed42_per_query.jsonl",
+      "stage_r_summary_path": "/root/project/results/full_ie/final_v1/stages/stage_r/domain_b_k5_seed42_summary.json",
+      "final_per_query_path": "/root/project/results/full_ie/final_v1/cells/domain_b_k5_seed42_per_query.jsonl",
+      "final_summary_path": "/root/project/results/full_ie/final_v1/cells/domain_b_k5_seed42_summary.json"
+    },
+    {
+      "cell_id": "domain:C:k5:s42",
+      "config_id": "full-ie-final-v1-domain-c-k5-seed42",
+      "config_contract_sha256": "1d686305e19dca206783dea835a1b008d178ce14b4038e04a0622c00e252a3c4",
+      "stage_n_path": "/root/project/results/p5/p5_domain_test_c_glossary_k5_seed42_per_query.jsonl",
+      "stage_n_rows": 170,
+      "stage_n_sha256": "a0c1dd65193b4e6259af0aa542763e3c9940fa26949df8dc29fa7252afac17a4",
+      "stage_r_per_query_path": "/root/project/results/full_ie/final_v1/stages/stage_r/domain_c_k5_seed42_per_query.jsonl",
+      "stage_r_summary_path": "/root/project/results/full_ie/final_v1/stages/stage_r/domain_c_k5_seed42_summary.json",
+      "final_per_query_path": "/root/project/results/full_ie/final_v1/cells/domain_c_k5_seed42_per_query.jsonl",
+      "final_summary_path": "/root/project/results/full_ie/final_v1/cells/domain_c_k5_seed42_summary.json"
+    },
+    {
+      "cell_id": "domain:D:k5:s42",
+      "config_id": "full-ie-final-v1-domain-d-k5-seed42",
+      "config_contract_sha256": "248e598136bb210596ca5fa29b2ebba2a73e0f50865305fe5c9f3f79e080f0e2",
+      "stage_n_path": "/root/project/results/p5/p5_domain_test_d_rag_k5_seed42_per_query.jsonl",
+      "stage_n_rows": 170,
+      "stage_n_sha256": "ebaa68c940223ff8688377f63a3f9dbafefaf561382b6a3445c5cdda354a1ed0",
+      "stage_r_per_query_path": "/root/project/results/full_ie/final_v1/stages/stage_r/domain_d_k5_seed42_per_query.jsonl",
+      "stage_r_summary_path": "/root/project/results/full_ie/final_v1/stages/stage_r/domain_d_k5_seed42_summary.json",
+      "final_per_query_path": "/root/project/results/full_ie/final_v1/cells/domain_d_k5_seed42_per_query.jsonl",
+      "final_summary_path": "/root/project/results/full_ie/final_v1/cells/domain_d_k5_seed42_summary.json"
+    }
+  ],
+  "runtime_and_cost_proposal": {
+    "historical_f4a_stage_r_rows": 200,
+    "historical_f4a_stage_r_elapsed_seconds": 485.761,
+    "linear_estimate_for_680_rows_seconds": 1651.5874,
+    "last_reported_price_cny_per_hour": 2.8,
+    "live_price_required_before_execution": true,
+    "hard_stop_paid_hours": 2.0,
+    "proposed_cost_cap_cny_at_last_reported_price": 5.6,
+    "stop_rule": "stop when either the paid-hour limit or approved CNY cap is reached"
+  },
+  "preflight_requirements": [
+    "exact gate string has been granted for this batch",
+    "human has booted the RTX 4090 24GB and reported the live hourly price",
+    "GPU model is RTX 4090 and memory.used is below 500 MiB",
+    "no vLLM, Qwen, Stage R runner, verifier, or active screen conflict exists",
+    "F5 freeze, canonical, inventory, four config contracts, and four Stage N hashes match",
+    "all declared Stage R/final output targets are absent or empty under the no-overwrite policy",
+    "versioned execution copies remain restricted to these four cells"
+  ],
+  "stop_conditions": [
+    "any frozen hash or row-count mismatch",
+    "any output collision or overwrite risk",
+    "unexpected Stage N, verifier, retrieval, CLUENER, or other out-of-scope call",
+    "runner crash, incomplete row set, duplicate ID, or corrupt per-query output",
+    "relation parse-failure rate reaches 10 percent in a completed cell",
+    "GPU or process conflict appears",
+    "paid-hour or approved CNY cap is reached"
+  ],
+  "forbidden": [
+    "rerun Stage N",
+    "E or E-prime verification",
+    "K=1 or K=10",
+    "seeds 43 or 44",
+    "CLUENER final evaluation",
+    "F8 or F9",
+    "aggregation or paper edits",
+    "GitHub synchronization"
+  ],
+  "conditional_completion": {
+    "matrix_before": "0/60",
+    "matrix_after_if_all_four_cells_pass": "4/60",
+    "negative_results_must_be_retained": true
+  },
+  "closeout_requirements": [
+    "recompute NER and exact directed RE metrics from per-query rows",
+    "record FP, parse failures, unsupported types, latency, retries, sanitizer counts, endpoint coverage, and zero-relation diagnostics",
+    "stop vLLM and verify zero model processes and zero GPU memory",
+    "back up prompt, cache, raw output, per-query rows, summaries, configs, logs, and manifests",
+    "hash-verify remote and local lightweight copies",
+    "update tracker and HANDOFF, commit only this batch's tracked files, and report observed cost",
+    "ask the human to shut down the paid instance"
+  ]
+}
