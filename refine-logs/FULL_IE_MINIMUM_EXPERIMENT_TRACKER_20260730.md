@@ -1,6 +1,6 @@
 # Minimum Full-IE Extension Tracker
 
-**Date**: 2026-08-02
+**Date**: 2026-08-03
 
 **Status semantics**:
 
@@ -40,10 +40,15 @@ source files, 12 P5 Stage N reuse locks, metrics, prompts, seeds, and output
 paths are frozen with model calls disabled. The later
 `FULL_IE_F6_REPLAY_PREP_APPROVED` gate was granted and consumed at a declared
 resource stop: the 170-row domain replay passed consensus/leakage validation,
-but CLUENER remains `0/1343` because the no-card cgroup limit is 2 GiB versus a
-4.54 GB frozen dual-model weight lower bound. F6 is
-`PARTIAL_BLOCKED_MEMORY`, not complete.
-No recovery, final-evaluation, F7-F9, paper, or GitHub gate is open.
+but the first CLUENER attempt stopped at `0/1343` because the no-card cgroup
+limit was 2 GiB versus a 4.54 GB frozen dual-model weight lower bound. That
+blocked attempt remains preserved. The human subsequently granted
+`FULL_IE_F6_CLUENER_REPLAY_RECOVERY_APPROVED` and booted an RTX 4090 at
+`2.8 CNY/hour` solely to unlock 120 GiB container memory. The recovery retained
+CPU FP32 retrieval with CUDA masked, resumed from a verified `479/1343`
+checkpoint, and completed/validated all `1343` CLUENER rows. F6 replay
+preparation is now `DONE`; it completes no final model cell. No final-
+evaluation, F7-F9, paper, or GitHub gate is open.
 
 ## Protocol and Implementation
 
@@ -61,7 +66,8 @@ No recovery, final-evaluation, F7-F9, paper, or GitHub gate is open.
 | IE031 | F3 | Build CLUENER support bank and glossary | train_pool only | 0 | DONE | 30-record all-type bank; 61 support-only glossary entries |
 | IE032 | F3 | Build/dedup CLUENER RAG corpus | labels-stripped train_pool | 0 | DONE | 9,584 rows; 89 removed by fixed 8-gram/0.80 blocklist |
 | IE033 | F3 | Freeze CLUENER tune configs | A-E-prime, K=5, seed42 | 6 | DONE | 50-record all-type tune subset; no prompt artifacts |
-| IE040 | F6 | Prepare leakage-safe RAG replay | Domain three-seed consensus plus CLUENER dev text retrieval | 0 | MUST | BLOCKED | Domain 170/170 passes; CLUENER 0/1343 stopped because 2 GiB cgroup memory is below the 4.54 GB weight lower bound |
+| IE040 | F6 | Initial leakage-safe RAG replay preparation | Domain three-seed consensus plus no-card CLUENER dev text retrieval | 0 | MUST | BLOCKED | Preserved resource stop: domain 170/170 passes; CLUENER 0/1343 because 2 GiB was below the 4.54 GB weight lower bound |
+| IE041 | F6 | Recover frozen CLUENER RAG replay | CPU FP32 retrieval on the 1,343-row labeled official dev split; paid card for memory only | 0 | MUST | DONE | Resumed from verified 479-row checkpoint; final 1343 rows/4029 passages; zero self-hit, prohibited fields, or >=0.80 containment hits |
 
 ### F3 Closeout (2026-07-31)
 
@@ -246,37 +252,55 @@ No recovery, final-evaluation, F7-F9, paper, or GitHub gate is open.
   and reuse dependencies but completes no final cell. Full report:
   `docs/FULL_IE_F5_PROTOCOL_FREEZE_20260802.md`.
 
-### F6 Partial Closeout (2026-08-02)
+### F6 Initial Stop And Recovery Closeout (2026-08-02 to 2026-08-03)
 
-- Gate: `FULL_IE_F6_REPLAY_PREP_APPROVED`; bounded to no-card replay
-  preparation with zero Qwen/vLLM/API calls, now consumed at a declared memory
-  stop condition.
+- Initial gate: `FULL_IE_F6_REPLAY_PREP_APPROVED`; bounded to no-card replay
+  preparation with zero Qwen/vLLM/API calls, consumed at a declared memory stop
+  condition. The resulting `BLOCKED` IE040 row remains preserved.
 - Domain: all three hash-locked P5 D K=5 seed42/43/44 sources agree exactly on
   170 rows and 510 passages. Source self-hits, prohibited serialized fields,
   and fixed 8-gram threshold hits are all zero; maximum containment is
   `0.529148` and mean containment is `0.003612`.
-- CLUENER: `0/1343`. The first screen exited during model initialization with a
-  zero-byte log and no replay row. A new preflight establishes
-  `memory.max=2,147,483,648` versus a frozen embedding+reranker weight lower
-  bound of `4,544,321,872` bytes and now refuses before model loading. No
-  fallback precision, retriever, hardware, prompt, prediction, or metric was
+- Initial CLUENER result: `0/1343`. The first screen exited during model
+  initialization with a zero-byte log and no replay row. A new preflight
+  established `memory.max=2,147,483,648` versus a frozen embedding+reranker
+  weight lower bound of `4,544,321,872` bytes and then refused before model
+  loading. No fallback precision, retriever, prompt, prediction, or metric was
   used.
-- Validation: final F6 tests `7/7`; full tracked AutoDL suite `192/192`; P0
-  model manifest `65/65`; source locks `12/12`; nine resources/source replays;
-  final partial backup manifest `24/24` remotely and locally.
-- Backup: remote/local extracted copies are under
-  `backup(s)/full_ie/f6_replay_prep_20260802/`. Partial manifest SHA256 is
+- Initial validation: final F6 tests `7/7`; full tracked AutoDL suite `192/192`;
+  P0 model manifest `65/65`; source locks `12/12`; final partial backup manifest
+  `24/24` remotely and locally. Its manifest SHA256 is
   `b5db900a87cb5791a8327825b5014da82b60a7b831ee0f903514f424468a4f66`;
   archive SHA256 is
   `0ad69881c15f423cf0d6dc620427ce73614bbf53209625acd395cf1a731bf28f`.
-- Cost/safety: no-card throughout, paid GPU cost `0 CNY`, model/API calls `0`,
-  and no model/runner/screen process at closeout. No final cell is complete;
-  matrix accounting remains `0/60`.
-- Status: `BLOCKED`, not `DONE`. A recovery needs materially more than the
-  4.54 GB lower bound and a separate
-  `FULL_IE_F6_CLUENER_REPLAY_RECOVERY_APPROVED` gate. F7-F9 and paper work
-  remain unauthorized. Full report:
-  `docs/FULL_IE_F6_REPLAY_PREP_20260802.md`.
+- Recovery gate: `FULL_IE_F6_CLUENER_REPLAY_RECOVERY_APPROVED`; now consumed.
+  The human booted an RTX 4090 at `2.8 CNY/hour` solely to unlock a
+  `128,849,018,880`-byte cgroup. The guarded runner retained CPU FP32 retrieval
+  and an empty `CUDA_VISIBLE_DEVICES`; GPU execution, FP16, Qwen/vLLM, API,
+  final metrics, Stage N/R, aggregation, paper, and GitHub work stayed blocked.
+- Resume integrity: the first corrected window reached `479/1343` before a
+  user-requested pause. Its seven-file snapshot passed `7/7`; the resumed
+  window accepted those rows and appended through `1343/1343` without
+  overwriting or filtering the checkpoint.
+- Final CLUENER audit: `1343` unique rows, `4029` selected passages, exactly
+  three per row, zero source self-hits, zero prohibited fields, and zero fixed
+  8-gram/`0.80` threshold hits. Maximum containment is `0.785714`; mean is
+  `0.017302`. Independent recovery status is `VALID`.
+- Tests/backups: AutoDL `unittest` passed `195/195`; `pytest -q tests` passed
+  `195` tests plus `8` subtests. The remote/local recursive recovery manifest
+  passes `38/38`; manifest SHA256 is
+  `e098c138c201fdc1e0804183da5eb97e1d6e8208fb2abd5b20d27adcb18f2947`
+  and archive SHA256 is
+  `add0145f8597d4cc09e5988aefc4ef53fe5e7c1fe93e91c3022b88ab4204f2e4`.
+- Cost/closeout: two observable runner windows total `4,514.721` seconds,
+  approximately `3.511449 CNY` at `2.8 CNY/hour`; platform billing is
+  authoritative. Final inspection found `0 MiB` GPU memory, no compute app,
+  Qwen/vLLM/recovery runner, or active screen.
+- Overall F6 status is now `DONE` for replay preparation. No final cell is
+  complete and matrix accounting remains `0/60`. F7-F9 and paper work remain
+  unauthorized. Full initial and recovery reports:
+  `docs/FULL_IE_F6_REPLAY_PREP_20260802.md` and
+  `docs/FULL_IE_F6_CLUENER_REPLAY_RECOVERY_20260803.md`.
 
 ## Domain Final Matrix: 30 Reported Cells
 

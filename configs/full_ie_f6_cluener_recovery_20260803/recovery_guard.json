@@ -1,0 +1,39 @@
+{
+  "base_config": {
+    "path": "configs/full_ie_f6_replay_prep_20260802/replay_inputs.json",
+    "sha256": "56b02bbc6861f49da3fb79cfdc5f4cb7798e0aca81422079eda6fadeab8426c6"
+  },
+  "date": "2026-08-03",
+  "forbidden": {
+    "aggregation": true,
+    "api_calls": true,
+    "domain_test": true,
+    "final_metrics": true,
+    "github_sync": true,
+    "paper_edits": true,
+    "qwen": true,
+    "stage_n": true,
+    "stage_r": true,
+    "vllm": true
+  },
+  "gpu": {
+    "boot_purpose": "memory_unlock_only",
+    "execution_allowed": false,
+    "expected_model": "NVIDIA GeForce RTX 4090",
+    "hourly_price_cny": 2.8
+  },
+  "human_gate": "FULL_IE_F6_CLUENER_REPLAY_RECOVERY_APPROVED",
+  "retrieval": {
+    "dataset": "cluener",
+    "device": "cpu",
+    "expected_rows": 1343,
+    "use_fp16": false
+  },
+  "source_hashes": {
+    "scripts/prepare_full_ie_f6.py": "8ffe0d2e3e365fc16d5708878beb7d62fac9d6ea17ce38bcf533b4d50754fe4d",
+    "scripts/run_full_ie_f6_cluener_recovery.py": "314d0022dd81cd5d66765b9ad98b75ae6d0fb58b4408e7a0979ff404762776e1",
+    "scripts/validate_full_ie_f6_recovery.py": "9b39b4f4438e587b54a8e031fa8e24ef68405ada3cec2fe78591e3b8a65cb3af",
+    "src/equipment_ie/full_ie_f6.py": "c943734b3db5ee8eb96d74f8666206daa1766c509981e1d231f69157aa0998c3"
+  },
+  "version": "full-ie-f6-cluener-recovery-v1"
+}

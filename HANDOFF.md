@@ -1,6 +1,6 @@
 # HANDOFF.md - New Conversation Handoff
 
-Date: 2026-08-02
+Date: 2026-08-03
 Workspace: `D:\yinsir`
 
 This file is the latest operational state for a new Codex/agent session with no
@@ -18,14 +18,14 @@ chat history. Read these files before doing any project work:
 If older docs conflict with this file on status chronology, this file is newer.
 Hard rules in `AGENTS.md` and `AGENT_PLAYBOOK.md` still apply.
 
-Synchronization note (2026-08-02): `AGENTS.md`, `AGENT_PLAYBOOK.md`,
-`实验实施指导文档_综合版.md`, and this file have been aligned to the latest
-full-IE route decision, accepted `0.8000` calibration decision, current
-claim boundary, full-matrix accounting, F1 implementation closeout, F2
-relation-calibration preparation closeout, blocked IE021 validation, completed
-IE022 revalidation, completed F3 configuration/resource preparation, completed
-F4a domain-dev sanity, completed F4b CLUENER tune sanity, completed F5 protocol
-freeze, partial F6 replay preparation, and execution red lines.
+Operational status note (2026-08-03): this file and
+`refine-logs/FULL_IE_MINIMUM_EXPERIMENT_TRACKER_20260730.md` carry the latest
+chronology through completed F6 replay recovery. `AGENT_PLAYBOOK.md`,
+`AGENTS.md`, and `实验实施指导文档_综合版.md` still control their durable
+execution, safety, and claim rules, but any dated current-gate snapshot in
+those files predates this recovery closeout. The accepted `0.8000` calibration
+decision, blocked IE021 attempt, completed IE022/F3/F4a/F4b/F5 work, negative
+verification evidence, and `0/60` matrix accounting remain unchanged.
 
 Latest route decision (2026-07-30): the human wants to expand the project into
 the originally intended complete equipment-domain IE paper rather than submit
@@ -67,10 +67,16 @@ no-card mode: the 60 final config IDs, resources, source files, metrics, seeds,
 reuse dependencies, and output paths are hash-locked with all model calls and
 execution disabled. The later bounded `FULL_IE_F6_REPLAY_PREP_APPROVED` gate
 was also granted and consumed. Its domain replay completed for all 170 queries,
-but CLUENER replay stopped at `0/1343`: the no-card cgroup is limited to 2 GiB,
-below the frozen dual-model weight lower bound of 4,544,321,872 bytes. F6 is
-`PARTIAL_BLOCKED_MEMORY`, not complete. The instance remains no-card, and no
-recovery/final-evaluation/paper gate is open.
+but the initial CLUENER attempt stopped at `0/1343`: the no-card cgroup was
+limited to 2 GiB, below the frozen dual-model weight lower bound of
+4,544,321,872 bytes. That blocked result remains preserved. The human then
+granted `FULL_IE_F6_CLUENER_REPLAY_RECOVERY_APPROVED`, booted an RTX 4090 at
+`2.8 CNY/hour`, and approved CPU FP32 retrieval with the card used only to
+unlock 120 GiB container memory. The recovery resumed from a verified
+`479/1343` checkpoint and completed/validated all `1343` CLUENER rows with zero
+GPU model execution. F6 replay preparation is now complete. The paid card is
+still visible but idle at `0 MiB`; the human must shut it down. No final-
+evaluation, F7-F9, paper, or GitHub gate is open.
 
 ## 0. Executive Snapshot For A New Session
 
@@ -107,9 +113,13 @@ artifacts, the original deletion-only verifier, and all future gate boundaries.
 It ran zero model calls and completes no final cell. F6 replay preparation then
 completed the domain three-seed consensus dependency (`170` rows and `510`
 passages) with zero self-hits, prohibited fields, or fixed-threshold overlaps.
-CLUENER replay remains `0/1343` because the no-card 2 GiB cgroup cannot hold
-the frozen BGE-M3 plus reranker FP32 weight lower bound. This partial F6 work
-also ran zero model/API calls and completes no final cell.
+The initial no-card CLUENER attempt stopped at `0/1343` on the 2 GiB cgroup and
+remains preserved as a blocked row. The separately approved CPU-FP32 recovery
+used a paid 4090 only to unlock 120 GiB container memory, resumed from a
+verified 479-row checkpoint, and completed all `1343` CLUENER rows and `4029`
+passages. Independent validation found zero self-hit, prohibited field, or
+fixed-threshold overlap. F6 ran zero model/API calls and completes no final
+cell.
 
 **Current evidence**: A/B/C/D NER F1 is `0.534645`, `0.555169`, `0.568858`, and
 `0.565764`. C/D are an F1 near-tie; D has higher precision and 55 fewer FP.
@@ -127,10 +137,10 @@ diagnostics: A/B/C/D NER F1 is
 verification threshold, so public generalization and positive CoVe remain
 unsupported.
 
-**Current breakpoint**: F1, F2, F3, F4a DDEV1/DDEV2, F4b CDEV1/CDEV2, and F5
-protocol freeze are complete. F6 is `PARTIAL_BLOCKED_MEMORY`: domain replay is
-complete and verified, while CLUENER replay is `0/1343`. IE021
-remains the preserved failed first relation-calibration attempt. F4a also
+**Current breakpoint**: F1, F2, F3, F4a DDEV1/DDEV2, F4b CDEV1/CDEV2, F5
+protocol freeze, and F6 replay preparation/recovery are complete. IE021 remains
+the preserved failed first relation-calibration attempt, and the initial F6
+no-card memory stop also remains preserved. F4a
 preserves its strict v0 A Stage R failure (`38/50` relation parse failures) and
 consumed the sole allowed dev revision by changing only
 `drop_invalid_relations` to `true`. Final r1 has `7/200 = 3.5%` aggregate parse
@@ -139,16 +149,14 @@ locally positive on dev; E is mixed/negative. These are sanity rows, so the
 matrix remains `0/60`: 12 domain cells still have reusable NER-only Stage N
 outputs, 48 report cells are absent, and all 30 final domain cells still need
 Stage R results. The consumed F5 and F6 gates create no final matrix cell and
-grant no recovery or later-phase authority. AutoDL is in no-card mode with no
-model/runner/screen process.
+grant no later-phase authority. AutoDL currently exposes the paid RTX 4090 but
+it is idle at `0 MiB`, with no compute app, Qwen/vLLM/recovery runner, or active
+screen. The human must shut down the paid instance.
 
-**Next step**: stop and wait for a new bounded human gate. The planned next
-step is F6 CLUENER replay recovery with materially more than 4.54 GB container
-memory (at least 8 GiB practical minimum). If no-card mode cannot provide it,
-the human must manually boot the 4090 and report the live price before a short
-CPU-FP32 retrieval-only recovery. This requires a separate
-`FULL_IE_F6_CLUENER_REPLAY_RECOVERY_APPROVED` gate. Official CLUENER evaluation,
-new `domain_test` prompt/model work, final evaluation, F7-F9, paper edits, and
+**Next step**: the human must first shut down the paid 4090. Then stop and wait
+for a new bounded F7 domain-final execution and budget gate. No F7 gate name or
+batch scope has yet been approved. Official CLUENER final evaluation, new
+`domain_test` prompt/model work, F7-F9 execution, aggregation, paper edits, and
 GitHub synchronization remain unauthorized.
 
 **Red lines**: never run project Python locally on Windows; never tune from
@@ -301,18 +309,19 @@ Complete on 2026-08-02 under the now-consumed
   remained `0/60`. At F5 closeout F6 required a separate bounded approval; that
   later gate and its partial outcome are recorded below.
 
-### F6 Replay Preparation Partial Closeout
+### F6 Replay Preparation And Recovery Closeout
 
-Partially completed on 2026-08-02 under the now-consumed
-`FULL_IE_F6_REPLAY_PREP_APPROVED` gate. Status is
-`PARTIAL_BLOCKED_MEMORY`, not complete.
+The initial 2026-08-02 `FULL_IE_F6_REPLAY_PREP_APPROVED` gate was consumed at
+the preserved `PARTIAL_BLOCKED_MEMORY` stop. The separate 2026-08-03
+`FULL_IE_F6_CLUENER_REPLAY_RECOVERY_APPROVED` gate is now also consumed, and F6
+replay preparation is complete.
 
 - The hash-locked P5 D K=5 seed42/43/44 sources agree exactly. Domain replay
   contains `170` ordered query rows and `510` selected passages, with zero seed
   disagreement, source self-hit, prohibited serialized field, or fixed
   8-gram/`0.80` threshold hit. Maximum containment is `0.529148`; mean is
   `0.003612`.
-- CLUENER replay is `0/1343`. The first screen exited during model
+- Initial CLUENER replay was `0/1343`. The first screen exited during model
   initialization with a zero-byte log and no replay row. The preserved evidence
   does not establish a kernel OOM kill.
 - A versioned hard preflight now checks the cgroup before loading either model.
@@ -331,11 +340,35 @@ Partially completed on 2026-08-02 under the now-consumed
   `b5db900a87cb5791a8327825b5014da82b60a7b831ee0f903514f424468a4f66`;
   archive SHA256 is
   `0ad69881c15f423cf0d6dc620427ce73614bbf53209625acd395cf1a731bf28f`.
-- AutoDL closeout is no-card with no model/runner/screen process. Matrix
-  accounting remains `0/60`. Recovery requires a new bounded gate and at least
-  about 8 GiB practical container memory; it must retain CPU FP32 retrieval and
-  must not start Qwen/vLLM.
-- Full report: `docs/FULL_IE_F6_REPLAY_PREP_20260802.md`.
+- That initial closeout was no-card with no model/runner/screen process. Full
+  initial report: `docs/FULL_IE_F6_REPLAY_PREP_20260802.md`.
+- Recovery used an RTX 4090 at the human-reported `2.8 CNY/hour` only to unlock
+  a `128,849,018,880`-byte cgroup. CPU FP32 retrieval remained locked and
+  `CUDA_VISIBLE_DEVICES` remained empty; no Qwen/vLLM/API/model call occurred.
+- The first corrected recovery window checkpointed `479/1343` rows before a
+  user-requested pause. Its seven files passed `7/7` SHA256 verification. The
+  resumed window accepted those rows and finished `1343/1343` without
+  overwriting or filtering the checkpoint.
+- Final CLUENER replay has `1343` unique IDs and `4029` selected passages,
+  exactly three per row. Source self-hits, prohibited fields, and fixed
+  8-gram/`0.80` threshold hits are all zero; maximum containment is `0.785714`
+  and mean is `0.017302`. Independent validation status is `VALID`.
+- Remote `unittest` passed `195/195`; after the user-authorized remote install
+  of pytest 9.1.1, `pytest -q tests` passed `195` tests plus `8` subtests. The
+  root pytest discovery failure caused by a historical `refine-logs` test
+  snapshot is documented and did not modify that artifact.
+- Remote/local recovery backup manifests pass `38/38`. Manifest SHA256 is
+  `e098c138c201fdc1e0804183da5eb97e1d6e8208fb2abd5b20d27adcb18f2947`;
+  archive SHA256 is
+  `add0145f8597d4cc09e5988aefc4ef53fe5e7c1fe93e91c3022b88ab4204f2e4`.
+- Two observable recovery runner windows total `4,514.721` seconds, about
+  `3.511449 CNY` at `2.8 CNY/hour`; platform billing is authoritative. Final
+  inspection found `0 MiB` GPU memory and no compute app, Qwen/vLLM/recovery
+  runner, or active screen. The paid card remains on pending human shutdown.
+- F6 is `DONE` for replay preparation but creates no final cell. Matrix
+  accounting remains `0/60`; F7-F9 and paper work require new gates.
+- Full recovery report:
+  `docs/FULL_IE_F6_CLUENER_REPLAY_RECOVERY_20260803.md`.
 
 Latest paper-preparation note (2026-07-28): after the approved GPU-free
 target-journal screening and reference-authenticity audit, the human selected
@@ -660,14 +693,15 @@ All generated `.docx` files were deleted on 2026-07-25 at the user's request
 because of rendering/encoding problems. Future writing defaults to UTF-8
 Markdown unless the user explicitly asks otherwise.
 
-No Python/paid-GPU/model gate is currently open. F4b and F5 completed; F6
-stopped in `PARTIAL_BLOCKED_MEMORY`. Their respective bounded gates are
-consumed, and the instance is no-card. Frozen-test prompt/model generation,
-official CLUENER evaluation, returned-file correction, reannotation,
-frozen-data correction, aggregation, baseline runs, K scan, extra seeds, F6
-recovery, F7-F9, and other experiments remain unauthorized. The fresh entity
-annotation/validation, M1, M2, full-IE F1, F2, F3, F4a, F4b, F5, and F6 replay
-preparation gates are consumed.
+No further Python/model-call/paid-experiment gate is currently open. F4b, F5,
+and F6 replay preparation/recovery are complete and their bounded gates are
+consumed. The paid RTX 4090 is still visible but idle at `0 MiB`; only the
+human-authorized hardware shutdown remains. Frozen-test prompt/model
+generation, official CLUENER evaluation, returned-file correction,
+reannotation, frozen-data correction, aggregation, baseline runs, K scan,
+extra seeds, F7-F9, and other experiments remain unauthorized. The fresh
+entity annotation/validation, M1, M2, full-IE F1, F2, F3, F4a, F4b, F5, F6
+initial replay, and F6 recovery gates are consumed.
 LaTeX was deliberately not changed; any result propagation into a manuscript
 requires a later, separate approval after result-to-claim.
 
@@ -1538,11 +1572,16 @@ Remote:
   `/root/autodl-tmp/full_ie/f6_replay_prep_20260802/workspace` and did not
   overwrite `/root/project`. Its partial verified backup is under
   `/root/autodl-tmp/backup/full_ie/f6_replay_prep_20260802/`.
-- Last verified mode at F6 partial closeout on 2026-08-02: GPU-free/no-card
-  (`No devices were found`, `/dev/nvidia0` absent), with no vLLM, Qwen,
-  extraction, verifier process, Python runner, or screen session. The no-card
-  cgroup `memory.max` is `2,147,483,648` bytes. The complete F4b backup remains
-  under `/root/autodl-tmp/backup/full_ie/f4b_cluener_tune_20260802/`.
+- F6 recovery used another independent workspace at
+  `/root/autodl-tmp/full_ie/f6_cluener_replay_recovery_20260803/workspace` and
+  did not overwrite `/root/project`. Its verified backup is under
+  `/root/autodl-tmp/backup/full_ie/f6_cluener_recovery_20260803/`.
+- Last verified mode at F6 recovery closeout on 2026-08-03: the paid RTX 4090
+  remains visible with `0 MiB` used, no compute app, vLLM, Qwen, recovery
+  runner, or active screen. One historical dead screen socket is preserved.
+  The paid-mode cgroup `memory.max` was `128,849,018,880` bytes. The human must
+  shut down the paid instance. The complete F4b backup remains under
+  `/root/autodl-tmp/backup/full_ie/f4b_cluener_tune_20260802/`.
 
 Useful no-Python status command:
 
@@ -1554,15 +1593,15 @@ ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status -
 
 The route decision is complete: pursue the minimum defensible full-IE extension
 and retain the narrow JISE NER package as fallback. F1-F3, F4a domain-dev
-sanity, F4b CLUENER tune sanity, and F5 protocol freeze are complete. F6 replay
-preparation is partial and blocked by the no-card memory limit. IE021 remains a
-preserved blocked first attempt; IE022 completes F2 under its structural/full-
-disclosure criterion. F4a/F4b ran only sanity data, F5 froze identities and
-dependencies, and F6 prepared only the domain replay dependency. There are
-still `0/60` complete full-IE cells. A new session must not infer recovery,
-final-evaluation, aggregation, or paper authority from the consumed F6 gate.
+sanity, F4b CLUENER tune sanity, F5 protocol freeze, and F6 replay preparation
+are complete. IE021 and the initial F6 no-card resource stop remain preserved
+blocked attempts; IE022 completes F2 under its structural/full-disclosure
+criterion. F4a/F4b ran only sanity data, F5 froze identities/dependencies, and
+F6 prepared the domain and CLUENER replay dependencies without model calls.
+There are still `0/60` complete full-IE cells. A new session must not infer F7,
+final-evaluation, aggregation, or paper authority from the consumed F6 gates.
 
-### Current state: F6 partial, stopped at the CLUENER memory boundary
+### Current state: F6 replay complete; no final execution gate
 
 The initial A/B returns and 90-error IE021 report remain locked negative
 evidence. The user attested both submissions were human-produced. Human-revised
@@ -1579,12 +1618,12 @@ D is slower and below C. F4b then shows D strongest on the 50-record CLUENER
 tune subset, but its E-prime row is negative and E's small positive F1 delta
 does not pass the deletion-audit gate. F4b is tune-only, not public benchmark
 generalization. F5 locks the literal 60-cell protocol, but all 60 cell configs
-and execution nodes remain unauthorized. F6 verified the 170-row domain replay;
-CLUENER remains `0/1343` because 2 GiB is below the 4.54 GB weight lower bound.
-AutoDL is no-card and the F6 gate is consumed. Stop until the human separately
-authorizes a memory-capable CLUENER replay recovery; do not run official
-CLUENER evaluation or new `domain_test` prompt/model work, enter F7-F9, or edit
-the paper.
+and execution nodes remain unauthorized. F6 verified the 170-row domain replay
+and the recovered 1,343-row CLUENER replay; this is dependency preparation, not
+evaluation evidence. The paid 4090 is idle at `0 MiB`, pending human shutdown.
+Stop until the human separately authorizes a bounded F7 batch and budget; do
+not run official CLUENER final evaluation or new `domain_test` prompt/model
+work, enter F7-F9, or edit the paper.
 
 ### Later sequence: planned, not authorized
 
@@ -1595,9 +1634,9 @@ the paper.
    gate; fixed CLUENER tune sanity is audited, backed up, and stopped.
 4. F5: complete under the consumed `FULL_IE_F5_PROTOCOL_FREEZE_APPROVED` gate;
    60 identities and all dependency/resource/source locks are frozen.
-5. F6: partial; domain replay is complete, CLUENER replay is memory-blocked.
-   Recovery requires `FULL_IE_F6_CLUENER_REPLAY_RECOVERY_APPROVED`, materially
-   more than 4.54 GB container memory, and a versioned recovery guard.
+5. F6: complete; domain replay has 170 rows and recovered CLUENER replay has
+   1,343 rows. The initial resource stop and the resumed checkpoint are both
+   preserved; no model call or final cell was produced.
 6. F7: run the 30 domain final cells in bounded paid batches, reusing the 12
    existing Stage N outputs and adding Stage R.
 7. F8: run the 30 CLUENER NER cells on complete labeled official dev.
