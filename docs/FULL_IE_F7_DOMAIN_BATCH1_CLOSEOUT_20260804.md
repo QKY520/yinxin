@@ -162,3 +162,11 @@ failures. No project Python ran on Windows.
 contributes exactly four final cells. There is no open next experiment gate.
 Seeds 43/44, E/E-prime, K scans, CLUENER final evaluation, F8/F9, aggregation,
 paper propagation, and GitHub synchronization remain unauthorized.
+
+The recommended next proposal is IE051: eight Stage R-only A/B/C/D K=5 cells
+for seeds43/44, reusing locked P5 Stage N outputs. Its value is to produce a
+three-seed RE mean/SD at minimal additional model scope, followed by an
+immediate result-to-claim stop. IE051 is not approved by this report. If the
+replicated RE signal remains weak, `HAS_METRIC` remains at zero TP, or D remains
+non-positive versus C, the preferred paper route is the NER-centered fallback
+with RE disclosed as an exploratory limitation.

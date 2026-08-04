@@ -65,6 +65,12 @@ repair completed with the full remote suite at `200/200`. vLLM was stopped;
 the instance is back in no-card mode with no model/F7 process. F8-F9, paper,
 and GitHub gates remain closed.
 
+No next gate is open. The recommended next proposal is IE051: eight Stage
+R-only cells for A/B/C/D at K=5 seeds43/44, reusing the eight locked P5 Stage N
+files. Its sole purpose is to complete a three-seed exact RE mean/SD before a
+new result-to-claim stop. IE051 is `PLANNED`, not authorized; this tracker row
+does not permit config preparation, GPU use, model calls, or output creation.
+
 ## Protocol and Implementation
 
 | Run ID | Milestone | Purpose | Scope | Cells | Priority | Status | Gate / notes |
@@ -84,6 +90,7 @@ and GitHub gates remain closed.
 | IE040 | F6 | Initial leakage-safe RAG replay preparation | Domain three-seed consensus plus no-card CLUENER dev text retrieval | 0 | MUST | BLOCKED | Preserved resource stop: domain 170/170 passes; CLUENER 0/1343 because 2 GiB was below the 4.54 GB weight lower bound |
 | IE041 | F6 | Recover frozen CLUENER RAG replay | CPU FP32 retrieval on the 1,343-row labeled official dev split; paid card for memory only | 0 | MUST | DONE | Resumed from verified 479-row checkpoint; final 1343 rows/4029 passages; zero self-hit, prohibited fields, or >=0.80 containment hits |
 | IE050 | F7 | Prepare and execute Domain Final Batch 1 | A/B/C/D, K=5, seed42; Stage R only over four locked P5 Stage N files | 4 | MUST | DONE | 680/680 rows complete; exact RE F1 0.040541/0.056972/0.057971/0.045381; 10/680 parse failures; backup verified; matrix 4/60 |
+| IE051 | F7 | Replicate Domain A-D K=5 Stage R | A/B/C/D, K=5, seeds43/44; Stage R only over eight locked P5 Stage N files | 8 | MUST | PLANNED | Recommended next proposal only; no gate exists; complete three-seed RE mean/SD, then stop for result-to-claim |
 
 ### F3 Closeout (2026-07-31)
 
@@ -360,6 +367,33 @@ and GitHub gates remain closed.
 - The gate is consumed. There is no open authority for seeds 43/44, E/E-prime,
   K scans, CLUENER final evaluation, F8/F9, aggregation, paper work, or GitHub
   synchronization.
+
+### Proposed IE051 Domain K=5 Replication (Not Authorized)
+
+- Proposed cells: A/B/C/D at K=5 for seeds43 and 44, eight final domain cells
+  total.
+- Suggested future approval token:
+  `FULL_IE_DOMAIN_K5_REPLICATION_BATCH_APPROVED`. It is not granted by this
+  tracker and carries no authority until the human explicitly sends it.
+- Reuse requirement: use the eight hash-locked P5 Stage N outputs. Do not rerun
+  Stage N or alter F5/F7 source, prompt, metric, parser, or output contracts.
+- Scientific purpose: combine IE051 with the four completed seed42 cells to
+  compute A/B/C/D three-seed exact RE mean/sample-SD. This is the minimum useful
+  checkpoint before deciding whether more full-IE spending is justified.
+- Required future gate: it must explicitly authorize no-card hash/config prep,
+  the eight Stage R model cells, a newly reported live 4090 price, a paid
+  time/cost stop, per-cell validation, backup, and lightweight synchronization.
+- Exclusions should include E/E-prime, K=1/10, Stage N reruns, CLUENER final
+  evaluation, F8/F9, manuscript propagation, and GitHub synchronization.
+- Post-batch stop: recompute three-seed RE metrics and request a bounded
+  result-to-claim decision. If RE remains weak, `HAS_METRIC` remains at zero TP,
+  or D remains non-positive versus C, prefer the NER-centered fallback rather
+  than filling the remaining matrix merely for completeness.
+- Current status is `PLANNED`. No command or artifact creation is authorized by
+  this proposal or tracker entry.
+- Alternative human decision: stop the full-matrix extension and request
+  separate result-to-claim plus NER-manuscript gates. Listing that alternative
+  does not authorize paper edits.
 
 ## Domain Final Matrix: 30 Reported Cells
 

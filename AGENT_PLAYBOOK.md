@@ -6,7 +6,7 @@
 >
 > PAPER STRATEGY UPDATE (2026-07-20): The project is now framed for a practical SCI-Q4 submission within roughly one month and a 400 CNY target budget. The original route is retained: equipment-domain small annotated dataset + reproducible few-shot IE pipeline + RAG/glossary/schema constraints + verification to reduce hallucination + ablation evidence. Draft Chinese first, then produce the English SCI manuscript. NER is the main evidence line; RE is auxiliary.
 >
-> EXECUTION STATUS UPDATE (2026-08-01): P0-P6 for the narrow NER route, F1 implementation, F2 relation calibration, F3 resources/configs, and F4a domain-dev IE sanity are complete. Current result-to-claim remains `partial`: frozen-test evidence supports only narrow low-label Chinese equipment-domain NER. F4a is dev-only and exposes weak RE (A-D exact F1 at most `0.056680`), a local positive E′ signal, a negative E result, and D relation parse failure `6%`; it creates no final matrix cell, so accounting remains `0/60`. The human explicitly granted `FULL_IE_CLUENER_TUNE_SANITY_APPROVED` on 2026-08-01 for F4b CDEV1/CDEV2 only. Post-approval preflight still found AutoDL in no-card mode (`No devices found`, `/dev/nvidia0` absent), with no vLLM/Qwen/runner process or screen session. F4b is therefore authorized but not started and is waiting for the human to boot the 4090 and report the live hourly price. Once the GPU is visible, the gate permits only A/B/C/D/E/E′, K=5 seed42 on the deterministic 50-record `cluener_tune` subset; it forbids official CLUENER dev/test, `domain_test`, F5/F6, final matrix work, manuscript edits, and GitHub sync. See `HANDOFF.md` before acting.
+> EXECUTION STATUS UPDATE (2026-08-04): P0-P6 for the narrow NER route and full-IE F1-F6 are complete. F7 Domain Final Batch 1 is also complete for A/B/C/D K=5 seed42 Stage R over four locked P5 Stage N files. Exact RE F1 is `0.040541/0.056972/0.057971/0.045381`; D is below C and every cell has zero `HAS_METRIC` TP. These are four single-seed final cells, so the result-to-claim verdict remains `partial`: narrow three-seed equipment-domain NER is supported, while positive RE, RAG-for-RE, CoVe, public transfer, K robustness, and a complete full-IE claim remain unsupported. Literal accounting is `4/60`. `FULL_IE_DOMAIN_FINAL_BATCH_APPROVED` and all earlier gates are consumed. No experiment, aggregation, paper, or GitHub gate is open. IE051 (A/B/C/D K=5 seeds43/44, Stage R only over eight locked P5 Stage N files) is a recommended `PLANNED` proposal, not authorization. AutoDL was last verified no-card with no model/F7 process. See `HANDOFF.md` before acting.
 
 ---
 
@@ -23,16 +23,16 @@
 9. **SECURITY/COMPLIANCE**: only public, non-classified corpora (licenses: CMNEE per repo, Few-NERD CC BY-SA 4.0, CLUENER Apache 2.0). If the human ever supplies non-public documents, PAUSE and ask for explicit confirmation of compliance before any processing.
 10. **PAUSE GATES** (`⏸️`): stop and ask the human. **VERIFY GATES** (`✅`): machine-checkable; all conditions must pass before the next phase. On gate failure, follow the FIX branch; if no branch fires, pause and report.
 11. **CURRENT STOP**: the historical P0-P7 commands below are reference
-    contracts, not live authorization. The only live experiment authority is
-    `FULL_IE_CLUENER_TUNE_SANITY_APPROVED`, bounded exactly to F4b CDEV1/CDEV2
-    on the frozen 50-record `cluener_tune` subset at K=5 seed42. The agent must
-    not create, rent, or switch hardware. Until the human boots the 4090 and
-    reports its live price, only documentation/Git/read-only inspection is
-    allowed. After GPU preflight, execute only versioned F4b copies of the
-    hash-locked F3 configs, preserve raw/cache/per-query outputs, then stop
-    vLLM, back up, verify, report cost, and return to no-card mode. Official
-    CLUENER dev/test, `domain_test`, F5/F6, final evaluation, paper edits, and
-    GitHub sync remain forbidden.
+    contracts, not live authorization. There is no live experiment authority.
+    Keep the instance no-card and do not create, rent, or switch hardware.
+    IE051 is only a recommended proposal for eight A/B/C/D K=5 seeds43/44
+    Stage R cells over locked P5 Stage N outputs; it must not be prepared or run
+    without a new exact human gate. Official CLUENER final evaluation, other
+    domain cells, Stage N reruns, E/E-prime, K scans, aggregation, result
+    propagation, paper edits, and GitHub sync remain forbidden. Every future
+    paid phase must repeat GPU/process/hash/collision preflight, preserve
+    raw/cache/per-query outputs, stop vLLM, back up, verify, report cost, and
+    return to no-card mode.
 
 ---
 
@@ -243,7 +243,7 @@ FIX: a config underperforms its predecessor (e.g., C < B) → do NOT delete the 
 
 Aggregate, generate final `results/summary.md`, verify all backups (code pushed; `/root/autodl-tmp` tarball in file storage; cache/ included), then report to human: best config, largest F1 contributor, largest hallucination reduction, total spend, and open questions. Remind human to shut down the instance.
 
-Current evidence stance as of 2026-07-30: use `docs/RESULT_TO_CLAIM_P5_DOMAIN_20260725.md`,
+Current evidence stance as of 2026-08-04: use `docs/RESULT_TO_CLAIM_P5_DOMAIN_20260725.md`,
 `docs/P5_DOMAIN_PAPER_EVIDENCE_20260725.md`, `docs/P5_PAPER_REVIEW_AUDIT_20260725.md`,
 `docs/P5_PAPER_P0_REVIEW_FEEDBACK_20260725.md`, and `findings.md` as the
 P5 evidence base. Add
@@ -256,11 +256,16 @@ recall/F1 and D clearly better on precision and false-positive reduction. Do
 not claim significant superiority, relation extraction success, final
 verification gains, public generalization, K robustness, or full-matrix
 completion. F4a adds only dev evidence: E′ improved while E degraded, and RE
-remained extremely weak. The next action is F4b under the already granted
-`FULL_IE_CLUENER_TUNE_SANITY_APPROVED` gate, currently waiting for the human to
-boot the 4090. Execute only the deterministic 50-record CLUENER tune sanity in
-`HANDOFF.md`; do not skip to official dev/test, `domain_test`, F5/F6, final
-evaluation, or paper edits.
+remained extremely weak. F4b is tune-only and neither verifier deletion audit
+reached 70%. F7 adds four auditable final cells but not a positive RE result:
+A/B/C/D exact RE F1 is `0.040541/0.056972/0.057971/0.045381`, D is below C,
+and every cell has zero `HAS_METRIC` TP. Use
+`docs/FULL_IE_F7_DOMAIN_BATCH1_CLOSEOUT_20260804.md` for exact provenance. The
+NER line remains the paper's primary contribution; F7 supports reproducibility
+and limitation analysis only. No next action is authorized. The recommended
+future IE051 proposal would complete A/B/C/D K=5 seeds43/44 Stage R and then
+stop for result-to-claim; do not execute it, official CLUENER final evaluation,
+other domain cells, aggregation, or paper edits without new exact gates.
 
 ## 10. OPTIONAL PHASE P7 — QLoRA fine-tune (only if human approves after P6)
 

@@ -10,26 +10,27 @@ and aggregation. Use a paid GPU boot only for model inference or training.
 After every GPU phase: verify outputs, back up, sync lightweight artifacts to
 `D:\yinsir`, report cost, and remind the human to shut down the instance.
 
-**CURRENT GATE (2026-08-01)**: The live status is maintained in `HANDOFF.md`.
-P0-P6 for the narrow NER route, F1 implementation, F2 relation calibration, F3
-resource/config preparation, and F4a domain-dev IE sanity are complete. Current
-result-to-claim remains `partial`: frozen-test evidence supports narrow
-low-label Chinese equipment-domain NER only. F4a is dev-only: A-D exact RE F1
-is at most `0.056680`, E-prime has a local positive NER/RE signal, E is
-negative, and D relation parse failure is `6%`. These sanity rows are not final
-cells; the 60-cell matrix remains `0/60`.
+**CURRENT GATE (2026-08-04)**: The live status is maintained in `HANDOFF.md`.
+P0-P6 for the narrow NER route and full-IE F1-F6 are complete. F7 Domain Final
+Batch 1 is also complete for `domain:A/B/C/D:k5:s42`, Stage R only over four
+locked P5 Stage N files. Exact RE F1 is
+`0.040541/0.056972/0.057971/0.045381`; all four cells have zero `HAS_METRIC` TP,
+and D is below C. Current result-to-claim therefore remains `partial`: the
+three-seed frozen-test evidence supports narrow low-label Chinese
+equipment-domain NER, while positive RE, RAG-for-RE, CoVe, public transfer, K
+robustness, and full-IE claims remain unsupported. Literal matrix accounting is
+now `4/60`, not a complete matrix or three-seed RE aggregate.
 
-The human explicitly granted `FULL_IE_CLUENER_TUNE_SANITY_APPROVED` on
-2026-08-01. This single live gate authorizes only F4b CDEV1/CDEV2 on the
-deterministic 50-record `cluener_tune` subset: A/B/C/D/E/E-prime, K=5, seed42,
-NER/entity-only verification. Post-approval SSH preflight still found no GPU
-(`No devices found`, `/dev/nvidia0` absent), no vLLM/Qwen/runner process, and no
-screen session, so F4b has not started and has incurred no new cost. Wait for
-the human to boot the 4090 24 GB and report the live hourly price; the agent
-must not rent or switch hardware. The gate forbids official CLUENER dev/test,
-`domain_test`, F5/F6, final matrix work, paper edits, and GitHub sync. The total
-project budget target remains 400 CNY; the last reported 4090 price is 2.7
-CNY/hour. Use only the non-secret SSH alias `autodl-paper`.
+There is no open experiment, aggregation, paper-propagation, or GitHub gate.
+`FULL_IE_DOMAIN_FINAL_BATCH_APPROVED` and every earlier bounded gate are
+consumed. The recommended next experiment is only a proposal: eight Stage
+R-only cells for A/B/C/D, K=5, seeds43/44, reusing the locked P5 Stage N files,
+followed immediately by result-to-claim. It is tracked as `IE051=PLANNED` and
+must not be prepared or executed until the human grants a new exact bounded
+gate. The instance was last verified in no-card mode (`No devices found`), with
+a 2 GiB cgroup, no vLLM/Qwen/F7 process, and only the preserved historical dead
+F6 screen. The total project budget target remains 400 CNY; the last reported
+4090 price is `2.8 CNY/hour`. Use only the non-secret SSH alias `autodl-paper`.
 
 ## Execution Authority
 
@@ -216,14 +217,16 @@ before rewriting the manuscript. This is a target inventory, not a result.
 
 ## Current Priority And State
 
-Current step: **F4b CLUENER tune sanity is authorized but waiting for the human
-to boot the 4090**. `FULL_IE_CLUENER_TUNE_SANITY_APPROVED` is already granted;
-do not request or infer a broader gate. Until the GPU is visible and the human
-reports the live price, only documentation, Git, and read-only inspection are
-allowed. Once preflight passes, run only CDEV1/CDEV2 on the frozen 50-record
-`cluener_tune` subset at K=5 seed42. The narrow SCI-Q4-oriented NER draft remains
-fallback evidence, not a complete IE matrix. Preserve calibration F1 `0.8000`,
-the stricter `0.85` miss, weak `TECH_SCHEME`, and absent formal test IAA.
+Current step: **stop at the completed F7 Domain Final Batch 1 closeout**. No
+execution gate is open. Keep AutoDL in no-card mode and limit work to
+documentation, Git, SSH/SCP, and read-only verification until the human grants
+a new exact bounded gate. The recommended next proposal is IE051: A/B/C/D,
+K=5, seeds43/44, Stage R only over eight locked P5 Stage N files. Its purpose is
+to obtain a three-seed RE mean/SD before deciding whether any E/E-prime, K-scan,
+CLUENER-final, or paper work is worth the cost. The narrow SCI-Q4-oriented NER
+draft remains fallback evidence and the strongest paper line. Preserve
+calibration F1 `0.8000`, the stricter `0.85` miss, weak `TECH_SCHEME`, absent
+formal test IAA, and every negative RE/verification result.
 
 - Local workspace: `D:\yinsir`.
 - Git repository: `main` tracks `origin/main`. As of the latest handoff, local
@@ -243,7 +246,7 @@ the stricter `0.85` miss, weak `TECH_SCHEME`, and absent formal test IAA.
   65 retained files are recorded in the P0 SHA256 manifest. The redundant
   BGE-M3 ONNX export was removed with human approval.
 - Storage: 30 GB system disk and 120 GB data disk at `/root/autodl-tmp`; about
-  80 GB was free after P0 cleanup.
+  59 GB was free at the F7 closeout.
 - Remote code: `/root/project` was last read-only checked at Git HEAD `863c701`
   with manually synced modified/untracked P6 files. Do not clean or reset it;
   local Git is the authoritative tracked history while GitHub push is blocked.
@@ -307,6 +310,22 @@ the stricter `0.85` miss, weak `TECH_SCHEME`, and absent formal test IAA.
   parse failures and all A-D rows have zero `HAS_METRIC` TP. Relation-aware
   E-prime improves dev NER/RE F1, while E lowers both. The strict v0 A failure
   and sole r1 parser revision are preserved. These are dev diagnostics only.
+- F4b CLUENER tune sanity is complete. A/B/C/D NER F1 is
+  `0.524444/0.563107/0.571429/0.638889`; E-prime lowers F1 and E raises it only
+  slightly. Both deletion audits miss the `70%` positive-claim threshold.
+- F5 freezes all 60 final config IDs, resources, source hashes, reuse locks,
+  metrics, seeds, and output paths. It creates no empirical cell by itself.
+- F6 leakage-safe replay preparation is complete: domain has 170 rows/510
+  passages, and recovered CLUENER labeled dev has 1,343 rows/4,029 passages.
+  The first 2 GiB no-card memory stop is preserved. Recovery used CPU FP32 with
+  the paid card only to unlock container memory and made zero model calls.
+- F7 Domain Final Batch 1 is complete for four A/B/C/D K=5 seed42 cells. Its
+  680-row audit records 647 model requests, 52 deterministic skips, 19 retries,
+  `10/680 = 1.470588%` relation parse failures, and zero unsupported types or
+  type-matrix violations. The v1 finalization failure is preserved; the
+  versioned v2 no-model repair passed the full remote suite at `200/200`.
+  Remote backup verification passed `713/713`, lightweight results were mirrored
+  locally, and matrix accounting is `4/60`.
 - P5 M0 config preparation is complete, followed by two bounded paid gates:
   `P5_DOMAIN_PILOT_APPROVED` for A/B/C/D K=5 seed 42 and
   `P5_DOMAIN_REPLICATION_APPROVED` for A/B/C/D K=5 seeds 43/44 on
@@ -331,12 +350,13 @@ the stricter `0.85` miss, weak `TECH_SCHEME`, and absent formal test IAA.
   `1.000000`. The human accepted the original `>=0.80` minimum for manuscript
   progression. This is valid calibration agreement, not frozen-test formal IAA.
 - Full-matrix accounting: the original contract contains 60 final model cells
-  (36 K=5 cells plus 24 A/E K-scan cells). Twelve domain A/B/C/D K=5 cells have
-  reusable Stage N only; none is a complete full-IE cell, so final accounting is
-  `0/60`. F4a's six dev rows do not count. All 30 domain final cells still need
-  Stage R, and CLUENER final evaluation must use labeled official dev rather
-  than its unlabeled official test. Only the bounded F4b tune gate is currently
-  open; every freeze/final/aggregation/paper phase needs a later gate.
+  (36 K=5 cells plus 24 A/E K-scan cells). Four domain A/B/C/D K=5 seed42 cells
+  are complete. Eight domain A/B/C/D K=5 seed43/44 cells retain reusable Stage
+  N only; 48 cells are wholly absent. Final accounting is `4/60`, with `56/60`
+  incomplete. F4a/F4b sanity rows do not count. CLUENER final evaluation must
+  use labeled official dev rather than its unlabeled official test. Every next
+  experiment, aggregation, result-propagation, and paper phase needs a new
+  exact bounded gate.
 - Current paper artifacts are Markdown, not DOCX. All generated `.docx` files
   under the project docs were deleted on 2026-07-25 at the user's request after
   encoding/rendering problems. The current editable draft is
@@ -350,14 +370,15 @@ the stricter `0.85` miss, weak `TECH_SCHEME`, and absent formal test IAA.
   2026-07-24 18:16:34-19:27:50 CST, about 3.2 CNY at 2.7 CNY/hour. Platform
   billing remains authoritative. vLLM was stopped after paid runs.
 
-The sole current exception to the general stop is the already granted
-`FULL_IE_CLUENER_TUNE_SANITY_APPROVED` gate. It permits paid GPU/vLLM/model calls
-only for fixed F4b CDEV1/CDEV2 (`cluener_tune50`, A-D plus E/E-prime, K=5,
-seed42). It does not permit official CLUENER dev/test, `domain_test`, K=1/K=10,
-more seeds, F5/F6, final evaluation, paper edits, or GitHub sync. Before the
-human boots the 4090, remain documentation/read-only. After the run, stop vLLM,
-back up and hash-verify, sync lightweight artifacts, report cost, and ask the
-human to return the instance to no-card mode.
+There is no exception to the general stop. The proposed IE051 replication
+batch, official CLUENER labeled-dev evaluation, other domain cells, Stage N
+reruns, E/E-prime, K=1/K=10, aggregation, result-to-claim execution, paper
+edits, and GitHub synchronization are all unauthorized. A future gate must name
+its exact cells, dependencies, model-call permission, live price, cost/time
+stop, validation, backup, and exclusion list. After every future paid phase,
+stop vLLM, verify zero model processes, back up and hash-verify, sync
+lightweight artifacts, report cost, and ask the human to return the instance to
+no-card mode.
 
 ## Fixed Technology Decisions
 
@@ -632,7 +653,8 @@ statements in `results/summary.md`.
   largest hallucination reducer, total cost, and open questions.
 - Current status: result-to-claim, fresh human calibration, and manuscript
   preparation are complete for the narrow fallback. The selected full-IE route
-  has completed F1-F4a; F4b is authorized and waiting for human GPU startup.
+  has completed F1-F6 and F7 Domain Batch 1. Four final cells count as `4/60`;
+  no gate is open, and proposed IE051 remains `PLANNED` only.
 
 ### P7 - Optional QLoRA
 

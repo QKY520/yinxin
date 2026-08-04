@@ -158,6 +158,14 @@ dev-only: E-prime improves dev NER/RE F1 while E lowers both. F4b remains
 tune-only: E-prime is negative and E's slight gain misses the deletion-audit
 threshold. Public generalization and positive CoVe remain unsupported.
 
+**Paper consequence**: F7 helps paper refinement by proving that the frozen
+two-stage IE pipeline produces auditable final cells and by supplying honest
+failure analysis. It does not improve the headline result: exact RE remains
+weak, D does not beat C, and `HAS_METRIC` has no TP. Keep the three-seed NER
+result as the primary contribution and treat RE as an exploratory extension or
+limitation unless later three-seed evidence changes the result-to-claim verdict.
+No manuscript propagation is currently authorized.
+
 **Current breakpoint**: F1, F2, F3, F4a DDEV1/DDEV2, F4b CDEV1/CDEV2, F5,
 F6, and F7 Domain Batch 1 are complete. IE021, the initial F6 no-card memory
 stop, F4a strict v0 A failure, and F7 v1 finalization failure remain preserved.
@@ -172,11 +180,14 @@ hash verification. Current SSH is no-card: `No devices found`, 2 GiB cgroup,
 about 59 GB free, no model/F7 process, and only the preserved dead F6 screen.
 
 **Next step**: stop. No experiment gate is open after the consumed
-`FULL_IE_DOMAIN_FINAL_BATCH_APPROVED` gate. A later bounded proposal could cover
-the next domain cells, but it must be separately reviewed for scope, dependency
-reuse, cost, and claim value. Seeds 43/44, E/E-prime, K=1/10, official labeled
-CLUENER dev evaluation, F8/F9, aggregation, paper edits, and GitHub
-synchronization remain unauthorized.
+`FULL_IE_DOMAIN_FINAL_BATCH_APPROVED` gate. The recommended next proposal is
+`IE051`: exactly eight Stage R-only cells, A/B/C/D at K=5 seeds43/44, reusing
+the eight locked P5 Stage N files. Its purpose is to turn the current single-
+seed RE rows into a three-seed mean/SD before deciding whether full-matrix work
+has enough paper value. `IE051` is `PLANNED`, not approved: no config prep,
+model call, GPU boot, or output creation may occur without a new exact human
+gate. E/E-prime, K=1/10, official labeled CLUENER dev evaluation, F8/F9,
+aggregation, paper edits, and GitHub synchronization remain unauthorized.
 
 **Red lines**: never run project Python locally on Windows; never tune from
 frozen test; preserve every negative row; never call E-prime failed; never
@@ -1569,6 +1580,8 @@ Local:
   `72065fe full-ie: close F4a domain dev sanity`.
 - F4b closeout commit:
   `6ad6070 exp: close out F4b CLUENER tune sanity`.
+- F7 Domain Batch 1 closeout commit:
+  `f03c1b8 full-ie: close F7 domain batch 1`.
 - The F1 closeout adds only the eight approved Stage R/manifest runner and test
   files listed in Section 1, this handoff, and the dated full-IE tracker. It
   leaves all untracked P6, M1, M2, and old-plan artifacts untouched.
@@ -1704,6 +1717,42 @@ and D is below C. The gate is consumed, vLLM is stopped, and the instance is in
 no-card mode. Do not run official CLUENER final evaluation, other domain cells,
 Stage N, E/E-prime, F8/F9, or edit the paper without a new bounded gate.
 
+### Recommended next decision: IE051, not authorized
+
+The highest-value next experiment is the cheapest route to interpretable RE
+evidence: finish A/B/C/D K=5 seeds43/44 with Stage R only. The eight P5 Stage N
+files already exist and are hash-locked, so IE051 avoids new Stage N inference
+and enables a proper three-seed exact RE mean/SD for the four established NER
+variants.
+
+Suggested future approval token: `FULL_IE_DOMAIN_K5_REPLICATION_BATCH_APPROVED`.
+This token is documented for convenience but has **not** been granted. It must
+authorize exactly IE051 and carry no implied authority for any other cell or
+paper action.
+
+Before any work, the human must grant a new exact bounded gate. Under that gate,
+the agent should first remain no-card, verify all eight Stage N hashes and target
+absence, create versioned execution copies without changing F5/F7 locks, and
+derive a paid time/cost stop from the observed F7 envelope plus the newly
+reported live price. Only then should the human attach the approved RTX 4090
+and the agent run the eight cells serially with per-cell validation. After the
+last cell, stop vLLM, verify no model process, back up and hash-check everything,
+sync lightweight artifacts, and return to no-card mode.
+
+Immediately after IE051, recompute A/B/C/D three-seed RE mean/SD and run a
+bounded result-to-claim decision before spending on E/E-prime, K scans, or
+CLUENER final cells. If exact RE remains around the current weak range, no
+`HAS_METRIC` TP emerges, or D remains non-positive versus C, the recommended
+route is to stop the 60-cell expansion and refine the NER-centered fallback
+paper with RE framed as an exploratory limitation. Completing more cells must
+never be used to rerun away a negative result.
+
+The human may instead choose to stop the full-matrix route now and pursue the
+NER-centered fallback. That alternative would require separate result-to-claim
+and manuscript-propagation approvals; it does not authorize paper edits merely
+because it is listed here. A new session must present the choice and wait rather
+than silently selecting either route.
+
 ### Later sequence: planned, not authorized
 
 1. F3: complete; domain-dev and CLUENER-tune resources/configs are prepared.
@@ -1716,18 +1765,18 @@ Stage N, E/E-prime, F8/F9, or edit the paper without a new bounded gate.
 5. F6: complete; domain replay has 170 rows and recovered CLUENER replay has
    1,343 rows. The initial resource stop and the resumed checkpoint are both
    preserved; no model call or final cell was produced.
-6. F7: Batch 1 is complete for A/B/C/D K=5 seed42 Stage R. Any remaining domain
-   seed, verifier, or K-scan batch needs a separate proposal and human gate.
+6. IE051/F7: recommended but not authorized; complete A/B/C/D K=5 seeds43/44
+   Stage R over eight locked P5 Stage N files, then stop for result-to-claim.
 7. F8: planned, not authorized; run 30 CLUENER NER cells on complete labeled
    official dev only after its own gate.
 8. F9: planned, not authorized; aggregate and perform paired
    uncertainty/result-to-claim, then request a
    separate manuscript-propagation gate.
 
-The original plan estimates `125-295 CNY` of additional paid compute. F4a now
-provides a first dev benchmark, but the estimate still has large uncertainty
-and must be recalculated before final batches because final split sizes, cache
-reuse, RAG latency, and paid-mode idle time differ from the bounded sanity.
+The original pre-F7 plan estimated `125-295 CNY` of additional paid compute.
+That is historical planning context, not a current remaining-cost estimate or
+authorization. Any IE051 gate must recalculate from F7's measured runner and
+paid-envelope timings, exact cache reuse, and the newly reported live price.
 Stop for a new budget decision before additional spend exceeds 300 CNY or the
 project total approaches the existing 400 CNY target. Platform billing is
 authoritative.
@@ -1854,10 +1903,20 @@ journal submission remains unauthorized.
 - Completing all 60 rows proves evaluation completeness, not positive module
   gains. Negative RE, CoVe, RAG, glossary, public-transfer, or K-sensitivity
   findings must remain visible and control the final claims.
-- The 12 frozen A/B/C/D K=5 outputs can reuse Stage N by hash. Stage R and exact
-  directed metric infrastructure now have a real dev sanity, but no dev output
-  counts as a final full-IE cell. Final Stage R still requires separately
-  authorized frozen-protocol execution.
+- The 12 frozen A/B/C/D K=5 outputs can reuse Stage N by hash. Four seed42 cells
+  now have final Stage R and count as `4/60`; the eight seed43/44 Stage N files
+  are the cheapest path to a three-seed RE checkpoint. Never rerun Stage N when
+  the frozen hash-locked artifact already exists.
+- F7 shows that a complete, audited final cell is not automatically a positive
+  result. A/B/C/D exact RE F1 remains weak, D does not beat C, and every cell has
+  zero `HAS_METRIC` TP. Matrix progress and contribution support are separate
+  facts.
+- Post-inference bookkeeping can fail after valid model outputs. Preserve the
+  failed finalizer log and locked outputs, make the smallest versioned no-model
+  repair, regression-test it, and never overwrite the original execution lock.
+- Paid cost must use the observable GPU envelope, not only summed runner time.
+  F7 used 1,198.505 runner seconds inside an approximately 2,463-second paid
+  envelope; startup, validation, repair, shutdown, and backup overhead matter.
 - AutoDL no-card mode may have tight memory limits. Avoid loading BGE-M3 unless
   needed; prefer cached/replay artifacts when they preserve comparisons.
 - DOCX output caused encoding/rendering trouble in this workflow. Use Markdown
