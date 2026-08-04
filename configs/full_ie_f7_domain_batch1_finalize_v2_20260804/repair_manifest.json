@@ -1,0 +1,28 @@
+{
+  "approved_gate": "FULL_IE_DOMAIN_FINAL_BATCH_APPROVED",
+  "batch_report_path": "/root/project/results/full_ie/final_v1/batches/f7_domain_batch1_seed42_abcd.json",
+  "execution_manifest": {
+    "path": "configs/full_ie_f7_domain_batch1_exec_20260803/execution_manifest.json",
+    "sha256": "893d79bcba8e5394208de28a0770cd2b9909c4d0361b0dc9015c726355e611b1"
+  },
+  "gpu_required": false,
+  "matrix_after_if_valid": "4/60",
+  "matrix_before": "0/60",
+  "model_calls_allowed": false,
+  "preserve_v1_failure": true,
+  "schema_version": "full-ie-f7-domain-batch1-finalize-repair-v2",
+  "scope": "finalize_batch_only",
+  "source_locks": [
+    {
+      "path": "scripts/finalize_full_ie_f7_batch_v2.py",
+      "sha256": "5fa0640e6228e2d0d0bf871f0c75d8041510544d8ec00908bc93b556b0ed58c4"
+    },
+    {
+      "path": "tests/test_full_ie_f7_batch_v2.py",
+      "sha256": "48d776b2855833d99b3e1e6c30c7addfba01d7307bc3b811dfe807eb6330876a"
+    }
+  ],
+  "status": "AUTHORIZED_NO_MODEL_FINALIZATION_REPAIR",
+  "v1_failure": "AttributeError: 'str' object has no attribute 'open'",
+  "v1_failure_log_path": "/root/autodl-tmp/full_ie/f7_domain_batch1_20260803/runtime/finalize_batch_v1_failed.log"
+}
