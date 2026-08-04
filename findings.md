@@ -1,5 +1,33 @@
 # Findings
 
+## 2026-08-04 - Focused CLUENER Public-NER Route Amendment
+
+- Gate: `NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED`; status
+  `AUTHORIZED_AWAITING_HUMAN_GPU`. No experiment has started and current
+  evidence/accounting remains `4/60`.
+- Exact scope: complete labeled official CLUENER dev (`1,343` rows), A/B/C/D
+  only, K=5, seeds42/43/44, NER only, reusing frozen F3/F5 support/glossary
+  resources and the F6 1,343-row/4,029-passage RAG replay.
+- Purpose: test whether the supported NER-side mechanism chain transfers to a
+  public Chinese NER protocol. Authorization is not evidence; public transfer
+  remains unsupported until all 12 cells pass closeout and result-to-claim.
+- Cost lock: about 5 pure-inference GPU hours, target paid window 8 hours, hard
+  stop 10 hours. At the last `2.8 CNY/hour` price, expected spend is about
+  17-22 CNY with an approximately 28 CNY ceiling. The human must boot the
+  RTX 4090 24 GB and report the live price before preflight/model calls.
+- Successful verified closeout would move accounting to `16/60`. IE051,
+  E/E-prime, K scans, RE/Stage R, domain reruns, and the other 44 incomplete
+  cells remain `CLOSED`; the full matrix does not reopen.
+- Post-run interpretation requires a separate
+  `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED` gate. Paper edits, submission, and
+  GitHub synchronization are excluded from the experiment gate.
+- The active future manuscript is the complete
+  `docs/JISE_OVERLEAF_LATEX_20260729/` project. `main.tex` is the Overleaf entry
+  point; `frontmatter.tex` and `sections/*.tex` contain the paper. Historical
+  Markdown drafts are reference artifacts, not the refinement target.
+- Exact contract:
+  `docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_GATE_20260804.md`.
+
 ## 2026-08-04 - F7 Result-To-Claim And NER Fallback Route Freeze
 
 - Gate: `FULL_IE_STOP_AND_NER_FALLBACK_RTC_APPROVED`; verdict `partial`,
@@ -34,8 +62,9 @@
   supplied the structured judgment and agreed with the `partial` route freeze.
 - Full report:
   `docs/RESULT_TO_CLAIM_F7_NER_FALLBACK_ROUTE_FREEZE_20260804.md`.
-- No experiment is the next step. Paper propagation requires a separate
-  `NER_FALLBACK_MANUSCRIPT_PROPAGATION_APPROVED` gate.
+- At this route-freeze decision point, no experiment was the next step and
+  paper propagation required a separate gate. The later focused public-NER
+  amendment is recorded in the newer entry above.
 
 ## 2026-07-30 - Full-IE Route Decision And Verifier Evidence
 

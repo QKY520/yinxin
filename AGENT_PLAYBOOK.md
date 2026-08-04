@@ -6,7 +6,7 @@
 >
 > PAPER STRATEGY UPDATE (2026-07-20): The project is now framed for a practical SCI-Q4 submission within roughly one month and a 400 CNY target budget. The original route is retained: equipment-domain small annotated dataset + reproducible few-shot IE pipeline + RAG/glossary/schema constraints + verification to reduce hallucination + ablation evidence. Draft Chinese first, then produce the English SCI manuscript. NER is the main evidence line; RE is auxiliary.
 >
-> EXECUTION STATUS UPDATE (2026-08-04): P0-P6 for the narrow NER route and full-IE F1-F6 are complete. F7 Domain Final Batch 1 is also complete for A/B/C/D K=5 seed42 Stage R over four locked P5 Stage N files. Exact RE F1 is `0.040541/0.056972/0.057971/0.045381`; D is below C and every cell has zero `HAS_METRIC` TP. The result-to-claim verdict under `FULL_IE_STOP_AND_NER_FALLBACK_RTC_APPROVED` is `partial` with high confidence: narrow three-seed equipment-domain NER is supported; F7 has auxiliary reproducibility/audit value; positive RE, RAG-for-RE, CoVe, public transfer, K robustness, and a complete full-IE claim remain unsupported. The human has stopped the 60-cell completion route at literal accounting `4/60` and frozen the paper route to NER as the main contribution, with RE only as an exploratory negative result/limitation. IE051 remains a historical proposal with status `CLOSED`: it was not executed and is not a failed or blocked experiment. This gate and every earlier gate are consumed. No experiment, aggregation, paper-propagation, or GitHub gate is open. AutoDL was last verified no-card with no model/F7 process. See `HANDOFF.md` before acting.
+> EXECUTION STATUS UPDATE (2026-08-04): P0-P6 for the narrow NER route and full-IE F1-F6 are complete. F7 Domain Final Batch 1 is also complete for A/B/C/D K=5 seed42 Stage R over four locked P5 Stage N files. Exact RE F1 is `0.040541/0.056972/0.057971/0.045381`; D is below C and every cell has zero `HAS_METRIC` TP. The result-to-claim verdict under `FULL_IE_STOP_AND_NER_FALLBACK_RTC_APPROVED` remains `partial` with high confidence: narrow three-seed equipment-domain NER is supported; F7 has auxiliary reproducibility/audit value; positive RE, RAG-for-RE, CoVe, public transfer, K robustness, and a complete full-IE claim remain unsupported. The human stopped the 60-cell completion route at literal accounting `4/60`, then approved one narrow public-NER route amendment under `NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED`: complete labeled official CLUENER dev (1,343 rows), A/B/C/D only, K=5, seeds 42/43/44, NER only, using the frozen F3/F5 resources and F6 RAG replay. The gate is `AUTHORIZED_AWAITING_HUMAN_GPU`; no execution has begun, evidence accounting remains `4/60`, and public transfer remains unsupported until the 12 cells complete and pass result-to-claim. IE051, E/E-prime, K scans, RE, domain reruns, the other 44 incomplete cells, paper propagation, and GitHub sync remain closed. The future manuscript target is the complete `docs/JISE_OVERLEAF_LATEX_20260729/` LaTeX project; historical Markdown drafts are not the active refinement target. AutoDL was last verified no-card with no model/F7 process. See `HANDOFF.md` and `docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_GATE_20260804.md` before acting.
 
 ---
 
@@ -22,20 +22,22 @@
 8. **NEVER report a single run.** Every reported cell = mean ± std over seeds {42, 43, 44}.
 9. **SECURITY/COMPLIANCE**: only public, non-classified corpora (licenses: CMNEE per repo, Few-NERD CC BY-SA 4.0, CLUENER Apache 2.0). If the human ever supplies non-public documents, PAUSE and ask for explicit confirmation of compliance before any processing.
 10. **PAUSE GATES** (`⏸️`): stop and ask the human. **VERIFY GATES** (`✅`): machine-checkable; all conditions must pass before the next phase. On gate failure, follow the FIX branch; if no branch fires, pause and report.
-11. **CURRENT STOP**: the historical P0-P7 commands below are reference
-    contracts, not live authorization. There is no live experiment authority.
-    Keep the instance no-card and do not create, rent, or switch hardware.
-    The human closed the 60-cell completion route at `4/60`. IE051 is a
-    historical `CLOSED` proposal: do not prepare or run its eight Stage R
-    cells, and do not label it failed or blocked. Official CLUENER final
-    evaluation, other domain cells, Stage N reruns, E/E-prime, K scans, F8/F9,
-    aggregation, and GitHub sync are closed by the route decision. Paper-body
-    propagation requires the separate, currently ungranted
-    `NER_FALLBACK_MANUSCRIPT_PROPAGATION_APPROVED` gate. Reopening any
-    experiment requires both an explicit human route change and a new exact
-    bounded execution gate. Every future paid phase must repeat
-    GPU/process/hash/collision preflight, preserve raw/cache/per-query outputs,
-    stop vLLM, back up, verify, report cost, and return to no-card mode.
+11. **CURRENT BOUNDED GATE**: the historical P0-P7 commands below are
+    reference contracts, not general live authorization. The sole live
+    experiment gate is `NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED`, with status
+    `AUTHORIZED_AWAITING_HUMAN_GPU`. It covers exactly 12 CLUENER NER cells:
+    the complete 1,343-row labeled official dev split, A/B/C/D, K=5, seeds
+    42/43/44, using the frozen support bank, support glossary, and F6 top-3 RAG
+    replay. It excludes the unlabeled test split, E/E-prime, K scans, RE,
+    Stage R, domain reruns, online retrieval, paper edits, result-to-claim,
+    submission, and GitHub sync. The full 60-cell route remains closed except
+    for these 12 identities; current accounting remains `4/60`. Before any
+    execution, the human must boot the AutoDL RTX 4090 24 GB and report the
+    live price. The agent then repeats GPU/process/hash/collision preflight.
+    The target paid envelope is 8 hours and the hard stop is 10 paid-GPU hours.
+    Preserve raw/cache/per-query outputs and negative results, stop vLLM, back
+    up and verify, report cost, and return to no-card mode. The exact contract
+    is `docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_GATE_20260804.md`.
 
 ---
 
@@ -269,10 +271,15 @@ and limitation analysis only. The versioned final decision is recorded in
 `docs/RESULT_TO_CLAIM_F7_NER_FALLBACK_ROUTE_FREEZE_20260804.md`: verdict
 `partial`, confidence `high`, matrix route closed at `4/60`, and IE051 retained
 only as a historical `CLOSED` proposal that was not executed. Do not run
-IE051, official CLUENER final evaluation, other domain cells, E/E-prime, K
-scans, F8/F9, or aggregation. No paper edit is authorized; the only proposed
-next step is the separate, currently ungranted
-`NER_FALLBACK_MANUSCRIPT_PROPAGATION_APPROVED` paper-only gate.
+IE051, E/E-prime, K scans, RE, domain reruns, or the rest of F8/F9. The one
+approved exception is the focused 12-cell CLUENER A/B/C/D K=5 three-seed NER
+block under `NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED`. It has not started and
+does not yet support public transfer. No paper edit is authorized while this
+gate is pending. After the 12-cell closeout, a separate
+`NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED` result-to-claim gate must run before
+any manuscript propagation. The active manuscript source for that later step
+is the full `docs/JISE_OVERLEAF_LATEX_20260729/` LaTeX project, not the
+historical Markdown drafts.
 
 ## 10. OPTIONAL PHASE P7 — QLoRA fine-tune (only if human approves after P6)
 
@@ -280,4 +287,4 @@ LLaMA-Factory, QLoRA on Qwen2.5-7B, training data formatted from IEPile/CMNEE co
 
 ---
 
-*v1.1 execution contract; status synchronized on 2026-08-04 after the F7 result-to-claim route freeze. Selection rationale lives in《技术选型与分阶段实现方案》; human-oriented narrative in《实验实施指导文档_综合版》. This playbook supersedes both for execution purposes. Any self-made decision (schema edits, glossary growth, verification-prompt revisions) must be committed to git with a one-line rationale.*
+*v1.1 execution contract; status synchronized on 2026-08-04 after approval of the focused CLUENER public-NER gate. Selection rationale lives in《技术选型与分阶段实现方案》; human-oriented narrative in《实验实施指导文档_综合版》. This playbook supersedes both for execution purposes. Any self-made decision (schema edits, glossary growth, verification-prompt revisions) must be committed to git with a one-line rationale.*

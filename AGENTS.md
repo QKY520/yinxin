@@ -21,19 +21,36 @@ equipment-domain NER, while positive RE, RAG-for-RE, CoVe, public transfer, K
 robustness, and full-IE claims remain unsupported. Literal matrix accounting is
 now `4/60`, not a complete matrix or three-seed RE aggregate.
 
-There is no open experiment, aggregation, paper-propagation, or GitHub gate.
 `FULL_IE_STOP_AND_NER_FALLBACK_RTC_APPROVED` and every earlier bounded gate are
 consumed. The human stopped the 60-cell completion route at `4/60` and froze
 the paper route to NER as the main contribution, with RE only as an exploratory
 negative result/limitation. IE051 remains in the tracker as a historical
 `CLOSED` proposal: it was not executed and is not a failed or blocked
-experiment. Do not execute IE051, E/E-prime, K scans, CLUENER final, F8, or F9.
-The only proposed next step is the separate, currently ungranted
-`NER_FALLBACK_MANUSCRIPT_PROPAGATION_APPROVED` paper-only gate. The instance
-was last verified in no-card mode (`No devices found`), with a 2 GiB cgroup,
-no vLLM/Qwen/F7 process, and only the preserved historical dead F6 screen. The
-total project budget target remains 400 CNY; the last reported 4090 price is
-`2.8 CNY/hour`. Use only the non-secret SSH alias `autodl-paper`.
+experiment.
+
+The human subsequently approved one focused public-NER route amendment:
+`NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED`. It is the sole live experiment
+gate and is `AUTHORIZED_AWAITING_HUMAN_GPU`. Its exact scope is the complete
+1,343-row labeled official CLUENER dev split, configs A/B/C/D only, K=5,
+seeds 42/43/44, NER only, reusing the frozen F3/F5 support/glossary contract and
+F6 RAG replay. No execution has begun; matrix evidence remains `4/60` and
+public transfer remains unsupported. The human must boot the AutoDL RTX 4090
+24 GB and report the live hourly price before any model call. The target paid
+window is 8 hours and the hard stop is 10 hours. E/E-prime, K scans, RE,
+domain reruns, IE051, the other 44 incomplete cells, result-to-claim, paper
+edits, submission, and GitHub sync remain closed. The exact contract is
+`docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_GATE_20260804.md`.
+
+The active future manuscript target is the complete
+`docs/JISE_OVERLEAF_LATEX_20260729/` LaTeX project: `main.tex` is the Overleaf
+entry point, while `frontmatter.tex` and `sections/*.tex` contain the paper.
+Historical Markdown drafts are reference artifacts, not the active refinement
+target. Paper propagation is deferred until the public block closes and a
+separate result-to-claim gate passes. The instance was last verified in no-card
+mode (`No devices found`), with a 2 GiB cgroup, no vLLM/Qwen/F7 process, and
+only the preserved historical dead F6 screen. The total project budget target
+remains 400 CNY; the last reported 4090 price is `2.8 CNY/hour`. Use only the
+non-secret SSH alias `autodl-paper`.
 
 ## Execution Authority
 
@@ -51,6 +68,9 @@ Read these files before any project work:
    evidence, audit, backup, and cost closeout.
 8. `docs/RESULT_TO_CLAIM_F7_NER_FALLBACK_ROUTE_FREEZE_20260804.md` - latest
    claim verdict and human route-freeze decision.
+9. `docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_GATE_20260804.md` - exact live
+   public-NER execution scope, dependencies, time/cost stop, validation,
+   backup, and exclusions.
 
 If the documents differ, `AGENT_PLAYBOOK.md` controls execution. This file may
 clarify comparisons or local workflow but must not silently replace fixed model,
@@ -98,7 +118,7 @@ Project workflow mapping:
 | Check evidence before claims | `$result-to-claim` | Decide which claims are supported and identify missing evidence before paper writing |
 | Refine extra ablations | `$ablation-planner` | Use only after main results and result-to-claim; preserve the fixed clean comparisons in this file |
 | Build paper outline | `$paper-plan` | Convert verified results and limitations into a claims-evidence outline |
-| Draft final manuscript | `$paper-writing` | The NER-primary route is frozen; do not invoke paper rewriting until `NER_FALLBACK_MANUSCRIPT_PROPAGATION_APPROVED` explicitly names the allowed manuscript files |
+| Draft final manuscript | `$paper-writing` | The active target is `docs/JISE_OVERLEAF_LATEX_20260729/`; do not edit it until the public block closes, post-run result-to-claim passes, and a new exact paper gate names the allowed LaTeX files |
 
 Generic Skill defaults are overridden as follows:
 
@@ -229,17 +249,20 @@ the untouched identities remain an inventory, not planned work or failed runs.
 
 ## Current Priority And State
 
-Current step: **stop after the completed F7 result-to-claim route freeze**. No
-execution or paper-propagation gate is open. Keep AutoDL in no-card mode and
-limit work to documentation, Git, SSH/SCP, and read-only verification within an
-exact human gate. IE051, E/E-prime, K scans, CLUENER final, F8, and F9 are
-`CLOSED` by human route decision and must not be prepared or executed. The
-narrow SCI-Q4-oriented NER route is now the selected paper route, not merely a
-fallback. RE is an exploratory negative result/limitation. Preserve calibration
-F1 `0.8000`, the stricter `0.85` miss, weak `TECH_SCHEME`, absent formal test
-IAA, every negative RE/verification result, and literal `4/60` accounting.
-Paper-body changes require the separate
-`NER_FALLBACK_MANUSCRIPT_PROPAGATION_APPROVED` gate.
+Current step: **wait for the human GPU prerequisite for the focused CLUENER
+public-NER block**. The only live gate is
+`NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED`, status
+`AUTHORIZED_AWAITING_HUMAN_GPU`. Do not execute until the human boots the
+AutoDL RTX 4090 24 GB and reports the live price. Then perform the exact
+preflight and run only complete labeled CLUENER dev A/B/C/D, K=5, seeds
+42/43/44, NER only, under the versioned gate contract. IE051, E/E-prime, K
+scans, RE, domain reruns, the rest of F8/F9, and the other 44 incomplete cells
+remain `CLOSED`. The narrow SCI-Q4-oriented NER route remains the selected
+paper route; RE is an exploratory negative result/limitation. Preserve
+calibration F1 `0.8000`, the stricter `0.85` miss, weak `TECH_SCHEME`, absent
+formal test IAA, every negative RE/verification result, and current literal
+`4/60` accounting. No paper body may change before the public closeout and a
+separate post-run result-to-claim gate.
 
 - Local workspace: `D:\yinsir`.
 - Git repository: `main` tracks `origin/main`. As of the latest handoff, local
@@ -365,16 +388,20 @@ Paper-body changes require the separate
 - Full-matrix accounting: the original contract contains 60 final model cells
   (36 K=5 cells plus 24 A/E K-scan cells). Four domain A/B/C/D K=5 seed42 cells
   are complete. Eight domain A/B/C/D K=5 seed43/44 cells retain reusable Stage
-  N only; 48 cells are wholly absent. Final accounting is `4/60`, with `56/60`
-  incomplete and route-closed. F4a/F4b sanity rows do not count. The historical
-  CLUENER protocol would have used labeled official dev rather than its
-  unlabeled official test, but CLUENER final is now closed. Reopening any
-  experiment requires a route-change decision plus a new exact bounded gate;
-  paper propagation has its own separate gate.
-- Current paper artifacts are Markdown, not DOCX. All generated `.docx` files
-  under the project docs were deleted on 2026-07-25 at the user's request after
-  encoding/rendering problems. The current editable draft is
-  `docs/EQUIPMENT_IE_PAPER_DRAFT_V3_REVIEW_POLISH_20260725.md`.
+  N only; 48 cells are wholly absent. Current accounting remains `4/60`, with
+  `56/60` incomplete. The focused gate authorizes 12 currently absent CLUENER
+  A/B/C/D K=5 cells; authorization alone does not complete them. If all 12 pass
+  closeout, accounting becomes `16/60`, leaving eight Stage N-only cells and 36
+  wholly absent cells. Those remaining 44 stay route-closed. F4a/F4b sanity
+  rows do not count. CLUENER final uses complete labeled official dev rather
+  than the unlabeled official test.
+- The active paper is the complete LaTeX project under
+  `docs/JISE_OVERLEAF_LATEX_20260729/`. `main.tex` is its Overleaf entry point;
+  `frontmatter.tex` and `sections/*.tex` contain the paper text. Historical
+  Markdown drafts remain reference artifacts and must not be treated as the
+  active manuscript. All generated `.docx` files under the project docs were
+  deleted on 2026-07-25 at the user's request after encoding/rendering
+  problems.
 - GPU-free P0 paper repair package is complete: variance explanation for
   A/B/C/D and C-vs-D FP qualitative analysis are recorded in
   `docs/P5_DOMAIN_PAPER_EVIDENCE_20260725.md`,
@@ -384,15 +411,15 @@ Paper-body changes require the separate
   2026-07-24 18:16:34-19:27:50 CST, about 3.2 CNY at 2.7 CNY/hour. Platform
   billing remains authoritative. vLLM was stopped after paid runs.
 
-There is no exception to the general stop. IE051, official CLUENER labeled-dev
-final evaluation, other domain cells, Stage N reruns, E/E-prime, K=1/K=10,
-F8/F9, and aggregation are route-closed. Paper edits and GitHub synchronization
-remain unauthorized. Reopening experiments requires an explicit route change;
-its later execution gate must name exact cells, dependencies, model-call
-permission, live price, cost/time stop, validation, backup, and exclusions.
-After every future paid phase, stop vLLM, verify zero model processes, back up
-and hash-verify, sync lightweight artifacts, report cost, and ask the human to
-return the instance to no-card mode.
+The sole exception to the route stop is the exact 12-cell CLUENER public-NER
+gate recorded above. It does not reopen IE051, other domain cells, Stage N/R
+domain reruns, E/E-prime, K=1/K=10, RE, the remaining F8/F9 cells, or
+full-matrix aggregation. Paper edits and GitHub synchronization remain
+unauthorized. The gate names exact cells, dependencies, model-call permission,
+the live-price prerequisite, cost/time stop, validation, backup, and
+exclusions. After the paid phase, stop vLLM, verify zero model processes, back
+up and hash-verify, sync lightweight artifacts, report cost, and ask the human
+to return the instance to no-card mode.
 
 ## Fixed Technology Decisions
 
@@ -669,7 +696,9 @@ statements in `results/summary.md`.
 - Current status: result-to-claim, fresh human calibration, and manuscript
   preparation are complete for the NER evidence line. Full-IE F1-F6 and F7
   Domain Batch 1 are preserved; four final cells count as `4/60`. The route is
-  frozen, IE051 is historical `CLOSED`, and no gate is open.
+  frozen and IE051 is historical `CLOSED`. The sole later amendment is the
+  authorized 12-cell CLUENER A/B/C/D K=5 three-seed NER gate; it has not begun
+  and does not change current evidence accounting.
 
 ### P7 - Optional QLoRA
 
@@ -880,8 +909,10 @@ Before any GPU job:
 The following is the original full-plan artifact list. It is not a statement
 that every item exists, and missing full-matrix/verification/K-scan artifacts
 must not be fabricated or automatically generated. The current submission route
-uses the verified A/B/C/D domain evidence, P6 calibration report, Markdown
-manuscript, and explicit limitations recorded in `HANDOFF.md`.
+uses the verified A/B/C/D domain evidence, P6 calibration report, the complete
+`docs/JISE_OVERLEAF_LATEX_20260729/` manuscript project, and explicit
+limitations recorded in `HANDOFF.md`. Historical Markdown drafts are evidence
+and provenance references only.
 
 Original full-plan artifacts:
 
