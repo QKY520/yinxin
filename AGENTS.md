@@ -22,15 +22,18 @@ robustness, and full-IE claims remain unsupported. Literal matrix accounting is
 now `4/60`, not a complete matrix or three-seed RE aggregate.
 
 There is no open experiment, aggregation, paper-propagation, or GitHub gate.
-`FULL_IE_DOMAIN_FINAL_BATCH_APPROVED` and every earlier bounded gate are
-consumed. The recommended next experiment is only a proposal: eight Stage
-R-only cells for A/B/C/D, K=5, seeds43/44, reusing the locked P5 Stage N files,
-followed immediately by result-to-claim. It is tracked as `IE051=PLANNED` and
-must not be prepared or executed until the human grants a new exact bounded
-gate. The instance was last verified in no-card mode (`No devices found`), with
-a 2 GiB cgroup, no vLLM/Qwen/F7 process, and only the preserved historical dead
-F6 screen. The total project budget target remains 400 CNY; the last reported
-4090 price is `2.8 CNY/hour`. Use only the non-secret SSH alias `autodl-paper`.
+`FULL_IE_STOP_AND_NER_FALLBACK_RTC_APPROVED` and every earlier bounded gate are
+consumed. The human stopped the 60-cell completion route at `4/60` and froze
+the paper route to NER as the main contribution, with RE only as an exploratory
+negative result/limitation. IE051 remains in the tracker as a historical
+`CLOSED` proposal: it was not executed and is not a failed or blocked
+experiment. Do not execute IE051, E/E-prime, K scans, CLUENER final, F8, or F9.
+The only proposed next step is the separate, currently ungranted
+`NER_FALLBACK_MANUSCRIPT_PROPAGATION_APPROVED` paper-only gate. The instance
+was last verified in no-card mode (`No devices found`), with a 2 GiB cgroup,
+no vLLM/Qwen/F7 process, and only the preserved historical dead F6 screen. The
+total project budget target remains 400 CNY; the last reported 4090 price is
+`2.8 CNY/hour`. Use only the non-secret SSH alias `autodl-paper`.
 
 ## Execution Authority
 
@@ -44,6 +47,10 @@ Read these files before any project work:
    full-IE route, phase design, and gate boundaries.
 6. `refine-logs/FULL_IE_MINIMUM_EXPERIMENT_TRACKER_20260730.md` - live
    cell inventory, gate state, and completion accounting.
+7. `docs/FULL_IE_F7_DOMAIN_BATCH1_CLOSEOUT_20260804.md` - final four-cell F7
+   evidence, audit, backup, and cost closeout.
+8. `docs/RESULT_TO_CLAIM_F7_NER_FALLBACK_ROUTE_FREEZE_20260804.md` - latest
+   claim verdict and human route-freeze decision.
 
 If the documents differ, `AGENT_PLAYBOOK.md` controls execution. This file may
 clarify comparisons or local workflow but must not silently replace fixed model,
@@ -91,7 +98,7 @@ Project workflow mapping:
 | Check evidence before claims | `$result-to-claim` | Decide which claims are supported and identify missing evidence before paper writing |
 | Refine extra ablations | `$ablation-planner` | Use only after main results and result-to-claim; preserve the fixed clean comparisons in this file |
 | Build paper outline | `$paper-plan` | Convert verified results and limitations into a claims-evidence outline |
-| Draft final manuscript | `$paper-writing` | The narrow manuscript is a fallback; do not invoke paper rewriting for planned full-IE claims until final evidence and a separate paper gate exist |
+| Draft final manuscript | `$paper-writing` | The NER-primary route is frozen; do not invoke paper rewriting until `NER_FALLBACK_MANUSCRIPT_PROPAGATION_APPROVED` explicitly names the allowed manuscript files |
 
 Generic Skill defaults are overridden as follows:
 
@@ -145,12 +152,17 @@ the broader design, but they are not supported positive contributions in the
 current manuscript. Never promote the original goal into a completed-result
 claim.
 
-Route update (2026-07-30): the human selected a minimum defensible full-IE
-extension as the target and retained the narrow manuscript as fallback. The
-selected design is two-stage: preserve/reuse Stage N NER outputs, then run a
-relation-only Stage R over predicted entities. This changes the planned next
-work, not the current evidence. No manuscript may claim full IE until the
-dev-first protocol, final matrix, aggregation, and result-to-claim gates pass.
+Historical route update (2026-07-30): the human selected a minimum defensible
+two-stage full-IE extension, preserving/reusing Stage N NER outputs and adding
+a relation-only Stage R over predicted entities. That decision explains F1-F7
+and the frozen 60-cell protocol, but it is no longer the active target.
+
+Route freeze (2026-08-04): after F7 and a bounded result-to-claim review, the
+human stopped matrix completion at `4/60`. The final paper route is NER as the
+main contribution, with RE disclosed only as an exploratory negative result
+and limitation. Positive RE, RAG-for-RE, CoVe, `HAS_METRIC`, public transfer,
+K robustness, and complete-IE claims remain unsupported. Missing cells remain
+limitations and historical protocol identities, not an execution backlog.
 
 ## Paper Strategy Lock - 2026-07-20
 
@@ -189,10 +201,10 @@ Current paper-facing framing, updated 2026-07-27:
    CoVe, public generalization, K sensitivity, significance, and the full
    A..E-prime matrix are not supported current contributions.
 
-Selected extension target, updated 2026-07-30: complete 30 domain cells with
-NER plus end-to-end exact directed relation metrics, complete 30 gold-bearing
-CLUENER NER cells, retain E/E-prime even if negative, and run result-to-claim
-before rewriting the manuscript. This is a target inventory, not a result.
+Historical extension target, recorded 2026-07-30: complete 30 domain cells with
+NER plus end-to-end exact directed relation metrics and 30 gold-bearing
+CLUENER NER cells. The 2026-08-04 route freeze closes this target at `4/60`;
+the untouched identities remain an inventory, not planned work or failed runs.
 
 ## Key Research Context
 
@@ -217,16 +229,17 @@ before rewriting the manuscript. This is a target inventory, not a result.
 
 ## Current Priority And State
 
-Current step: **stop at the completed F7 Domain Final Batch 1 closeout**. No
-execution gate is open. Keep AutoDL in no-card mode and limit work to
-documentation, Git, SSH/SCP, and read-only verification until the human grants
-a new exact bounded gate. The recommended next proposal is IE051: A/B/C/D,
-K=5, seeds43/44, Stage R only over eight locked P5 Stage N files. Its purpose is
-to obtain a three-seed RE mean/SD before deciding whether any E/E-prime, K-scan,
-CLUENER-final, or paper work is worth the cost. The narrow SCI-Q4-oriented NER
-draft remains fallback evidence and the strongest paper line. Preserve
-calibration F1 `0.8000`, the stricter `0.85` miss, weak `TECH_SCHEME`, absent
-formal test IAA, and every negative RE/verification result.
+Current step: **stop after the completed F7 result-to-claim route freeze**. No
+execution or paper-propagation gate is open. Keep AutoDL in no-card mode and
+limit work to documentation, Git, SSH/SCP, and read-only verification within an
+exact human gate. IE051, E/E-prime, K scans, CLUENER final, F8, and F9 are
+`CLOSED` by human route decision and must not be prepared or executed. The
+narrow SCI-Q4-oriented NER route is now the selected paper route, not merely a
+fallback. RE is an exploratory negative result/limitation. Preserve calibration
+F1 `0.8000`, the stricter `0.85` miss, weak `TECH_SCHEME`, absent formal test
+IAA, every negative RE/verification result, and literal `4/60` accounting.
+Paper-body changes require the separate
+`NER_FALLBACK_MANUSCRIPT_PROPAGATION_APPROVED` gate.
 
 - Local workspace: `D:\yinsir`.
 - Git repository: `main` tracks `origin/main`. As of the latest handoff, local
@@ -353,10 +366,11 @@ formal test IAA, and every negative RE/verification result.
   (36 K=5 cells plus 24 A/E K-scan cells). Four domain A/B/C/D K=5 seed42 cells
   are complete. Eight domain A/B/C/D K=5 seed43/44 cells retain reusable Stage
   N only; 48 cells are wholly absent. Final accounting is `4/60`, with `56/60`
-  incomplete. F4a/F4b sanity rows do not count. CLUENER final evaluation must
-  use labeled official dev rather than its unlabeled official test. Every next
-  experiment, aggregation, result-propagation, and paper phase needs a new
-  exact bounded gate.
+  incomplete and route-closed. F4a/F4b sanity rows do not count. The historical
+  CLUENER protocol would have used labeled official dev rather than its
+  unlabeled official test, but CLUENER final is now closed. Reopening any
+  experiment requires a route-change decision plus a new exact bounded gate;
+  paper propagation has its own separate gate.
 - Current paper artifacts are Markdown, not DOCX. All generated `.docx` files
   under the project docs were deleted on 2026-07-25 at the user's request after
   encoding/rendering problems. The current editable draft is
@@ -370,15 +384,15 @@ formal test IAA, and every negative RE/verification result.
   2026-07-24 18:16:34-19:27:50 CST, about 3.2 CNY at 2.7 CNY/hour. Platform
   billing remains authoritative. vLLM was stopped after paid runs.
 
-There is no exception to the general stop. The proposed IE051 replication
-batch, official CLUENER labeled-dev evaluation, other domain cells, Stage N
-reruns, E/E-prime, K=1/K=10, aggregation, result-to-claim execution, paper
-edits, and GitHub synchronization are all unauthorized. A future gate must name
-its exact cells, dependencies, model-call permission, live price, cost/time
-stop, validation, backup, and exclusion list. After every future paid phase,
-stop vLLM, verify zero model processes, back up and hash-verify, sync
-lightweight artifacts, report cost, and ask the human to return the instance to
-no-card mode.
+There is no exception to the general stop. IE051, official CLUENER labeled-dev
+final evaluation, other domain cells, Stage N reruns, E/E-prime, K=1/K=10,
+F8/F9, and aggregation are route-closed. Paper edits and GitHub synchronization
+remain unauthorized. Reopening experiments requires an explicit route change;
+its later execution gate must name exact cells, dependencies, model-call
+permission, live price, cost/time stop, validation, backup, and exclusions.
+After every future paid phase, stop vLLM, verify zero model processes, back up
+and hash-verify, sync lightweight artifacts, report cost, and ask the human to
+return the instance to no-card mode.
 
 ## Fixed Technology Decisions
 
@@ -643,18 +657,19 @@ statements in `results/summary.md`.
 - Run the complete frozen grid and K scan.
 - Gate: no missing required cells, every aggregate recomputes from raw rows,
   summary and two required plots exist.
-- Current status: this original full gate is not met. The scoped domain NER
-  A/B/C/D K=5 three-seed evidence package is complete and closed for paper
-  writing; missing cells must not be fabricated or launched without a new gate.
+- Current status: this historical full gate was not met and is now closed by
+  human route decision. The scoped domain NER A/B/C/D K=5 three-seed evidence
+  package is complete; missing cells must remain explicit and must not be
+  fabricated or launched.
 
 ### P6 - Wrap-Up
 
 - Aggregate results, verify backups, report best config, largest F1 contributor,
   largest hallucination reducer, total cost, and open questions.
 - Current status: result-to-claim, fresh human calibration, and manuscript
-  preparation are complete for the narrow fallback. The selected full-IE route
-  has completed F1-F6 and F7 Domain Batch 1. Four final cells count as `4/60`;
-  no gate is open, and proposed IE051 remains `PLANNED` only.
+  preparation are complete for the NER evidence line. Full-IE F1-F6 and F7
+  Domain Batch 1 are preserved; four final cells count as `4/60`. The route is
+  frozen, IE051 is historical `CLOSED`, and no gate is open.
 
 ### P7 - Optional QLoRA
 

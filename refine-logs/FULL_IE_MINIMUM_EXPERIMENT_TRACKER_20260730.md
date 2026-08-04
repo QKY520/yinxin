@@ -2,6 +2,11 @@
 
 **Date**: 2026-08-04
 
+**Route decision**: `FULL_IE_STOP_AND_NER_FALLBACK_RTC_APPROVED` is consumed.
+The human stopped the 60-cell completion route at the literal `4/60` evidence
+state. The paper route is frozen to NER as the main contribution, with RE kept
+only as an exploratory negative result/limitation.
+
 **Status semantics**:
 
 - `PLANNED`: no execution authority.
@@ -13,6 +18,10 @@
 - `RUNNING`: allowed only under the exact recorded human gate.
 - `DONE`: outputs are complete, hash-verified, and audited.
 - `BLOCKED`: a declared stop condition fired.
+- `CLOSED`: intentionally not executed, or not continued, because an explicit
+  human route decision removed the item from the active scope. `CLOSED` is not
+  an execution failure, a blocked run, a negative empirical result, or evidence
+  that an attempted experiment failed.
 
 This tracker does not create execution authority by itself. Authority comes only
 from the exact recorded human gate and remains bounded by its exclusions.
@@ -65,11 +74,15 @@ repair completed with the full remote suite at `200/200`. vLLM was stopped;
 the instance is back in no-card mode with no model/F7 process. F8-F9, paper,
 and GitHub gates remain closed.
 
-No next gate is open. The recommended next proposal is IE051: eight Stage
-R-only cells for A/B/C/D at K=5 seeds43/44, reusing the eight locked P5 Stage N
-files. Its sole purpose is to complete a three-seed exact RE mean/SD before a
-new result-to-claim stop. IE051 is `PLANNED`, not authorized; this tracker row
-does not permit config preparation, GPU use, model calls, or output creation.
+The later `FULL_IE_STOP_AND_NER_FALLBACK_RTC_APPROVED` gate is now also
+consumed. Its independent result-to-claim verdict is `partial` with high
+confidence. It freezes the supported paper line to the three-seed narrow NER
+evidence, records F7 as reproducibility/audit evidence plus weak/negative RE,
+and closes the remaining matrix route. IE051 is preserved below as a historical
+proposal but is now `CLOSED`: it was never executed and is not a failed or
+blocked experiment. E/E-prime, K scans, CLUENER final, F8, and F9 are likewise
+closed by the human route decision. A separate paper-propagation gate is not
+currently granted.
 
 ## Protocol and Implementation
 
@@ -90,7 +103,8 @@ does not permit config preparation, GPU use, model calls, or output creation.
 | IE040 | F6 | Initial leakage-safe RAG replay preparation | Domain three-seed consensus plus no-card CLUENER dev text retrieval | 0 | MUST | BLOCKED | Preserved resource stop: domain 170/170 passes; CLUENER 0/1343 because 2 GiB was below the 4.54 GB weight lower bound |
 | IE041 | F6 | Recover frozen CLUENER RAG replay | CPU FP32 retrieval on the 1,343-row labeled official dev split; paid card for memory only | 0 | MUST | DONE | Resumed from verified 479-row checkpoint; final 1343 rows/4029 passages; zero self-hit, prohibited fields, or >=0.80 containment hits |
 | IE050 | F7 | Prepare and execute Domain Final Batch 1 | A/B/C/D, K=5, seed42; Stage R only over four locked P5 Stage N files | 4 | MUST | DONE | 680/680 rows complete; exact RE F1 0.040541/0.056972/0.057971/0.045381; 10/680 parse failures; backup verified; matrix 4/60 |
-| IE051 | F7 | Replicate Domain A-D K=5 Stage R | A/B/C/D, K=5, seeds43/44; Stage R only over eight locked P5 Stage N files | 8 | MUST | PLANNED | Recommended next proposal only; no gate exists; complete three-seed RE mean/SD, then stop for result-to-claim |
+| IE051 | F7 | Historical proposal: replicate Domain A-D K=5 Stage R | A/B/C/D, K=5, seeds43/44; Stage R only over eight locked P5 Stage N files | 8 | HISTORICAL | CLOSED | Not executed; closed by the human NER-fallback route decision, not failed or blocked |
+| RTC01 | Route freeze | Result-to-claim after F7 | Existing NER, F4a/F4b, F7, annotation, and 4/60 evidence only | 0 | MUST | DONE | `partial`, high confidence; NER primary, RE exploratory negative/limitation; no paper body edited |
 
 ### F3 Closeout (2026-07-31)
 
@@ -368,47 +382,43 @@ does not permit config preparation, GPU use, model calls, or output creation.
   K scans, CLUENER final evaluation, F8/F9, aggregation, paper work, or GitHub
   synchronization.
 
-### Proposed IE051 Domain K=5 Replication (Not Authorized)
+### Historical IE051 Domain K=5 Replication Proposal (CLOSED, Not Executed)
 
 - Proposed cells: A/B/C/D at K=5 for seeds43 and 44, eight final domain cells
   total.
-- Suggested future approval token:
-  `FULL_IE_DOMAIN_K5_REPLICATION_BATCH_APPROVED`. It is not granted by this
-  tracker and carries no authority until the human explicitly sends it.
+- Historical suggested approval token:
+  `FULL_IE_DOMAIN_K5_REPLICATION_BATCH_APPROVED`. It was never granted and the
+  proposal is no longer an active next step.
 - Reuse requirement: use the eight hash-locked P5 Stage N outputs. Do not rerun
   Stage N or alter F5/F7 source, prompt, metric, parser, or output contracts.
 - Scientific purpose: combine IE051 with the four completed seed42 cells to
   compute A/B/C/D three-seed exact RE mean/sample-SD. This is the minimum useful
   checkpoint before deciding whether more full-IE spending is justified.
-- Required future gate: it must explicitly authorize no-card hash/config prep,
-  the eight Stage R model cells, a newly reported live 4090 price, a paid
-  time/cost stop, per-cell validation, backup, and lightweight synchronization.
-- Exclusions should include E/E-prime, K=1/10, Stage N reruns, CLUENER final
-  evaluation, F8/F9, manuscript propagation, and GitHub synchronization.
-- Post-batch stop: recompute three-seed RE metrics and request a bounded
-  result-to-claim decision. If RE remains weak, `HAS_METRIC` remains at zero TP,
-  or D remains non-positive versus C, prefer the NER-centered fallback rather
-  than filling the remaining matrix merely for completeness.
-- Current status is `PLANNED`. No command or artifact creation is authorized by
-  this proposal or tracker entry.
-- Alternative human decision: stop the full-matrix extension and request
-  separate result-to-claim plus NER-manuscript gates. Listing that alternative
-  does not authorize paper edits.
+- Historical execution requirements and exclusions remain part of the decision
+  trail, but they are not an active gate specification and authorize no prep,
+  GPU, model call, output, aggregation, or synchronization.
+- Final status is `CLOSED` under
+  `FULL_IE_STOP_AND_NER_FALLBACK_RTC_APPROVED`. The eight Stage R cells were not
+  attempted. Closing them is an intentional human route choice, not an
+  experimental failure or negative result.
+- The formerly listed alternative was selected: stop the matrix expansion and
+  freeze the NER-centered paper route. Paper edits still require their own
+  separate gate.
 
 ## Domain Final Matrix: 30 Reported Cells
 
 | Run ID | Milestone | System / variant | K | Seeds | Reported cells | Stage work | Status |
 | --- | --- | --- | ---: | --- | ---: | --- | --- |
-| DK5-A | F7 | A fixed-random | 5 | 42/43/44 | 3 | Reuse Stage N; add Stage R | 1/3 DONE (seed42) |
-| DK5-B | F7 | B kNN | 5 | 42/43/44 | 3 | Reuse Stage N; add Stage R | 1/3 DONE (seed42) |
-| DK5-C | F7 | C kNN + glossary | 5 | 42/43/44 | 3 | Reuse Stage N; add Stage R | 1/3 DONE (seed42) |
-| DK5-D | F7 | D C + RAG | 5 | 42/43/44 | 3 | Reuse Stage N/RAG evidence; add Stage R | 1/3 DONE (seed42) |
-| DK5-E | F7 | E D + verification | 5 | 42/43/44 | 3 | Verify combined D Stage N+R output | PLANNED |
-| DK5-EP | F7 | E-prime C + verification | 5 | 42/43/44 | 3 | Verify combined C Stage N+R output | PLANNED |
-| DK1-A | F7 | A fixed-random | 1 | 42/43/44 | 3 | New Stage N + Stage R | PLANNED |
-| DK1-E | F7 | E D + verification | 1 | 42/43/44 | 3 | New D Stage N + Stage R + verifier | PLANNED |
-| DK10-A | F7 | A fixed-random | 10 | 42/43/44 | 3 | New Stage N + Stage R | PLANNED |
-| DK10-E | F7 | E D + verification | 10 | 42/43/44 | 3 | New D Stage N + Stage R + verifier | PLANNED |
+| DK5-A | F7 | A fixed-random | 5 | 42/43/44 | 3 | Reuse Stage N; add Stage R | seed42 DONE; seeds43/44 CLOSED |
+| DK5-B | F7 | B kNN | 5 | 42/43/44 | 3 | Reuse Stage N; add Stage R | seed42 DONE; seeds43/44 CLOSED |
+| DK5-C | F7 | C kNN + glossary | 5 | 42/43/44 | 3 | Reuse Stage N; add Stage R | seed42 DONE; seeds43/44 CLOSED |
+| DK5-D | F7 | D C + RAG | 5 | 42/43/44 | 3 | Reuse Stage N/RAG evidence; add Stage R | seed42 DONE; seeds43/44 CLOSED |
+| DK5-E | F7 | E D + verification | 5 | 42/43/44 | 3 | Verify combined D Stage N+R output | CLOSED (not run) |
+| DK5-EP | F7 | E-prime C + verification | 5 | 42/43/44 | 3 | Verify combined C Stage N+R output | CLOSED (not run) |
+| DK1-A | F7 | A fixed-random | 1 | 42/43/44 | 3 | New Stage N + Stage R | CLOSED (not run) |
+| DK1-E | F7 | E D + verification | 1 | 42/43/44 | 3 | New D Stage N + Stage R + verifier | CLOSED (not run) |
+| DK10-A | F7 | A fixed-random | 10 | 42/43/44 | 3 | New Stage N + Stage R | CLOSED (not run) |
+| DK10-E | F7 | E D + verification | 10 | 42/43/44 | 3 | New D Stage N + Stage R + verifier | CLOSED (not run) |
 | **Domain total** |  |  |  |  | **30** | All rows report NER and exact RE |  |
 
 ## CLUENER Final Matrix: 30 Reported Cells
@@ -419,27 +429,27 @@ RAG corpus. There is no RE metric.
 
 | Run ID | Milestone | System / variant | K | Seeds | Reported cells | Status |
 | --- | --- | --- | ---: | --- | ---: | --- |
-| CK5-A | F8 | A fixed-random | 5 | 42/43/44 | 3 | PLANNED |
-| CK5-B | F8 | B kNN | 5 | 42/43/44 | 3 | PLANNED |
-| CK5-C | F8 | C kNN + support glossary | 5 | 42/43/44 | 3 | PLANNED |
-| CK5-D | F8 | D C + train-text RAG | 5 | 42/43/44 | 3 | PLANNED |
-| CK5-E | F8 | E D + verification | 5 | 42/43/44 | 3 | PLANNED |
-| CK5-EP | F8 | E-prime C + verification | 5 | 42/43/44 | 3 | PLANNED |
-| CK1-A | F8 | A fixed-random | 1 | 42/43/44 | 3 | PLANNED |
-| CK1-E | F8 | E D + verification | 1 | 42/43/44 | 3 | PLANNED |
-| CK10-A | F8 | A fixed-random | 10 | 42/43/44 | 3 | PLANNED |
-| CK10-E | F8 | E D + verification | 10 | 42/43/44 | 3 | PLANNED |
+| CK5-A | F8 | A fixed-random | 5 | 42/43/44 | 3 | CLOSED (not run) |
+| CK5-B | F8 | B kNN | 5 | 42/43/44 | 3 | CLOSED (not run) |
+| CK5-C | F8 | C kNN + support glossary | 5 | 42/43/44 | 3 | CLOSED (not run) |
+| CK5-D | F8 | D C + train-text RAG | 5 | 42/43/44 | 3 | CLOSED (not run) |
+| CK5-E | F8 | E D + verification | 5 | 42/43/44 | 3 | CLOSED (not run) |
+| CK5-EP | F8 | E-prime C + verification | 5 | 42/43/44 | 3 | CLOSED (not run) |
+| CK1-A | F8 | A fixed-random | 1 | 42/43/44 | 3 | CLOSED (not run) |
+| CK1-E | F8 | E D + verification | 1 | 42/43/44 | 3 | CLOSED (not run) |
+| CK10-A | F8 | A fixed-random | 10 | 42/43/44 | 3 | CLOSED (not run) |
+| CK10-E | F8 | E D + verification | 10 | 42/43/44 | 3 | CLOSED (not run) |
 | **CLUENER total** |  |  |  |  | **30** |  |
 
 ## Aggregation and Paper Gate
 
 | Run ID | Milestone | Purpose | Scope | Priority | Status | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| AGG1 | F9 | Validate all final cells | 60 reported cells | MUST | PLANNED | No missing rows; hashes and counts match |
-| AGG2 | F9 | Aggregate mean/SD | Three seeds per cell | MUST | PLANNED | Preserve deterministic/near-deterministic behavior |
-| AGG3 | F9 | Paired uncertainty | Pre-specified contrasts, 10k bootstrap | MUST | PLANNED | Holm adjustment if p-values are reported |
-| AGG4 | F9 | Result-to-claim decision | NER, RE, CoVe, K, public NER | MUST | PLANNED | Positive claims depend on observed evidence |
-| PAPER1 | F9 | Propagate verified evidence | Markdown/LaTeX only after separate approval | MUST | BLOCKED | No paper edit under this plan |
+| AGG1 | F9 | Validate all final cells | 60 reported cells | HISTORICAL | CLOSED | Matrix stopped at 4/60; not run and not failed |
+| AGG2 | F9 | Aggregate mean/SD | Three seeds per cell | HISTORICAL | CLOSED | Missing cells remain explicit limitations |
+| AGG3 | F9 | Paired uncertainty | Pre-specified contrasts, 10k bootstrap | HISTORICAL | CLOSED | No new full-matrix inference |
+| AGG4 | F9 | Full-matrix result-to-claim decision | NER, RE, CoVe, K, public NER | HISTORICAL | CLOSED | Superseded by RTC01 on existing evidence |
+| PAPER1 | Paper-only | Propagate verified evidence | Selected Markdown/LaTeX only after separate approval | MUST | PLANNED | Await `NER_FALLBACK_MANUSCRIPT_PROPAGATION_APPROVED`; no paper edit under RTC01 |
 
 ## Accounting Check
 
@@ -450,8 +460,10 @@ Complete matrix      = 30 + 30 = 60
 Complete full cells  = 4
 Stage N-only cells   = 8
 Wholly absent cells  = 48
-Incomplete cells     = 56
+Incomplete cells     = 56 (route-closed; not scheduled)
 Completed F7 B1      = 4 Stage R cells, validated and counted
+Route target         = NER-primary paper; RE exploratory negative/limitation
+60-cell completion   = CLOSED by explicit human decision
 ```
 
 ## F1 Closeout

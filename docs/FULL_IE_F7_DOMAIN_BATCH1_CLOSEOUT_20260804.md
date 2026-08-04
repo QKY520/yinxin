@@ -163,10 +163,26 @@ contributes exactly four final cells. There is no open next experiment gate.
 Seeds 43/44, E/E-prime, K scans, CLUENER final evaluation, F8/F9, aggregation,
 paper propagation, and GitHub synchronization remain unauthorized.
 
-The recommended next proposal is IE051: eight Stage R-only A/B/C/D K=5 cells
-for seeds43/44, reusing locked P5 Stage N outputs. Its value is to produce a
-three-seed RE mean/SD at minimal additional model scope, followed by an
-immediate result-to-claim stop. IE051 is not approved by this report. If the
-replicated RE signal remains weak, `HAS_METRIC` remains at zero TP, or D remains
-non-positive versus C, the preferred paper route is the NER-centered fallback
-with RE disclosed as an exploratory limitation.
+At this closeout point, IE051 was recorded as a possible next proposal: eight
+Stage R-only A/B/C/D K=5 cells for seeds43/44 over locked P5 Stage N outputs.
+It was not approved or executed.
+
+## Post-Closeout Route Freeze
+
+The later `FULL_IE_STOP_AND_NER_FALLBACK_RTC_APPROVED` gate is consumed. Its
+versioned result-to-claim report is
+`docs/RESULT_TO_CLAIM_F7_NER_FALLBACK_ROUTE_FREEZE_20260804.md`.
+
+- Verdict: `partial`, confidence `high`.
+- Human decision: stop the 60-cell completion route at literal `4/60`.
+- IE051 status: historical `CLOSED`; not executed, not failed, and not blocked.
+- Also closed: E/E-prime, K scans, CLUENER final, F8, and F9.
+- Paper route: NER is the main contribution; RE is an exploratory negative
+  result/limitation.
+- F7 value: reproducible and auditable two-stage IE execution, not positive RE
+  performance.
+- Next possible action: only the separate, currently ungranted
+  `NER_FALLBACK_MANUSCRIPT_PROPAGATION_APPROVED` paper-only gate.
+
+This post-closeout decision changed no F7 result, metric, prompt, cache, raw
+output, manifest, backup, or manuscript body.
