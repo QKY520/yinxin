@@ -10,7 +10,7 @@ and aggregation. Use a paid GPU boot only for model inference or training.
 After every GPU phase: verify outputs, back up, sync lightweight artifacts to
 `D:\yinsir`, report cost, and remind the human to shut down the instance.
 
-**CURRENT GATE (2026-08-04)**: The live status is maintained in `HANDOFF.md`.
+**CURRENT GATE (2026-08-05)**: The live status is maintained in `HANDOFF.md`.
 P0-P6 for the narrow NER route and full-IE F1-F6 are complete. F7 Domain Final
 Batch 1 is also complete for `domain:A/B/C/D:k5:s42`, Stage R only over four
 locked P5 Stage N files. Exact RE F1 is
@@ -28,18 +28,18 @@ negative result/limitation. IE051 remains in the tracker as a historical
 `CLOSED` proposal: it was not executed and is not a failed or blocked
 experiment.
 
-The human subsequently approved one focused public-NER route amendment:
-`NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED`. It is the sole live experiment
-gate and is `AUTHORIZED_AWAITING_HUMAN_GPU`. Its exact scope is the complete
-1,343-row labeled official CLUENER dev split, configs A/B/C/D only, K=5,
-seeds 42/43/44, NER only, reusing the frozen F3/F5 support/glossary contract and
-F6 RAG replay. No execution has begun; matrix evidence remains `4/60` and
-public transfer remains unsupported. The human must boot the AutoDL RTX 4090
-24 GB and report the live hourly price before any model call. The target paid
-window is 8 hours and the hard stop is 10 hours. E/E-prime, K scans, RE,
-domain reruns, IE051, the other 44 incomplete cells, result-to-claim, paper
-edits, submission, and GitHub sync remain closed. The exact contract is
-`docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_GATE_20260804.md`.
+The focused public-NER route has completed nine of twelve cells: A/B/C/D for
+seeds42/43 and A seed44. B seed44 was human-paused with 285 exact-hash cache
+entries and no final output; C/D seed44 have not started. The original paid
+hard stop expired. The human approved
+`NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_APPROVED` and reported `2.8 CNY/hour`.
+It authorizes only B/C/D seed44 under the unchanged manifest, with successful
+preflight at `2026-08-05T19:50:32+08:00`, a 90-minute target, and hard stop at
+`21:50:32+08:00`. Official accounting remains `4/60` until all 12 public cells
+pass final closeout. E/E-prime, K scans, RE, domain reruns, IE051, the other 44
+incomplete cells, result-to-claim, paper edits, submission, and GitHub sync
+remain closed. The exact recovery contract is
+`docs/NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_GATE_20260805.md`.
 
 The active future manuscript target is the complete
 `docs/JISE_OVERLEAF_LATEX_20260729/` LaTeX project: `main.tex` is the Overleaf
@@ -71,6 +71,8 @@ Read these files before any project work:
 9. `docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_GATE_20260804.md` - exact live
    public-NER execution scope, dependencies, time/cost stop, validation,
    backup, and exclusions.
+10. `docs/NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_GATE_20260805.md` - exact
+    three-cell resume checkpoint, time/cost stop, and recovery exclusions.
 
 If the documents differ, `AGENT_PLAYBOOK.md` controls execution. This file may
 clarify comparisons or local workflow but must not silently replace fixed model,
@@ -249,20 +251,15 @@ the untouched identities remain an inventory, not planned work or failed runs.
 
 ## Current Priority And State
 
-Current step: **wait for the human GPU prerequisite for the focused CLUENER
-public-NER block**. The only live gate is
-`NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED`, status
-`AUTHORIZED_AWAITING_HUMAN_GPU`. Do not execute until the human boots the
-AutoDL RTX 4090 24 GB and reports the live price. Then perform the exact
-preflight and run only complete labeled CLUENER dev A/B/C/D, K=5, seeds
-42/43/44, NER only, under the versioned gate contract. IE051, E/E-prime, K
-scans, RE, domain reruns, the rest of F8/F9, and the other 44 incomplete cells
-remain `CLOSED`. The narrow SCI-Q4-oriented NER route remains the selected
-paper route; RE is an exploratory negative result/limitation. Preserve
-calibration F1 `0.8000`, the stricter `0.85` miss, weak `TECH_SCHEME`, absent
-formal test IAA, every negative RE/verification result, and current literal
-`4/60` accounting. No paper body may change before the public closeout and a
-separate post-run result-to-claim gate.
+Current step: **resume the final three CLUENER public-NER cells** under
+`NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_APPROVED`. B seed44 resumes from 285
+exact-hash cache entries; C/D seed44 follow only after each prior cell passes.
+The unchanged 1,343-row labeled-dev, K=5, NER-only contract applies. The live
+price is `2.8 CNY/hour`, with hard stop `2026-08-05T21:50:32+08:00`. IE051,
+E/E-prime, K scans, RE, domain reruns, the rest of F8/F9, and the other 44
+incomplete cells remain `CLOSED`. Preserve every negative result and current
+official `4/60` accounting until the 12-cell closeout. No paper body may change
+before the public closeout and a separate post-run result-to-claim gate.
 
 - Local workspace: `D:\yinsir`.
 - Git repository: `main` tracks `origin/main`. As of the latest handoff, local

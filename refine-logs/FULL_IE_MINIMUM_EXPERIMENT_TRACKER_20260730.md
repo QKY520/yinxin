@@ -1,18 +1,19 @@
 # Minimum Full-IE Extension Tracker
 
-**Date**: 2026-08-04
+**Date**: 2026-08-05
 
 **Route decision**: `FULL_IE_STOP_AND_NER_FALLBACK_RTC_APPROVED` is consumed.
 The human stopped the 60-cell completion route at the literal `4/60` evidence
 state. The paper route is frozen to NER as the main contribution, with RE kept
 only as an exploratory negative result/limitation.
 
-**Focused route amendment**: `NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED` is the
-sole live experiment gate, status `AUTHORIZED_AWAITING_HUMAN_GPU`. It reopens
-only the 12 canonical CLUENER A/B/C/D K=5 seed42/43/44 NER cells over all 1,343
-labeled official dev rows. No cell has started, so current accounting remains
-`4/60`. The human must boot the RTX 4090 24 GB and report the live price before
-preflight or model calls. If all 12 cells pass closeout, accounting becomes
+**Focused route amendment**: the original public-NER gate has nine of twelve
+cells validated. The live recovery gate is
+`NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_APPROVED`: B seed44 resumes from 285
+cache entries, then C/D seed44 may run. The unchanged 1,343-row labeled-dev,
+K=5, NER-only contract applies. Live price is `2.8 CNY/hour`; resume preflight
+was `2026-08-05T19:50:32+08:00` and hard stop is `21:50:32+08:00`. Official
+accounting remains `4/60` until all 12 cells pass closeout, then becomes
 `16/60`; the other 44 incomplete identities remain `CLOSED`.
 
 **Status semantics**:
@@ -115,7 +116,7 @@ completes and a separate post-run result-to-claim gate passes.
 | IE050 | F7 | Prepare and execute Domain Final Batch 1 | A/B/C/D, K=5, seed42; Stage R only over four locked P5 Stage N files | 4 | MUST | DONE | 680/680 rows complete; exact RE F1 0.040541/0.056972/0.057971/0.045381; 10/680 parse failures; backup verified; matrix 4/60 |
 | IE051 | F7 | Historical proposal: replicate Domain A-D K=5 Stage R | A/B/C/D, K=5, seeds43/44; Stage R only over eight locked P5 Stage N files | 8 | HISTORICAL | CLOSED | Not executed; closed by the human NER-fallback route decision, not failed or blocked |
 | RTC01 | Route freeze | Result-to-claim after F7 | Existing NER, F4a/F4b, F7, annotation, and 4/60 evidence only | 0 | MUST | DONE | `partial`, high confidence; NER primary, RE exploratory negative/limitation; no paper body edited |
-| NPUB01 | Focused public NER | Execute complete CLUENER A-D K=5 final block | Labeled official dev 1,343; A/B/C/D; seeds42/43/44; NER only | 12 | MUST | AUTHORIZED | `NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED`; awaiting human 4090 boot and live price; no cell started |
+| NPUB01 | Focused public NER | Execute complete CLUENER A-D K=5 final block | Labeled official dev 1,343; A/B/C/D; seeds42/43/44; NER only | 12 | MUST | RUNNING | 9/12 validated; B44 resumes from 285 cache entries under `NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_APPROVED`; C44/D44 absent |
 
 ### F3 Closeout (2026-07-31)
 
@@ -436,6 +437,19 @@ completes and a separate post-run result-to-claim gate passes.
   `docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_GATE_20260804.md`.
 - After closeout, stop for a separately approved
   `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED` result-to-claim step.
+
+### Seed44 Resume Authorization (2026-08-05)
+
+- Gate: `NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_APPROVED`; status
+  `AUTHORIZED_PREINFERENCE` at the recorded resume preflight.
+- Completed checkpoint: all seed42/43 A-D cells plus A seed44, `9/12` public
+  cells. B seed44 has 285 retained cache entries and no final output.
+- Exact remaining scope: B/C/D seed44 only, with unchanged model, manifest,
+  prompts, parser, support, glossary, F6 replay, and 1,343-row labeled dev.
+- Live price: `2.8 CNY/hour`; 90-minute target and hard stop
+  `2026-08-05T21:50:32+08:00`, maximum about `5.6 CNY` for this window.
+- Exact contract:
+  `docs/NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_GATE_20260805.md`.
 
 ## Domain Final Matrix: 30 Reported Cells
 

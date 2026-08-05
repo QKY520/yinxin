@@ -1,6 +1,6 @@
 # HANDOFF.md - New Conversation Handoff
 
-Date: 2026-08-04
+Date: 2026-08-05
 Workspace: `D:\yinsir`
 
 This file is the latest operational state for a new Codex/agent session with no
@@ -21,6 +21,8 @@ chat history. Read these files before doing any project work:
 9. `docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_GATE_20260804.md` - exact live
    public-NER execution scope, dependencies, time/cost stop, validation,
    backup, and exclusions.
+10. `docs/NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_GATE_20260805.md` - exact
+    seed44 resume checkpoint, time/cost stop, and recovery exclusions.
 
 If older docs conflict with this file on status chronology, this file is newer.
 Hard rules in `AGENTS.md` and `AGENT_PLAYBOOK.md` still apply.
@@ -45,20 +47,18 @@ reproducible and auditable two-stage IE pipeline, but it does not support a
 positive RE contribution. IE051 remains a historical `CLOSED` proposal: it was
 not executed and is not a failed or blocked experiment.
 
-Current route amendment (2026-08-04): the human approved
-`NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED`, the sole live experiment gate,
-with status `AUTHORIZED_AWAITING_HUMAN_GPU`. It covers exactly the complete
-1,343-row labeled official CLUENER dev split, configs A/B/C/D only, K=5,
-seeds 42/43/44, and NER only. It must reuse the frozen F3/F5 support/glossary
-resources and the F6 CLUENER RAG replay. No execution has begun. The human must
-boot the AutoDL RTX 4090 24 GB and report the live hourly price before any
-preflight or model call. Pure inference is estimated at about 5 GPU hours; the
-target paid window is 8 hours and the hard stop is 10 paid-GPU hours. At the
-last reported `2.8 CNY/hour`, expected spend is about 17-22 CNY with a ceiling
-of about 28 CNY. IE051, E/E-prime, K scans, RE/Stage R, domain reruns, the other
+Current route amendment (2026-08-05): the original public-NER gate completed
+nine of twelve cells before a human pause: A/B/C/D seeds42/43 and A seed44.
+B seed44 retains 285 exact-hash cache entries with no final output; C/D seed44
+have not started. The original hard stop expired. The human approved
+`NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_APPROVED` and reported `2.8 CNY/hour`.
+Only B/C/D seed44 may run under the unchanged manifest. Resume preflight passed
+at `2026-08-05T19:50:32+08:00`; target close is `21:20:32`, hard stop is
+`21:50:32`, and the resume-window ceiling is about `5.6 CNY`. Official matrix
+accounting remains `4/60` until all 12 public cells pass closeout, when it may
+become `16/60`. IE051, E/E-prime, K scans, RE/Stage R, domain reruns, the other
 44 incomplete cells, paper edits, result-to-claim, submission, and GitHub sync
-remain closed. If all 12 cells finish and pass closeout, accounting becomes
-`16/60`; authorization alone does not change the current `4/60` evidence.
+remain closed.
 
 Active manuscript target (2026-08-04): future paper refinement applies to the
 complete `docs/JISE_OVERLEAF_LATEX_20260729/` LaTeX project. `main.tex` is only
@@ -225,17 +225,15 @@ approximately `1.916 CNY` at `2.8 CNY/hour`; platform billing is authoritative.
 The 713-file remote backup and 17 directly mirrored lightweight results passed
 hash verification. Current SSH is no-card: `No devices found`, 2 GiB cgroup,
 about 59 GB free, no model/F7 process, and only the preserved dead F6 screen.
-The focused public-NER gate is `AUTHORIZED_AWAITING_HUMAN_GPU`; none of its 12
-cells has started.
+The public-NER runtime checkpoint is `9/12` validated cells. B seed44 is
+partial with 285 cache entries and no final output; C/D seed44 are absent.
 
-**Next step**: the human boots the AutoDL RTX 4090 24 GB and reports the live
-hourly price. The agent then performs the exact GPU/process/hash/collision
-preflight and, only if it passes, runs the 12 CLUENER A/B/C/D K=5 seed42/43/44
-NER cells under `NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED`. Do not start with
-the instance in no-card mode. IE051, E/E-prime, K=1/10, RE, domain reruns, and
-the remaining matrix cells stay `CLOSED`. After closeout, stop for the separate
-`NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED` gate. No paper edit, submission, or
-GitHub synchronization is authorized.
+**Next step**: execute only B/C/D K=5 seed44 under
+`NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_APPROVED`, reusing the B44 cache and the
+unchanged F3/F5/F6 locks. Stop no later than `2026-08-05T21:50:32+08:00`.
+After successful 12-cell validation, stop vLLM, back up and hash-verify, mirror
+lightweight artifacts, then stop for `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED`.
+No paper edit, submission, or GitHub synchronization is authorized.
 
 **Red lines**: never run project Python locally on Windows; never tune from
 frozen test; preserve every negative row; never call E-prime failed; never

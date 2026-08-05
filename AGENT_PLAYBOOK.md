@@ -6,7 +6,7 @@
 >
 > PAPER STRATEGY UPDATE (2026-07-20): The project is now framed for a practical SCI-Q4 submission within roughly one month and a 400 CNY target budget. The original route is retained: equipment-domain small annotated dataset + reproducible few-shot IE pipeline + RAG/glossary/schema constraints + verification to reduce hallucination + ablation evidence. Draft Chinese first, then produce the English SCI manuscript. NER is the main evidence line; RE is auxiliary.
 >
-> EXECUTION STATUS UPDATE (2026-08-04): P0-P6 for the narrow NER route and full-IE F1-F6 are complete. F7 Domain Final Batch 1 is also complete for A/B/C/D K=5 seed42 Stage R over four locked P5 Stage N files. Exact RE F1 is `0.040541/0.056972/0.057971/0.045381`; D is below C and every cell has zero `HAS_METRIC` TP. The result-to-claim verdict under `FULL_IE_STOP_AND_NER_FALLBACK_RTC_APPROVED` remains `partial` with high confidence: narrow three-seed equipment-domain NER is supported; F7 has auxiliary reproducibility/audit value; positive RE, RAG-for-RE, CoVe, public transfer, K robustness, and a complete full-IE claim remain unsupported. The human stopped the 60-cell completion route at literal accounting `4/60`, then approved one narrow public-NER route amendment under `NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED`: complete labeled official CLUENER dev (1,343 rows), A/B/C/D only, K=5, seeds 42/43/44, NER only, using the frozen F3/F5 resources and F6 RAG replay. The gate is `AUTHORIZED_AWAITING_HUMAN_GPU`; no execution has begun, evidence accounting remains `4/60`, and public transfer remains unsupported until the 12 cells complete and pass result-to-claim. IE051, E/E-prime, K scans, RE, domain reruns, the other 44 incomplete cells, paper propagation, and GitHub sync remain closed. The future manuscript target is the complete `docs/JISE_OVERLEAF_LATEX_20260729/` LaTeX project; historical Markdown drafts are not the active refinement target. AutoDL was last verified no-card with no model/F7 process. See `HANDOFF.md` and `docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_GATE_20260804.md` before acting.
+> EXECUTION STATUS UPDATE (2026-08-05): The focused CLUENER public-NER block has nine of twelve cells complete: A/B/C/D for seeds42/43 and A for seed44. B seed44 was human-paused with 285 exact-hash cache entries and no final output; C/D seed44 have not started. The original paid-window hard stop expired. The human then approved the bounded `NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_APPROVED` gate and reported `2.8 CNY/hour`. It authorizes only B/C/D seed44 under the unchanged manifest and locks, with resume preflight `2026-08-05T19:50:32+08:00`, a 90-minute target, and a hard stop at `21:50:32+08:00`. Official accounting remains `4/60` until all 12 cells pass closeout; public transfer remains unsupported until a separate result-to-claim gate. IE051, E/E-prime, K scans, RE, domain reruns, paper propagation, and GitHub sync remain closed. See `HANDOFF.md`, the original gate, and `docs/NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_GATE_20260805.md` before acting.
 
 ---
 
@@ -23,21 +23,17 @@
 9. **SECURITY/COMPLIANCE**: only public, non-classified corpora (licenses: CMNEE per repo, Few-NERD CC BY-SA 4.0, CLUENER Apache 2.0). If the human ever supplies non-public documents, PAUSE and ask for explicit confirmation of compliance before any processing.
 10. **PAUSE GATES** (`⏸️`): stop and ask the human. **VERIFY GATES** (`✅`): machine-checkable; all conditions must pass before the next phase. On gate failure, follow the FIX branch; if no branch fires, pause and report.
 11. **CURRENT BOUNDED GATE**: the historical P0-P7 commands below are
-    reference contracts, not general live authorization. The sole live
-    experiment gate is `NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED`, with status
-    `AUTHORIZED_AWAITING_HUMAN_GPU`. It covers exactly 12 CLUENER NER cells:
-    the complete 1,343-row labeled official dev split, A/B/C/D, K=5, seeds
-    42/43/44, using the frozen support bank, support glossary, and F6 top-3 RAG
-    replay. It excludes the unlabeled test split, E/E-prime, K scans, RE,
-    Stage R, domain reruns, online retrieval, paper edits, result-to-claim,
-    submission, and GitHub sync. The full 60-cell route remains closed except
-    for these 12 identities; current accounting remains `4/60`. Before any
-    execution, the human must boot the AutoDL RTX 4090 24 GB and report the
-    live price. The agent then repeats GPU/process/hash/collision preflight.
-    The target paid envelope is 8 hours and the hard stop is 10 paid-GPU hours.
-    Preserve raw/cache/per-query outputs and negative results, stop vLLM, back
-    up and verify, report cost, and return to no-card mode. The exact contract
-    is `docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_GATE_20260804.md`.
+    reference contracts, not general live authorization. The live recovery
+    gate is `NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_APPROVED`. It authorizes only
+    CLUENER B/C/D K=5 seed44 over all 1,343 labeled dev rows, under the unchanged
+    original manifest and cache contract. Nine public cells are complete; B44
+    resumes from 285 cache entries and C44/D44 have not started. The live price
+    is `2.8 CNY/hour`; preflight was `2026-08-05T19:50:32+08:00`, the target is
+    90 minutes, and the hard stop is `2026-08-05T21:50:32+08:00`. All original
+    exclusions remain closed. Preserve partial and negative artifacts, stop
+    vLLM after the phase, back up and verify, report cost, and return to no-card
+    mode. The exact recovery contract is
+    `docs/NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_GATE_20260805.md`.
 
 ---
 
