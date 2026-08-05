@@ -197,6 +197,27 @@ class ExtractionTest(unittest.TestCase):
             }
         )
 
+    def test_validate_execution_gate_accepts_public_cluener_final_gate(self) -> None:
+        validate_execution_gate(
+            {
+                "authorized": True,
+                "model_calls_allowed": True,
+                "phase": "NER_PUBLIC_CLUENER_FINAL",
+                "human_gate": "NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED",
+            }
+        )
+
+    def test_validate_execution_gate_rejects_public_cluener_wrong_phase(self) -> None:
+        with self.assertRaisesRegex(RuntimeError, "requires execution.phase"):
+            validate_execution_gate(
+                {
+                    "authorized": True,
+                    "model_calls_allowed": True,
+                    "phase": "NER_PUBLIC_CLUENER_OTHER",
+                    "human_gate": "NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED",
+                }
+            )
+
     def test_validate_execution_gate_rejects_m2_gate_for_other_phase(self) -> None:
         with self.assertRaisesRegex(RuntimeError, "requires execution.phase"):
             validate_execution_gate(
