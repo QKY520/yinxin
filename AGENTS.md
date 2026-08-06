@@ -10,7 +10,7 @@ and aggregation. Use a paid GPU boot only for model inference or training.
 After every GPU phase: verify outputs, back up, sync lightweight artifacts to
 `D:\yinsir`, report cost, and remind the human to shut down the instance.
 
-**CURRENT GATE (2026-08-05)**: The live status is maintained in `HANDOFF.md`.
+**CURRENT GATE (2026-08-06)**: The live status is maintained in `HANDOFF.md`.
 P0-P6 for the narrow NER route and full-IE F1-F6 are complete. F7 Domain Final
 Batch 1 is also complete for `domain:A/B/C/D:k5:s42`, Stage R only over four
 locked P5 Stage N files. Exact RE F1 is
@@ -18,8 +18,9 @@ locked P5 Stage N files. Exact RE F1 is
 and D is below C. Current result-to-claim therefore remains `partial`: the
 three-seed frozen-test evidence supports narrow low-label Chinese
 equipment-domain NER, while positive RE, RAG-for-RE, CoVe, public transfer, K
-robustness, and full-IE claims remain unsupported. Literal matrix accounting is
-now `4/60`, not a complete matrix or three-seed RE aggregate.
+robustness, and full-IE claims remain unsupported. The focused public block is
+now mechanically closed, so literal matrix accounting is `16/60`; this is not
+a complete matrix or an interpreted public-transfer claim.
 
 `FULL_IE_STOP_AND_NER_FALLBACK_RTC_APPROVED` and every earlier bounded gate are
 consumed. The human stopped the 60-cell completion route at `4/60` and froze
@@ -28,18 +29,17 @@ negative result/limitation. IE051 remains in the tracker as a historical
 `CLOSED` proposal: it was not executed and is not a failed or blocked
 experiment.
 
-The focused public-NER route has completed nine of twelve cells: A/B/C/D for
-seeds42/43 and A seed44. B seed44 was human-paused with 285 exact-hash cache
-entries and no final output; C/D seed44 have not started. The original paid
-hard stop expired. The human approved
-`NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_APPROVED` and reported `2.8 CNY/hour`.
-It authorizes only B/C/D seed44 under the unchanged manifest, with successful
-preflight at `2026-08-05T19:50:32+08:00`, a 90-minute target, and hard stop at
-`21:50:32+08:00`. Official accounting remains `4/60` until all 12 public cells
-pass final closeout. E/E-prime, K scans, RE, domain reruns, IE051, the other 44
-incomplete cells, result-to-claim, paper edits, submission, and GitHub sync
-remain closed. The exact recovery contract is
-`docs/NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_GATE_20260805.md`.
+The focused public-NER route has completed, validated, backed up, and mirrored
+all twelve A/B/C/D, K=5, seeds42/43/44 cells over 1,343 labeled official
+CLUENER dev rows. The original v1 finalizer failure is preserved; the no-model
+v2 report passed with SHA256
+`7a1f1f110e9fea8f6a92398f5e3e25bd109b7e04cb7664664a7d99572bb62824`.
+The clean tracked suite passed `205/205`; the 18,239-file remote backup and
+63-file local mirror passed hash verification. vLLM and all runners are
+stopped, and the instance is in no-card mode. Official accounting is `16/60`.
+E/E-prime, K scans, RE, domain reruns, IE051, the other 44 incomplete cells,
+paper edits, submission, and GitHub sync remain closed. No result-to-claim gate
+is live; the next possible gate is `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED`.
 
 The active future manuscript target is the complete
 `docs/JISE_OVERLEAF_LATEX_20260729/` LaTeX project: `main.tex` is the Overleaf
@@ -68,11 +68,15 @@ Read these files before any project work:
    evidence, audit, backup, and cost closeout.
 8. `docs/RESULT_TO_CLAIM_F7_NER_FALLBACK_ROUTE_FREEZE_20260804.md` - latest
    claim verdict and human route-freeze decision.
-9. `docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_GATE_20260804.md` - exact live
+9. `docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_GATE_20260804.md` - consumed
    public-NER execution scope, dependencies, time/cost stop, validation,
    backup, and exclusions.
-10. `docs/NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_GATE_20260805.md` - exact
+10. `docs/NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_GATE_20260805.md` - consumed
     three-cell resume checkpoint, time/cost stop, and recovery exclusions.
+11. `docs/NER_PUBLIC_CLUENER_ABCD_K5_POSTVALIDATION_CHECKPOINT_20260805.md` -
+    12-cell validation state and exact no-card closeout resume point.
+12. `docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_CLOSEOUT_20260806.md` - final
+    metrics, audit, tests, backup, local mirror, cost, and machine closeout.
 
 If the documents differ, `AGENT_PLAYBOOK.md` controls execution. This file may
 clarify comparisons or local workflow but must not silently replace fixed model,
@@ -251,15 +255,12 @@ the untouched identities remain an inventory, not planned work or failed runs.
 
 ## Current Priority And State
 
-Current step: **resume the final three CLUENER public-NER cells** under
-`NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_APPROVED`. B seed44 resumes from 285
-exact-hash cache entries; C/D seed44 follow only after each prior cell passes.
-The unchanged 1,343-row labeled-dev, K=5, NER-only contract applies. The live
-price is `2.8 CNY/hour`, with hard stop `2026-08-05T21:50:32+08:00`. IE051,
-E/E-prime, K scans, RE, domain reruns, the rest of F8/F9, and the other 44
-incomplete cells remain `CLOSED`. Preserve every negative result and current
-official `4/60` accounting until the 12-cell closeout. No paper body may change
-before the public closeout and a separate post-run result-to-claim gate.
+Current step: **wait for an exact public-NER result-to-claim gate**. The 12-cell
+runtime and closeout are complete; do not restart vLLM, rerun a cell, or boot a
+paid GPU. IE051, E/E-prime, K scans, RE, domain reruns, the rest of F8/F9, and
+the other 44 incomplete cells remain `CLOSED`. Literal accounting is `16/60`.
+No paper body may change before a separate
+`NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED` review and a later exact paper gate.
 
 - Local workspace: `D:\yinsir`.
 - Git repository: `main` tracks `origin/main`. As of the latest handoff, local
@@ -384,14 +385,11 @@ before the public closeout and a separate post-run result-to-claim gate.
   progression. This is valid calibration agreement, not frozen-test formal IAA.
 - Full-matrix accounting: the original contract contains 60 final model cells
   (36 K=5 cells plus 24 A/E K-scan cells). Four domain A/B/C/D K=5 seed42 cells
-  are complete. Eight domain A/B/C/D K=5 seed43/44 cells retain reusable Stage
-  N only; 48 cells are wholly absent. Current accounting remains `4/60`, with
-  `56/60` incomplete. The focused gate authorizes 12 currently absent CLUENER
-  A/B/C/D K=5 cells; authorization alone does not complete them. If all 12 pass
-  closeout, accounting becomes `16/60`, leaving eight Stage N-only cells and 36
-  wholly absent cells. Those remaining 44 stay route-closed. F4a/F4b sanity
-  rows do not count. CLUENER final uses complete labeled official dev rather
-  than the unlabeled official test.
+  and 12 CLUENER A/B/C/D K=5 three-seed NER cells are complete. Eight domain
+  A/B/C/D K=5 seed43/44 cells retain reusable Stage N only; 36 cells are wholly
+  absent. Current accounting is `16/60`, with 44 incomplete route-closed
+  identities. F4a/F4b sanity rows do not count. CLUENER final uses complete
+  labeled official dev rather than the unlabeled official test.
 - The active paper is the complete LaTeX project under
   `docs/JISE_OVERLEAF_LATEX_20260729/`. `main.tex` is its Overleaf entry point;
   `frontmatter.tex` and `sections/*.tex` contain the paper text. Historical
@@ -408,15 +406,12 @@ before the public closeout and a separate post-run result-to-claim gate.
   2026-07-24 18:16:34-19:27:50 CST, about 3.2 CNY at 2.7 CNY/hour. Platform
   billing remains authoritative. vLLM was stopped after paid runs.
 
-The sole exception to the route stop is the exact 12-cell CLUENER public-NER
-gate recorded above. It does not reopen IE051, other domain cells, Stage N/R
-domain reruns, E/E-prime, K=1/K=10, RE, the remaining F8/F9 cells, or
-full-matrix aggregation. Paper edits and GitHub synchronization remain
-unauthorized. The gate names exact cells, dependencies, model-call permission,
-the live-price prerequisite, cost/time stop, validation, backup, and
-exclusions. After the paid phase, stop vLLM, verify zero model processes, back
-up and hash-verify, sync lightweight artifacts, report cost, and ask the human
-to return the instance to no-card mode.
+The sole 12-cell CLUENER public-NER exception is consumed and closed. It did
+not reopen IE051, other domain cells, Stage N/R domain reruns, E/E-prime,
+K=1/K=10, RE, the remaining F8/F9 cells, or full-matrix aggregation. Paper
+edits and GitHub synchronization remain unauthorized. The next possible action
+is a separately approved public-NER result-to-claim review; no paid hardware is
+needed for that review.
 
 ## Fixed Technology Decisions
 
@@ -692,10 +687,10 @@ statements in `results/summary.md`.
   largest hallucination reducer, total cost, and open questions.
 - Current status: result-to-claim, fresh human calibration, and manuscript
   preparation are complete for the NER evidence line. Full-IE F1-F6 and F7
-  Domain Batch 1 are preserved; four final cells count as `4/60`. The route is
-  frozen and IE051 is historical `CLOSED`. The sole later amendment is the
-  authorized 12-cell CLUENER A/B/C/D K=5 three-seed NER gate; it has not begun
-  and does not change current evidence accounting.
+  Domain Batch 1 are preserved; the focused 12-cell CLUENER A/B/C/D K=5 three-
+  seed NER amendment is also complete and backed up. Literal accounting is
+  `16/60`. The remaining route is frozen and IE051 is historical `CLOSED`.
+  Public evidence interpretation still requires the separate RTC gate.
 
 ### P7 - Optional QLoRA
 

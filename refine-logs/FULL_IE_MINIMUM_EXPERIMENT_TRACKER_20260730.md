@@ -7,14 +7,11 @@ The human stopped the 60-cell completion route at the literal `4/60` evidence
 state. The paper route is frozen to NER as the main contribution, with RE kept
 only as an exploratory negative result/limitation.
 
-**Focused route amendment**: the original public-NER gate has nine of twelve
-cells validated. The live recovery gate is
-`NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_APPROVED`: B seed44 resumes from 285
-cache entries, then C/D seed44 may run. The unchanged 1,343-row labeled-dev,
-K=5, NER-only contract applies. Live price is `2.8 CNY/hour`; resume preflight
-was `2026-08-05T19:50:32+08:00` and hard stop is `21:50:32+08:00`. Official
-accounting remains `4/60` until all 12 cells pass closeout, then becomes
-`16/60`; the other 44 incomplete identities remain `CLOSED`.
+**Focused route amendment**: all twelve public-NER A/B/C/D, K=5,
+seeds42/43/44 cells are complete, v2-validated, backed up, and locally mirrored.
+The clean tracked suite passed `205/205`, and the instance is in no-card mode.
+Official accounting is `16/60`; the other 44 incomplete identities remain
+`CLOSED`. No result-to-claim or paper gate is currently live.
 
 **Status semantics**:
 
@@ -22,8 +19,11 @@ accounting remains `4/60` until all 12 cells pass closeout, then becomes
 - `PREPARED`: artifacts exist but the next gate is closed.
 - `PREPARED_AWAITING_GATE`: an exact bounded execution proposal and hash exist,
   but all authorization/model-call flags remain false.
-- `AUTHORIZED`: the exact human gate is open, but execution has not begun or is
-  waiting for a human-only prerequisite.
+- `AUTHORIZED`: the exact human gate is open, but execution has not begun, is
+  waiting for a human-only prerequisite, or is still within its approved
+  runtime/closeout scope.
+- `PAUSED`: the human explicitly stopped the current step; resume only from the
+  documented checkpoint and do not infer authority for completed runtime work.
 - `RUNNING`: allowed only under the exact recorded human gate.
 - `DONE`: outputs are complete, hash-verified, and audited.
 - `BLOCKED`: a declared stop condition fired.
@@ -116,7 +116,7 @@ completes and a separate post-run result-to-claim gate passes.
 | IE050 | F7 | Prepare and execute Domain Final Batch 1 | A/B/C/D, K=5, seed42; Stage R only over four locked P5 Stage N files | 4 | MUST | DONE | 680/680 rows complete; exact RE F1 0.040541/0.056972/0.057971/0.045381; 10/680 parse failures; backup verified; matrix 4/60 |
 | IE051 | F7 | Historical proposal: replicate Domain A-D K=5 Stage R | A/B/C/D, K=5, seeds43/44; Stage R only over eight locked P5 Stage N files | 8 | HISTORICAL | CLOSED | Not executed; closed by the human NER-fallback route decision, not failed or blocked |
 | RTC01 | Route freeze | Result-to-claim after F7 | Existing NER, F4a/F4b, F7, annotation, and 4/60 evidence only | 0 | MUST | DONE | `partial`, high confidence; NER primary, RE exploratory negative/limitation; no paper body edited |
-| NPUB01 | Focused public NER | Execute complete CLUENER A-D K=5 final block | Labeled official dev 1,343; A/B/C/D; seeds42/43/44; NER only | 12 | MUST | RUNNING | 9/12 validated; B44 resumes from 285 cache entries under `NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_APPROVED`; C44/D44 absent |
+| NPUB01 | Focused public NER | Execute complete CLUENER A-D K=5 final block | Labeled official dev 1,343; A/B/C/D; seeds42/43/44; NER only | 12 | MUST | DONE | 12/12 cells validated; tracked suite 205/205; 18,239-file backup and 63-file local mirror verified; matrix 16/60 |
 
 ### F3 Closeout (2026-07-31)
 
@@ -418,18 +418,18 @@ completes and a separate post-run result-to-claim gate passes.
   freeze the NER-centered paper route. Paper edits still require their own
   separate gate.
 
-### Focused CLUENER Public-NER Authorization (2026-08-04)
+### Initial Focused CLUENER Public-NER Authorization Record (2026-08-04)
 
-- Gate: `NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED`; status
-  `AUTHORIZED_AWAITING_HUMAN_GPU`; no model call or final cell has started.
+- At authorization time, gate `NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED` was
+  `AUTHORIZED_AWAITING_HUMAN_GPU`; no model call or final cell had started.
 - Exact scope: all 1,343 labeled official CLUENER dev rows; A/B/C/D only;
   K=5; seeds42/43/44; NER only; 12 canonical F5 inventory identities.
 - Locked reuse: frozen F3/F5 support bank and support glossary, plus the
   completed F6 1,343-row/4,029-passage RAG replay. Online retrieval is closed.
-- Human prerequisite: boot the AutoDL RTX 4090 24 GB and report the live price.
-  The target paid window is 8 hours and the hard stop is 10 paid-GPU hours.
-- Current evidence/accounting remains `4/60`. Successful verified closeout
-  would make it `16/60`; the remaining 44 incomplete identities stay closed.
+- Historical prerequisite: boot the AutoDL RTX 4090 24 GB and report the live
+  price. The target paid window was 8 hours and the hard stop 10 paid-GPU hours.
+- At authorization time, evidence/accounting remained `4/60`; the later
+  verified closeout changed it to `16/60`.
 - Excluded: sampled public subsets, unlabeled test, E/E-prime, K scans,
   RE/Stage R, domain reruns, IE051, paper edits, result-to-claim, submission,
   and GitHub synchronization.
@@ -440,16 +440,44 @@ completes and a separate post-run result-to-claim gate passes.
 
 ### Seed44 Resume Authorization (2026-08-05)
 
-- Gate: `NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_APPROVED`; status
-  `AUTHORIZED_PREINFERENCE` at the recorded resume preflight.
-- Completed checkpoint: all seed42/43 A-D cells plus A seed44, `9/12` public
-  cells. B seed44 has 285 retained cache entries and no final output.
-- Exact remaining scope: B/C/D seed44 only, with unchanged model, manifest,
-  prompts, parser, support, glossary, F6 replay, and 1,343-row labeled dev.
+- Gate: `NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_APPROVED`; runtime authorization
+  consumed, status `HUMAN_PAUSED_POSTVALIDATION_PREBACKUP`.
+- Completed checkpoint: all A/B/C/D seeds42/43/44 cells, `12/12` public runtime
+  cells, each over 1,343 rows. No cell may be rerun.
+- The original v1 finalizer failure is preserved. The no-model v2 report passed
+  all 12 cells with SHA256
+  `7a1f1f110e9fea8f6a92398f5e3e25bd109b7e04cb7664664a7d99572bb62824`;
+  focused tests passed `3/3` and the frozen workspace suite passed `26/26`.
 - Live price: `2.8 CNY/hour`; 90-minute target and hard stop
-  `2026-08-05T21:50:32+08:00`, maximum about `5.6 CNY` for this window.
-- Exact contract:
-  `docs/NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_GATE_20260805.md`.
+  `2026-08-05T21:50:32+08:00`; the last cell completed at `20:58:30`.
+- The human resumed on 2026-08-06. Clean tracked-suite, remote backup/hash
+  verification, lightweight local mirror, cost record, and closeout all passed.
+- Exact contract and checkpoint:
+  `docs/NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_GATE_20260805.md` and
+  `docs/NER_PUBLIC_CLUENER_ABCD_K5_POSTVALIDATION_CHECKPOINT_20260805.md`.
+
+### Focused CLUENER Public-NER Closeout (2026-08-06)
+
+- Status: NPUB01 `DONE`; 12 cells x 1,343 rows, zero unsupported types and zero
+  relation predictions.
+- Mechanical three-seed F1 mean +/- sample SD: A
+  `0.428519 +/- 0.037917`, B `0.513964 +/- 0.001907`, C
+  `0.517521 +/- 0.000619`, D `0.513424 +/- 0.001493`.
+- Audit totals: 18,136 request attempts, 2,020 retries, 1,367 cache hits,
+  5,159 sanitizer events, and `138/16116 = 0.856292%` parse failures.
+- Validation: v2 report `PASS`, focused tests `3/3`, frozen workspace `26/26`,
+  and clean current-HEAD tracked snapshot plus v2/test `205/205`.
+- Complete remote backup: 18,239 files, manifest SHA256
+  `db75f2f27a8063c0660f7a773456dc8d7db6bfa57a733e14f1f3ff0e8125294e`;
+  source-to-backup byte comparison passed.
+- Local lightweight mirror: 63 files; archive SHA256
+  `daf54146a8c876b08d482ab86f3e72c52d505367bd7f5e30cf24c1f5aad3c996`.
+- Observable vLLM envelopes total 16,124.062 seconds, approximately
+  `12.541 CNY` at `2.8 CNY/hour`; platform billing is authoritative.
+- Exact closeout:
+  `docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_CLOSEOUT_20260806.md`.
+- Next gate remains `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED`; no claim or
+  manuscript interpretation was performed.
 
 ## Domain Final Matrix: 30 Reported Cells
 
@@ -475,10 +503,10 @@ RAG corpus. There is no RE metric.
 
 | Run ID | Milestone | System / variant | K | Seeds | Reported cells | Status |
 | --- | --- | --- | ---: | --- | ---: | --- |
-| CK5-A | F8 | A fixed-random | 5 | 42/43/44 | 3 | AUTHORIZED (NPUB01; not started) |
-| CK5-B | F8 | B kNN | 5 | 42/43/44 | 3 | AUTHORIZED (NPUB01; not started) |
-| CK5-C | F8 | C kNN + support glossary | 5 | 42/43/44 | 3 | AUTHORIZED (NPUB01; not started) |
-| CK5-D | F8 | D C + train-text RAG | 5 | 42/43/44 | 3 | AUTHORIZED (NPUB01; not started) |
+| CK5-A | F8 | A fixed-random | 5 | 42/43/44 | 3 | DONE (NPUB01) |
+| CK5-B | F8 | B kNN | 5 | 42/43/44 | 3 | DONE (NPUB01) |
+| CK5-C | F8 | C kNN + support glossary | 5 | 42/43/44 | 3 | DONE (NPUB01) |
+| CK5-D | F8 | D C + train-text RAG | 5 | 42/43/44 | 3 | DONE (NPUB01) |
 | CK5-E | F8 | E D + verification | 5 | 42/43/44 | 3 | CLOSED (not run) |
 | CK5-EP | F8 | E-prime C + verification | 5 | 42/43/44 | 3 | CLOSED (not run) |
 | CK1-A | F8 | A fixed-random | 1 | 42/43/44 | 3 | CLOSED (not run) |
@@ -491,11 +519,11 @@ RAG corpus. There is no RE metric.
 
 | Run ID | Milestone | Purpose | Scope | Priority | Status | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| AGG1 | F9 | Validate all final cells | 60 reported cells | HISTORICAL | CLOSED | Matrix stopped at 4/60; not run and not failed |
+| AGG1 | F9 | Validate all final cells | 60 reported cells | HISTORICAL | CLOSED | Full-matrix route stopped before focused exception; current literal count 16/60; not run and not failed |
 | AGG2 | F9 | Aggregate mean/SD | Three seeds per cell | HISTORICAL | CLOSED | Missing cells remain explicit limitations |
 | AGG3 | F9 | Paired uncertainty | Pre-specified contrasts, 10k bootstrap | HISTORICAL | CLOSED | No new full-matrix inference |
 | AGG4 | F9 | Full-matrix result-to-claim decision | NER, RE, CoVe, K, public NER | HISTORICAL | CLOSED | Superseded by RTC01 on existing evidence |
-| RTC02 | Post-NPUB01 | Focused public-NER result-to-claim | Verified 12-cell block plus prior frozen evidence | MUST | PLANNED | Await `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED` after closeout |
+| RTC02 | Post-NPUB01 | Focused public-NER result-to-claim | Verified 12-cell block plus prior frozen evidence | MUST | PLANNED | Closeout complete; await exact `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED` |
 | PAPER1 | Paper-only | Propagate verified evidence | Complete `docs/JISE_OVERLEAF_LATEX_20260729/` project after separate exact approval | MUST | PLANNED | `main.tex` is entry only; edit `frontmatter.tex`/`sections/*.tex` as evidence requires; no paper edit before RTC02 |
 
 ## Accounting Check
@@ -504,16 +532,16 @@ RAG corpus. There is no RE metric.
 Domain final cells   = 18 K=5 + 12 K-scan = 30
 CLUENER final cells  = 18 K=5 + 12 K-scan = 30
 Complete matrix      = 30 + 30 = 60
-Complete full cells  = 4
+Complete full cells  = 16 (4 domain Stage N+R + 12 CLUENER NER)
 Stage N-only cells   = 8
-Wholly absent cells  = 48
-Authorized not run   = 12 CLUENER A/B/C/D K=5 cells (NPUB01)
+Wholly absent cells  = 36
+Authorized not run   = 0
 Still route-closed   = 44 incomplete cells
-Incomplete cells     = 56 total at current evidence state
+Incomplete cells     = 44 total at current evidence state
 Completed F7 B1      = 4 Stage R cells, validated and counted
-NPUB01 success state = 16 complete; 8 Stage N-only; 36 wholly absent
+NPUB01 final state   = 16 complete; 8 Stage N-only; 36 wholly absent
 Route target         = NER-primary paper; RE exploratory negative/limitation
-60-cell completion   = CLOSED except the 12 exact NPUB01 identities
+60-cell completion   = CLOSED; focused NPUB01 exception consumed
 ```
 
 ## F1 Closeout

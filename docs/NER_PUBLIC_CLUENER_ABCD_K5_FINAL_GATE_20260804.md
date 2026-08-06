@@ -4,7 +4,7 @@ Date: 2026-08-04
 
 Human gate: `NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED`
 
-Status: `AUTHORIZED_AWAITING_HUMAN_GPU`
+Status: `CONSUMED_CLOSEOUT_DONE`
 
 ## Route Amendment
 
@@ -171,3 +171,12 @@ the public results support transfer, how they change the `partial` verdict,
 and what may later be propagated to the complete
 `docs/JISE_OVERLEAF_LATEX_20260729/` project. `main.tex` is only the Overleaf
 entry point; manuscript content lives in `frontmatter.tex` and `sections/*.tex`.
+
+## Execution Resolution
+
+The authorized 12-cell block subsequently completed under this gate and the
+bounded seed44 resume gate. Validation, backup, local mirroring, and machine
+closeout passed on 2026-08-06. This gate is consumed and authorizes no further
+model call. See
+`docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_CLOSEOUT_20260806.md`; the next possible
+step requires `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED`.

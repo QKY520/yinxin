@@ -4,7 +4,7 @@ Date: 2026-08-05
 
 Human gate: `NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_APPROVED`
 
-Status: `AUTHORIZED_PREINFERENCE`
+Status: `CONSUMED_CLOSEOUT_DONE`
 
 ## Purpose And Checkpoint
 
@@ -69,3 +69,11 @@ This gate does not authorize result-to-claim interpretation, paper or LaTeX
 editing, E/E-prime, K scans, RE, domain reruns, IE051, any other F8/F9 cell,
 submission, GitHub synchronization, or hardware release. After closeout, stop
 for `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED`.
+
+## Execution Resolution
+
+B/C/D seed44 completed under the unchanged locks, and the final 12-cell v2
+validation passed. The human resumed the no-card closeout on 2026-08-06; clean
+tracked tests, complete remote backup, local lightweight mirroring, cost
+recording, and machine checks passed. This gate is consumed and no cell may be
+rerun. See `docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_CLOSEOUT_20260806.md`.

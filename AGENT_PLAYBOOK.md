@@ -6,7 +6,7 @@
 >
 > PAPER STRATEGY UPDATE (2026-07-20): The project is now framed for a practical SCI-Q4 submission within roughly one month and a 400 CNY target budget. The original route is retained: equipment-domain small annotated dataset + reproducible few-shot IE pipeline + RAG/glossary/schema constraints + verification to reduce hallucination + ablation evidence. Draft Chinese first, then produce the English SCI manuscript. NER is the main evidence line; RE is auxiliary.
 >
-> EXECUTION STATUS UPDATE (2026-08-05): The focused CLUENER public-NER block has nine of twelve cells complete: A/B/C/D for seeds42/43 and A for seed44. B seed44 was human-paused with 285 exact-hash cache entries and no final output; C/D seed44 have not started. The original paid-window hard stop expired. The human then approved the bounded `NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_APPROVED` gate and reported `2.8 CNY/hour`. It authorizes only B/C/D seed44 under the unchanged manifest and locks, with resume preflight `2026-08-05T19:50:32+08:00`, a 90-minute target, and a hard stop at `21:50:32+08:00`. Official accounting remains `4/60` until all 12 cells pass closeout; public transfer remains unsupported until a separate result-to-claim gate. IE051, E/E-prime, K scans, RE, domain reruns, paper propagation, and GitHub sync remain closed. See `HANDOFF.md`, the original gate, and `docs/NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_GATE_20260805.md` before acting.
+> EXECUTION STATUS UPDATE (2026-08-06): The focused CLUENER public-NER block is closed at all twelve A/B/C/D, K=5, seeds42/43/44 cells over the 1,343-row labeled official dev split. The versioned no-model v2 finalizer passed, the clean tracked suite passed `205/205`, the 18,239-file remote backup and 63-file local lightweight mirror were hash-verified, and the instance is in no-card mode with no model or runner process. Literal accounting is now `16/60`; the other 44 incomplete identities remain route-closed. No experiment gate is live. Public-transfer interpretation remains unauthorized until `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED`; paper/LaTeX edits require a later exact paper gate. IE051, E/E-prime, K scans, RE, domain reruns, submission, and GitHub sync remain closed. See `HANDOFF.md` and `docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_CLOSEOUT_20260806.md` before acting.
 
 ---
 
@@ -23,17 +23,13 @@
 9. **SECURITY/COMPLIANCE**: only public, non-classified corpora (licenses: CMNEE per repo, Few-NERD CC BY-SA 4.0, CLUENER Apache 2.0). If the human ever supplies non-public documents, PAUSE and ask for explicit confirmation of compliance before any processing.
 10. **PAUSE GATES** (`⏸️`): stop and ask the human. **VERIFY GATES** (`✅`): machine-checkable; all conditions must pass before the next phase. On gate failure, follow the FIX branch; if no branch fires, pause and report.
 11. **CURRENT BOUNDED GATE**: the historical P0-P7 commands below are
-    reference contracts, not general live authorization. The live recovery
-    gate is `NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_APPROVED`. It authorizes only
-    CLUENER B/C/D K=5 seed44 over all 1,343 labeled dev rows, under the unchanged
-    original manifest and cache contract. Nine public cells are complete; B44
-    resumes from 285 cache entries and C44/D44 have not started. The live price
-    is `2.8 CNY/hour`; preflight was `2026-08-05T19:50:32+08:00`, the target is
-    90 minutes, and the hard stop is `2026-08-05T21:50:32+08:00`. All original
-    exclusions remain closed. Preserve partial and negative artifacts, stop
-    vLLM after the phase, back up and verify, report cost, and return to no-card
-    mode. The exact recovery contract is
-    `docs/NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_GATE_20260805.md`.
+    reference contracts, not general live authorization. Runtime and closeout
+    under the focused CLUENER gates are consumed; all 12 public NER cells are
+    complete, validated, backed up, and mirrored. No experiment or model-call
+    gate is live. Wait for an exact
+    `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED` result-to-claim gate. That future
+    review cannot launch experiments or edit the manuscript. The closeout is
+    `docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_CLOSEOUT_20260806.md`.
 
 ---
 
@@ -268,10 +264,11 @@ and limitation analysis only. The versioned final decision is recorded in
 `partial`, confidence `high`, matrix route closed at `4/60`, and IE051 retained
 only as a historical `CLOSED` proposal that was not executed. Do not run
 IE051, E/E-prime, K scans, RE, domain reruns, or the rest of F8/F9. The one
-approved exception is the focused 12-cell CLUENER A/B/C/D K=5 three-seed NER
-block under `NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED`. It has not started and
-does not yet support public transfer. No paper edit is authorized while this
-gate is pending. After the 12-cell closeout, a separate
+approved exception was the focused 12-cell CLUENER A/B/C/D K=5 three-seed NER
+block under `NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED`. Its 12 runtime cells
+are complete, validated, backed up, and locally mirrored. Literal accounting
+is `16/60`, but this mechanical closeout does not itself support a paper-facing
+public-transfer claim. No paper edit is authorized. A separate
 `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED` result-to-claim gate must run before
 any manuscript propagation. The active manuscript source for that later step
 is the full `docs/JISE_OVERLEAF_LATEX_20260729/` LaTeX project, not the
@@ -283,4 +280,4 @@ LLaMA-Factory, QLoRA on Qwen2.5-7B, training data formatted from IEPile/CMNEE co
 
 ---
 
-*v1.1 execution contract; status synchronized on 2026-08-04 after approval of the focused CLUENER public-NER gate. Selection rationale lives in《技术选型与分阶段实现方案》; human-oriented narrative in《实验实施指导文档_综合版》. This playbook supersedes both for execution purposes. Any self-made decision (schema edits, glossary growth, verification-prompt revisions) must be committed to git with a one-line rationale.*
+*v1.1 execution contract; status synchronized on 2026-08-06 after focused CLUENER public-NER closeout. Selection rationale lives in《技术选型与分阶段实现方案》; human-oriented narrative in《实验实施指导文档_综合版》. This playbook supersedes both for execution purposes. Any self-made decision (schema edits, glossary growth, verification-prompt revisions) must be committed to git with a one-line rationale.*
