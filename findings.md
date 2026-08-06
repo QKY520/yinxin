@@ -1,5 +1,41 @@
 # Findings
 
+## 2026-08-06 - Focused CLUENER Public-NER Result-To-Claim
+
+- Gate: `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED`; verdict `partial`,
+  confidence `high`. This was an existing-evidence review only: no Python,
+  model/API, GPU, experiment, result recomputation, or manuscript edit ran.
+- Public evidence: complete CLUENER labeled official dev (`1,343` rows),
+  A/B/C/D, K=5, seeds42/43/44. Mean F1 is
+  `0.428519/0.513964/0.517521/0.513424`; the unfavorable A seed44 result is
+  retained.
+- Clean public contrasts: `B-A` F1 `+0.085445`; `C-B` F1 `+0.003557` with a
+  small recall gain; `D-C` F1 `-0.004097`, precision `+0.009832`, recall
+  `-0.016059`, and FP `-95`. These directions match the frozen equipment-
+  domain contrasts.
+- Supported wording: the NER mechanisms show directionally consistent,
+  descriptive behavior on the frozen equipment-domain test and one focused
+  CLUENER evaluation. RAG reproduces a near-tied-F1, higher-precision,
+  lower-FP operating point on the additional benchmark.
+- Claim boundary: one public dataset, labeled-dev-as-final, no public paired
+  uncertainty, and near-deterministic B/C/D seeds do not establish broad
+  public-benchmark or cross-domain generalization. The public glossary is a
+  support-derived schema-specific lexicon, not the equipment glossary.
+- Still unsupported: significance, SOTA, supervised-baseline superiority,
+  positive RE/public RE, RAG-for-RE, CoVe, `HAS_METRIC`, K robustness,
+  formal frozen-test IAA, complete F8/F9, full matrix, and full IE.
+- Route remains frozen: NER is the main contribution; RE is an exploratory
+  negative result/limitation. Accounting stays `16/60`; the other 44 cells are
+  `CLOSED`, and missing evidence is a limitation rather than an execution
+  backlog.
+- Independent review used the same documented fallback as RTC01 because the
+  skill-specified `gpt-5.4` was unavailable: read-only `gpt-5.6-sol`, `xhigh`.
+- Full report:
+  `docs/RESULT_TO_CLAIM_NER_PUBLIC_CLUENER_ABCD_K5_20260806.md`.
+- The next possible action is the separately approved paper-only
+  `NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED` gate for the complete
+  `docs/JISE_OVERLEAF_LATEX_20260729/` project. No paper edit occurred here.
+
 ## 2026-08-04 - Focused CLUENER Public-NER Route Amendment
 
 - Gate: `NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED`; status

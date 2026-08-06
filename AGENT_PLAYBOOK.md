@@ -6,7 +6,7 @@
 >
 > PAPER STRATEGY UPDATE (2026-07-20): The project is now framed for a practical SCI-Q4 submission within roughly one month and a 400 CNY target budget. The original route is retained: equipment-domain small annotated dataset + reproducible few-shot IE pipeline + RAG/glossary/schema constraints + verification to reduce hallucination + ablation evidence. Draft Chinese first, then produce the English SCI manuscript. NER is the main evidence line; RE is auxiliary.
 >
-> EXECUTION STATUS UPDATE (2026-08-06): The focused CLUENER public-NER block is closed at all twelve A/B/C/D, K=5, seeds42/43/44 cells over the 1,343-row labeled official dev split. The versioned no-model v2 finalizer passed, the clean tracked suite passed `205/205`, the 18,239-file remote backup and 63-file local lightweight mirror were hash-verified, and the instance is in no-card mode with no model or runner process. Literal accounting is now `16/60`; the other 44 incomplete identities remain route-closed. No experiment gate is live. Public-transfer interpretation remains unauthorized until `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED`; paper/LaTeX edits require a later exact paper gate. IE051, E/E-prime, K scans, RE, domain reruns, submission, and GitHub sync remain closed. See `HANDOFF.md` and `docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_CLOSEOUT_20260806.md` before acting.
+> EXECUTION STATUS UPDATE (2026-08-06): The focused CLUENER public-NER block is closed at all twelve A/B/C/D, K=5, seeds42/43/44 cells over the 1,343-row labeled official dev split. The versioned no-model v2 finalizer passed, the clean tracked suite passed `205/205`, the 18,239-file remote backup and 63-file local lightweight mirror were hash-verified, and the instance is in no-card mode with no model or runner process. Literal accounting is `16/60`; the other 44 incomplete identities remain route-closed. The separate `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED` review is consumed with verdict `partial`, confidence `high`: the public block provides limited descriptive portability evidence on one additional Chinese NER benchmark, while broad public/cross-domain generalization remains unsupported. No experiment gate is live. Paper/LaTeX edits require the later exact `NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED` gate. IE051, E/E-prime, K scans, RE, domain reruns, submission, and GitHub sync remain closed. See `HANDOFF.md`, `docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_CLOSEOUT_20260806.md`, and `docs/RESULT_TO_CLAIM_NER_PUBLIC_CLUENER_ABCD_K5_20260806.md` before acting.
 
 ---
 
@@ -26,10 +26,13 @@
     reference contracts, not general live authorization. Runtime and closeout
     under the focused CLUENER gates are consumed; all 12 public NER cells are
     complete, validated, backed up, and mirrored. No experiment or model-call
-    gate is live. Wait for an exact
-    `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED` result-to-claim gate. That future
-    review cannot launch experiments or edit the manuscript. The closeout is
-    `docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_CLOSEOUT_20260806.md`.
+    gate is live. The public-NER result-to-claim gate is consumed and did not
+    edit the manuscript. Wait for the exact paper-only
+    `NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED` gate; it must name
+    the writable files in the complete LaTeX project and cannot launch an
+    experiment. The closeout and verdict are
+    `docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_CLOSEOUT_20260806.md` and
+    `docs/RESULT_TO_CLAIM_NER_PUBLIC_CLUENER_ABCD_K5_20260806.md`.
 
 ---
 
@@ -240,7 +243,7 @@ FIX: a config underperforms its predecessor (e.g., C < B) → do NOT delete the 
 
 Aggregate, generate final `results/summary.md`, verify all backups (code pushed; `/root/autodl-tmp` tarball in file storage; cache/ included), then report to human: best config, largest F1 contributor, largest hallucination reduction, total spend, and open questions. Remind human to shut down the instance.
 
-Current evidence stance as of 2026-08-04: use `docs/RESULT_TO_CLAIM_P5_DOMAIN_20260725.md`,
+Current evidence stance as of 2026-08-06: use `docs/RESULT_TO_CLAIM_P5_DOMAIN_20260725.md`,
 `docs/P5_DOMAIN_PAPER_EVIDENCE_20260725.md`, `docs/P5_PAPER_REVIEW_AUDIT_20260725.md`,
 `docs/P5_PAPER_P0_REVIEW_FEEDBACK_20260725.md`, and `findings.md` as the
 P5 evidence base. Add
@@ -251,7 +254,7 @@ must retain the `0.85` miss, low `TECH_SCHEME` agreement, and absence of formal
 test IAA. Frame C and D as near-tied on F1, with C marginally ahead on
 recall/F1 and D clearly better on precision and false-positive reduction. Do
 not claim significant superiority, relation extraction success, final
-verification gains, public generalization, K robustness, or full-matrix
+verification gains, broad public/cross-domain generalization, K robustness, or full-matrix
 completion. F4a adds only dev evidence: E′ improved while E degraded, and RE
 remained extremely weak. F4b is tune-only and neither verifier deletion audit
 reached 70%. F7 adds four auditable final cells but not a positive RE result:
@@ -267,12 +270,18 @@ IE051, E/E-prime, K scans, RE, domain reruns, or the rest of F8/F9. The one
 approved exception was the focused 12-cell CLUENER A/B/C/D K=5 three-seed NER
 block under `NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED`. Its 12 runtime cells
 are complete, validated, backed up, and locally mirrored. Literal accounting
-is `16/60`, but this mechanical closeout does not itself support a paper-facing
-public-transfer claim. No paper edit is authorized. A separate
-`NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED` result-to-claim gate must run before
-any manuscript propagation. The active manuscript source for that later step
-is the full `docs/JISE_OVERLEAF_LATEX_20260729/` LaTeX project, not the
-historical Markdown drafts.
+is `16/60`. The separate public-NER result-to-claim is complete at `partial`,
+confidence `high`; see
+`docs/RESULT_TO_CLAIM_NER_PUBLIC_CLUENER_ABCD_K5_20260806.md`. It supports
+descriptive direction replication on one additional Chinese NER benchmark:
+B improves over A, C adds a small F1/recall increment over B, and D again
+trades recall for higher precision and fewer FP at near-tied F1. It does not
+support broad public/cross-domain generalization, significance, SOTA, K
+robustness, RE, or CoVe. No paper edit is authorized. Wait for
+`NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED`. The active manuscript
+source for that later step is the full
+`docs/JISE_OVERLEAF_LATEX_20260729/` LaTeX project, not the historical
+Markdown drafts.
 
 ## 10. OPTIONAL PHASE P7 — QLoRA fine-tune (only if human approves after P6)
 
@@ -280,4 +289,4 @@ LLaMA-Factory, QLoRA on Qwen2.5-7B, training data formatted from IEPile/CMNEE co
 
 ---
 
-*v1.1 execution contract; status synchronized on 2026-08-06 after focused CLUENER public-NER closeout. Selection rationale lives in《技术选型与分阶段实现方案》; human-oriented narrative in《实验实施指导文档_综合版》. This playbook supersedes both for execution purposes. Any self-made decision (schema edits, glossary growth, verification-prompt revisions) must be committed to git with a one-line rationale.*
+*v1.1 execution contract; status synchronized on 2026-08-06 after focused CLUENER public-NER result-to-claim. Selection rationale lives in《技术选型与分阶段实现方案》; human-oriented narrative in《实验实施指导文档_综合版》. This playbook supersedes both for execution purposes. Any self-made decision (schema edits, glossary growth, verification-prompt revisions) must be committed to git with a one-line rationale.*

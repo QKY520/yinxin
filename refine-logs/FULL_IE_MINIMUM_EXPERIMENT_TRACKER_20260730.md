@@ -1,6 +1,6 @@
 # Minimum Full-IE Extension Tracker
 
-**Date**: 2026-08-05
+**Date**: 2026-08-06
 
 **Route decision**: `FULL_IE_STOP_AND_NER_FALLBACK_RTC_APPROVED` is consumed.
 The human stopped the 60-cell completion route at the literal `4/60` evidence
@@ -11,7 +11,10 @@ only as an exploratory negative result/limitation.
 seeds42/43/44 cells are complete, v2-validated, backed up, and locally mirrored.
 The clean tracked suite passed `205/205`, and the instance is in no-card mode.
 Official accounting is `16/60`; the other 44 incomplete identities remain
-`CLOSED`. No result-to-claim or paper gate is currently live.
+`CLOSED`. The bounded `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED` review is now
+consumed with verdict `partial` and confidence `high`: the public block supports
+limited, descriptive portability to one additional Chinese NER benchmark, not
+broad public/cross-domain generalization. No paper gate is currently live.
 
 **Status semantics**:
 
@@ -90,10 +93,12 @@ evidence, records F7 as reproducibility/audit evidence plus weak/negative RE,
 and closed the remaining matrix route at that point. IE051 is preserved below
 as a historical proposal but is now `CLOSED`: it was never executed and is not
 a failed or blocked experiment. The human subsequently granted the focused
-public-NER amendment recorded above. E/E-prime, K scans, RE, domain reruns, the
-other 44 incomplete cells, full F8/F9 aggregation, paper work, submission, and
-GitHub sync remain closed. Public transfer remains unsupported until NPUB01
-completes and a separate post-run result-to-claim gate passes.
+public-NER amendment and the separate RTC02 review recorded above. The CLUENER
+block reproduces the kNN direction, a small support-lexicon direction, and the
+RAG precision/FP operating-point pattern on one additional Chinese NER
+benchmark. E/E-prime, K scans, RE, domain reruns, the other 44 incomplete
+cells, full F8/F9 aggregation, paper work, submission, and GitHub sync remain
+closed. Broad public/cross-domain generalization remains unsupported.
 
 ## Protocol and Implementation
 
@@ -117,6 +122,7 @@ completes and a separate post-run result-to-claim gate passes.
 | IE051 | F7 | Historical proposal: replicate Domain A-D K=5 Stage R | A/B/C/D, K=5, seeds43/44; Stage R only over eight locked P5 Stage N files | 8 | HISTORICAL | CLOSED | Not executed; closed by the human NER-fallback route decision, not failed or blocked |
 | RTC01 | Route freeze | Result-to-claim after F7 | Existing NER, F4a/F4b, F7, annotation, and 4/60 evidence only | 0 | MUST | DONE | `partial`, high confidence; NER primary, RE exploratory negative/limitation; no paper body edited |
 | NPUB01 | Focused public NER | Execute complete CLUENER A-D K=5 final block | Labeled official dev 1,343; A/B/C/D; seeds42/43/44; NER only | 12 | MUST | DONE | 12/12 cells validated; tracked suite 205/205; 18,239-file backup and 63-file local mirror verified; matrix 16/60 |
+| RTC02 | Post-NPUB01 | Focused public-NER result-to-claim | Verified 12-cell block plus prior frozen evidence | 0 | MUST | DONE | `partial`, high confidence; limited one-benchmark portability evidence; broad public/cross-domain generalization unsupported; no paper body edited |
 
 ### F3 Closeout (2026-07-31)
 
@@ -476,8 +482,34 @@ completes and a separate post-run result-to-claim gate passes.
   `12.541 CNY` at `2.8 CNY/hour`; platform billing is authoritative.
 - Exact closeout:
   `docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_CLOSEOUT_20260806.md`.
-- Next gate remains `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED`; no claim or
-  manuscript interpretation was performed.
+- At mechanical closeout no claim or manuscript interpretation was performed.
+  The later RTC02 review is recorded below.
+
+### Focused CLUENER Public-NER Result-to-Claim (2026-08-06)
+
+- Gate: `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED`; now consumed. Verdict is
+  `partial` with confidence `high`.
+- Public clean contrasts: `B-A` F1 `+0.085445`; `C-B` F1 `+0.003557` with a
+  small recall gain; `D-C` F1 `-0.004097`, precision `+0.009832`, recall
+  `-0.016059`, and FP `-95`.
+- The clean directions match the frozen equipment-domain evidence: kNN is
+  positive, the schema-specific support lexicon is directionally positive,
+  and RAG moves both settings toward higher precision/fewer FP with near-tied
+  F1 and lower recall.
+- Supported scope: descriptive, limited portability to this one additional
+  Chinese NER benchmark. Broad public/cross-domain generalization, statistical
+  significance, SOTA, K robustness, RE, CoVe, and complete IE remain
+  unsupported.
+- The CLUENER final split is all 1,343 labeled official dev rows; the official
+  unlabeled test is not offline gold. Public resources are frozen,
+  support-derived, and schema-specific, not reused equipment-domain knowledge.
+- No experiment or paper edit occurred. Accounting remains `16/60`; the other
+  44 identities remain `CLOSED`.
+- Full report:
+  `docs/RESULT_TO_CLAIM_NER_PUBLIC_CLUENER_ABCD_K5_20260806.md`.
+- Next possible gate:
+  `NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED`, paper-only and
+  limited to exact files named under the complete active LaTeX project.
 
 ## Domain Final Matrix: 30 Reported Cells
 
@@ -523,8 +555,8 @@ RAG corpus. There is no RE metric.
 | AGG2 | F9 | Aggregate mean/SD | Three seeds per cell | HISTORICAL | CLOSED | Missing cells remain explicit limitations |
 | AGG3 | F9 | Paired uncertainty | Pre-specified contrasts, 10k bootstrap | HISTORICAL | CLOSED | No new full-matrix inference |
 | AGG4 | F9 | Full-matrix result-to-claim decision | NER, RE, CoVe, K, public NER | HISTORICAL | CLOSED | Superseded by RTC01 on existing evidence |
-| RTC02 | Post-NPUB01 | Focused public-NER result-to-claim | Verified 12-cell block plus prior frozen evidence | MUST | PLANNED | Closeout complete; await exact `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED` |
-| PAPER1 | Paper-only | Propagate verified evidence | Complete `docs/JISE_OVERLEAF_LATEX_20260729/` project after separate exact approval | MUST | PLANNED | `main.tex` is entry only; edit `frontmatter.tex`/`sections/*.tex` as evidence requires; no paper edit before RTC02 |
+| RTC02 | Post-NPUB01 | Focused public-NER result-to-claim | Verified 12-cell block plus prior frozen evidence | MUST | DONE | `partial`, high confidence; limited one-benchmark portability; broad public/cross-domain generalization unsupported |
+| PAPER1 | Paper-only | Propagate verified evidence | Complete `docs/JISE_OVERLEAF_LATEX_20260729/` project after separate exact approval | MUST | PLANNED | Await `NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED`; `main.tex` is entry only and exact writable files must be named by that gate |
 
 ## Accounting Check
 

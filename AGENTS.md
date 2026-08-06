@@ -15,12 +15,13 @@ P0-P6 for the narrow NER route and full-IE F1-F6 are complete. F7 Domain Final
 Batch 1 is also complete for `domain:A/B/C/D:k5:s42`, Stage R only over four
 locked P5 Stage N files. Exact RE F1 is
 `0.040541/0.056972/0.057971/0.045381`; all four cells have zero `HAS_METRIC` TP,
-and D is below C. Current result-to-claim therefore remains `partial`: the
-three-seed frozen-test evidence supports narrow low-label Chinese
-equipment-domain NER, while positive RE, RAG-for-RE, CoVe, public transfer, K
-robustness, and full-IE claims remain unsupported. The focused public block is
-now mechanically closed, so literal matrix accounting is `16/60`; this is not
-a complete matrix or an interpreted public-transfer claim.
+and D is below C. Overall result-to-claim remains `partial` with confidence
+`high`: the three-seed frozen-test evidence supports narrow low-label Chinese
+equipment-domain NER, while positive RE, RAG-for-RE, CoVe, K robustness, and
+full-IE claims remain unsupported. The focused public block and its separate
+RTC are complete, so literal matrix accounting is `16/60`. CLUENER supplies
+limited descriptive portability evidence on one additional Chinese NER
+benchmark; it does not establish broad public/cross-domain generalization.
 
 `FULL_IE_STOP_AND_NER_FALLBACK_RTC_APPROVED` and every earlier bounded gate are
 consumed. The human stopped the 60-cell completion route at `4/60` and froze
@@ -38,16 +39,19 @@ The clean tracked suite passed `205/205`; the 18,239-file remote backup and
 63-file local mirror passed hash verification. vLLM and all runners are
 stopped, and the instance is in no-card mode. Official accounting is `16/60`.
 E/E-prime, K scans, RE, domain reruns, IE051, the other 44 incomplete cells,
-paper edits, submission, and GitHub sync remain closed. No result-to-claim gate
-is live; the next possible gate is `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED`.
+paper edits, submission, and GitHub sync remain closed. The exact
+`NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED` gate is consumed with verdict
+`partial`, confidence `high`. No experiment gate is live; the next possible
+gate is paper-only:
+`NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED`.
 
 The active future manuscript target is the complete
 `docs/JISE_OVERLEAF_LATEX_20260729/` LaTeX project: `main.tex` is the Overleaf
 entry point, while `frontmatter.tex` and `sections/*.tex` contain the paper.
 Historical Markdown drafts are reference artifacts, not the active refinement
-target. Paper propagation is deferred until the public block closes and a
-separate result-to-claim gate passes. The instance was last verified in no-card
-mode (`No devices found`), with a 2 GiB cgroup, no vLLM/Qwen/F7 process, and
+target. Paper propagation is deferred until the exact LaTeX propagation gate
+is approved and names the writable files. The instance was last verified in
+no-card mode (`No devices found`), with a 2 GiB cgroup, no vLLM/Qwen/F7 process, and
 only the preserved historical dead F6 screen. The total project budget target
 remains 400 CNY; the last reported 4090 price is `2.8 CNY/hour`. Use only the
 non-secret SSH alias `autodl-paper`.
@@ -77,6 +81,8 @@ Read these files before any project work:
     12-cell validation state and exact no-card closeout resume point.
 12. `docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_CLOSEOUT_20260806.md` - final
     metrics, audit, tests, backup, local mirror, cost, and machine closeout.
+13. `docs/RESULT_TO_CLAIM_NER_PUBLIC_CLUENER_ABCD_K5_20260806.md` - focused
+    public-NER verdict, bounded portability wording, anti-claims, and next gate.
 
 If the documents differ, `AGENT_PLAYBOOK.md` controls execution. This file may
 clarify comparisons or local workflow but must not silently replace fixed model,
@@ -186,8 +192,10 @@ and the frozen 60-cell protocol, but it is no longer the active target.
 Route freeze (2026-08-04): after F7 and a bounded result-to-claim review, the
 human stopped matrix completion at `4/60`. The final paper route is NER as the
 main contribution, with RE disclosed only as an exploratory negative result
-and limitation. Positive RE, RAG-for-RE, CoVe, `HAS_METRIC`, public transfer,
-K robustness, and complete-IE claims remain unsupported. Missing cells remain
+and limitation. Positive RE, RAG-for-RE, CoVe, `HAS_METRIC`, broad public/
+cross-domain generalization, K robustness, and complete-IE claims remain
+unsupported. The later CLUENER block supports only limited descriptive
+portability to one additional Chinese NER benchmark. Missing cells remain
 limitations and historical protocol identities, not an execution backlog.
 
 ## Paper Strategy Lock - 2026-07-20
@@ -211,7 +219,7 @@ The user clarified and approved the publication target and practical objective:
   not replace the reproducible local-model experiment claims unless a later
   decision explicitly changes the claim.
 
-Current paper-facing framing, updated 2026-07-27:
+Current paper-facing framing, updated 2026-08-06:
 
 1. Dataset contribution: a small frozen public-equipment-domain Chinese NER
    dataset with documented construction, guideline, split hashes,
@@ -222,10 +230,11 @@ Current paper-facing framing, updated 2026-07-27:
    pipeline comparing fixed-random/kNN demonstrations, domain glossary
    injection, and reranked RAG evidence.
 3. Evidence contribution: three-seed A/B/C/D domain-test ablations showing F1
-   and recall effects plus RAG's precision/false-positive trade-off.
+   and recall effects plus RAG's precision/false-positive trade-off, with a
+   focused CLUENER labeled-dev replication showing the same clean directions.
 4. Practical limitations: `TECH_SCHEME` calibration agreement is weak; RE,
-   CoVe, public generalization, K sensitivity, significance, and the full
-   A..E-prime matrix are not supported current contributions.
+   CoVe, broad public/cross-domain generalization, K sensitivity, significance,
+   SOTA, and the full A..E-prime matrix are not supported current contributions.
 
 Historical extension target, recorded 2026-07-30: complete 30 domain cells with
 NER plus end-to-end exact directed relation metrics and 30 gold-bearing
@@ -255,12 +264,13 @@ the untouched identities remain an inventory, not planned work or failed runs.
 
 ## Current Priority And State
 
-Current step: **wait for an exact public-NER result-to-claim gate**. The 12-cell
-runtime and closeout are complete; do not restart vLLM, rerun a cell, or boot a
-paid GPU. IE051, E/E-prime, K scans, RE, domain reruns, the rest of F8/F9, and
-the other 44 incomplete cells remain `CLOSED`. Literal accounting is `16/60`.
-No paper body may change before a separate
-`NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED` review and a later exact paper gate.
+Current step: **wait for the exact LaTeX propagation gate**. The 12-cell runtime,
+closeout, and focused public-NER RTC are complete; do not restart vLLM, rerun a
+cell, or boot a paid GPU. IE051, E/E-prime, K scans, RE, domain reruns, the rest
+of F8/F9, and the other 44 incomplete cells remain `CLOSED`. Literal accounting
+is `16/60`. No paper body may change before
+`NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED`, which must name the
+allowed files in the complete active LaTeX project.
 
 - Local workspace: `D:\yinsir`.
 - Git repository: `main` tracks `origin/main`. As of the latest handoff, local
@@ -690,7 +700,10 @@ statements in `results/summary.md`.
   Domain Batch 1 are preserved; the focused 12-cell CLUENER A/B/C/D K=5 three-
   seed NER amendment is also complete and backed up. Literal accounting is
   `16/60`. The remaining route is frozen and IE051 is historical `CLOSED`.
-  Public evidence interpretation still requires the separate RTC gate.
+  The focused public RTC is complete at `partial`, confidence `high`: it
+  supports limited descriptive portability to one additional Chinese NER
+  benchmark, not broad public/cross-domain generalization. Paper work still
+  requires the separate exact LaTeX propagation gate.
 
 ### P7 - Optional QLoRA
 

@@ -7,7 +7,7 @@ Gate chain:
 - `NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED`
 - `NER_PUBLIC_CLUENER_B44_C44_D44_RESUME_APPROVED`
 
-Status: `DONE_AWAITING_RESULT_TO_CLAIM`
+Status: `DONE_RTC_COMPLETE`
 
 ## Scope Closed
 
@@ -137,9 +137,34 @@ Successful closeout changes literal accounting from `4/60` to `16/60`:
 - 36 wholly absent cells;
 - 44 incomplete identities remain route-closed.
 
-This closeout does not itself support a public-transfer claim. The prior
-result-to-claim verdict remains `partial` until a separate
-`NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED` review evaluates the public evidence.
+This mechanical closeout did not itself support a public-transfer claim. The
+later `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED` review is recorded below.
 Positive RE, RAG-for-RE, CoVe, `HAS_METRIC`, K robustness, and complete-IE
 claims remain unsupported. No paper, LaTeX, DOCX, submission, or GitHub sync
 operation was performed.
+
+## Post-Closeout Result-to-Claim Resolution
+
+The bounded public-NER RTC completed on 2026-08-06 with verdict `partial` and
+confidence `high`. It made no model call, result change, or manuscript edit.
+
+- CLUENER `B-A` mean F1 is `+0.085445`.
+- CLUENER `C-B` mean F1 is `+0.003557`, a small directionally positive
+  lexicon result.
+- CLUENER `D-C` mean F1 is `-0.004097`, while precision is `+0.009832` and
+  FP is `-95`, reproducing the equipment-domain RAG precision/FP operating-
+  point pattern.
+- These results support limited, descriptive portability to this one
+  additional Chinese NER benchmark. They do not support broad public-
+  benchmark/cross-domain generalization, significance, SOTA, K robustness,
+  public RE, CoVe, or complete IE.
+
+The overall paper route remains NER-primary, with RE as an exploratory
+negative result/limitation. Accounting remains `16/60`, and the other 44
+identities remain route-closed. The versioned verdict is
+`docs/RESULT_TO_CLAIM_NER_PUBLIC_CLUENER_ABCD_K5_20260806.md`.
+
+The next possible action is the separately approved paper-only
+`NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED` gate for exact files in
+the complete `docs/JISE_OVERLEAF_LATEX_20260729/` project. This closeout and
+RTC do not themselves authorize that edit.
