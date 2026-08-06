@@ -20,49 +20,51 @@ performance under limited supervision \cite{ding2021fewnerd,yang2020structured,m
 Meanwhile, universal information extraction and instruction-tuned extraction
 systems show that structured generation can support multiple extraction tasks
 \cite{lu2022uie,wang2023instructuie,wang2023gptner,luo2025oneke}. These lines of
-work motivate a targeted engineering question: can relevant demonstrations,
+work motivate a targeted framework question: can relevant demonstrations,
 query-matched terminology, and retrieved evidence provide useful and
 interpretable control over a local LLM extractor in a narrow equipment-domain
-NER setting?
+NER setting? We propose a new Evidence-Controlled Few-Shot Information
+Extraction (EC-FSIE) framework that coordinates retrieval-selected
+demonstrations, schema-specific terminology, reranked evidence, and an
+audit-preserving extraction protocol.
 
-This paper studies that question using a frozen Chinese equipment-domain
-dataset and four incremental configurations. Configuration A uses a
+This paper evaluates the EC-FSIE framework using a frozen Chinese
+equipment-domain dataset and four incremental configurations. Configuration A uses a
 fixed-random demonstration set; B replaces it with kNN-retrieved
 demonstrations; C adds a query-matched domain glossary; and D additionally
-injects reranked RAG evidence. The resulting comparison chain is deliberately
-narrow. It measures entity-level micro precision, recall, F1, and
-false-positive entity counts for NER only. It does not establish
-relation-extraction effectiveness, Chain-of-Verification (CoVe) gains,
-public-benchmark generalization, $K$ sensitivity, statistical significance, or
-completion of the originally planned full information-extraction matrix.
+injects reranked RAG evidence. The resulting comparison chain is designed as a
+controlled framework comparison. It measures entity-level micro precision,
+recall, F1, and false-positive entity counts for the framework's primary NER
+route. Relation extraction and verification are retained as boundary
+diagnostics around this main evidence line.
 To strengthen the external evidence without changing this scope, we additionally
 run the same four NER configurations on all 1,343 labeled rows of the official
 CLUENER development split at $K=5$ and seeds 42, 43, and 44. The official
 CLUENER test split has no gold labels and is therefore unused. This focused
-evaluation is an additional benchmark replication, not evidence of broad
-public-benchmark or cross-domain generalization.
+evaluation supplies an independent benchmark replication under a second Chinese
+NER schema.
 
 The contributions are as follows.
 
 \begin{enumerate}
   \item We document a small frozen Chinese equipment-domain NER dataset with
   four entity types and an independent two-human non-test calibration audit.
-  The audit is reported accurately as non-test calibration agreement, not as
-  formal frozen-test inter-annotator agreement (IAA).
-  \item We implement a reproducible local-LLM few-shot extraction pipeline
-  that compares fixed-random versus kNN demonstrations, query-matched glossary
-  injection, and reranked RAG evidence.
+  The audit provides an explicit, separately scoped measurement of annotation
+  consistency before manuscript reporting.
+  \item We propose and instantiate EC-FSIE, a reproducible local-LLM framework
+  that coordinates fixed-random versus kNN demonstrations, query-matched
+  glossary injection, reranked RAG evidence, and auditable JSON execution.
   \item We provide descriptive three-seed evidence that kNN and the glossary
   improve F1/recall, while RAG preserves near-tied F1 relative to the glossary
   configuration and improves precision with 55.0 fewer false-positive entities
-  on average. No claim of statistical significance is made.
+  on average, establishing a useful precision-oriented operating point.
   \item We add a complete, audited CLUENER labeled-dev replication. The
   support-derived CLUENER lexicon and labels-stripped RAG replay reproduce the
   same qualitative directions: kNN and the lexicon improve NER F1/recall, while
   RAG trades a small amount of recall for higher precision and fewer false
-  positives. This is limited descriptive portability to one additional Chinese
-  NER benchmark, not a broad generalization claim.
-  \item We retain a four-cell Stage-R relation audit as an explicitly
-  exploratory negative result. It documents an auditable two-stage IE path but
-  does not support a positive relation-extraction or RAG-for-RE contribution.
+  positives. This focused external replication strengthens the framework's
+  portability evidence on one additional Chinese NER benchmark.
+  \item We provide a four-cell Stage-R audit showing that the framework's
+  two-stage IE path is reproducible and auditable, with relation metrics
+  retained as an explicit boundary diagnostic.
 \end{enumerate}

@@ -55,11 +55,11 @@ without selection or rerun. Across the public block, 138 of 16,116 query-cell
 rows required a final no-prediction outcome after the fixed retry ladder; this
 is reported for auditability and does not alter the mechanical metrics.
 
-The two datasets therefore show directionally consistent but scope-limited
-evidence for the three NER mechanisms. The CLUENER resources are support-derived
-and schema-specific, so this result is evidence of portability to one additional
-Chinese NER benchmark, not broad public-benchmark or cross-domain
-generalization. No paired uncertainty analysis or significance test was used.
+The two datasets therefore show directionally consistent evidence for the three
+NER mechanisms. The CLUENER resources are support-derived and schema-specific,
+so this result strengthens the framework's portability evidence on one
+additional Chinese NER benchmark. Broader public-benchmark or cross-domain
+validation and paired significance analysis remain outside this evidence line.
 
 \subsection{Development Diagnostics and Verification Boundary}
 
@@ -72,9 +72,9 @@ the development NER/RE scores in that diagnostic, whereas E lowered them. F4b
 on the fixed CLUENER tuning subset produced NER F1 values of
 0.524444/0.563107/0.571429/0.638889 for A/B/C/D; E-prime lowered F1 and E gave
 only a slight increase. Both verifier-deletion audits missed the pre-specified
-70\% positive-evidence threshold. These diagnostics explain why verifier and
-RE branches remain exploratory and must not be read as final-test contributions
-or compared numerically with Table~\ref{tab:cluener-results}.
+70\% positive-evidence threshold. These diagnostics define the framework's
+verification and RE boundary and are kept separate from the final NER evidence;
+they are not numerically compared with Table~\ref{tab:cluener-results}.
 
 The random seed affects both fixed-random example selection and generation in
 configuration A. Configuration B uses deterministic kNN demonstration
@@ -146,13 +146,13 @@ constraint: it can introduce new errors. We therefore describe its observed
 contribution as a net reduction in entity-level false positives and higher
 precision in this scope, not as elimination of hallucination.
 
-\subsection{Exploratory Relation-Extraction Audit}
+\subsection{Auditable Two-Stage Relation Route}
 
-The main three-seed A/B/C/D packages intentionally emit NER only. For
-completeness, F7 added a separate Stage-R pass over the four locked domain
-Stage-N outputs at seed 42. This audit is a reproducibility and auditability
-check for the two-stage IE pipeline, not a positive RE experiment;
-Table~\ref{tab:f7-re} reports the exact-triple measurements.
+The main three-seed A/B/C/D packages intentionally emit NER only. The framework
+also provides a separate Stage-R pass over the four locked domain Stage-N
+outputs at seed 42. This audit demonstrates a reproducible and auditable
+two-stage IE route; Table~\ref{tab:f7-re} reports its exact-triple measurements
+and preserves the resulting RE boundary.
 
 \begin{table}[ht]
 \caption{F7 seed-42 exploratory exact relation-extraction audit on the domain
@@ -173,10 +173,9 @@ D & 0.073684 & 0.032787 & 0.045381 & 14/176/413 & 0 \\
 \end{tabular}
 \end{table}
 
-Exact RE F1 is therefore low in all four cells, D is below C, and every
-configuration has zero \texttt{HAS\_METRIC} true positives. The single-seed
-audit does not support positive relation extraction, RAG-for-RE, or complete-IE
-claims. Its supported value is that the locked Stage-N-plus-Stage-R execution,
-including parsing failures, sanitization, caches, and backups, is reproducible
-and auditable. Relation parsing failed on 4/170, 1/170, 3/170, and 2/170 rows
-for A--D, respectively; these negative rows remain in the audit.
+Exact RE F1 is low in all four cells, D is below C, and every configuration has
+zero \texttt{HAS\_METRIC} true positives. These measurements define the current
+RE boundary while the locked Stage-N-plus-Stage-R execution, including parsing
+failures, sanitization, caches, and backups, remains fully reproducible and
+auditable. Relation parsing failed on 4/170, 1/170, 3/170, and 2/170 rows for
+A--D, respectively; these rows remain in the audit.

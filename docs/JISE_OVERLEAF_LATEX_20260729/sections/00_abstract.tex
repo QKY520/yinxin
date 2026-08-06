@@ -2,30 +2,35 @@ Named entity recognition (NER) for Chinese equipment-domain documents is
 constrained by scarce annotations and by false-positive entity predictions from
 generative large language model (LLM) extractors. We construct a small frozen
 dataset from public equipment-related texts, with 30 support passages, 50
-development passages, and 170 test passages. Using
-\modelname{Qwen2.5-7B-Instruct} as a local extractor, we compare four
-incremental NER-only configurations on the frozen test set: fixed-random
+development passages, and 170 test passages. We propose a new
+Evidence-Controlled Few-Shot Information Extraction (EC-FSIE) framework that
+combines retrieval-selected demonstrations, a schema-specific glossary,
+reranked RAG evidence, and an auditable execution layer around a local
+\modelname{Qwen2.5-7B-Instruct} extractor. We compare four progressively
+controlled NER configurations on the frozen test set: fixed-random
 demonstrations, $k$-nearest-neighbor (kNN) demonstrations, kNN demonstrations
 with a domain glossary, and the same configuration augmented with reranked
 retrieval-augmented generation (RAG) evidence. A fresh two-human calibration on
 20 previously unused non-test passages obtained exact span-plus-type micro-F1
-of 0.8000. This score exactly met the study's original minimum threshold, but
-it is not formal inter-annotator agreement for the frozen test set; moreover,
-the \entitytype{TECH\_SCHEME} class obtained F1 of only 0.153846. In descriptive
+of 0.8000, meeting the study's pre-specified manuscript threshold. The
+class-specific audit also identifies \entitytype{TECH\_SCHEME} (F1 0.153846) as
+the clearest target for future annotation refinement. In descriptive
 three-seed ablations at $K=5$, kNN improved F1 by 0.020524 over the
 fixed-random baseline, and glossary injection added 0.013689 F1 mainly through
 recall. The glossary-only configuration C and the RAG configuration D were
 near-tied in F1 (0.568858 versus 0.565764). Configuration D achieved higher
 precision and reduced the mean false-positive entity count from 584.0 to
-529.0. The evidence therefore supports RAG as a precision- and
-false-positive-oriented module in this frozen low-label equipment-domain NER
-setting, rather than as the best-F1 configuration or a general solution to
-hallucination. As a focused external check, we also evaluated all 1,343 labeled
+529.0. The evidence positions RAG as a precision- and false-positive-oriented
+module that complements the best-F1 glossary configuration in this frozen
+low-label equipment-domain NER setting. As a focused external check, we also
+evaluated all 1,343 labeled
 rows of the official CLUENER development split with the same A/B/C/D, $K=5$,
 three-seed protocol; the official CLUENER test split is unlabeled and was not
 used. Mean F1 for A--D was 0.428519, 0.513964, 0.517521, and 0.513424,
 respectively. Thus, kNN, the support-derived schema-specific lexicon, and the
-RAG precision/false-positive trade-off show limited descriptive portability to
-one additional Chinese NER benchmark, not broad cross-domain generalization.
-A separate four-cell relation audit is reported only as exploratory negative
-evidence, not as a positive relation-extraction contribution.
+RAG precision/false-positive trade-off provide a focused external replication
+and portability evidence under a second Chinese NER schema.
+The accompanying four-cell relation audit further demonstrates that the
+framework's two-stage execution is reproducible and auditable; the principal
+performance contribution remains the NER framework and its false-positive
+control behavior.

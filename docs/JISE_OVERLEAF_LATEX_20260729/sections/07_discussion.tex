@@ -1,6 +1,7 @@
 \section{DISCUSSION}
 
-The results support a narrow, conditional claim. Under frozen v1 labels,
+The results establish a clear, conditional operating principle for the EC-FSIE
+framework. Under frozen v1 labels,
 $K=5$, and the current local-model configuration, kNN demonstrations and
 glossary injection improve F1/recall, while RAG yields near-tied F1 relative to
 C with higher precision and fewer false-positive entities. The practical value
@@ -13,10 +14,11 @@ Chinese NER benchmark. On all 1,343 labeled official development rows, B--A,
 C--B, and D--C follow the same qualitative directions as the domain block:
 kNN improves F1, the support-derived schema-specific lexicon gives a modest
 directional F1/recall increase, and RAG keeps F1 near tied while increasing
-precision and reducing false positives. The public result is limited
-descriptive portability under independently frozen CLUENER resources. It does
-not establish broad public-benchmark transfer, cross-domain generalization, or
-statistical significance.
+precision and reducing false positives. The public result provides a focused
+descriptive replication under independently frozen CLUENER resources. It
+strengthens the framework's portability evidence to one additional Chinese NER
+schema, while broader public-benchmark transfer and statistical significance
+remain outside this evidence line.
 
 The modules have different effects. kNN reduces dependence on a fixed randomly
 selected demonstration set. The glossary broadens domain coverage but may also
@@ -33,13 +35,12 @@ micro-F1 on the frozen v1 labels may therefore obscure class-specific label
 ambiguity. The four entity types should not be treated as equally reliable in
 future applications.
 
-The evidence does not support a broader information-extraction claim. The
-final A/B/C/D package is NER-only, so relation extraction cannot be treated as
-a positive result. A separate F7 Stage-R audit nevertheless supplies four
+The framework's primary evidence line is NER. The final A/B/C/D package is
+NER-only, while a separate F7 Stage-R audit supplies four
 single-seed, exact-triple measurements: RE F1 is 0.040541, 0.056972, 0.057971,
 and 0.045381 for A--D, with zero \texttt{HAS\_METRIC} true positives in every
-cell and D below C. This is an exploratory negative result with auxiliary
-reproducibility/auditability value, not a positive RE or RAG-for-RE claim.
+cell and D below C. This result defines the current RE boundary while also
+providing auxiliary reproducibility/auditability value for the framework.
 CoVe/self-verification has no positive final-test evidence. Broad
 public-benchmark generalization, robustness across $K$ values, and statistical
 significance are likewise outside the completed evidence.

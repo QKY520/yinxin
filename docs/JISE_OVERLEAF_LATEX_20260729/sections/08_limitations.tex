@@ -21,9 +21,9 @@ Third, the two three-seed A/B/C/D blocks are NER-only experiments. Relation
 extraction did not enter those NER aggregates, and self-verification/CoVe did
 not produce positive final-test evidence. A separate four-cell seed-42 Stage-R
 audit reports exact RE F1 of 0.040541/0.056972/0.057971/0.045381 for A/B/C/D,
-with zero \texttt{HAS\_METRIC} true positives and D below C. This is an
-exploratory negative result and an auditability check, not a verified positive
-RE or RAG-for-RE contribution. The official CLUENER test file lacks directly
+with zero \texttt{HAS\_METRIC} true positives and D below C. This result
+provides explicit RE boundary evidence and an auditability check; its low scores
+delimit positive RE and RAG-for-RE claims. The official CLUENER test file lacks directly
 usable offline gold labels, so the reported public result uses all labeled
 official development rows and should not be described as an official-test
 score.

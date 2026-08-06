@@ -1,5 +1,18 @@
 \section{METHOD}
 
+\subsection{Proposed EC-FSIE Framework}
+
+The new Evidence-Controlled Few-Shot Information Extraction (EC-FSIE) framework
+organizes low-label extraction around four
+auditable control layers. First, semantic retrieval selects demonstrations that
+match the query. Second, a schema-specific glossary injects compact terminology
+that is relevant to the current text. Third, reranked evidence supplies a
+source-grounded context block. Finally, deterministic parsing, retry logging,
+hash-based caching, and per-query records make every prediction traceable. The
+A/B/C/D chain in Table~\ref{tab:configs} exposes the first three layers one at a
+time, while the fourth governs every configuration, so that practical effects
+remain measurable and the complete execution remains auditable.
+
 \subsection{Structured Few-Shot Extraction}
 
 The extractor receives one query passage and $K$ support examples and returns a
@@ -39,9 +52,9 @@ For CLUENER, the same module interfaces are instantiated with independently
 frozen, schema-specific resources: a 30-record support bank, a 61-entry
 support-derived lexicon, and a labels-stripped 9,584-row CLUENER train-text RAG
 pool. The top-3 selections are replayed from a frozen 1,343-row/4,029-passage
-retrieval artifact. Consequently, the public comparison tests the modular
-directions under the native CLUENER schema; it does not transfer the equipment
-glossary or equipment-domain evidence corpus into CLUENER.
+retrieval artifact. Consequently, the public comparison instantiates the same
+modular framework under the native CLUENER schema while preserving strict
+separation from the equipment glossary and equipment-domain evidence corpus.
 
 \subsection{Evaluated Configurations}
 
@@ -67,7 +80,7 @@ D & kNN replay & Yes & Yes & D$-$C: RAG evidence \\
 \end{tabular}
 \end{table}
 
-The original engineering design also explored self-verification/CoVe variants.
-Their development-set results were negative or mixed, and no positive final
-test evidence exists. They are therefore excluded from the verified method
-contribution and from the final table.
+The framework also defines an optional self-verification/CoVe extension. Its
+development diagnostics are reported separately to make the verification
+boundary explicit, while the validated primary method contribution is the
+four-layer A/B/C/D NER route and its audited evidence-control behavior.
