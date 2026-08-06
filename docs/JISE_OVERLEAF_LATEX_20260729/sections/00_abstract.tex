@@ -20,4 +20,12 @@ precision and reduced the mean false-positive entity count from 584.0 to
 529.0. The evidence therefore supports RAG as a precision- and
 false-positive-oriented module in this frozen low-label equipment-domain NER
 setting, rather than as the best-F1 configuration or a general solution to
-hallucination.
+hallucination. As a focused external check, we also evaluated all 1,343 labeled
+rows of the official CLUENER development split with the same A/B/C/D, $K=5$,
+three-seed protocol; the official CLUENER test split is unlabeled and was not
+used. Mean F1 for A--D was 0.428519, 0.513964, 0.517521, and 0.513424,
+respectively. Thus, kNN, the support-derived schema-specific lexicon, and the
+RAG precision/false-positive trade-off show limited descriptive portability to
+one additional Chinese NER benchmark, not broad cross-domain generalization.
+A separate four-cell relation audit is reported only as exploratory negative
+evidence, not as a positive relation-extraction contribution.

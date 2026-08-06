@@ -10,6 +10,10 @@ cached by a SHA256 hash of the complete prompt and model-relevant generation
 settings. The parsing ladder strips code fences, attempts structured JSON
 parsing, retries once with a legal-JSON reminder when necessary, and records a
 second failure as no prediction while preserving the raw output.
+All reported NER runs use temperature 0.0, top-$p$ 1.0, a 768-token output
+limit, and the recorded run seed. Exact-hash cache hits replay the identical
+request result and are audit events rather than an additional source of
+randomness.
 
 \subsection{Demonstrations, Glossary, and RAG Evidence}
 
@@ -20,18 +24,33 @@ the $K$ most similar support examples for each query. For configurations C and
 D, the retrieved example identifiers are replayed from configuration B so that
 B-to-C and C-to-D comparisons isolate glossary and RAG changes, respectively.
 
-The glossary is seeded from project-recorded QAonMilitaryKG terminology and
-high-frequency corpus terms. Entries are matched to a query by substring or
-keyword, with at most 20 injected entries. The RAG corpus is segmented into
-approximately 200--300-character passages. BGE-M3/FAISS first retrieves the top
-20 candidates, \modelname{bge-reranker-v2-m3} reranks them, and the top 3
-evidence passages are inserted into the prompt. RAG is used to constrain
-initial extraction with retrieved context, not as a post-hoc rule filter.
+For the equipment-domain block, the glossary is seeded from project-recorded
+QAonMilitaryKG terminology and high-frequency corpus terms. Entries are
+matched to a query by substring or keyword, with at most 20 injected entries.
+The equipment-domain RAG corpus is segmented into 260-character chunks with a
+40-character overlap and a maximum injected passage length of 300 characters.
+Normalized BGE-M3 vectors and a FAISS inner-product index first retrieve the
+top 20 candidates; \modelname{bge-reranker-v2-m3} reranks them, and the top 3
+evidence passages are inserted into the prompt. Embedding and reranking use the
+locked CPU path. RAG is used to constrain initial extraction with retrieved
+context, not as a post-hoc rule filter.
+
+For CLUENER, the same module interfaces are instantiated with independently
+frozen, schema-specific resources: a 30-record support bank, a 61-entry
+support-derived lexicon, and a labels-stripped 9,584-row CLUENER train-text RAG
+pool. The top-3 selections are replayed from a frozen 1,343-row/4,029-passage
+retrieval artifact. Consequently, the public comparison tests the modular
+directions under the native CLUENER schema; it does not transfer the equipment
+glossary or equipment-domain evidence corpus into CLUENER.
 
 \subsection{Evaluated Configurations}
 
+Table~\ref{tab:configs} gives the one-factor A/B/C/D comparison chain used for
+both dataset-specific instantiations.
+
 \begin{table}[ht]
-\caption{Evaluated NER-only configurations.}
+\caption{Evaluated NER-only configurations, instantiated with separately
+frozen resources for the equipment-domain and CLUENER blocks.}
 \label{tab:configs}
 \centering
 \setlength{\tabcolsep}{3pt}

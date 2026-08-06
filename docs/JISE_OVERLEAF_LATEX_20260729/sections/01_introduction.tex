@@ -35,6 +35,12 @@ false-positive entity counts for NER only. It does not establish
 relation-extraction effectiveness, Chain-of-Verification (CoVe) gains,
 public-benchmark generalization, $K$ sensitivity, statistical significance, or
 completion of the originally planned full information-extraction matrix.
+To strengthen the external evidence without changing this scope, we additionally
+run the same four NER configurations on all 1,343 labeled rows of the official
+CLUENER development split at $K=5$ and seeds 42, 43, and 44. The official
+CLUENER test split has no gold labels and is therefore unused. This focused
+evaluation is an additional benchmark replication, not evidence of broad
+public-benchmark or cross-domain generalization.
 
 The contributions are as follows.
 
@@ -50,4 +56,13 @@ The contributions are as follows.
   improve F1/recall, while RAG preserves near-tied F1 relative to the glossary
   configuration and improves precision with 55.0 fewer false-positive entities
   on average. No claim of statistical significance is made.
+  \item We add a complete, audited CLUENER labeled-dev replication. The
+  support-derived CLUENER lexicon and labels-stripped RAG replay reproduce the
+  same qualitative directions: kNN and the lexicon improve NER F1/recall, while
+  RAG trades a small amount of recall for higher precision and fewer false
+  positives. This is limited descriptive portability to one additional Chinese
+  NER benchmark, not a broad generalization claim.
+  \item We retain a four-cell Stage-R relation audit as an explicitly
+  exploratory negative result. It documents an auditable two-stage IE path but
+  does not support a positive relation-extraction or RAG-for-RE contribution.
 \end{enumerate}

@@ -8,6 +8,16 @@ of RAG in this result is not maximizing F1; it is reducing the number of
 erroneous candidates that could enter manual review or later knowledge-base
 cleaning.
 
+The focused CLUENER block strengthens this interpretation with one additional
+Chinese NER benchmark. On all 1,343 labeled official development rows, B--A,
+C--B, and D--C follow the same qualitative directions as the domain block:
+kNN improves F1, the support-derived schema-specific lexicon gives a modest
+directional F1/recall increase, and RAG keeps F1 near tied while increasing
+precision and reducing false positives. The public result is limited
+descriptive portability under independently frozen CLUENER resources. It does
+not establish broad public-benchmark transfer, cross-domain generalization, or
+statistical significance.
+
 The modules have different effects. kNN reduces dependence on a fixed randomly
 selected demonstration set. The glossary broadens domain coverage but may also
 invite additional false positives. RAG moves the system to a more conservative
@@ -25,6 +35,11 @@ future applications.
 
 The evidence does not support a broader information-extraction claim. The
 final A/B/C/D package is NER-only, so relation extraction cannot be treated as
-a positive result. CoVe/self-verification has no positive final-test evidence.
-Public-benchmark generalization, robustness across $K$ values, and statistical
+a positive result. A separate F7 Stage-R audit nevertheless supplies four
+single-seed, exact-triple measurements: RE F1 is 0.040541, 0.056972, 0.057971,
+and 0.045381 for A--D, with zero \texttt{HAS\_METRIC} true positives in every
+cell and D below C. This is an exploratory negative result with auxiliary
+reproducibility/auditability value, not a positive RE or RAG-for-RE claim.
+CoVe/self-verification has no positive final-test evidence. Broad
+public-benchmark generalization, robustness across $K$ values, and statistical
 significance are likewise outside the completed evidence.

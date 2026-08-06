@@ -10,12 +10,26 @@ predictions on average. The available evidence therefore supports RAG as a
 precision-oriented component, not as the best-F1 module or a universal
 hallucination-removal method.
 
+The same A/B/C/D directions were also evaluated on all 1,343 labeled rows of
+the official CLUENER development split at $K=5$ over three seeds. kNN and the
+support-derived schema-specific lexicon show directional NER improvements, and
+RAG again preserves near-tied F1 while increasing precision and reducing
+false-positive entities. This is limited descriptive portability to one
+additional Chinese NER benchmark; it is not broad public-benchmark or
+cross-domain generalization.
+
 This conclusion applies only to the frozen Chinese equipment-domain NER
 setting studied here. The fresh non-test human calibration has overall F1 of
 0.8000 but weak \entitytype{TECH\_SCHEME} agreement, and no frozen-test formal
-IAA is available. Relation extraction, CoVe gains, public-benchmark
-generalization, $K$-scan robustness, statistical significance, and a complete
-ablation matrix remain unverified. The paper's contribution is an
-evidence-bounded engineering baseline that preserves both gains and negative
-trade-offs rather than claiming a broader completed information-extraction
-solution.
+IAA is available. The separate F7 seed-42 Stage-R audit is retained as an
+exploratory negative result: exact RE F1 is low in all four configurations,
+D is below C, and all four have zero \texttt{HAS\_METRIC} true positives. It
+demonstrates an auditable two-stage execution path but does not support a
+positive RE or RAG-for-RE claim. Broad public-benchmark generalization,
+$K$-scan robustness, statistical significance, and a complete ablation matrix
+remain unverified. The frozen inventory is mechanically 16/60 complete (four
+domain Stage-N-plus-Stage-R cells and 12 CLUENER NER cells); the other 44
+identities remain route-closed rather than being counted as failed experiments.
+The paper's contribution is an evidence-bounded engineering
+baseline that preserves both gains and negative trade-offs rather than claiming
+a broader completed information-extraction solution.

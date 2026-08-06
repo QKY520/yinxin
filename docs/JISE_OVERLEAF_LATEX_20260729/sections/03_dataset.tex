@@ -18,6 +18,8 @@ kNN demonstrations. Development data was used before the final test evaluation.
 The frozen test set was used only to evaluate final configurations; it was not
 used to tune prompts, thresholds, schemas, glossary entries, or retrieval
 settings.
+The remaining 150 collected candidates were not promoted into the frozen v1
+split; they remain collection-stage records rather than evaluation examples.
 
 The RAG corpus consists of public encyclopedia passages, patent abstracts, and
 glossary entries. It was deduplicated against frozen test texts with a fixed
@@ -31,7 +33,51 @@ frozen-test annotation chain is unavailable. We therefore do not describe v1
 as fully independently double-annotated human gold, and we do not report a
 frozen-test formal IAA value.
 
+\subsection{Focused CLUENER Evaluation Protocol}
+
+We use CLUENER \cite{xu2020cluener} as one additional Chinese NER benchmark.
+Because the official CLUENER test file is distributed without gold labels, it
+was not used for offline evaluation. Instead, the complete labeled official
+development split---all 1,343 rows---was frozen as the focused final
+evaluation set. This is explicitly a labeled-dev replication rather than an
+official-test leaderboard result.
+
+The CLUENER resources were constructed independently from the equipment-domain
+resources. A frozen 30-record CLUENER support bank supplies demonstrations. A
+61-entry schema-specific lexicon was derived from that support bank only; it is
+not the equipment glossary. The frozen labels-stripped CLUENER train-text RAG
+pool contains 9,584 rows, and its construction log records 89 removals under
+the fixed 8-gram/0.80 containment blocklist. Offline retrieval produced a
+locked top-3 replay for every evaluation query, totaling 4,029 selected
+passages across 1,343 rows. Gold development labels entered only the scorer,
+never prompts, the support bank, the lexicon, or RAG evidence.
+
+The 1,343-row labeled-dev evaluation contains 3,072 gold entity mentions under
+the native ten-class CLUENER schema. Table~\ref{tab:cluener-types} records the
+class distribution used by every public cell.
+
+\begin{table}[ht]
+\caption{Gold entity distribution in the focused CLUENER labeled-dev split.}
+\label{tab:cluener-types}
+\centering
+\begin{tabular}{lrlr}
+\toprule
+Entity type & Count & Entity type & Count \\
+\midrule
+address & 373 & book & 154 \\
+company & 378 & game & 295 \\
+government & 247 & movie & 151 \\
+name & 465 & organization & 367 \\
+position & 433 & scene & 209 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \subsection{Entity Types and Metrics}
+
+Table~\ref{tab:entity-types} defines the four equipment-domain entity types;
+CLUENER is evaluated under its native published schema rather than remapped to
+these four categories.
 
 \begin{table}[ht]
 \caption{Entity definitions used in the frozen dataset.}
@@ -67,6 +113,8 @@ and were compared without modifying, sorting, completing, or adjudicating
 either annotation file. All 20 pairs passed structural checks; there were zero
 structural hard errors and zero blocking review items, and both annotators used
 all four entity types.
+Table~\ref{tab:calibration} reports the resulting exact span-plus-type
+agreement by entity type.
 
 Annotators A and B produced 175 and 220 entities, respectively, with 158 exact
 span-plus-type matches. Treating A as the reference for the directional

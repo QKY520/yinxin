@@ -1,17 +1,44 @@
 \section{EXPERIMENTAL SETUP}
 
-All final results come from the frozen 170-passage domain test split using
-$K=5$ and random seeds 42, 43, and 44. The primary extractor is
-\modelname{Qwen2.5-7B-Instruct} \cite{qwen2024qwen25}, deployed locally in
-FP16. The evaluated scope is limited to four configurations and three seeds,
-yielding 12 completed run units. Each unit has 170 traceable per-query records,
-and the observed parse-failure count is zero. Tables report the mean and sample
-standard deviation over the three seeds.
+All domain final results come from the frozen 170-passage domain test split
+using $K=5$ and random seeds 42, 43, and 44. The primary extractor is
+\modelname{Qwen2.5-7B-Instruct} \cite{qwen2024qwen25}, deployed locally in FP16
+through vLLM. The domain scope contains four configurations and three seeds,
+yielding 12 completed run units. Each domain unit has 170 traceable per-query
+records, and the observed domain NER parse-failure count is zero.
 
-The final configurations are NER-only: relation types are empty and no
-relation-extraction metric is reported. Zero relation predictions in this
-configuration are not relation-extraction results. The final test package does
-not contain E or E-prime verifier configurations, public-benchmark evaluations,
-$K=1$ or $K=10$ scans, or additional seeds. With only three seeds and no
-hypothesis test, all between-configuration readings in this paper are
-descriptive rather than statistically significant findings.
+A separately frozen public block applies the same A/B/C/D, $K=5$, seeds
+42/43/44 design to all 1,343 labeled rows of the official CLUENER development
+split, adding 12 completed NER run units. The official unlabeled test split was
+not used. The combined evidence therefore contains 24 NER run units: 12 domain
+units and 12 CLUENER units. The CLUENER audit covers 16,116 query-cell rows and
+records 138 parse failures (0.856292\%), each counted as no prediction after the
+fixed retry ladder; all cells remain below the locked 5\% stop threshold. Tables
+report the mean and sample standard deviation over the three seeds for each
+dataset separately.
+
+Seeds control fixed-random demonstration selection for A and are also recorded
+in the generation request. B uses deterministic kNN retrieval; C and D replay
+the corresponding B demonstration identifiers, and D replays locked RAG
+passage identifiers. With temperature 0.0 and exact-hash caching, the near-zero
+variation of B/C/D is expected reproducibility under fixed conditions, not
+three independent data samples. The reported standard deviations describe run
+variation only, and no paired uncertainty analysis or hypothesis test was
+performed for CLUENER.
+
+The main three-seed configurations are NER-only: relation types are empty and
+no relation-extraction metric is reported for those 24 NER units. Zero relation
+predictions in these configurations are not relation-extraction results. A
+separate exploratory F7 audit reused the four seed-42 domain Stage-N outputs
+and added Stage R once for A/B/C/D. Those four single-seed cells are reported
+as negative/diagnostic RE evidence, not merged into the NER aggregate.
+
+The completed package does not contain E or E-prime verifier configurations,
+$K=1$ or $K=10$ scans, additional seeds, another public benchmark, or a
+supervised competitive baseline. With only three seeds and no hypothesis test,
+all between-configuration readings in this paper are descriptive rather than
+statistically significant findings. The frozen run configurations, prompt and
+response hashes, exact dependency lock, per-query traces, and versioned
+finalizers are retained for audit and reproduction.
+The dependency lock records vLLM 0.8.5.post1, Transformers 4.51.3,
+sentence-transformers 5.6.0, and PyTorch 2.6.0 for the project environment.

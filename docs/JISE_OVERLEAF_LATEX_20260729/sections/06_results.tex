@@ -19,12 +19,70 @@ D & $0.525135\pm0.000000$ & $0.613208\pm0.000000$ & $0.565764\pm0.000000$ & $529
 \end{tabular}
 \end{table}
 
+\begin{table}[ht]
+\caption{Focused CLUENER labeled-dev NER results over seeds 42, 43, and 44
+at $K=5$. The table uses all 1,343 labeled official development rows; the
+official test split is unlabeled and unused. Values are mean $\pm$ sample
+standard deviation.}
+\label{tab:cluener-results}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{ccccc}
+\toprule
+Config. & Precision & Recall & F1 & FP count \\
+\midrule
+A & $0.448636\pm0.036890$ & $0.413086\pm0.056862$ & $0.428519\pm0.037917$ & $1569.0\pm306.8$ \\
+B & $0.528488\pm0.001929$ & $0.500217\pm0.002118$ & $0.513964\pm0.001907$ & $1371.0\pm7.2$ \\
+C & $0.530932\pm0.001140$ & $0.504774\pm0.001316$ & $0.517521\pm0.000619$ & $1370.0\pm8.7$ \\
+D & $0.540764\pm0.002162$ & $0.488715\pm0.000940$ & $0.513424\pm0.001493$ & $1275.0\pm8.7$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Focused CLUENER Replication}
+
+Table~\ref{tab:cluener-results} provides a complete labeled-dev replication rather than a
+sampled check. Relative to A, kNN configuration B raises mean F1 by 0.085445
+and improves precision, recall, and FP count. The C-minus-B F1 change is only
+0.003557, with a small recall increase, so the support-derived lexicon result
+is directionally positive but modest. Relative to C, D has a near-tied F1
+change of $-0.004097$, higher precision by 0.009832, lower recall by 0.016059,
+and 95 fewer false-positive entities. This reproduces the domain-block
+operating-point pattern: RAG is a precision/false-positive control with little
+change in F1, not an F1-maximizing module. The low A seed44 result is retained
+without selection or rerun. Across the public block, 138 of 16,116 query-cell
+rows required a final no-prediction outcome after the fixed retry ladder; this
+is reported for auditability and does not alter the mechanical metrics.
+
+The two datasets therefore show directionally consistent but scope-limited
+evidence for the three NER mechanisms. The CLUENER resources are support-derived
+and schema-specific, so this result is evidence of portability to one additional
+Chinese NER benchmark, not broad public-benchmark or cross-domain
+generalization. No paired uncertainty analysis or significance test was used.
+
+\subsection{Development Diagnostics and Verification Boundary}
+
+The final tables are preceded by two bounded development diagnostics that are
+kept separate from the frozen evidence. F4a on the 50-row equipment-domain
+development split produced exact RE F1 values of 0.056680, 0.040404, 0.039024,
+and 0.010989 for A--D; D had a 6\% relation-parse-failure rate and every row
+had zero \texttt{HAS\_METRIC} true positives. Relation-aware E-prime improved
+the development NER/RE scores in that diagnostic, whereas E lowered them. F4b
+on the fixed CLUENER tuning subset produced NER F1 values of
+0.524444/0.563107/0.571429/0.638889 for A/B/C/D; E-prime lowered F1 and E gave
+only a slight increase. Both verifier-deletion audits missed the pre-specified
+70\% positive-evidence threshold. These diagnostics explain why verifier and
+RE branches remain exploratory and must not be read as final-test contributions
+or compared numerically with Table~\ref{tab:cluener-results}.
+
 The random seed affects both fixed-random example selection and generation in
 configuration A. Configuration B uses deterministic kNN demonstration
 retrieval, and C/D replay B's demonstration identifiers. Therefore, the larger
 variance in A additionally contains fixed-random demonstration-selection noise,
-whereas B/C/D mainly reflect residual generation or cache-condition variation
-under the recorded setup.
+whereas B/C/D mainly reflect deterministic or near-deterministic generation
+under the recorded setup. Exact-hash cache hits reproduce an identical request
+rather than adding an independent random replicate.
 
 \subsection{kNN Demonstrations and Glossary Injection}
 
@@ -60,7 +118,8 @@ the per-query level. The analysis considered false-positive entities present in
 C but absent from D and grouped them by their relation to the reference
 annotations. D did not simply remove 55 incorrect entities: it removed or
 avoided 181 C-only false positives and introduced 126 new false positives,
-yielding the net reduction of 55.
+yielding the net reduction of 55. Table~\ref{tab:fp-categories} summarizes the
+181 avoided C-only false positives.
 
 \begin{table}[ht]
 \caption{Seed-42 categories of C-only false positives avoided by D.}
@@ -86,3 +145,38 @@ for every seed, dataset, model, or entity type. RAG remains an imperfect
 constraint: it can introduce new errors. We therefore describe its observed
 contribution as a net reduction in entity-level false positives and higher
 precision in this scope, not as elimination of hallucination.
+
+\subsection{Exploratory Relation-Extraction Audit}
+
+The main three-seed A/B/C/D packages intentionally emit NER only. For
+completeness, F7 added a separate Stage-R pass over the four locked domain
+Stage-N outputs at seed 42. This audit is a reproducibility and auditability
+check for the two-stage IE pipeline, not a positive RE experiment;
+Table~\ref{tab:f7-re} reports the exact-triple measurements.
+
+\begin{table}[ht]
+\caption{F7 seed-42 exploratory exact relation-extraction audit on the domain
+test split.}
+\label{tab:f7-re}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{cccccc}
+\toprule
+Config. & Precision & Recall & F1 & TP/FP/FN & HAS\_METRIC TP \\
+\midrule
+A & 0.047923 & 0.035129 & 0.040541 & 15/298/412 & 0 \\
+B & 0.079167 & 0.044496 & 0.056972 & 19/221/408 & 0 \\
+C & 0.076046 & 0.046838 & 0.057971 & 20/243/407 & 0 \\
+D & 0.073684 & 0.032787 & 0.045381 & 14/176/413 & 0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Exact RE F1 is therefore low in all four cells, D is below C, and every
+configuration has zero \texttt{HAS\_METRIC} true positives. The single-seed
+audit does not support positive relation extraction, RAG-for-RE, or complete-IE
+claims. Its supported value is that the locked Stage-N-plus-Stage-R execution,
+including parsing failures, sanitization, caches, and backups, is reproducible
+and auditable. Relation parsing failed on 4/170, 1/170, 3/170, and 2/170 rows
+for A--D, respectively; these negative rows remain in the audit.
