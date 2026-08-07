@@ -32,9 +32,11 @@
   skill-specified `gpt-5.4` was unavailable: read-only `gpt-5.6-sol`, `xhigh`.
 - Full report:
   `docs/RESULT_TO_CLAIM_NER_PUBLIC_CLUENER_ABCD_K5_20260806.md`.
-- The next possible action is the separately approved paper-only
-  `NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED` gate for the complete
-  `docs/JISE_OVERLEAF_LATEX_20260729/` project. No paper edit occurred here.
+- The next possible action recorded at the time was the separately approved
+  paper-only `NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED` gate for
+  the complete `docs/JISE_OVERLEAF_LATEX_20260729/` project. That gate was later
+  consumed in commits `8189f71` and `8f1f3e1`; this findings log remains a
+  historical evidence record and its claims were not changed.
 
 ## 2026-08-04 - Focused CLUENER Public-NER Route Amendment
 

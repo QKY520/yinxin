@@ -6,7 +6,7 @@
 >
 > PAPER STRATEGY UPDATE (2026-07-20): The project is now framed for a practical SCI-Q4 submission within roughly one month and a 400 CNY target budget. The original route is retained: equipment-domain small annotated dataset + reproducible few-shot IE pipeline + RAG/glossary/schema constraints + verification to reduce hallucination + ablation evidence. Draft Chinese first, then produce the English SCI manuscript. NER is the main evidence line; RE is auxiliary.
 >
-> EXECUTION STATUS UPDATE (2026-08-06): The focused CLUENER public-NER block is closed at all twelve A/B/C/D, K=5, seeds42/43/44 cells over the 1,343-row labeled official dev split. The versioned no-model v2 finalizer passed, the clean tracked suite passed `205/205`, the 18,239-file remote backup and 63-file local lightweight mirror were hash-verified, and the instance is in no-card mode with no model or runner process. Literal accounting is `16/60`; the other 44 incomplete identities remain route-closed. The separate `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED` review is consumed with verdict `partial`, confidence `high`: the public block provides limited descriptive portability evidence on one additional Chinese NER benchmark, while broad public/cross-domain generalization remains unsupported. No experiment gate is live. Paper/LaTeX edits require the later exact `NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED` gate. IE051, E/E-prime, K scans, RE, domain reruns, submission, and GitHub sync remain closed. See `HANDOFF.md`, `docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_CLOSEOUT_20260806.md`, and `docs/RESULT_TO_CLAIM_NER_PUBLIC_CLUENER_ABCD_K5_20260806.md` before acting.
+> EXECUTION STATUS UPDATE (2026-08-07): The focused CLUENER public-NER block and its result-to-claim are closed. Literal accounting is `16/60`; the other 44 incomplete identities remain route-closed. The exact paper-only `NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED` gate was later granted and consumed. Commit `8189f71` propagated the verified domain/CLUENER evidence, F4a/F4b/F7 boundaries, and `16/60` accounting into the complete LaTeX manuscript; commit `8f1f3e1` consistently framed the contribution as the Evidence-Controlled Few-Shot Information Extraction (`EC-FSIE`) framework without changing results. Static source audit passed, but the paper has not been compiled because this Windows workspace has no `latexmk`, `pdflatex`, or `bibtex`. Author, affiliation, disclosure, repository, and related submission placeholders remain unresolved. No experiment or paper gate is live. IE051, E/E-prime, K scans, RE, domain reruns, submission, and GitHub sync remain closed. See `HANDOFF.md` and `docs/NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_CLOSEOUT_20260807.md` before acting.
 
 ---
 
@@ -14,7 +14,11 @@
 
 1. **NETWORK**: run `source /etc/network_turbo` at the start of every new shell before any download.
 2. **COST**: GPU-free boot mode (无卡模式) for coding/installing/downloading; GPU boot ONLY for model inference/training. At the end of every phase: backup → remind human to shut down.
-3. **BACKUP**: code → `git push` after every meaningful change; datasets/weights/results in `/root/autodl-tmp/` → `tar` to AutoDL file storage after every phase. The instance disk is volatile. Never let anything exist only on the instance.
+3. **BACKUP**: make a local Git commit after every meaningful change; push to
+   GitHub only when the human explicitly authorizes synchronization. Datasets,
+   weights, and results in `/root/autodl-tmp/` must be tarred to AutoDL file
+   storage after every phase. The instance disk is volatile. Never let anything
+   exist only on the instance.
 4. **CACHE**: every LLM call is cached by SHA256(prompt). Identical prompt = read cache, never re-call. Cache dir `cache/` is backed up like data.
 5. **REPRODUCIBILITY**: all randomness seeded (numpy `default_rng(seed)`, explicit seeds in samplers). All hyperparameters live in YAML under `configs/`, one file per run. Structured logs (JSON lines) in `logs/`: per step — timestamp, duration, peak notes, artifact hashes.
 6. **TEST FREEZE**: once `data/domain_test.jsonl` is frozen (marker file `FROZEN`), no prompt tuning, no threshold changes, no config edits may be informed by test results. Tune on dev only.
@@ -22,17 +26,16 @@
 8. **NEVER report a single run.** Every reported cell = mean ± std over seeds {42, 43, 44}.
 9. **SECURITY/COMPLIANCE**: only public, non-classified corpora (licenses: CMNEE per repo, Few-NERD CC BY-SA 4.0, CLUENER Apache 2.0). If the human ever supplies non-public documents, PAUSE and ask for explicit confirmation of compliance before any processing.
 10. **PAUSE GATES** (`⏸️`): stop and ask the human. **VERIFY GATES** (`✅`): machine-checkable; all conditions must pass before the next phase. On gate failure, follow the FIX branch; if no branch fires, pause and report.
-11. **CURRENT BOUNDED GATE**: the historical P0-P7 commands below are
-    reference contracts, not general live authorization. Runtime and closeout
-    under the focused CLUENER gates are consumed; all 12 public NER cells are
-    complete, validated, backed up, and mirrored. No experiment or model-call
-    gate is live. The public-NER result-to-claim gate is consumed and did not
-    edit the manuscript. Wait for the exact paper-only
-    `NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED` gate; it must name
-    the writable files in the complete LaTeX project and cannot launch an
-    experiment. The closeout and verdict are
-    `docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_CLOSEOUT_20260806.md` and
-    `docs/RESULT_TO_CLAIM_NER_PUBLIC_CLUENER_ABCD_K5_20260806.md`.
+11. **CURRENT BOUNDED GATE**: no gate is live. The historical P0-P7 commands
+    below are reference contracts, not general authorization. Runtime,
+    closeout, public-NER result-to-claim, and the exact LaTeX propagation gate
+    are all consumed. The active manuscript is the complete
+    `docs/JISE_OVERLEAF_LATEX_20260729/` project and already contains the
+    verified evidence through commits `8189f71` and `8f1f3e1`. Do not edit it
+    again, compile it in a new environment, fill human-owned placeholders,
+    submit it, or reopen experiments without a new exact bounded human gate.
+    The paper closeout is
+    `docs/NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_CLOSEOUT_20260807.md`.
 
 ---
 
@@ -277,11 +280,13 @@ descriptive direction replication on one additional Chinese NER benchmark:
 B improves over A, C adds a small F1/recall increment over B, and D again
 trades recall for higher precision and fewer FP at near-tied F1. It does not
 support broad public/cross-domain generalization, significance, SOTA, K
-robustness, RE, or CoVe. No paper edit is authorized. Wait for
-`NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED`. The active manuscript
-source for that later step is the full
-`docs/JISE_OVERLEAF_LATEX_20260729/` LaTeX project, not the historical
-Markdown drafts.
+robustness, RE, or CoVe. The later exact LaTeX propagation gate is consumed:
+commits `8189f71` and `8f1f3e1` updated the full
+`docs/JISE_OVERLEAF_LATEX_20260729/` LaTeX project, not the historical Markdown
+drafts. No further manuscript edit is authorized. The next paper step, after a
+new exact human gate, is to supply verified author/disclosure metadata, compile
+in a LaTeX-capable environment, and perform a PDF/submission-readiness audit;
+it requires no GPU and does not reopen experiments.
 
 ## 10. OPTIONAL PHASE P7 — QLoRA fine-tune (only if human approves after P6)
 

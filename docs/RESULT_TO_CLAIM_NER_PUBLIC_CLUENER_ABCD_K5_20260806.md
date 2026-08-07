@@ -160,3 +160,14 @@ query-cell rows，parse failures 为 `138/16116 = 0.856292%`，所有单元均�
 
 该未来门禁不自动授权实验、Python、GPU、模型、prompt、结果重算、DOCX、投稿或
 GitHub 同步。本次 RTC 文档提交后停止并等待人工确认。
+
+## 9. 后续状态注记（2026-08-07）
+
+本报告第 8 节记录的是 RTC 完成时的下一门禁，属于当时的时间线，不再表示
+当前待办。其后人工批准并消耗了
+`NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED`：提交 `8189f71`
+传播了本报告允许的受限主张与证据表，提交 `8f1f3e1` 将论文统一定位为
+Evidence-Controlled Few-Shot Information Extraction (`EC-FSIE`) framework。
+该后续步骤没有改变任何实验结果、`partial/high` 判定、`16/60` 记账或反主张。
+完整收尾、静态审计和未解决的人类元数据见
+`docs/NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_CLOSEOUT_20260807.md`。

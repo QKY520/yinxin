@@ -10,7 +10,7 @@ and aggregation. Use a paid GPU boot only for model inference or training.
 After every GPU phase: verify outputs, back up, sync lightweight artifacts to
 `D:\yinsir`, report cost, and remind the human to shut down the instance.
 
-**CURRENT GATE (2026-08-06)**: The live status is maintained in `HANDOFF.md`.
+**CURRENT GATE (2026-08-07)**: The live status is maintained in `HANDOFF.md`.
 P0-P6 for the narrow NER route and full-IE F1-F6 are complete. F7 Domain Final
 Batch 1 is also complete for `domain:A/B/C/D:k5:s42`, Stage R only over four
 locked P5 Stage N files. Exact RE F1 is
@@ -38,19 +38,28 @@ v2 report passed with SHA256
 The clean tracked suite passed `205/205`; the 18,239-file remote backup and
 63-file local mirror passed hash verification. vLLM and all runners are
 stopped, and the instance is in no-card mode. Official accounting is `16/60`.
-E/E-prime, K scans, RE, domain reruns, IE051, the other 44 incomplete cells,
-paper edits, submission, and GitHub sync remain closed. The exact
+E/E-prime, K scans, RE, domain reruns, IE051, and the other 44 incomplete cells
+remain closed. The exact
 `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED` gate is consumed with verdict
-`partial`, confidence `high`. No experiment gate is live; the next possible
-gate is paper-only:
-`NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED`.
+`partial`, confidence `high`. The exact paper-only
+`NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED` gate was subsequently
+granted and consumed. No experiment or paper gate is live; submission and
+GitHub synchronization remain closed.
 
-The active future manuscript target is the complete
+The active manuscript is the complete
 `docs/JISE_OVERLEAF_LATEX_20260729/` LaTeX project: `main.tex` is the Overleaf
 entry point, while `frontmatter.tex` and `sections/*.tex` contain the paper.
 Historical Markdown drafts are reference artifacts, not the active refinement
-target. Paper propagation is deferred until the exact LaTeX propagation gate
-is approved and names the writable files. The instance was last verified in
+target. Commit `8189f71` propagated the verified evidence into the manuscript;
+commit `8f1f3e1` framed it consistently as the Evidence-Controlled Few-Shot
+Information Extraction (`EC-FSIE`) framework. A static audit of all 13 `.tex`
+files found zero environment-count mismatches, duplicate labels, missing
+references, missing BibTeX keys, or weak innovation-disclaimer phrases. The
+paper has not been compiled because this Windows workspace lacks
+`latexmk`/`pdflatex`/`bibtex`; human-owned metadata and disclosure placeholders
+remain. No further LaTeX change, compilation-environment setup, submission, or
+GitHub sync is authorized without a new exact bounded gate. The instance was
+last verified in
 no-card mode (`No devices found`), with a 2 GiB cgroup, no vLLM/Qwen/F7 process, and
 only the preserved historical dead F6 screen. The total project budget target
 remains 400 CNY; the last reported 4090 price is `2.8 CNY/hour`. Use only the
@@ -83,6 +92,9 @@ Read these files before any project work:
     metrics, audit, tests, backup, local mirror, cost, and machine closeout.
 13. `docs/RESULT_TO_CLAIM_NER_PUBLIC_CLUENER_ABCD_K5_20260806.md` - focused
     public-NER verdict, bounded portability wording, anti-claims, and next gate.
+14. `docs/NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_CLOSEOUT_20260807.md` -
+    consumed paper gate, LaTeX commits, static audit, remaining placeholders,
+    and the next paper-only decision.
 
 If the documents differ, `AGENT_PLAYBOOK.md` controls execution. This file may
 clarify comparisons or local workflow but must not silently replace fixed model,
@@ -130,7 +142,7 @@ Project workflow mapping:
 | Check evidence before claims | `$result-to-claim` | Decide which claims are supported and identify missing evidence before paper writing |
 | Refine extra ablations | `$ablation-planner` | Use only after main results and result-to-claim; preserve the fixed clean comparisons in this file |
 | Build paper outline | `$paper-plan` | Convert verified results and limitations into a claims-evidence outline |
-| Draft final manuscript | `$paper-writing` | The active target is `docs/JISE_OVERLEAF_LATEX_20260729/`; do not edit it until the public block closes, post-run result-to-claim passes, and a new exact paper gate names the allowed LaTeX files |
+| Draft final manuscript | `$paper-writing` | The active target is `docs/JISE_OVERLEAF_LATEX_20260729/`; evidence propagation and EC-FSIE framing are complete, so any further edit requires a new exact paper gate naming the writable LaTeX files |
 
 Generic Skill defaults are overridden as follows:
 
@@ -264,13 +276,14 @@ the untouched identities remain an inventory, not planned work or failed runs.
 
 ## Current Priority And State
 
-Current step: **wait for the exact LaTeX propagation gate**. The 12-cell runtime,
-closeout, and focused public-NER RTC are complete; do not restart vLLM, rerun a
-cell, or boot a paid GPU. IE051, E/E-prime, K scans, RE, domain reruns, the rest
-of F8/F9, and the other 44 incomplete cells remain `CLOSED`. Literal accounting
-is `16/60`. No paper body may change before
-`NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED`, which must name the
-allowed files in the complete active LaTeX project.
+Current step: **stop with no live gate after LaTeX propagation**. The 12-cell
+runtime, closeout, focused public-NER RTC, and paper propagation are complete;
+do not restart vLLM, rerun a cell, or boot a paid GPU. IE051, E/E-prime, K scans,
+RE, domain reruns, the rest of F8/F9, and the other 44 incomplete cells remain
+`CLOSED`. Literal accounting is `16/60`. The recommended next paper-only step
+is human-supplied author/affiliation/disclosure metadata followed by compilation
+and PDF/submission-readiness review under a new exact bounded gate. It needs no
+GPU and does not authorize submission or GitHub synchronization.
 
 - Local workspace: `D:\yinsir`.
 - Git repository: `main` tracks `origin/main`. As of the latest handoff, local
@@ -702,8 +715,9 @@ statements in `results/summary.md`.
   `16/60`. The remaining route is frozen and IE051 is historical `CLOSED`.
   The focused public RTC is complete at `partial`, confidence `high`: it
   supports limited descriptive portability to one additional Chinese NER
-  benchmark, not broad public/cross-domain generalization. Paper work still
-  requires the separate exact LaTeX propagation gate.
+  benchmark, not broad public/cross-domain generalization. The separate exact
+  LaTeX propagation gate is consumed; the active manuscript is updated through
+  `8f1f3e1`, remains uncompiled, and requires a new gate for any further edit.
 
 ### P7 - Optional QLoRA
 

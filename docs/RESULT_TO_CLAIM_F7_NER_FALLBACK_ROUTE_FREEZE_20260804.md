@@ -174,3 +174,12 @@ F4a/F4b sanity、F5 协议冻结和 F6 replay 准备均不计入最终单元。
 授权实验、结果重算、DOCX、投稿或 GitHub 同步，除非人工另行逐项写明。
 
 当前该纸面门禁未授予。项目在本次文档提交后停止并等待人工确认。
+
+## 7. 后续状态注记（2026-08-07）
+
+以上第 6 节是本路线冻结时的历史状态。随后人工批准并消耗了
+`NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED`，并在完整
+`docs/JISE_OVERLEAF_LATEX_20260729/` 工程中完成了受限证据传播和 EC-FSIE
+框架定位（提交 `8189f71`、`8f1f3e1`）。这没有改变本报告的 `NER 主贡献、RE
+探索性负结果/局限` 决策，也没有重开 60-cell 路线。当前论文收尾与静态审计见
+`docs/NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_CLOSEOUT_20260807.md`。

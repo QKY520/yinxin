@@ -1,6 +1,6 @@
 # Minimum Full-IE Extension Tracker
 
-**Date**: 2026-08-06
+**Date**: 2026-08-07
 
 **Route decision**: `FULL_IE_STOP_AND_NER_FALLBACK_RTC_APPROVED` is consumed.
 The human stopped the 60-cell completion route at the literal `4/60` evidence
@@ -14,7 +14,9 @@ Official accounting is `16/60`; the other 44 incomplete identities remain
 `CLOSED`. The bounded `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED` review is now
 consumed with verdict `partial` and confidence `high`: the public block supports
 limited, descriptive portability to one additional Chinese NER benchmark, not
-broad public/cross-domain generalization. No paper gate is currently live.
+broad public/cross-domain generalization. The later exact paper-only
+`NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED` gate is also consumed;
+no experiment or paper gate is currently live.
 
 **Status semantics**:
 
@@ -503,13 +505,30 @@ closed. Broad public/cross-domain generalization remains unsupported.
 - The CLUENER final split is all 1,343 labeled official dev rows; the official
   unlabeled test is not offline gold. Public resources are frozen,
   support-derived, and schema-specific, not reused equipment-domain knowledge.
-- No experiment or paper edit occurred. Accounting remains `16/60`; the other
-  44 identities remain `CLOSED`.
+- No experiment or paper edit occurred inside the RTC gate. Accounting remains
+  `16/60`; the other 44 identities remain `CLOSED`.
 - Full report:
   `docs/RESULT_TO_CLAIM_NER_PUBLIC_CLUENER_ABCD_K5_20260806.md`.
-- Next possible gate:
-  `NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED`, paper-only and
-  limited to exact files named under the complete active LaTeX project.
+- The later exact LaTeX propagation gate is recorded below and does not alter
+  this result-to-claim verdict.
+
+### LaTeX Evidence Propagation (2026-08-06 to 2026-08-07)
+
+- Gate: `NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED`; consumed.
+- Commit `8189f71` propagated the verified equipment-domain/CLUENER NER
+  evidence, F4a/F4b/F7 negative boundaries, and literal `16/60` accounting into
+  the complete `docs/JISE_OVERLEAF_LATEX_20260729/` project.
+- Commit `8f1f3e1` consistently framed the contribution as the
+  Evidence-Controlled Few-Shot Information Extraction (`EC-FSIE`) framework
+  and removed self-weakening innovation disclaimers without changing results.
+- Static source audit: 13 `.tex` files, one `.bib`, zero environment-count
+  mismatches, duplicate labels, missing references, missing BibTeX keys, or
+  weak innovation-disclaimer matches.
+- Compilation/PDF audit is not complete because the Windows control workspace
+  has no `latexmk`, `pdflatex`, or `bibtex`. Human-owned metadata/disclosure
+  placeholders remain, and submission is not authorized.
+- Full closeout:
+  `docs/NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_CLOSEOUT_20260807.md`.
 
 ## Domain Final Matrix: 30 Reported Cells
 
@@ -556,7 +575,7 @@ RAG corpus. There is no RE metric.
 | AGG3 | F9 | Paired uncertainty | Pre-specified contrasts, 10k bootstrap | HISTORICAL | CLOSED | No new full-matrix inference |
 | AGG4 | F9 | Full-matrix result-to-claim decision | NER, RE, CoVe, K, public NER | HISTORICAL | CLOSED | Superseded by RTC01 on existing evidence |
 | RTC02 | Post-NPUB01 | Focused public-NER result-to-claim | Verified 12-cell block plus prior frozen evidence | MUST | DONE | `partial`, high confidence; limited one-benchmark portability; broad public/cross-domain generalization unsupported |
-| PAPER1 | Paper-only | Propagate verified evidence | Complete `docs/JISE_OVERLEAF_LATEX_20260729/` project after separate exact approval | MUST | PLANNED | Await `NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED`; `main.tex` is entry only and exact writable files must be named by that gate |
+| PAPER1 | Paper-only | Propagate verified evidence and frame EC-FSIE | Complete `docs/JISE_OVERLEAF_LATEX_20260729/` project under exact approval | MUST | DONE | Gate consumed; evidence propagation `8189f71`, EC-FSIE framing `8f1f3e1`; source audit passed, compilation and human-owned placeholders remain |
 
 ## Accounting Check
 

@@ -180,3 +180,12 @@ closeout passed on 2026-08-06. This gate is consumed and authorizes no further
 model call. See
 `docs/NER_PUBLIC_CLUENER_ABCD_K5_FINAL_CLOSEOUT_20260806.md`; the next possible
 step requires `NER_PUBLIC_CLUENER_ABCD_K5_RTC_APPROVED`.
+
+## Subsequent Status Note (2026-08-07)
+
+The next RTC and the separately approved
+`NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED` gate have since been
+consumed. Commits `8189f71` and `8f1f3e1` updated only the approved LaTeX
+manuscript sources and did not reopen any experiment or change any result. The
+current paper closeout is
+`docs/NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_CLOSEOUT_20260807.md`.

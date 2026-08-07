@@ -11,11 +11,18 @@ pre-specified A/B/C/D/E/E-prime comparison chain.
 
 **Date**: 2026-07-30
 
-**Status**: The human selected the full-IE extension as the target; the design
-and inventory are prepared, but `FULL_IE_IMPLEMENTATION_APPROVED` has not been
-granted. This file authorizes no Python execution, data processing, prompt
-generation, model/API call, vLLM startup, GPU use, `domain_test` read, paper
-edit, or GitHub synchronization.
+**Last status update**: 2026-08-07
+
+**Status**: `HISTORICAL_CLOSED`. This file preserves the former 60-cell design
+and its original decision logic; it is not an active plan or backlog. The human
+stopped matrix completion, and the later focused CLUENER exception closed the
+literal account at `16/60`. The other 44 incomplete identities, IE051,
+E/E-prime, K scans, RE reruns, domain reruns, and full F8/F9 remain `CLOSED`, not
+failed or blocked. The exact LaTeX propagation gate was later consumed in
+commits `8189f71` and `8f1f3e1`. This file authorizes no Python execution, data
+processing, prompt generation, model/API call, vLLM startup, GPU use,
+`domain_test` read, paper edit, submission, or GitHub synchronization. Every
+imperative and `MUST-RUN` below is historical protocol text only.
 
 ## Decision Summary
 
@@ -45,13 +52,14 @@ The destination remains the original **60 reported cells**:
 | CLUENER K scan | A/E x K=1/10 x seeds 42/43/44 | 12 |
 | **Total** |  | **60** |
 
-Current completion accounting is therefore:
+Final frozen accounting is therefore:
 
-- 12 cells have a valid frozen **NER stage only**;
-- 48 reported cells are absent;
-- all 30 domain cells need Stage R;
-- only after those conditions are met may the result package be called a
-  complete 60-cell matrix.
+- 4 domain cells have complete Stage N+R outputs;
+- 12 CLUENER cells have complete NER outputs;
+- 8 domain cells retain reusable Stage N only;
+- 36 cells are wholly absent;
+- literal completion is `16/60`, and all 44 incomplete identities are
+  intentionally route-closed rather than pending work.
 
 Historical verifier status is not a missing bookkeeping detail. E v1 was a
 clear negative NER dev result (F1 `0.4264` versus D `0.5415`, with 18/20

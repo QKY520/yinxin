@@ -168,3 +168,11 @@ The next possible action is the separately approved paper-only
 `NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED` gate for exact files in
 the complete `docs/JISE_OVERLEAF_LATEX_20260729/` project. This closeout and
 RTC do not themselves authorize that edit.
+
+## Subsequent Status Note (2026-08-07)
+
+That paper-only gate was later approved and consumed. Commit `8189f71`
+propagated the verified public/domain evidence and limitations; commit
+`8f1f3e1` framed the manuscript as the EC-FSIE framework without changing
+results. Compilation and human-owned metadata remain outstanding. See
+`docs/NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_CLOSEOUT_20260807.md`.
