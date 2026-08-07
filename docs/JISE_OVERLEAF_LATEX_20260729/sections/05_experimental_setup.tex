@@ -1,5 +1,7 @@
 \section{EXPERIMENTAL SETUP}
 
+\subsection{Frozen NER Evaluation Blocks}
+
 All domain final results come from the frozen 170-passage domain test split
 using $K=5$ and random seeds 42, 43, and 44. The primary extractor is
 \modelname{Qwen2.5-7B-Instruct} \cite{qwen2024qwen25}, deployed locally in FP16
@@ -16,6 +18,11 @@ records 138 parse failures (0.856292\%), each counted as no prediction after the
 fixed retry ladder; all cells remain below the locked 5\% stop threshold. Tables
 report the mean and sample standard deviation over the three seeds for each
 dataset separately.
+The two blocks instantiate the same EC-FSIE control interfaces with separately
+frozen resources; they are neither pooled into a cross-dataset score nor counted
+as completion of the original full experimental inventory.
+
+\subsection{Controlled Replay and Descriptive Aggregation}
 
 Seeds control fixed-random demonstration selection for A and are also recorded
 in the generation request. B uses deterministic kNN retrieval; C and D replay
@@ -25,6 +32,14 @@ variation of B/C/D is expected reproducibility under fixed conditions, not
 three independent data samples. The reported standard deviations describe run
 variation only, and no paired uncertainty analysis or hypothesis test was
 performed for CLUENER.
+
+This replay design freezes the evidence entering every comparison. B changes
+the demonstration-selection control relative to A; C changes only the lexical
+evidence channel relative to B; and D changes only the RAG channel relative to
+C. Resource identifiers, prompt order, generation settings, and scoring rules
+remain fixed within each dataset-specific chain.
+
+\subsection{Boundary Audits and Reproducibility}
 
 The main three-seed configurations are NER-only: relation types are empty and
 no relation-extraction metric is reported for those 24 NER units. Zero relation
@@ -39,6 +54,7 @@ supervised competitive baseline. With only three seeds and no hypothesis test,
 all between-configuration readings in this paper are descriptive rather than
 statistically significant findings. The frozen run configurations, prompt and
 response hashes, exact dependency lock, per-query traces, and versioned
-finalizers are retained for audit and reproduction.
+finalizers implement EC-FSIE's audit-preserving execution layer and are retained
+for reproduction.
 The dependency lock records vLLM 0.8.5.post1, Transformers 4.51.3,
 sentence-transformers 5.6.0, and PyTorch 2.6.0 for the project environment.

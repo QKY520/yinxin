@@ -34,7 +34,7 @@ bank, 61-entry support-derived lexicon, and labels-stripped RAG replay are
 schema-specific CLUENER resources, not transferred equipment-domain resources.
 Together with the lack of a supervised competitive baseline and per-type
 uncertainty analysis, these facts limit the result to a focused descriptive
-replication.
+directional replication.
 
 The original frozen inventory contains 60 planned final model identities. At
 the current closeout, four domain Stage-N-plus-Stage-R cells and 12 CLUENER NER
@@ -49,3 +49,8 @@ quantity, not an open-domain factuality or broad hallucination metric. The
 qualitative C/D error analysis examines seed 42 only. It is useful for
 interpreting the observed trade-off, but it is insufficient to establish a
 stable error mechanism across seeds, models, or corpora.
+
+Fifth, EC-FSIE was evaluated with one local extractor family and one locked
+embedding/reranking stack. The exact dependency lock and trace artifacts support
+reproduction of this implementation, but they do not establish that the same
+operating-point changes persist across model families or deployment stacks.

@@ -1,7 +1,7 @@
 \section{DISCUSSION}
 
-The results establish a clear, conditional operating principle for the EC-FSIE
-framework. Under frozen v1 labels,
+The results support a clear but conditional operating principle for EC-FSIE.
+Under frozen v1 labels,
 $K=5$, and the current local-model configuration, kNN demonstrations and
 glossary injection improve F1/recall, while RAG yields near-tied F1 relative to
 C with higher precision and fewer false-positive entities. The practical value
@@ -9,16 +9,17 @@ of RAG in this result is not maximizing F1; it is reducing the number of
 erroneous candidates that could enter manual review or later knowledge-base
 cleaning.
 
-The focused CLUENER block strengthens this interpretation with one additional
-Chinese NER benchmark. On all 1,343 labeled official development rows, B--A,
+The focused CLUENER block checks this interpretation on one additional Chinese
+NER benchmark. On all 1,343 labeled official development rows, B--A,
 C--B, and D--C follow the same qualitative directions as the domain block:
 kNN improves F1, the support-derived schema-specific lexicon gives a modest
 directional F1/recall increase, and RAG keeps F1 near tied while increasing
-precision and reducing false positives. The public result provides a focused
-descriptive replication under independently frozen CLUENER resources. It
-strengthens the framework's portability evidence to one additional Chinese NER
-schema, while broader public-benchmark transfer and statistical significance
-remain outside this evidence line.
+precision and reducing false positives. The public result provides a limited
+descriptive directional replication under independently frozen CLUENER
+resources. It shows that the observed directions are not unique to the domain
+block, but it does not establish resource transfer, broad portability, or
+cross-domain generalization; statistical significance also remains outside this
+evidence line.
 
 The modules have different effects. kNN reduces dependence on a fixed randomly
 selected demonstration set. The glossary broadens domain coverage but may also
@@ -26,6 +27,15 @@ invite additional false positives. RAG moves the system to a more conservative
 precision-oriented point. These effects are not monotonically additive, and
 D's lower F1 than C must be retained as a real trade-off rather than hidden by
 reporting only the best value.
+
+This non-monotonicity is central to the framework interpretation. Evidence
+control does not presume that every additional channel improves every metric.
+Instead, the isolated A/B/C/D chain reveals which channel changes coverage,
+recall, precision, or the review burden represented by false-positive entities.
+The common trace layer then preserves both improvements and regressions as
+reproducible outcomes. In this sense, EC-FSIE supplies a controlled way to
+select an operating point under low-label constraints rather than collapsing
+the comparison to a single best-F1 configuration.
 
 The calibration audit further narrows interpretation. Overall non-test
 calibration F1 of 0.8000 indicates that the locked guideline reached the
@@ -39,8 +49,11 @@ The framework's primary evidence line is NER. The final A/B/C/D package is
 NER-only, while a separate F7 Stage-R audit supplies four
 single-seed, exact-triple measurements: RE F1 is 0.040541, 0.056972, 0.057971,
 and 0.045381 for A--D, with zero \texttt{HAS\_METRIC} true positives in every
-cell and D below C. This result defines the current RE boundary while also
-providing auxiliary reproducibility/auditability value for the framework.
+cell and D below C. This is negative effectiveness evidence for the exploratory
+relation route, while the preserved Stage-N/Stage-R traces provide
+reproducibility and auditability evidence for EC-FSIE's execution contract.
+Neither the relation audit nor the NER results support a positive RAG-for-RE
+claim.
 CoVe/self-verification has no positive final-test evidence. Broad
 public-benchmark generalization, robustness across $K$ values, and statistical
 significance are likewise outside the completed evidence.

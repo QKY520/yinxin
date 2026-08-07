@@ -38,12 +38,13 @@ Hard rules in `AGENTS.md` and `AGENT_PLAYBOOK.md` still apply.
 
 ## 0. Authoritative Snapshot For A New Session
 
-**What we are doing**: the experiment route and the first evidence-to-paper
-propagation are finished. The project now preserves an SCI-Q4-oriented
-Evidence-Controlled Few-Shot Information Extraction (`EC-FSIE`) manuscript
-whose main contribution is low-label Chinese equipment-domain NER. There is no
-live experiment or paper gate. Any next work is paper-only finalization after
-the human supplies verified metadata and grants a new exact bounded gate.
+**What we are doing**: the experiment route, the first evidence-to-paper
+propagation, and the bounded EC-FSIE final-refinement pass are finished. The
+project now preserves an SCI-Q4-oriented Evidence-Controlled Few-Shot
+Information Extraction (`EC-FSIE`) manuscript whose main contribution is
+low-label Chinese equipment-domain NER. There is no live experiment or paper
+gate. Any next work is paper-only finalization after the human supplies verified
+metadata and grants a new exact bounded gate.
 
 **What is complete**:
 
@@ -59,9 +60,17 @@ the human supplies verified metadata and grants a new exact bounded gate.
   granted and consumed. Commit `8189f71` propagated verified evidence and
   limitations into the complete LaTeX project. Commit `8f1f3e1` consistently
   framed the method as the EC-FSIE framework without changing results.
-- A read-only source audit covered all 13 `.tex` files and one `.bib`: zero
-  environment-count mismatches, duplicate labels, missing references, missing
-  BibTeX keys, or weak innovation-disclaimer matches were found.
+- The exact `JISE_ECFSIE_LATEX_FINAL_REFINEMENT_APPROVED` gate is also consumed.
+  It strengthened the title, abstract, contribution logic, framework
+  formalization, controlled-evaluation narrative, negative RE boundary, and
+  limitations across the authorized active LaTeX sources. CLUENER is described
+  only as a limited descriptive directional replication, and RAG only as an
+  observed precision/false-positive operating-point shift under near-tied F1.
+- A non-Python source audit covered all 13 `.tex` files and one `.bib`: TeX
+  environments and braces passed, all 8 labels and 10 references resolve, all
+  27 citation uses resolve to 17 unique BibTeX keys, all 11 section files are
+  referenced, and the numeric-literal sequence in every edited manuscript file
+  matches its pre-refinement `HEAD` version.
 
 **Current paper state**: the sole active manuscript is
 `docs/JISE_OVERLEAF_LATEX_20260729/`. `main.tex` is the Overleaf entry point;
@@ -101,10 +110,11 @@ annotation, a complete 60-cell matrix, complete F8/F9, or complete end-to-end
 IE success.
 
 **Next plan**: no GPU is needed. First obtain verified author and disclosure
-inputs from the human. Then, under a new exact paper-only gate that names the
-writable files and compilation environment, fill those fields, compile the
-LaTeX, inspect the PDF visually, and check venue formatting. Submission,
-external upload, and GitHub synchronization require separate authorization.
+inputs from the human. Then grant the proposed exact paper-only gate
+`JISE_ECFSIE_METADATA_COMPILE_PDF_AUDIT_APPROVED`, naming the writable metadata
+files and compilation environment, to fill those fields, compile the LaTeX,
+inspect the PDF visually, and check venue formatting. Submission, external
+upload, and GitHub synchronization require separate authorization.
 
 **Lessons and red lines**: result-to-claim controls prose; framework positioning
 may be strengthened but missing evidence cannot become a result. `CLOSED` is a
@@ -1871,14 +1881,18 @@ experiment gate is live. Do not start a model or issue any new request.
 
 ### Post-run claim and paper sequence
 
-The 12-cell closeout, RTC, and exact LaTeX propagation gate are complete. The
+The 12-cell closeout, RTC, exact LaTeX propagation gate, and bounded EC-FSIE
+final-refinement gate are complete. The
 active target was and remains the complete
 `docs/JISE_OVERLEAF_LATEX_20260729/` project: `main.tex` is the entry point,
 while `frontmatter.tex` and `sections/*.tex` contain the manuscript. Commits
 `8189f71` and `8f1f3e1` record the authorized propagation and framework
-positioning. A future metadata/compile gate must name the exact writable files
-and must not silently authorize new experiments, result recomputation, DOCX
-generation, submission, or GitHub synchronization.
+positioning; the later refinement unifies the same EC-FSIE terminology and
+claim boundary across the active sources without changing result numbers. The
+proposed next gate is `JISE_ECFSIE_METADATA_COMPILE_PDF_AUDIT_APPROVED`; it must
+name the exact writable files and compilation environment and must not silently
+authorize new experiments, result recomputation, DOCX generation, submission,
+or GitHub synchronization.
 
 The original pre-F7 `125-295 CNY` estimate remains historical planning context,
 not a current remaining-cost estimate. The focused public block's three vLLM
@@ -2051,5 +2065,7 @@ needed. Actual journal submission remains unauthorized.
   technically small.
 - Full-matrix completion is closed by explicit human decision. The focused
   12-cell public-NER exception, its RTC, and exact LaTeX propagation are all
-  consumed. The next useful gate is paper-only metadata/compilation/PDF audit,
-  with no GPU prerequisite and no submission authority.
+  consumed. The later `JISE_ECFSIE_LATEX_FINAL_REFINEMENT_APPROVED` gate is also
+  consumed. The next useful gate is
+  `JISE_ECFSIE_METADATA_COMPILE_PDF_AUDIT_APPROVED`, with no GPU prerequisite
+  and no submission authority.

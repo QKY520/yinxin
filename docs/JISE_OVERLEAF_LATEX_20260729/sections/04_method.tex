@@ -2,23 +2,39 @@
 
 \subsection{Proposed EC-FSIE Framework}
 
-The new Evidence-Controlled Few-Shot Information Extraction (EC-FSIE) framework
-organizes low-label extraction around four
-auditable control layers. First, semantic retrieval selects demonstrations that
-match the query. Second, a schema-specific glossary injects compact terminology
-that is relevant to the current text. Third, reranked evidence supplies a
-source-grounded context block. Finally, deterministic parsing, retry logging,
-hash-based caching, and per-query records make every prediction traceable. The
-A/B/C/D chain in Table~\ref{tab:configs} exposes the first three layers one at a
-time, while the fourth governs every configuration, so that practical effects
-remain measurable and the complete execution remains auditable.
+Evidence-Controlled Few-Shot Information Extraction (EC-FSIE) organizes
+low-label extraction as a closed evidence-and-execution contract rather than a
+loose collection of prompt additions. For a query $x$ and schema $S$, the local
+extractor receives a prompt formed from three explicit evidence channels:
+retrieved demonstrations $\mathcal{D}_K(x)$, matched glossary entries
+$\mathcal{G}(x)$, and reranked passages $\mathcal{R}(x)$. An execution layer
+$\mathcal{A}$ then parses and records the prediction:
+\[
+\hat{Y},\tau = \mathcal{A}\!\left(f_{\theta}\!\left(
+P\!\left(S,\mathcal{D}_K(x),\mathcal{G}(x),\mathcal{R}(x),x\right)
+\right)\right),
+\]
+where $P$ is the fixed-order prompt constructor, $f_{\theta}$ is the locked
+local extractor, and $\tau$ denotes the request, cache, retry, parser, and
+output trace. Each
+channel is controlled by provenance, bounded injection, leakage-safe resource
+construction, and deterministic replay. Semantic retrieval selects
+query-relevant demonstrations; the schema-specific glossary contributes compact
+terminology; and reranked RAG supplies contextual evidence. Deterministic
+parsing, retry logging, hash-based caching, and per-query records make the
+result traceable. The A/B/C/D chain in Table~\ref{tab:configs} exposes the three
+evidence channels incrementally, while the common execution contract governs
+every configuration. This design connects observed metric changes to a named
+control surface without sacrificing end-to-end auditability.
 
 \subsection{Structured Few-Shot Extraction}
 
-The extractor receives one query passage and $K$ support examples and returns a
-JSON entity list. Prompt blocks follow a fixed order: task definition, entity
-schema, optional glossary entries, optional RAG evidence, $K$ demonstrations,
-and the query passage. The output instruction requires JSON only. Requests are
+The NER instantiation of EC-FSIE receives one query passage and $K$ support
+examples and returns a JSON entity list. Prompt blocks follow a fixed order:
+task definition, entity schema, optional glossary entries, optional RAG
+evidence, $K$ demonstrations, and the query passage. This order keeps schema,
+external evidence, demonstrations, and the evaluation query structurally
+separable. The output instruction requires JSON only. Requests are
 cached by a SHA256 hash of the complete prompt and model-relevant generation
 settings. The parsing ladder strips code fences, attempts structured JSON
 parsing, retries once with a legal-JSON reminder when necessary, and records a
@@ -53,8 +69,9 @@ frozen, schema-specific resources: a 30-record support bank, a 61-entry
 support-derived lexicon, and a labels-stripped 9,584-row CLUENER train-text RAG
 pool. The top-3 selections are replayed from a frozen 1,343-row/4,029-passage
 retrieval artifact. Consequently, the public comparison instantiates the same
-modular framework under the native CLUENER schema while preserving strict
-separation from the equipment glossary and equipment-domain evidence corpus.
+EC-FSIE interfaces under the native CLUENER schema while preserving strict
+separation from the equipment glossary and equipment-domain evidence corpus. It
+tests directional recurrence of the controls, not transfer of domain resources.
 
 \subsection{Evaluated Configurations}
 
@@ -80,7 +97,8 @@ D & kNN replay & Yes & Yes & D$-$C: RAG evidence \\
 \end{tabular}
 \end{table}
 
-The framework also defines an optional self-verification/CoVe extension. Its
+EC-FSIE also defines an optional self-verification/CoVe extension. Its
 development diagnostics are reported separately to make the verification
-boundary explicit, while the validated primary method contribution is the
-four-layer A/B/C/D NER route and its audited evidence-control behavior.
+boundary explicit. The supported method contribution is the A/B/C/D NER
+instantiation and its audited evidence-control behavior; the optional extension
+does not carry a positive final-test claim.

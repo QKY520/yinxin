@@ -20,6 +20,9 @@ used to tune prompts, thresholds, schemas, glossary entries, or retrieval
 settings.
 The remaining 150 collected candidates were not promoted into the frozen v1
 split; they remain collection-stage records rather than evaluation examples.
+These fixed roles constitute EC-FSIE's first evidence-control boundary:
+demonstration evidence is support-only, development decisions precede the
+frozen evaluation, and test labels remain confined to scoring.
 
 The RAG corpus consists of public encyclopedia passages, patent abstracts, and
 glossary entries. It was deduplicated against frozen test texts with a fixed
@@ -33,14 +36,15 @@ frozen-test annotation chain is unavailable. We therefore do not describe v1
 as fully independently double-annotated human gold, and we do not report a
 frozen-test formal IAA value.
 
-\subsection{Focused CLUENER Evaluation Protocol}
+\subsection{Focused CLUENER Directional-Replication Protocol}
 
 We use CLUENER \cite{xu2020cluener} as one additional Chinese NER benchmark.
 Because the official CLUENER test file is distributed without gold labels, it
 was not used for offline evaluation. Instead, the complete labeled official
 development split---all 1,343 rows---was frozen as the focused final
-evaluation set. This is explicitly a labeled-dev replication rather than an
-official-test leaderboard result.
+evaluation set. This is explicitly a limited descriptive labeled-dev
+directional replication rather than an official-test leaderboard result or a
+broad generalization test.
 
 The CLUENER resources were constructed independently from the equipment-domain
 resources. A frozen 30-record CLUENER support bank supplies demonstrations. A
@@ -50,7 +54,9 @@ pool contains 9,584 rows, and its construction log records 89 removals under
 the fixed 8-gram/0.80 containment blocklist. Offline retrieval produced a
 locked top-3 replay for every evaluation query, totaling 4,029 selected
 passages across 1,343 rows. Gold development labels entered only the scorer,
-never prompts, the support bank, the lexicon, or RAG evidence.
+never prompts, the support bank, the lexicon, or RAG evidence. This separation
+implements the same EC-FSIE evidence-control contract without transferring the
+equipment-domain glossary, support examples, or evidence corpus into CLUENER.
 
 The 1,343-row labeled-dev evaluation contains 3,072 gold entity mentions under
 the native ten-class CLUENER schema. Table~\ref{tab:cluener-types} records the
