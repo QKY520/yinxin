@@ -5,13 +5,8 @@ of small support sets. Few-NERD provides a representative fine-grained
 benchmark for few-shot NER \cite{ding2021fewnerd}. Structured nearest-neighbor
 learning \cite{yang2020structured} and decomposed meta-learning
 \cite{ma2022decomposed} improve few-shot generalization through different
-modeling strategies. Evidence-Controlled Few-Shot Information Extraction
-(EC-FSIE) brings these principles into a local generative extractor while
-making each conditioning source explicit: semantic nearest neighbors select
-in-context examples, schema-specific terminology supplies bounded lexical
-evidence, and retrieved passages provide reranked contextual evidence. This
-organization makes the effect and provenance of each source auditable in the
-domain-specific setting.
+modeling strategies. EC-FSIE uses semantic proximity as an explicit control over
+which support examples condition the local extractor.
 
 Generative information extraction has increasingly used structured outputs and
 task instructions. UIE formulates universal information extraction as
@@ -19,11 +14,9 @@ structure generation \cite{lu2022uie}, and InstructUIE extends this perspective
 through multi-task instruction tuning \cite{wang2023instructuie}. GPT-NER
 \cite{wang2023gptner} and OneKE \cite{luo2025oneke} further illustrate
 schema-guided LLM extraction. InstructUIE and GPT-NER are cited here as arXiv
-preprints, while OneKE is a peer-reviewed WWW Companion paper. EC-FSIE is
-distinguished in this line by a domain-focused evidence-control architecture:
-its modular prompt channels are resource-isolated, incrementally exposed, and
-coupled to reproducible execution records for studying the precision--recall
-trade-off of low-label equipment-domain NER.
+preprints, while OneKE is a peer-reviewed WWW Companion paper. These systems
+motivate schema-guided structured generation, while EC-FSIE focuses on the
+provenance and isolated effects of the evidence supplied at inference time.
 
 External terminology has long been used in NER through gazetteers and related
 knowledge resources \cite{liu2019gazetteers}. In EC-FSIE, glossary injection is
@@ -54,3 +47,12 @@ domain NER study centered on reproducible, domain-aware extraction control. The
 focused CLUENER evaluation reported below instantiates the same interfaces
 under one additional Chinese NER schema as a limited descriptive
 directional-replication block.
+
+Taken together, the cited strands motivate three complementary mechanisms:
+semantic demonstration selection, schema-specific lexical knowledge, and
+retrieved contextual evidence. EC-FSIE connects these mechanisms through a
+common evidence-control contract in which every source has frozen provenance,
+bounded injection, and an isolated A/B/C/D transition. A shared execution layer
+retains prompt, cache, retry, parser, and output traces. This organization makes
+the resulting precision, recall, F1, and entity-level false-positive operating
+points interpretable for low-label Chinese equipment-domain NER.

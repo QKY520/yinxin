@@ -149,12 +149,45 @@ Metric fragment & 14 & A metric-like fragment was not an exact reference \entity
 \end{tabular}
 \end{table}
 
+To make these categories concrete, Table~\ref{tab:fp-examples} reports three
+records from the locked seed-42 qualitative sample. The table uses concise
+English glosses of the original Chinese contexts; case identifiers, offsets,
+types, and source text remain in the audit artifact.
+
+\begin{table}[ht]
+\caption{Illustrative C-only false positives absent from D in the locked
+seed-42 audit. Examples cover distinct error categories and are not an
+exhaustive sample.}
+\label{tab:fp-examples}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{p{3.6cm}p{3.1cm}p{4.1cm}}
+\toprule
+Case and context (English gloss) & C-only prediction & Audit interpretation and D behavior \\
+\midrule
+0002: composite guidance uses inertial guidance and active radar homing &
+``inertial guidance'' and ``active radar homing'' as \entitytype{TECH\_SCHEME} &
+Both are exact-boundary errors and are absent from D. \\
+0009: errors are computed along each dimension in 3D space &
+``3D space'' as \entitytype{METRIC} &
+The spatial phrase is an unsupported metric fragment and is absent from D. \\
+0040: an electronic fence covers a material yard, target material, and a work area &
+The three common nominals as \entitytype{EQUIPMENT} &
+The nominals are over-labeled as equipment and are absent from D. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 This seed-42 qualitative evidence is consistent with the precision/FP trade-off
 in Table~\ref{tab:main-results}, but it does not prove the same error mechanism
 for every seed, dataset, model, or entity type. RAG remains an imperfect
 constraint: it can introduce new errors. We therefore describe its observed
 contribution as a net reduction in entity-level false positives and higher
-precision in this scope, not as elimination of hallucination.
+precision in this scope, not as elimination of hallucination. In particular, D
+introduced 126 false positives that were absent from C. The locked qualitative
+sample retains individual C-only cases and aggregate D-only counts, so no
+unrecorded D-only example is reconstructed here.
 
 \subsection{Auditable Two-Stage Relation Route}
 

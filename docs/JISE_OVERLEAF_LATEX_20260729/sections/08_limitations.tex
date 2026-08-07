@@ -1,56 +1,46 @@
 \section{LIMITATIONS}
 
-First, the dataset is small: the final test set contains 170 equipment-domain
-passages. The frozen test set lacks full mutually blind double annotation and
-formal adjudication. Although a fresh two-human non-test calibration reached
-exact micro-F1 of 0.8000 and met the original minimum threshold, it did not
-reach the later conservative 0.85 target and cannot substitute for frozen-test
-formal IAA. \entitytype{TECH\_SCHEME} F1 of 0.153846 is the principal
+The frozen domain test set contains 170 passages and lacks full mutually blind
+double annotation with formal adjudication. A fresh two-human non-test
+calibration reached exact micro-F1 of 0.8000, meeting the original minimum, but
+not the later conservative 0.85 target. It cannot substitute for frozen-test
+formal IAA, and \entitytype{TECH\_SCHEME} F1 of 0.153846 remains the principal
 dataset-quality limitation.
 
-Second, the final ablation covers only A/B/C/D on the self-built domain test
-split at $K=5$ and three seeds, for 12 domain run units. A separate focused
-CLUENER block adds 12 NER run units over all 1,343 labeled official development
-rows, also at $K=5$ and three seeds. There are no additional public-benchmark
-datasets, $K=1$/$K=10$ scans, or additional seeds. The reported means and
-sample standard deviations describe observed run variation only; they do not
-justify broad cross-dataset generalization, $K$ robustness, or
-statistical-significance claims.
+The evaluated NER scope comprises A/B/C/D at $K=5$ over three seeds: 12 domain
+run units and 12 CLUENER run units over all 1,343 labeled official development
+rows. Additional public benchmarks, $K=1$/$K=10$ scans, additional seeds, a
+supervised competitive baseline, and per-type uncertainty analysis remain
+outside this scope. Means and sample standard deviations describe observed run
+variation rather than statistical significance or broad cross-dataset and
+$K$-robustness evidence.
 
-Third, the two three-seed A/B/C/D blocks are NER-only experiments. Relation
-extraction did not enter those NER aggregates, and self-verification/CoVe did
-not produce positive final-test evidence. A separate four-cell seed-42 Stage-R
+The two three-seed blocks are NER-only. A separate four-cell seed-42 Stage-R
 audit reports exact RE F1 of 0.040541/0.056972/0.057971/0.045381 for A/B/C/D,
-with zero \texttt{HAS\_METRIC} true positives and D below C. This result
-provides explicit RE boundary evidence and an auditability check; its low scores
-delimit positive RE and RAG-for-RE claims. The official CLUENER test file lacks directly
-usable offline gold labels, so the reported public result uses all labeled
-official development rows and should not be described as an official-test
-score.
+with zero \texttt{HAS\_METRIC} true positives and D below C. These low scores
+bound positive RE, RAG-for-RE, and CoVe claims while preserving an auditable
+two-stage execution record. The official CLUENER test file has no usable
+offline gold; the public result therefore uses labeled official development
+rows and is not an official-test score.
 
-The public block also has a mechanical parse-failure rate of
-138/16,116 (0.856292\%) after the fixed retry ladder. Its 30-record support
-bank, 61-entry support-derived lexicon, and labels-stripped RAG replay are
-schema-specific CLUENER resources, not transferred equipment-domain resources.
-Together with the lack of a supervised competitive baseline and per-type
-uncertainty analysis, these facts limit the result to a focused descriptive
-directional replication.
+The CLUENER block records 138/16,116 (0.856292\%) mechanical parse failures
+after the fixed retry ladder. Its 30-record support bank, 61-entry
+support-derived lexicon, and labels-stripped RAG replay are schema-specific
+resources rather than transferred equipment-domain assets. Consequently, the
+block supports limited descriptive directional replication, not broad
+portability.
 
-The original frozen inventory contains 60 planned final model identities. At
-the current closeout, four domain Stage-N-plus-Stage-R cells and 12 CLUENER NER
-cells are complete, while eight domain identities retain Stage N only and 36
-identities are wholly absent: literal accounting is therefore 16/60. The
-remaining 44 incomplete identities are route-closed by the human decision and
-are not treated as failed experiments. This accounting boundary prevents the
-paper from claiming a complete ablation matrix or end-to-end IE validation.
+The original frozen inventory contains 60 planned final model identities. Four
+domain Stage-N-plus-Stage-R cells and 12 CLUENER NER cells are complete; eight
+domain identities retain Stage N only and 36 are absent, giving literal
+accounting of 16/60. The other 44 identities are route-closed by the human
+decision, not failed experiments. This boundary precludes a complete-matrix or
+end-to-end IE claim.
 
-Fourth, false-positive entity count is an entity-level extraction-error
-quantity, not an open-domain factuality or broad hallucination metric. The
-qualitative C/D error analysis examines seed 42 only. It is useful for
-interpreting the observed trade-off, but it is insufficient to establish a
-stable error mechanism across seeds, models, or corpora.
-
-Fifth, EC-FSIE was evaluated with one local extractor family and one locked
-embedding/reranking stack. The exact dependency lock and trace artifacts support
-reproduction of this implementation, but they do not establish that the same
-operating-point changes persist across model families or deployment stacks.
+Finally, false-positive entity count is an entity-level extraction-error
+quantity rather than an open-domain factuality metric. The qualitative C/D
+audit uses seed 42, and D introduces errors as well as removing them. EC-FSIE
+was evaluated with one local extractor family and one locked
+embedding/reranking stack; the dependency lock and trace artifacts support
+reproduction of this implementation, while operating-point behavior across
+other model families and deployment stacks remains to be established.

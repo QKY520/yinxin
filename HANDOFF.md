@@ -38,13 +38,13 @@ Hard rules in `AGENTS.md` and `AGENT_PLAYBOOK.md` still apply.
 
 ## 0. Authoritative Snapshot For A New Session
 
-**What we are doing**: the experiment route, the first evidence-to-paper
-propagation, and the bounded EC-FSIE final-refinement pass are finished. The
-project now preserves an SCI-Q4-oriented Evidence-Controlled Few-Shot
-Information Extraction (`EC-FSIE`) manuscript whose main contribution is
-low-label Chinese equipment-domain NER. There is no live experiment or paper
-gate. Any next work is paper-only finalization after the human supplies verified
-metadata and grants a new exact bounded gate.
+**What we are doing**: the experiment route, evidence-to-paper propagation,
+first Overleaf compile audit, and consolidated post-audit EC-FSIE refinement are
+finished locally. The project preserves an SCI-Q4-oriented Evidence-Controlled
+Few-Shot Information Extraction (`EC-FSIE`) manuscript whose main contribution
+is low-label Chinese equipment-domain NER. The refined source is newer than the
+audited PDF and now awaits a clean Overleaf recompilation; no experiment gate is
+live.
 
 **What is complete**:
 
@@ -71,16 +71,36 @@ metadata and grants a new exact bounded gate.
   27 citation uses resolve to 17 unique BibTeX keys, all 11 section files are
   referenced, and the numeric-literal sequence in every edited manuscript file
   matches its pre-refinement `HEAD` version.
+- The human granted `JISE_ECFSIE_METADATA_COMPILE_PDF_AUDIT_APPROVED` and then
+  deferred author/declaration metadata. The supplied Overleaf artifacts compiled
+  successfully to 17 pages with zero LaTeX errors, undefined citations,
+  undefined references, BibTeX warnings, or rerun requests. The audited PDF
+  SHA256 is `A19BCB8C68D6721C4E75D6A9F36FD9A94A37975BC10CA72F58204A56DF318E0D`;
+  the output ZIP SHA256 is
+  `CD9A090270688BE4A9F0D00D4BAFC0B2AAB7C0DC784D9803A6160F09CED3C88A`.
+- The post-audit refinement shortens the title and abstract, updates keywords,
+  adds a grayscale TikZ EC-FSIE architecture figure, adds three locked C-only
+  qualitative cases and a claim--evidence map, strengthens the Related Work gap,
+  repairs BibTeX capitalization/name parsing, removes the Table 4 header
+  overflow source, and consolidates Discussion/Limitations/Conclusion. It adds
+  no experiment, recomputation, citation, or human metadata.
+- The current static audit covers 14 `.tex` files and one `.bib`: environments,
+  braces, and all inputs pass; 11 labels and 13 references resolve; all 27
+  citation uses resolve to 17 BibTeX keys; seven locked empirical table blocks
+  remain byte-identical to the prior commit; individual numeric-literal counts
+  are not reduced; all 15 human placeholders are unchanged; and forbidden
+  self-weakening/overclaim phrases have zero matches.
 
 **Current paper state**: the sole active manuscript is
 `docs/JISE_OVERLEAF_LATEX_20260729/`. `main.tex` is the Overleaf entry point;
-`frontmatter.tex` and `sections/*.tex` carry the content. Historical Markdown
-drafts are reference artifacts only. The source has not been compiled because
-this Windows control workspace lacks `latexmk`, `pdflatex`, and `bibtex`; no
-PDF visual audit has been completed. Author/order/affiliation/corresponding
-author, acknowledgments, funding, conflicts, data/code availability, ethics,
-and CRediT fields still require human-confirmed values. The paper is not
-submitted.
+`frontmatter.tex`, `sections/*.tex`, and the TikZ source under `figures/` carry
+the content. Historical Markdown drafts are reference artifacts only. The
+pre-refinement Overleaf PDF was compiled and visually audited, but the current
+refined source has not yet been recompiled because this Windows control
+workspace lacks `latexmk`, `pdflatex`, and `bibtex`. Author/order/affiliation/
+corresponding-author, acknowledgments, funding, conflicts, data/code
+availability, ethics, and CRediT fields still require human-confirmed values.
+The paper is not submitted.
 
 **Supported claims**: in frozen low-label Chinese equipment-domain NER, kNN
 demonstration selection and the domain lexicon improve observed F1/recall;
@@ -109,12 +129,13 @@ domain generalization, positive RE, public RE, RAG-for-RE, CoVe, usable
 annotation, a complete 60-cell matrix, complete F8/F9, or complete end-to-end
 IE success.
 
-**Next plan**: no GPU is needed. First obtain verified author and disclosure
-inputs from the human. Then grant the proposed exact paper-only gate
-`JISE_ECFSIE_METADATA_COMPILE_PDF_AUDIT_APPROVED`, naming the writable metadata
-files and compilation environment, to fill those fields, compile the LaTeX,
-inspect the PDF visually, and check venue formatting. Submission, external
-upload, and GitHub synchronization require separate authorization.
+**Next plan**: no GPU is needed. Upload the refined active project to Overleaf,
+set `main.tex` as the root, recompile, and return the new PDF plus output ZIP/log
+for a second audit. That audit must verify TikZ rendering, the two new tables,
+abstract pagination, the removed orphan/header issues, bibliography casing, and
+all compile warnings. Human metadata can remain deferred. Submission, external
+upload beyond this human Overleaf action, and GitHub synchronization require
+separate authorization.
 
 **Lessons and red lines**: result-to-claim controls prose; framework positioning
 may be strengthened but missing evidence cannot become a result. `CLOSED` is a
@@ -1881,16 +1902,17 @@ experiment gate is live. Do not start a model or issue any new request.
 
 ### Post-run claim and paper sequence
 
-The 12-cell closeout, RTC, exact LaTeX propagation gate, and bounded EC-FSIE
-final-refinement gate are complete. The
+The 12-cell closeout, RTC, exact LaTeX propagation gate, bounded EC-FSIE
+final-refinement gate, first Overleaf PDF audit, and post-audit source refinement
+are complete. The
 active target was and remains the complete
 `docs/JISE_OVERLEAF_LATEX_20260729/` project: `main.tex` is the entry point,
 while `frontmatter.tex` and `sections/*.tex` contain the manuscript. Commits
 `8189f71` and `8f1f3e1` record the authorized propagation and framework
-positioning; the later refinement unifies the same EC-FSIE terminology and
-claim boundary across the active sources without changing result numbers. The
-proposed next gate is `JISE_ECFSIE_METADATA_COMPILE_PDF_AUDIT_APPROVED`; it must
-name the exact writable files and compilation environment and must not silently
+positioning; the later refinements unify the same EC-FSIE terminology and claim
+boundary without changing locked results. The metadata/compile gate was granted;
+metadata was deferred, the first PDF was audited, and the refined source now
+requires a second human-run Overleaf compilation. That recompilation does not
 authorize new experiments, result recomputation, DOCX generation, submission,
 or GitHub synchronization.
 
@@ -2067,5 +2089,7 @@ needed. Actual journal submission remains unauthorized.
   12-cell public-NER exception, its RTC, and exact LaTeX propagation are all
   consumed. The later `JISE_ECFSIE_LATEX_FINAL_REFINEMENT_APPROVED` gate is also
   consumed. The next useful gate is
-  `JISE_ECFSIE_METADATA_COMPILE_PDF_AUDIT_APPROVED`, with no GPU prerequisite
-  and no submission authority.
+  `JISE_ECFSIE_METADATA_COMPILE_PDF_AUDIT_APPROVED` gate was subsequently
+  granted; metadata was deferred, the first PDF audit passed compilation, and
+  post-audit source refinements now await Overleaf recompilation. No GPU or
+  submission authority is implied.

@@ -48,13 +48,13 @@ separate F7 audit reused the four seed-42 domain Stage-N outputs and added Stage
 R once for A/B/C/D. Those four single-seed cells provide auditable RE boundary
 evidence and are not merged into the NER aggregate.
 
-The completed package does not contain E or E-prime verifier configurations,
-$K=1$ or $K=10$ scans, additional seeds, another public benchmark, or a
-supervised competitive baseline. With only three seeds and no hypothesis test,
-all between-configuration readings in this paper are descriptive rather than
-statistically significant findings. The frozen run configurations, prompt and
-response hashes, exact dependency lock, per-query traces, and versioned
-finalizers implement EC-FSIE's audit-preserving execution layer and are retained
-for reproduction.
+The evaluated scope comprises A/B/C/D at $K=5$ over three seeds for the two
+frozen NER blocks. E/E-prime verifier configurations, $K=1$/$K=10$ scans,
+additional seeds, another public benchmark, and a supervised competitive
+baseline remain outside this scope. Without a hypothesis test, all
+between-configuration readings are descriptive. The frozen run configurations,
+prompt and response hashes, exact dependency lock, per-query traces, and
+versioned finalizers implement EC-FSIE's audit-preserving execution layer and
+are retained for reproduction.
 The dependency lock records vLLM 0.8.5.post1, Transformers 4.51.3,
 sentence-transformers 5.6.0, and PyTorch 2.6.0 for the project environment.

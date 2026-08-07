@@ -1,39 +1,28 @@
 \section{CONCLUSION}
 
-This work presents the new Evidence-Controlled Few-Shot Information Extraction
-(EC-FSIE) framework for low-label Chinese equipment-domain NER and evaluates
-kNN demonstrations, glossary injection, and RAG evidence through frozen-test
-A/B/C/D ablations over three seeds. In the current v1 dataset and $K=5$
-setting, kNN and the glossary improve F1/recall.
-Configurations C and D are near-tied in F1: C is marginally higher in recall
-and F1, whereas D has higher precision and 55.0 fewer false-positive entity
-predictions on average. These observations characterize RAG as a
-precision-oriented component in the evaluated EC-FSIE chain: it complements the
-best-F1 glossary configuration through an observed reduction in entity-level
-false positives rather than through an F1 gain.
+This work presents Evidence-Controlled Few-Shot Information Extraction
+(EC-FSIE) for low-label Chinese equipment-domain NER. Its A/B/C/D chain isolates
+kNN demonstrations, glossary injection, and RAG evidence under a common
+audit-preserving execution contract. On the frozen v1 dataset at $K=5$ over
+three seeds, kNN and the glossary increase observed F1/recall. C and D remain
+near-tied in F1, while D achieves higher precision and 55.0 fewer
+false-positive entities on average. RAG is therefore characterized by an
+observed precision/false-positive operating-point shift rather than an F1 gain.
 
-The same A/B/C/D directions were also evaluated on all 1,343 labeled rows of
-the official CLUENER development split at $K=5$ over three seeds. kNN and the
-support-derived schema-specific lexicon show directional NER improvements, and
-RAG again preserves near-tied F1 while increasing precision and reducing
-false-positive entities. This provides a limited descriptive directional
-replication on one additional Chinese NER benchmark. It does not establish
-broad public-benchmark portability or cross-domain generalization.
+The same interfaces were evaluated on all 1,343 labeled rows of the official
+CLUENER development split with separately frozen, schema-specific resources.
+The kNN, lexicon, and RAG directions recur descriptively on this additional
+Chinese NER benchmark, without implying official-test performance, resource
+transfer, or broad cross-domain generalization.
 
-This conclusion applies only to the frozen Chinese equipment-domain NER
-setting studied here. The fresh non-test human calibration has overall F1 of
-0.8000 but weak \entitytype{TECH\_SCHEME} agreement, and no frozen-test formal
-IAA is available. The separate F7 seed-42 Stage-R audit provides auditable
-two-stage execution evidence: exact RE F1 is low in all four configurations,
-D is below C, and all four have zero \texttt{HAS\_METRIC} true positives. This
-result defines the current RE boundary while verifying reproducible execution
-and failure accounting for the two-stage route; it does not demonstrate
-positive relation-extraction effectiveness. Broad public-benchmark generalization,
-$K$-scan robustness, statistical significance, and a complete ablation matrix
-remain unverified. The frozen inventory is mechanically 16/60 complete (four
-domain Stage-N-plus-Stage-R cells and 12 CLUENER NER cells); the other 44
-identities remain route-closed rather than being counted as failed experiments.
-EC-FSIE contributes an evidence-controlled and reproducible framework that
-connects bounded evidence channels to interpretable NER operating points,
-preserves both gains and negative trade-offs, and provides an auditable basis
-for subsequent information-extraction extensions.
+These conclusions are scoped to the evaluated NER setting. Non-test human
+calibration reaches overall F1 of 0.8000 but retains weak
+\entitytype{TECH\_SCHEME} agreement, and no frozen-test formal IAA is available.
+The F7 seed-42 Stage-R audit is reproducible and auditable, yet exact RE F1 is
+low, D is below C, and every configuration has zero
+\texttt{HAS\_METRIC} true positives. The frozen inventory is mechanically 16/60
+complete---four domain Stage-N-plus-Stage-R cells and 12 CLUENER NER cells---and
+the other 44 identities remain route-closed. EC-FSIE contributes a reproducible
+evidence-control framework that connects bounded evidence channels to
+interpretable NER operating points while retaining negative trade-offs as
+explicit boundaries for subsequent information-extraction extensions.

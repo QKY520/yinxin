@@ -1,42 +1,29 @@
-Named entity recognition (NER) for Chinese equipment-domain documents must
-operate with scarce annotations while limiting false-positive entity
-predictions from generative large language model (LLM) extractors. This setting
-requires control over what evidence enters each prediction and a traceable
-record of how that evidence is used. We construct a small frozen dataset from
-public equipment-related texts, with 30 support passages, 50 development
-passages, and 170 test passages, and propose Evidence-Controlled Few-Shot
-Information Extraction (EC-FSIE). EC-FSIE coordinates query-adaptive
-demonstration selection, bounded schema-specific terminology, deduplicated and
-reranked RAG evidence, and audit-preserving execution around a local
-\modelname{Qwen2.5-7B-Instruct} extractor. We compare four progressively
-controlled NER configurations on the frozen test set: fixed-random
-demonstrations, $k$-nearest-neighbor (kNN) demonstrations, kNN demonstrations
-with a domain glossary, and the same configuration augmented with reranked
-retrieval-augmented generation (RAG) evidence. A fresh two-human calibration on
-20 previously unused non-test passages obtained exact span-plus-type micro-F1
-of 0.8000, meeting the study's pre-specified manuscript threshold. The
-class-specific audit also identifies \entitytype{TECH\_SCHEME} (F1 0.153846) as
-the clearest target for future annotation refinement. In descriptive
-three-seed ablations at $K=5$, kNN improved F1 by 0.020524 over the
-fixed-random baseline, and glossary injection added 0.013689 F1 mainly through
-recall. The glossary-only configuration C and the RAG configuration D were
-near-tied in F1 (0.568858 versus 0.565764). Configuration D achieved higher
-precision and reduced the mean false-positive entity count from 584.0 to
-529.0. These observations identify RAG as a precision- and
-false-positive-oriented operating-point control that complements the best-F1
-glossary configuration in this frozen low-label equipment-domain NER setting.
-As a focused external check, we also
-evaluated all 1,343 labeled
-rows of the official CLUENER development split with the same A/B/C/D, $K=5$,
-three-seed protocol; the official CLUENER test split is unlabeled and was not
-used. Mean F1 for A--D was 0.428519, 0.513964, 0.517521, and 0.513424,
-respectively. Thus, the directions for kNN, the support-derived schema-specific
-lexicon, and the RAG precision/false-positive trade-off form a limited
-descriptive replication on one additional Chinese NER benchmark; they do not
-establish broad portability or cross-domain generalization. An accompanying
-four-cell relation audit preserves the framework's exploratory
-information-extraction boundary: the two-stage execution is reproducible and
-auditable, but exact relation performance is low and every configuration has
-zero \texttt{HAS\_METRIC} true positives. The supported performance
-contribution is therefore the EC-FSIE NER route and its observed false-positive
-trade-off.
+Low-label named entity recognition (NER) for Chinese equipment documents
+requires both accurate extraction and control over false-positive predictions
+from generative large language model (LLM) extractors. We propose
+Evidence-Controlled Few-Shot Information Extraction (EC-FSIE), which
+coordinates query-adaptive demonstrations, bounded schema terminology,
+deduplicated and reranked retrieval-augmented generation (RAG) evidence, and an
+audit-preserving execution layer around a local
+\modelname{Qwen2.5-7B-Instruct} extractor. On a frozen public-text dataset with
+30 support, 50 development, and 170 test passages, we compare fixed-random
+demonstrations (A), $k$-nearest-neighbor (kNN) demonstrations (B), kNN with a
+domain glossary (C), and C augmented with RAG evidence (D). A fresh two-human
+calibration on 20 unused non-test passages reached exact span-plus-type
+micro-F1 of 0.8000; the class-specific audit identified
+\entitytype{TECH\_SCHEME} as the main annotation risk (F1 0.153846). In
+descriptive three-seed ablations at $K=5$, kNN improved F1 by 0.020524 over A,
+and glossary injection added 0.013689 F1 mainly through recall. C and D were
+near-tied in F1 (0.568858 versus 0.565764), while D achieved higher precision
+and reduced the mean false-positive entity count from 584.0 to 529.0. RAG
+therefore provides an observed precision/false-positive operating-point shift,
+not an F1 gain. A focused external check evaluated all 1,343 labeled official
+CLUENER development rows with the same A/B/C/D, $K=5$, three-seed protocol; the
+unlabeled official test split was unused. Mean F1 for A--D was 0.428519,
+0.513964, 0.517521, and 0.513424. These directions constitute limited
+descriptive replication on one additional Chinese NER benchmark, not broad
+portability or cross-domain generalization. A four-cell relation audit retains
+low exact-relation performance and zero \texttt{HAS\_METRIC} true positives in
+every configuration. The supported performance contribution is the
+reproducible EC-FSIE NER route and its evidence-controlled operating points;
+relation extraction remains an exploratory negative boundary.

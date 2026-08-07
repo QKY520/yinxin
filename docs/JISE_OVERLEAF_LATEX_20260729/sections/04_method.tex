@@ -27,6 +27,21 @@ evidence channels incrementally, while the common execution contract governs
 every configuration. This design connects observed metric changes to a named
 control surface without sacrificing end-to-end auditability.
 
+Figure~\ref{fig:ec-fsie-architecture} summarizes the evidence channels,
+configuration transitions, and common trace layer.
+
+\begin{figure}[t]
+\centering
+\input{figures/ec_fsie_architecture}
+\caption{EC-FSIE evidence-control and audit workflow. Configuration A uses
+fixed-random demonstrations; B replaces them with kNN retrieval; C adds a
+bounded query-matched lexicon; and D adds deduplicated, reranked RAG evidence.
+All configurations share the fixed prompt order and audit trace. The dashed
+Stage-R branch is exploratory and carries no positive relation-extraction
+claim. CLUENER uses the same interfaces with separately frozen resources.}
+\label{fig:ec-fsie-architecture}
+\end{figure}
+
 \subsection{Structured Few-Shot Extraction}
 
 The NER instantiation of EC-FSIE receives one query passage and $K$ support
@@ -87,7 +102,7 @@ frozen resources for the equipment-domain and CLUENER blocks.}
 \begin{tabular}{>{\centering\arraybackslash}p{0.7cm}p{2.2cm}
 >{\centering\arraybackslash}p{1.3cm}>{\centering\arraybackslash}p{1.2cm}p{4.6cm}}
 \toprule
-Config. & Demonstrations & Glossary & RAG & Isolated comparison \\
+ID & Demonstrations & Glossary & RAG & Isolated comparison \\
 \midrule
 A & Fixed random & No & No & Baseline \\
 B & kNN & No & No & B$-$A: demonstration retrieval \\
@@ -97,8 +112,7 @@ D & kNN replay & Yes & Yes & D$-$C: RAG evidence \\
 \end{tabular}
 \end{table}
 
-EC-FSIE also defines an optional self-verification/CoVe extension. Its
-development diagnostics are reported separately to make the verification
-boundary explicit. The supported method contribution is the A/B/C/D NER
-instantiation and its audited evidence-control behavior; the optional extension
-does not carry a positive final-test claim.
+EC-FSIE also defines an optional self-verification/CoVe extension. The evaluated
+primary instantiation is the A/B/C/D NER route and its audited evidence-control
+behavior; separate development diagnostics retain the optional extension as an
+explicit verification-boundary analysis.

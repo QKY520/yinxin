@@ -1,0 +1,45 @@
+\begin{tikzpicture}[
+  >=Latex,
+  font=\scriptsize,
+  channel/.style={draw, rounded corners=2pt, align=center, text width=2.75cm,
+    minimum height=9mm, inner sep=2.5pt},
+  core/.style={draw, rounded corners=2pt, align=center, text width=2.15cm,
+    minimum height=12mm, inner sep=3pt, fill=black!4},
+  trace/.style={draw, align=center, text width=2.15cm, minimum height=9mm,
+    inner sep=2pt, fill=black!8},
+  boundary/.style={draw, densely dashed, align=center, text width=2.15cm,
+    minimum height=9mm, inner sep=2pt},
+  flow/.style={->, line width=0.55pt},
+  note/.style={align=center, font=\scriptsize}
+]
+\node[channel] (demo) {Demonstrations\\A: fixed random\\B--D: BGE-M3 kNN/replay};
+\node[channel, densely dashed, below=2.5mm of demo] (lexicon)
+  {Schema lexicon\\C--D: bounded query matching};
+\node[channel, dash pattern=on 3pt off 1.4pt on .7pt off 1.4pt,
+  below=2.5mm of lexicon] (rag)
+  {RAG evidence\\D: top-20 retrieval\\reranked to top 3};
+
+\node[core, right=5.5mm of lexicon] (prompt)
+  {Fixed-order prompt\\task $\rightarrow$ schema\\glossary $\rightarrow$ RAG\\demos $\rightarrow$ query};
+\node[core, right=5.5mm of prompt] (extractor)
+  {Local extractor\\\modelname{Qwen2.5-7B-Instruct}};
+\node[core, right=5.5mm of extractor] (stageN)
+  {Stage-N output\\JSON entity list};
+\node[trace, below=4mm of stageN] (audit)
+  {Shared audit trace\\cache, retry, parser,\\prompt/output hashes};
+\node[boundary, below=4mm of audit] (stageR)
+  {Exploratory Stage R\\low exact RE;\\no positive claim};
+
+\draw[flow] (demo.east) -- (prompt.west);
+\draw[flow] (lexicon.east) -- (prompt.west);
+\draw[flow] (rag.east) -- (prompt.west);
+\draw[flow] (prompt) -- (extractor);
+\draw[flow] (extractor) -- (stageN);
+\draw[flow] (stageN) -- (audit);
+\draw[flow, densely dashed] (stageN.east) -- ++(3mm,0) |- (stageR.east);
+
+\node[draw, rounded corners=2pt, fit=(demo)(rag), inner sep=3.5pt,
+  label={[font=\scriptsize\bfseries]above:Bounded evidence channels}] {};
+\node[note, above=5.5mm of prompt, xshift=2.5cm]
+  {Frozen provenance $\mid$ bounded injection $\mid$ isolated transitions $\mid$ traceability};
+\end{tikzpicture}

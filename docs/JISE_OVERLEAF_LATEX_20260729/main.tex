@@ -10,6 +10,8 @@
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{url}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
 
 \newcommand{\placeholder}[1]{\textbf{[AUTHOR INPUT: #1]}}
 \newcommand{\entitytype}[1]{\texttt{#1}}
@@ -30,8 +32,9 @@
 \begin{abstract}
 \input{sections/00_abstract}
 \begin{keywords}
-Chinese named entity recognition, low-label learning, equipment domain,
-retrieval-augmented generation, domain glossary, large language models
+Chinese named entity recognition, evidence-controlled few-shot information
+extraction, low-label learning, equipment-domain text, retrieval-augmented
+generation, entity-level false positives
 \end{keywords}
 \end{abstract}
 

@@ -1,59 +1,58 @@
 \section{DISCUSSION}
 
-The results support a clear but conditional operating principle for EC-FSIE.
-Under frozen v1 labels,
-$K=5$, and the current local-model configuration, kNN demonstrations and
-glossary injection improve F1/recall, while RAG yields near-tied F1 relative to
-C with higher precision and fewer false-positive entities. The practical value
-of RAG in this result is not maximizing F1; it is reducing the number of
-erroneous candidates that could enter manual review or later knowledge-base
-cleaning.
+The evaluated EC-FSIE chain reveals a conditional operating principle under
+frozen v1 labels, $K=5$, and the current local-model configuration. kNN
+demonstrations and glossary injection increase observed F1/recall, whereas RAG
+moves the extractor toward higher precision and fewer false-positive entities
+with near-tied F1 relative to C. The focused CLUENER block follows the same
+directions on all 1,343 labeled official development rows under separately
+frozen resources. This recurrence is descriptive and bounded to one additional
+Chinese NER benchmark.
 
-The focused CLUENER block checks this interpretation on one additional Chinese
-NER benchmark. On all 1,343 labeled official development rows, B--A,
-C--B, and D--C follow the same qualitative directions as the domain block:
-kNN improves F1, the support-derived schema-specific lexicon gives a modest
-directional F1/recall increase, and RAG keeps F1 near tied while increasing
-precision and reducing false positives. The public result provides a limited
-descriptive directional replication under independently frozen CLUENER
-resources. It shows that the observed directions are not unique to the domain
-block, but it does not establish resource transfer, broad portability, or
-cross-domain generalization; statistical significance also remains outside this
-evidence line.
+The modules are therefore complementary rather than monotonically additive.
+kNN controls which labeled evidence conditions the query; the glossary expands
+schema-specific coverage and can also invite extra predictions; and RAG changes
+the precision--recall operating point. EC-FSIE exposes each transition while the
+shared trace layer preserves both improvements and regressions as reproducible
+outcomes. Table~\ref{tab:claim-evidence-map} consolidates the corresponding
+claim boundaries.
 
-The modules have different effects. kNN reduces dependence on a fixed randomly
-selected demonstration set. The glossary broadens domain coverage but may also
-invite additional false positives. RAG moves the system to a more conservative
-precision-oriented point. These effects are not monotonically additive, and
-D's lower F1 than C must be retained as a real trade-off rather than hidden by
-reporting only the best value.
+\begin{table}[ht]
+\caption{Claim--evidence map for the evaluated EC-FSIE framework. Each row
+separates the supported reading from its explicit evidence boundary.}
+\label{tab:claim-evidence-map}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{p{2.1cm}p{4.25cm}p{4.25cm}}
+\toprule
+Evidence item & Supported interpretation & Explicit boundary \\
+\midrule
+kNN demonstrations & Domain B$-$A is $+0.020524$ F1; the CLUENER direction recurs. &
+Descriptive $K=5$ evidence; no significance or $K$-robustness claim. \\
+Schema glossary & Domain C$-$B is $+0.013689$ F1, with recall from 0.615304 to
+0.640811. & Domain FP rises by about 10.3; the glossary is not an FP filter. \\
+RAG evidence & Domain D$-$C is $-0.003094$ F1 with precision 0.525135 versus
+0.511433 and 55.0 fewer FP; CLUENER follows the same direction. & No F1-gain,
+hallucination-elimination, factuality, or RAG-for-RE claim. \\
+CLUENER block & All 1,343 labeled-dev rows provide limited descriptive
+directional replication. & Not an official-test score, resource-transfer
+result, or broad cross-domain validation. \\
+Stage R and CoVe & Stage-N/Stage-R traces support reproducible execution; exact
+RE F1 is 0.040541/0.056972/0.057971/0.045381. & D is below C, every cell has zero
+\texttt{HAS\_METRIC} TP, and CoVe has no positive final-test evidence. \\
+Human calibration & Non-test exact micro-F1 is 0.8000; the original manuscript
+threshold is met. & \entitytype{TECH\_SCHEME} F1 is 0.153846; this is not
+frozen-test formal IAA or uniform class reliability. \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-This non-monotonicity is central to the framework interpretation. Evidence
-control does not presume that every additional channel improves every metric.
-Instead, the isolated A/B/C/D chain reveals which channel changes coverage,
-recall, precision, or the review burden represented by false-positive entities.
-The common trace layer then preserves both improvements and regressions as
-reproducible outcomes. In this sense, EC-FSIE supplies a controlled way to
-select an operating point under low-label constraints rather than collapsing
-the comparison to a single best-F1 configuration.
-
-The calibration audit further narrows interpretation. Overall non-test
-calibration F1 of 0.8000 indicates that the locked guideline reached the
-original minimum on a small fresh sample, but \entitytype{TECH\_SCHEME}
-agreement of 0.153846 shows that this class remains unstable. Aggregate
-micro-F1 on the frozen v1 labels may therefore obscure class-specific label
-ambiguity. The four entity types should not be treated as equally reliable in
-future applications.
-
-The framework's primary evidence line is NER. The final A/B/C/D package is
-NER-only, while a separate F7 Stage-R audit supplies four
-single-seed, exact-triple measurements: RE F1 is 0.040541, 0.056972, 0.057971,
-and 0.045381 for A--D, with zero \texttt{HAS\_METRIC} true positives in every
-cell and D below C. This is negative effectiveness evidence for the exploratory
-relation route, while the preserved Stage-N/Stage-R traces provide
-reproducibility and auditability evidence for EC-FSIE's execution contract.
-Neither the relation audit nor the NER results support a positive RAG-for-RE
-claim.
-CoVe/self-verification has no positive final-test evidence. Broad
-public-benchmark generalization, robustness across $K$ values, and statistical
-significance are likewise outside the completed evidence.
+The calibration result conditions the domain interpretation. Aggregate
+micro-F1 can obscure the instability of \entitytype{TECH\_SCHEME}, so future
+applications should not treat the four entity types as equally reliable. The
+relation evidence imposes a separate boundary: Stage R is auditable, but its
+low exact-triple scores and zero \texttt{HAS\_METRIC} true positives bound
+positive RE effectiveness. CoVe, broad public-benchmark generalization,
+robustness across $K$, and statistical significance remain outside the current
+evidence.
