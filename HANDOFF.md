@@ -39,13 +39,14 @@ Hard rules in `AGENTS.md` and `AGENT_PLAYBOOK.md` still apply.
 ## 0. Authoritative Snapshot For A New Session
 
 **What we are doing**: the experiment route, evidence-to-paper propagation,
-two Overleaf compile audits, consolidated post-audit EC-FSIE refinement, a
-verified Related Work/citation-coverage pass, and the bounded Overleaf-v3 source
-corrections are finished locally. The project preserves an SCI-Q4-oriented
-Evidence-Controlled Few-Shot Information Extraction (`EC-FSIE`) manuscript whose
-main contribution is low-label Chinese equipment-domain NER. The corrected
-source is newer than the audited PDF and now awaits a clean human Overleaf
-recompilation; no experiment or paper-edit gate is live after this closeout.
+three Overleaf compile audits, consolidated post-audit EC-FSIE refinement, a
+verified Related Work/citation-coverage pass, the bounded Overleaf-v3 source
+corrections, and the final v4 pagination microfix are finished locally. The
+project preserves an SCI-Q4-oriented Evidence-Controlled Few-Shot Information
+Extraction (`EC-FSIE`) manuscript whose main contribution is low-label Chinese
+equipment-domain NER. The microfixed source is newer than the audited v3 PDF and
+now awaits one clean human Overleaf recompilation; no experiment or paper-edit
+gate is live after this closeout.
 
 **What is complete**:
 
@@ -99,11 +100,10 @@ recompilation; no experiment or paper-edit gate is live after this closeout.
   word/compound splits. The previous Table 4 overflow and abstract spill are
   fixed; all new tables render within the page.
 - The current static audit covers 14 `.tex` files and one `.bib`: environments,
-  braces, and all inputs pass; 11 labels and 13 references resolve; all 27
-  citation uses resolve to 17 BibTeX keys; seven locked empirical table blocks
-  remain byte-identical to the prior commit; individual numeric-literal counts
-  are not reduced; all 15 human placeholders are unchanged; and forbidden
-  self-weakening/overclaim phrases have zero matches.
+  braces, and all inputs pass; 11 unique labels and 14 references resolve; all
+  37 citation occurrences resolve to 27 unique BibTeX keys; no section is
+  orphaned; and the numeric-token multisets in all three v4-edited files remain
+  exactly unchanged from `HEAD`.
 - The exact paper-only gate
   `JISE_ECFSIE_VERIFIED_RELATED_WORK_CITATION_PROPAGATION_APPROVED` was granted
   and consumed on 2026-08-09. The authorized pass modifies only Related Work,
@@ -130,17 +130,41 @@ recompilation; no experiment or paper-edit gate is live after this closeout.
   citation occurrences resolving to 27 BibTeX keys, no numeric-literal changes
   in any corrected file, and no changes to the frozen Related Work or
   bibliography from the preceding citation commit.
+- The human supplied `JISE_OVERLEAF_LATEX_20260729__3_.pdf` and its Overleaf
+  output ZIP. The third compile produced 19 uniform A4 pages with zero LaTeX
+  errors, undefined citations/references, BibTeX warnings, or overfull boxes.
+  All 19 pages were visually audited: PDF title/subject/keywords, the wrapped
+  architecture node, disclosure, tables, and all 27 references render correctly,
+  with no clipping, blank pages, or missing content. The PDF SHA256 is
+  `DACE96E40038DAC0FCFA9B588967F44E75FF3398BC944ABA8DD77B8B2BF88AC5` and
+  the ZIP SHA256 is
+  `C824453B9DBFD7D72BDEB0DE273F07F73C974E050ED69651702AFD27AFA0A8BE`.
+  Nine underfull hbox and four underfull vbox warnings caused no visible defect.
+  The audit identified only three pagination blemishes: a one-line Method widow,
+  `numer-/ically` across the Results page boundary, and an isolated `gain.` at
+  the top of the second Conclusion page.
+- The exact `JISE_ECFSIE_OVERLEAF_V4_PAGINATION_MICROFIX_APPROVED` gate was
+  granted and is consumed by this closeout. It changes only
+  `sections/04_method.tex`, `sections/06_results.tex`, and
+  `sections/09_conclusion.tex`, plus this handoff. Three semantically equivalent
+  sentence shortenings target the audited page breaks without changing any
+  experiment number, table, citation, negative result, limitation, or claim
+  boundary. Non-Python static checks pass with zero environment mismatches,
+  duplicate labels, missing references, missing BibTeX keys, missing inputs,
+  orphan sections, brace-count failures, or verification markers. Local LaTeX
+  compilation remains unavailable and is not claimed.
 
 **Current paper state**: the sole active manuscript is
 `docs/JISE_OVERLEAF_LATEX_20260729/`. `main.tex` is the Overleaf entry point;
 `frontmatter.tex`, `sections/*.tex`, the bibliography, and the TikZ source under
 `figures/` carry the content. Historical Markdown drafts are reference artifacts
-only. Commit `210f5fa` was compiled and visually audited in the 18-page `__2_`
-PDF, but the citation-expanded and v3-corrected source is newer and has not been
-recompiled. This Windows control workspace still lacks `latexmk`, `pdflatex`,
-and `bibtex`. Author/order/affiliation/corresponding-author, acknowledgments,
-funding, conflicts, data/code availability, ethics, and CRediT fields still
-require human-confirmed values. The paper is not submitted.
+only. The citation-expanded and v3-corrected source compiled successfully and
+was visually audited in the 19-page `__3_` PDF; the three-file pagination
+microfix is newer and has not yet been compiled. This Windows control workspace
+still lacks `latexmk`, `pdflatex`, and `bibtex`. Author/order/affiliation/
+corresponding-author, acknowledgments, funding, conflicts, data/code
+availability, ethics, and CRediT fields still require human-confirmed values.
+The paper is not submitted.
 
 **Supported claims**: in frozen low-label Chinese equipment-domain NER, kNN
 demonstration selection and the domain lexicon improve observed F1/recall;
@@ -170,14 +194,14 @@ annotation, a complete 60-cell matrix, complete F8/F9, or complete end-to-end
 IE success.
 
 **Next plan**: no GPU is needed. The human should upload the current active
-project to Overleaf, keep `main.tex` as the root, compile an `__3_` PDF, and
+project to Overleaf, keep `main.tex` as the root, compile an `__4_` PDF, and
 return the PDF plus output ZIP/log. The next read-only gate should be
-`JISE_ECFSIE_OVERLEAF_V3_COMPILE_PDF_AUDIT_APPROVED`; it must verify citation
-rendering, PDF title/subject/keywords, the architecture node, actual post-citation
-pagination, all warnings, and font embedding when the output permits. Human
-author and declaration metadata may remain deferred. Any further source edit,
-submission, external upload beyond this human Overleaf action, or GitHub
-synchronization requires separate authorization.
+`JISE_ECFSIE_OVERLEAF_V4_COMPILE_PDF_FINAL_AUDIT_APPROVED`; it should verify
+that the three audited pagination defects are gone, then repeat error, warning,
+reference, metadata, font, and full visual checks. Human author and declaration
+metadata may remain deferred. Any further source edit, submission, external
+upload beyond this human Overleaf action, or GitHub synchronization requires
+separate authorization.
 
 **Lessons and red lines**: result-to-claim controls prose; framework positioning
 may be strengthened but missing evidence cannot become a result. `CLOSED` is a
