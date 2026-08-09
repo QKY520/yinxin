@@ -1,6 +1,6 @@
 # HANDOFF.md - New Conversation Handoff
 
-Date: 2026-08-07
+Date: 2026-08-09
 Workspace: `D:\yinsir`
 
 This file is the latest operational state for a new Codex/agent session with no
@@ -39,12 +39,13 @@ Hard rules in `AGENTS.md` and `AGENT_PLAYBOOK.md` still apply.
 ## 0. Authoritative Snapshot For A New Session
 
 **What we are doing**: the experiment route, evidence-to-paper propagation,
-first Overleaf compile audit, and consolidated post-audit EC-FSIE refinement are
-finished locally. The project preserves an SCI-Q4-oriented Evidence-Controlled
-Few-Shot Information Extraction (`EC-FSIE`) manuscript whose main contribution
-is low-label Chinese equipment-domain NER. The refined source is newer than the
-audited PDF and now awaits a clean Overleaf recompilation; no experiment gate is
-live.
+two Overleaf compile audits, consolidated post-audit EC-FSIE refinement, and a
+verified Related Work/citation-coverage pass are finished locally. The project
+preserves an SCI-Q4-oriented Evidence-Controlled Few-Shot Information Extraction
+(`EC-FSIE`) manuscript whose main contribution is low-label Chinese
+equipment-domain NER. The citation-expanded source is newer than the audited
+PDF and awaits a later bounded layout/disclosure correction plus clean Overleaf
+recompilation; no experiment or paper gate is live after this closeout.
 
 **What is complete**:
 
@@ -84,23 +85,47 @@ live.
   repairs BibTeX capitalization/name parsing, removes the Table 4 header
   overflow source, and consolidates Discussion/Limitations/Conclusion. It adds
   no experiment, recomputation, citation, or human metadata.
+- Commit `210f5fa` contains that post-audit source refinement. The human then
+  returned `JISE_OVERLEAF_LATEX_20260729__2_.pdf` and its Overleaf output ZIP.
+  The second compile produced 18 uniform A4 pages with zero LaTeX errors,
+  undefined citations/references, BibTeX warnings, or rerun requests; ChkTeX
+  and qpdf both returned zero. The PDF SHA256 is
+  `A09C4700F9D9C49BC6C218075CEBB84484AF6EF1A0F0C8D417CC1B3D86BF7B0E` and
+  the ZIP SHA256 is
+  `11311C3519B0EC92218022B5D9BE4FE0CE7083C00A608E36C1DC27D2166356C2`.
+  Visual audit found one real `18.6267 pt` architecture-node overflow, a
+  disclosure sentence that no longer accurately accounts for Codex-assisted
+  TikZ drafting, one contribution-list orphan, and three undesirable page-edge
+  word/compound splits. The previous Table 4 overflow and abstract spill are
+  fixed; all new tables render within the page.
 - The current static audit covers 14 `.tex` files and one `.bib`: environments,
   braces, and all inputs pass; 11 labels and 13 references resolve; all 27
   citation uses resolve to 17 BibTeX keys; seven locked empirical table blocks
   remain byte-identical to the prior commit; individual numeric-literal counts
   are not reduced; all 15 human placeholders are unchanged; and forbidden
   self-weakening/overclaim phrases have zero matches.
+- The exact paper-only gate
+  `JISE_ECFSIE_VERIFIED_RELATED_WORK_CITATION_PROPAGATION_APPROVED` was granted
+  and consumed on 2026-08-09. The authorized pass modifies only Related Work,
+  `references.bib`, and this handoff. It adds ten cross-verified peer-reviewed
+  references covering prompt retrieval, modern generative/generalist IE/NER,
+  RAG reliability, and direct Chinese military/equipment NER. It also upgrades
+  GPT-NER from its 2023 preprint record to the Findings of NAACL 2025 version.
+  The current closure has 37 citation occurrences resolving to 27 unique
+  BibTeX keys, with zero missing, duplicate, or uncited keys and balanced BibTeX
+  braces. No experiment, metric, result table, dataset claim, or human metadata
+  changed.
 
 **Current paper state**: the sole active manuscript is
 `docs/JISE_OVERLEAF_LATEX_20260729/`. `main.tex` is the Overleaf entry point;
-`frontmatter.tex`, `sections/*.tex`, and the TikZ source under `figures/` carry
-the content. Historical Markdown drafts are reference artifacts only. The
-pre-refinement Overleaf PDF was compiled and visually audited, but the current
-refined source has not yet been recompiled because this Windows control
-workspace lacks `latexmk`, `pdflatex`, and `bibtex`. Author/order/affiliation/
-corresponding-author, acknowledgments, funding, conflicts, data/code
-availability, ethics, and CRediT fields still require human-confirmed values.
-The paper is not submitted.
+`frontmatter.tex`, `sections/*.tex`, the bibliography, and the TikZ source under
+`figures/` carry the content. Historical Markdown drafts are reference artifacts
+only. Commit `210f5fa` was compiled and visually audited in the 18-page `__2_`
+PDF, but the citation-expanded source is newer and has not been recompiled.
+This Windows control workspace still lacks `latexmk`, `pdflatex`, and `bibtex`.
+Author/order/affiliation/corresponding-author, acknowledgments, funding,
+conflicts, data/code availability, ethics, and CRediT fields still require
+human-confirmed values. The paper is not submitted.
 
 **Supported claims**: in frozen low-label Chinese equipment-domain NER, kNN
 demonstration selection and the domain lexicon improve observed F1/recall;
@@ -129,13 +154,15 @@ domain generalization, positive RE, public RE, RAG-for-RE, CoVe, usable
 annotation, a complete 60-cell matrix, complete F8/F9, or complete end-to-end
 IE success.
 
-**Next plan**: no GPU is needed. Upload the refined active project to Overleaf,
-set `main.tex` as the root, recompile, and return the new PDF plus output ZIP/log
-for a second audit. That audit must verify TikZ rendering, the two new tables,
-abstract pagination, the removed orphan/header issues, bibliography casing, and
-all compile warnings. Human metadata can remain deferred. Submission, external
-upload beyond this human Overleaf action, and GitHub synchronization require
-separate authorization.
+**Next plan**: no GPU is needed. A new exact paper-only gate should first
+authorize the already identified `__2_` corrections: make the architecture
+model label wrap inside its node, accurately disclose Codex-assisted TikZ
+drafting, repair the orphan/page-edge splits after the citation reflow, and
+optionally add non-human PDF title/subject/keyword metadata. Human author and
+declaration metadata can remain deferred. After those source edits, the human
+should compile an Overleaf `__3_` PDF and return its PDF plus output ZIP/log for
+the final compile/visual audit. Submission, external upload beyond this human
+Overleaf action, and GitHub synchronization require separate authorization.
 
 **Lessons and red lines**: result-to-claim controls prose; framework positioning
 may be strengthened but missing evidence cannot become a result. `CLOSED` is a
@@ -148,7 +175,7 @@ and never reset, clean, submit, or synchronize GitHub without authorization.
 
 Everything below is detailed chronology. Any future-tense statement below
 about waiting for the CLUENER LaTeX propagation gate is superseded by this
-2026-08-07 snapshot and the versioned closeout.
+2026-08-09 snapshot and the versioned closeout.
 
 Historical route and execution chronology (from 2026-07-30): the human wanted
 to expand the project into

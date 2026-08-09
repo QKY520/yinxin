@@ -5,18 +5,27 @@ of small support sets. Few-NERD provides a representative fine-grained
 benchmark for few-shot NER \cite{ding2021fewnerd}. Structured nearest-neighbor
 learning \cite{yang2020structured} and decomposed meta-learning
 \cite{ma2022decomposed} improve few-shot generalization through different
-modeling strategies. EC-FSIE uses semantic proximity as an explicit control over
-which support examples condition the local extractor.
+modeling strategies. Beyond task-specific NER, learned prompt retrieval also
+shows that selecting relevant demonstrations is a central control variable for
+in-context learning \cite{rubin2022promptretrieval}. EC-FSIE uses semantic
+proximity as an explicit control over which support examples condition the
+local extractor.
 
 Generative information extraction has increasingly used structured outputs and
-task instructions. UIE formulates universal information extraction as
-structure generation \cite{lu2022uie}, and InstructUIE extends this perspective
-through multi-task instruction tuning \cite{wang2023instructuie}. GPT-NER
-\cite{wang2023gptner} and OneKE \cite{luo2025oneke} further illustrate
-schema-guided LLM extraction. InstructUIE and GPT-NER are cited here as arXiv
-preprints, while OneKE is a peer-reviewed WWW Companion paper. These systems
-motivate schema-guided structured generation, while EC-FSIE focuses on the
-provenance and isolated effects of the evidence supplied at inference time.
+task instructions, as synthesized in a recent peer-reviewed survey of
+generative IE \cite{xu2024llmiesurvey}. UIE formulates universal information
+extraction as structure generation \cite{lu2022uie}, and InstructUIE extends
+this perspective through multi-task instruction tuning
+\cite{wang2023instructuie}. GPT-NER \cite{wang2023gptner} and OneKE
+\cite{luo2025oneke} further illustrate schema-guided LLM extraction. Related
+approaches condition IE on annotation guidelines in GoLLIE
+\cite{sainz2024gollie}, use targeted distillation for open NER in UniversalNER
+\cite{zhou2024universalner}, or build a compact generalist encoder for arbitrary
+entity types in GLiNER \cite{zaratiana2024gliner}. InstructUIE is cited here as
+an arXiv preprint; GPT-NER, GoLLIE, UniversalNER, GLiNER, and OneKE are cited in
+their peer-reviewed versions. These systems motivate schema-guided structured
+generation, while EC-FSIE focuses on the provenance and isolated effects of the
+evidence supplied at inference time.
 
 External terminology has long been used in NER through gazetteers and related
 knowledge resources \cite{liu2019gazetteers}. In EC-FSIE, glossary injection is
@@ -30,23 +39,39 @@ work has examined retrieval, reranking, and reliability-oriented extensions of
 the RAG pipeline \cite{gao2023ragsurvey}. Work on hallucination detection and
 verification, including SelfCheckGPT \cite{manakul2023selfcheckgpt} and
 Chain-of-Verification \cite{dhuliawala2024cove}, motivates caution about
-unsupported generated outputs. EC-FSIE defines verification as an optional
-extension, while the evaluated A/B/C/D NER route isolates the observed
-contribution of RAG evidence. Separate diagnostics preserve the verification
-boundary and prevent unsupported CoVe gains from entering the framework's
-positive evidence line.
+unsupported generated outputs. RAGTruth further documents that retrieved
+context does not by itself preclude the generation of unsupported or
+contradictory content \cite{niu2024ragtruth}. EC-FSIE defines verification as
+an optional extension,
+while the evaluated A/B/C/D NER route isolates the observed contribution of RAG
+evidence. Separate diagnostics preserve the verification boundary and prevent
+unsupported CoVe gains from entering the framework's positive evidence line.
+
+Direct military- and equipment-oriented Chinese NER has also been studied under
+task-specific sequence-labeling protocols. Yin et al. construct a
+microblog-based MilitaryCorpus and explicitly address fuzzy military-entity
+boundaries \cite{yin2020militaryner}; Liu et al. study NER in equipment-support
+text \cite{liu2021equipmentsupport}; Guo and Shu target weapon names,
+attributes, components, and uses \cite{guo2023militaryweapons}; and Gao et al.
+address equipment-fault-diagnosis text \cite{gao2024equipmentfaultner}. These
+works establish direct domain precedents and annotation challenges. Against
+this literature, EC-FSIE addresses a distinct experimental question: how
+demonstrations, schema terminology, retrieved passages, and execution traces
+can be separately controlled for low-label generative domain NER.
 
 Chinese NER and IE resources include CLUENER \cite{xu2020cluener} and DuIE 2.0
 \cite{baidu2026duie}; Few-NERD provides an English few-shot reference
 \cite{ding2021fewnerd}. CMNEE is a public document-level military
 event-extraction dataset \cite{zhu2024cmnee}, not a NER dataset. These resources
-differ in language, task definition, or schema from the \entitytype{EQUIPMENT},
-\entitytype{MODULE}, \entitytype{TECH\_SCHEME}, and \entitytype{METRIC}
-categories used here. The present paper is therefore positioned as an applied
-domain NER study centered on reproducible, domain-aware extraction control. The
-focused CLUENER evaluation reported below instantiates the same interfaces
-under one additional Chinese NER schema as a limited descriptive
-directional-replication block.
+and the domain studies above differ in corpus, task definition, or schema from
+the \entitytype{EQUIPMENT}, \entitytype{MODULE},
+\entitytype{TECH\_SCHEME}, and \entitytype{METRIC} categories used here. The
+present paper is therefore positioned as an applied domain NER study centered
+on reproducible, domain-aware extraction control, complementing established
+military/equipment sequence-labeling work with an evidence-controlled
+generative evaluation. The focused CLUENER evaluation reported below
+instantiates the same interfaces under one additional Chinese NER schema as a
+limited descriptive directional-replication block.
 
 Taken together, the cited strands motivate three complementary mechanisms:
 semantic demonstration selection, schema-specific lexical knowledge, and
