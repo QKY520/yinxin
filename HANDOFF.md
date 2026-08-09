@@ -39,13 +39,13 @@ Hard rules in `AGENTS.md` and `AGENT_PLAYBOOK.md` still apply.
 ## 0. Authoritative Snapshot For A New Session
 
 **What we are doing**: the experiment route, evidence-to-paper propagation,
-two Overleaf compile audits, consolidated post-audit EC-FSIE refinement, and a
-verified Related Work/citation-coverage pass are finished locally. The project
-preserves an SCI-Q4-oriented Evidence-Controlled Few-Shot Information Extraction
-(`EC-FSIE`) manuscript whose main contribution is low-label Chinese
-equipment-domain NER. The citation-expanded source is newer than the audited
-PDF and awaits a later bounded layout/disclosure correction plus clean Overleaf
-recompilation; no experiment or paper gate is live after this closeout.
+two Overleaf compile audits, consolidated post-audit EC-FSIE refinement, a
+verified Related Work/citation-coverage pass, and the bounded Overleaf-v3 source
+corrections are finished locally. The project preserves an SCI-Q4-oriented
+Evidence-Controlled Few-Shot Information Extraction (`EC-FSIE`) manuscript whose
+main contribution is low-label Chinese equipment-domain NER. The corrected
+source is newer than the audited PDF and now awaits a clean human Overleaf
+recompilation; no experiment or paper-edit gate is live after this closeout.
 
 **What is complete**:
 
@@ -115,17 +115,32 @@ recompilation; no experiment or paper gate is live after this closeout.
   BibTeX keys, with zero missing, duplicate, or uncited keys and balanced BibTeX
   braces. No experiment, metric, result table, dataset claim, or human metadata
   changed.
+- The human accepted the exact bounded gate
+  `JISE_ECFSIE_OVERLEAF_V3_SOURCE_CORRECTIONS_APPROVED`; it is consumed by the
+  current closeout. Only `main.tex`, the TikZ architecture source, five section
+  files (four containing the identified pagination phrases plus the disclosure
+  section), and this handoff were authorized. The architecture model label is
+  explicitly wrapped inside its node; the contribution page receives one additional
+  baseline; three vulnerable words/compounds are protected from undesirable
+  page-edge splitting; and the disclosure now accurately records Codex-assisted
+  TikZ drafting without implying that manuscript-preparation AI produced or
+  altered experimental outputs. Native pdfTeX metadata now supplies the verified
+  title, subject, and keywords while leaving author metadata unset. Static audit
+  reports 26/26 environments, 11 unique labels, 14 resolving references, 37
+  citation occurrences resolving to 27 BibTeX keys, no numeric-literal changes
+  in any corrected file, and no changes to the frozen Related Work or
+  bibliography from the preceding citation commit.
 
 **Current paper state**: the sole active manuscript is
 `docs/JISE_OVERLEAF_LATEX_20260729/`. `main.tex` is the Overleaf entry point;
 `frontmatter.tex`, `sections/*.tex`, the bibliography, and the TikZ source under
 `figures/` carry the content. Historical Markdown drafts are reference artifacts
 only. Commit `210f5fa` was compiled and visually audited in the 18-page `__2_`
-PDF, but the citation-expanded source is newer and has not been recompiled.
-This Windows control workspace still lacks `latexmk`, `pdflatex`, and `bibtex`.
-Author/order/affiliation/corresponding-author, acknowledgments, funding,
-conflicts, data/code availability, ethics, and CRediT fields still require
-human-confirmed values. The paper is not submitted.
+PDF, but the citation-expanded and v3-corrected source is newer and has not been
+recompiled. This Windows control workspace still lacks `latexmk`, `pdflatex`,
+and `bibtex`. Author/order/affiliation/corresponding-author, acknowledgments,
+funding, conflicts, data/code availability, ethics, and CRediT fields still
+require human-confirmed values. The paper is not submitted.
 
 **Supported claims**: in frozen low-label Chinese equipment-domain NER, kNN
 demonstration selection and the domain lexicon improve observed F1/recall;
@@ -154,15 +169,15 @@ domain generalization, positive RE, public RE, RAG-for-RE, CoVe, usable
 annotation, a complete 60-cell matrix, complete F8/F9, or complete end-to-end
 IE success.
 
-**Next plan**: no GPU is needed. A new exact paper-only gate should first
-authorize the already identified `__2_` corrections: make the architecture
-model label wrap inside its node, accurately disclose Codex-assisted TikZ
-drafting, repair the orphan/page-edge splits after the citation reflow, and
-optionally add non-human PDF title/subject/keyword metadata. Human author and
-declaration metadata can remain deferred. After those source edits, the human
-should compile an Overleaf `__3_` PDF and return its PDF plus output ZIP/log for
-the final compile/visual audit. Submission, external upload beyond this human
-Overleaf action, and GitHub synchronization require separate authorization.
+**Next plan**: no GPU is needed. The human should upload the current active
+project to Overleaf, keep `main.tex` as the root, compile an `__3_` PDF, and
+return the PDF plus output ZIP/log. The next read-only gate should be
+`JISE_ECFSIE_OVERLEAF_V3_COMPILE_PDF_AUDIT_APPROVED`; it must verify citation
+rendering, PDF title/subject/keywords, the architecture node, actual post-citation
+pagination, all warnings, and font embedding when the output permits. Human
+author and declaration metadata may remain deferred. Any further source edit,
+submission, external upload beyond this human Overleaf action, or GitHub
+synchronization requires separate authorization.
 
 **Lessons and red lines**: result-to-claim controls prose; framework positioning
 may be strengthened but missing evidence cannot become a result. `CLOSED` is a

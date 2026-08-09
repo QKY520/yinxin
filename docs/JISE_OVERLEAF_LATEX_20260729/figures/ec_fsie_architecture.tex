@@ -22,7 +22,7 @@
 \node[core, right=5.5mm of lexicon] (prompt)
   {Fixed-order prompt\\task $\rightarrow$ schema\\glossary $\rightarrow$ RAG\\demos $\rightarrow$ query};
 \node[core, right=5.5mm of prompt] (extractor)
-  {Local extractor\\\modelname{Qwen2.5-7B-Instruct}};
+  {Local extractor\\\modelname{Qwen2.5-7B-}\\\modelname{Instruct}};
 \node[core, right=5.5mm of extractor] (stageN)
   {Stage-N output\\JSON entity list};
 \node[trace, below=4mm of stageN] (audit)
