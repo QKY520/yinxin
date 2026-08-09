@@ -39,14 +39,14 @@ Hard rules in `AGENTS.md` and `AGENT_PLAYBOOK.md` still apply.
 ## 0. Authoritative Snapshot For A New Session
 
 **What we are doing**: the experiment route, evidence-to-paper propagation,
-four Overleaf compile audits, consolidated post-audit EC-FSIE refinement, a
+five Overleaf compile audits, consolidated post-audit EC-FSIE refinement, a
 verified Related Work/citation-coverage pass, the bounded Overleaf-v3 source
-corrections, the v4 pagination pass, and the final v5 Method-widow microfix are
-finished locally. The project preserves an SCI-Q4-oriented Evidence-Controlled
-Few-Shot Information Extraction (`EC-FSIE`) manuscript whose main contribution
-is low-label Chinese equipment-domain NER. The one-sentence v5 source is newer
-than the audited v4 PDF and now awaits one clean human Overleaf recompilation;
-no experiment or paper-edit gate is live after this closeout.
+corrections, the v4/v5 pagination passes, and the final v6 Method-paragraph merge
+are finished locally. The project preserves an SCI-Q4-oriented
+Evidence-Controlled Few-Shot Information Extraction (`EC-FSIE`) manuscript whose
+main contribution is low-label Chinese equipment-domain NER. The merged v6
+source is newer than the audited v5 PDF and now awaits one clean human Overleaf
+recompilation; no experiment or paper-edit gate is live after this closeout.
 
 **What is complete**:
 
@@ -174,17 +174,41 @@ no experiment or paper-edit gate is live after this closeout.
   source of the audited page-top fragment. No experiment number, table, citation,
   result, negative finding, limitation, or claim boundary changes. Non-Python
   static checks pass; actual V5 pagination still requires Overleaf compilation.
+- The human supplied `JISE_OVERLEAF_LATEX_20260729__5_.pdf` and its Overleaf
+  output ZIP under
+  `JISE_ECFSIE_OVERLEAF_V5_COMPILE_PDF_FINAL_CONFIRMATION_APPROVED`. The fifth
+  compile produced 19 uniform A4 pages with zero LaTeX/BibTeX errors, undefined
+  citations/references, rerun requests, or overfull boxes; ChkTeX and qpdf both
+  returned zero. The PDF SHA256 is
+  `745344CCEDF671D4030035D87D7397B27EFFBA3FC5A2BC2EA4244B2699036F19` and
+  the ZIP SHA256 is
+  `F5FD9DD661F73F3E48148F8F1B6B1B0BA235078648BBD45B3FD6CB54F2B7FD93`.
+  Metadata, architecture, tables, Results, Conclusion, disclosure, and all 27
+  references passed the 19-page visual audit. Nine underfull hbox and four
+  underfull vbox warnings caused no clipping. The sole visual failure remained
+  the Method boundary: page 8 ended with `during gen-` and page 9 began with
+  `eration.`.
+- The exact `JISE_ECFSIE_OVERLEAF_V6_METHOD_PARAGRAPH_MERGE_APPROVED` gate was
+  granted and is consumed by this closeout. It changes only
+  `sections/04_method.tex` and this handoff. Rather than shortening another tail
+  sentence, it integrates the evidence-control statement into the preceding
+  retrieval sentence: the reranked top-3 passages condition extraction through
+  the prompt, followed by the unchanged locked-CPU statement. This removes the
+  independent tail sentence and approximately one rendered line while retaining
+  top-20 retrieval, top-3 reranking, prompt-based evidence control, and the CPU
+  execution path. All 23 numeric tokens remain unchanged; non-Python static
+  checks pass. Actual V6 pagination still requires Overleaf compilation.
 
 **Current paper state**: the sole active manuscript is
 `docs/JISE_OVERLEAF_LATEX_20260729/`. `main.tex` is the Overleaf entry point;
 `frontmatter.tex`, `sections/*.tex`, the bibliography, and the TikZ source under
 `figures/` carry the content. Historical Markdown drafts are reference artifacts
-only. The v4 source compiled successfully and was visually audited in the
-19-page `__4_` PDF; the one-sentence Method widow microfix is newer and has not
-yet been compiled. This Windows control workspace still lacks `latexmk`,
-`pdflatex`, and `bibtex`. Author/order/affiliation/corresponding-author,
-acknowledgments, funding, conflicts, data/code availability, ethics, and CRediT
-fields still require human-confirmed values. The paper is not submitted.
+only. The v5 source compiled successfully and was visually audited in the
+19-page `__5_` PDF; the Method paragraph merge is newer and has not yet been
+compiled. This Windows control workspace still lacks `latexmk`, `pdflatex`, and
+`bibtex`. Author/order/affiliation/corresponding-author, acknowledgments,
+funding, conflicts, data/code availability, ethics, and CRediT fields still
+require human-confirmed values. The paper is not submitted.
 
 **Supported claims**: in frozen low-label Chinese equipment-domain NER, kNN
 demonstration selection and the domain lexicon improve observed F1/recall;
@@ -214,14 +238,14 @@ annotation, a complete 60-cell matrix, complete F8/F9, or complete end-to-end
 IE success.
 
 **Next plan**: no GPU is needed. The human should upload the current active
-project to Overleaf, keep `main.tex` as the root, compile an `__5_` PDF, and
+project to Overleaf, keep `main.tex` as the root, compile an `__6_` PDF, and
 return the PDF plus output ZIP/log. The next read-only gate should be
-`JISE_ECFSIE_OVERLEAF_V5_COMPILE_PDF_FINAL_CONFIRMATION_APPROVED`; it should
-confirm that page 9 no longer begins with the Method fragment, then repeat the
-error, warning, reference, metadata, font, and full visual checks. Human author
-and declaration metadata may remain deferred. Any further source edit,
-submission, external upload beyond this human Overleaf action, or GitHub
-synchronization requires separate authorization.
+`JISE_ECFSIE_OVERLEAF_V6_COMPILE_PDF_FINAL_CONFIRMATION_APPROVED`; it should
+confirm that page 8 ends cleanly and page 9 begins with the CLUENER paragraph,
+then repeat the error, warning, reference, metadata, font, and full visual
+checks. Human author and declaration metadata may remain deferred. Any further
+source edit, submission, external upload beyond this human Overleaf action, or
+GitHub synchronization requires separate authorization.
 
 **Lessons and red lines**: result-to-claim controls prose; framework positioning
 may be strengthened but missing evidence cannot become a result. `CLOSED` is a

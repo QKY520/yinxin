@@ -75,8 +75,8 @@ The equipment-domain RAG corpus is segmented into 260-character chunks with a
 40-character overlap and a maximum injected passage length of 300 characters.
 Normalized BGE-M3 vectors and a FAISS inner-product index first retrieve the
 top 20 candidates; \modelname{bge-reranker-v2-m3} reranks them, and the top 3
-evidence passages are inserted into the prompt. Embedding and reranking use the
-locked CPU path. RAG evidence constrains extraction during generation.
+evidence passages condition extraction through the prompt. Embedding and
+reranking use the locked CPU path.
 
 For CLUENER, the same module interfaces are instantiated with independently
 frozen, schema-specific resources: a 30-record support bank, a 61-entry
