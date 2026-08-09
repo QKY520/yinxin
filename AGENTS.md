@@ -10,7 +10,8 @@ and aggregation. Use a paid GPU boot only for model inference or training.
 After every GPU phase: verify outputs, back up, sync lightweight artifacts to
 `D:\yinsir`, report cost, and remind the human to shut down the instance.
 
-**CURRENT GATE (2026-08-07)**: The live status is maintained in `HANDOFF.md`.
+**CURRENT GATE (2026-08-09)**: No gate is live. The current state is maintained
+in `HANDOFF.md`.
 P0-P6 for the narrow NER route and full-IE F1-F6 are complete. F7 Domain Final
 Batch 1 is also complete for `domain:A/B/C/D:k5:s42`, Stage R only over four
 locked P5 Stage N files. Exact RE F1 is
@@ -50,16 +51,20 @@ The active manuscript is the complete
 `docs/JISE_OVERLEAF_LATEX_20260729/` LaTeX project: `main.tex` is the Overleaf
 entry point, while `frontmatter.tex` and `sections/*.tex` contain the paper.
 Historical Markdown drafts are reference artifacts, not the active refinement
-target. Commit `8189f71` propagated the verified evidence into the manuscript;
-commit `8f1f3e1` framed it consistently as the Evidence-Controlled Few-Shot
-Information Extraction (`EC-FSIE`) framework. A static audit of all 13 `.tex`
-files found zero environment-count mismatches, duplicate labels, missing
-references, missing BibTeX keys, or weak innovation-disclaimer phrases. The
-paper has not been compiled because this Windows workspace lacks
-`latexmk`/`pdflatex`/`bibtex`; human-owned metadata and disclosure placeholders
-remain. No further LaTeX change, compilation-environment setup, submission, or
-GitHub sync is authorized without a new exact bounded gate. The instance was
-last verified in
+target. Commit `8189f71` propagated the verified evidence, `8f1f3e1` framed it
+as the Evidence-Controlled Few-Shot Information Extraction (`EC-FSIE`)
+framework, and `1c48d1d` is the final technically audited manuscript-body
+source. Six human-run Overleaf rounds were reviewed. The V6 19-page PDF passed
+compilation and full visual audit with zero LaTeX/BibTeX errors, undefined
+citations/references, rerun requests, or overfull boxes; ChkTeX and qpdf both
+returned zero. Its SHA256 is
+`5364210C67F89EB1B347E981AB26B6A62F12D0BD3994924AFD60F8D64DD9BCBC`.
+The manuscript body is technically sealed. Author/order/affiliation,
+corresponding-author, acknowledgments, funding, conflicts, data/code
+availability, ethics, and CRediT fields remain human-owned placeholders. No
+paper, experiment, submission, or GitHub-sync gate is live. Any metadata edit,
+post-metadata compilation audit, submission, or synchronization requires a new
+exact bounded gate. The instance was last verified in
 no-card mode (`No devices found`), with a 2 GiB cgroup, no vLLM/Qwen/F7 process, and
 only the preserved historical dead F6 screen. The total project budget target
 remains 400 CNY; the last reported 4090 price is `2.8 CNY/hour`. Use only the
@@ -95,6 +100,9 @@ Read these files before any project work:
 14. `docs/NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_CLOSEOUT_20260807.md` -
     consumed paper gate, LaTeX commits, static audit, remaining placeholders,
     and the next paper-only decision.
+15. `docs/JISE_ECFSIE_OVERLEAF_V6_FINAL_TECHNICAL_CLOSEOUT_20260809.md` - final
+    EC-FSIE manuscript-body status, V6 compile/PDF audit, artifact hashes,
+    remaining human metadata, next gate, and paper-refinement lessons.
 
 If the documents differ, `AGENT_PLAYBOOK.md` controls execution. This file may
 clarify comparisons or local workflow but must not silently replace fixed model,
@@ -142,7 +150,7 @@ Project workflow mapping:
 | Check evidence before claims | `$result-to-claim` | Decide which claims are supported and identify missing evidence before paper writing |
 | Refine extra ablations | `$ablation-planner` | Use only after main results and result-to-claim; preserve the fixed clean comparisons in this file |
 | Build paper outline | `$paper-plan` | Convert verified results and limitations into a claims-evidence outline |
-| Draft final manuscript | `$paper-writing` | The active target is `docs/JISE_OVERLEAF_LATEX_20260729/`; evidence propagation and EC-FSIE framing are complete, so any further edit requires a new exact paper gate naming the writable LaTeX files |
+| Draft final manuscript | `$paper-writing` | The active target is `docs/JISE_OVERLEAF_LATEX_20260729/`; the V6 manuscript body is technically sealed at `1c48d1d`, so only human-supplied metadata may be added under a new exact gate naming the writable LaTeX files, followed by another Overleaf PDF audit |
 
 Generic Skill defaults are overridden as follows:
 
@@ -276,14 +284,18 @@ the untouched identities remain an inventory, not planned work or failed runs.
 
 ## Current Priority And State
 
-Current step: **stop with no live gate after LaTeX propagation**. The 12-cell
-runtime, closeout, focused public-NER RTC, and paper propagation are complete;
-do not restart vLLM, rerun a cell, or boot a paid GPU. IE051, E/E-prime, K scans,
-RE, domain reruns, the rest of F8/F9, and the other 44 incomplete cells remain
-`CLOSED`. Literal accounting is `16/60`. The recommended next paper-only step
-is human-supplied author/affiliation/disclosure metadata followed by compilation
-and PDF/submission-readiness review under a new exact bounded gate. It needs no
-GPU and does not authorize submission or GitHub synchronization.
+Current step: **stop with no live gate after the V6 final technical closeout**.
+The 12-cell runtime, closeout, focused public-NER RTC, evidence propagation,
+EC-FSIE refinement, and six Overleaf compile/PDF audits are complete. The
+19-page V6 PDF passes technical and visual review; the manuscript body should
+not receive further stylistic refinement by default. Do not restart vLLM, rerun
+a cell, or boot a paid GPU. IE051, E/E-prime, K scans, RE, domain reruns, the rest
+of F8/F9, and the other 44 incomplete cells remain `CLOSED`; literal accounting
+is `16/60`. The only recommended next paper step is insertion of
+human-confirmed author/affiliation/disclosure metadata under a new exact bounded
+gate, followed by another human-run Overleaf compile and full PDF audit because
+metadata can reflow pagination. This needs no GPU and does not authorize
+submission or GitHub synchronization.
 
 - Local workspace: `D:\yinsir`.
 - Git repository: `main` tracks `origin/main`. As of the latest handoff, local
@@ -419,7 +431,9 @@ GPU and does not authorize submission or GitHub synchronization.
   Markdown drafts remain reference artifacts and must not be treated as the
   active manuscript. All generated `.docx` files under the project docs were
   deleted on 2026-07-25 at the user's request after encoding/rendering
-  problems.
+  problems. The final manuscript-body source is commit `1c48d1d`; the V6 PDF
+  passed 19-page compilation and visual audit. Exact details and hashes are in
+  `docs/JISE_ECFSIE_OVERLEAF_V6_FINAL_TECHNICAL_CLOSEOUT_20260809.md`.
 - GPU-free P0 paper repair package is complete: variance explanation for
   A/B/C/D and C-vs-D FP qualitative analysis are recorded in
   `docs/P5_DOMAIN_PAPER_EVIDENCE_20260725.md`,
@@ -429,12 +443,13 @@ GPU and does not authorize submission or GitHub synchronization.
   2026-07-24 18:16:34-19:27:50 CST, about 3.2 CNY at 2.7 CNY/hour. Platform
   billing remains authoritative. vLLM was stopped after paid runs.
 
-The sole 12-cell CLUENER public-NER exception is consumed and closed. It did
-not reopen IE051, other domain cells, Stage N/R domain reruns, E/E-prime,
-K=1/K=10, RE, the remaining F8/F9 cells, or full-matrix aggregation. Paper
-edits and GitHub synchronization remain unauthorized. The next possible action
-is a separately approved public-NER result-to-claim review; no paid hardware is
-needed for that review.
+The sole 12-cell CLUENER public-NER exception and its result-to-claim review are
+consumed and closed. They did not reopen IE051, other domain cells, Stage N/R
+domain reruns, E/E-prime, K=1/K=10, RE, the remaining F8/F9 cells, or full-matrix
+aggregation. The manuscript-body route is also technically closed at V6. Paper
+metadata edits, submission, and GitHub synchronization remain unauthorized
+without separate exact gates. No paid hardware is needed for any remaining
+paper-administration step.
 
 ## Fixed Technology Decisions
 
@@ -716,8 +731,10 @@ statements in `results/summary.md`.
   The focused public RTC is complete at `partial`, confidence `high`: it
   supports limited descriptive portability to one additional Chinese NER
   benchmark, not broad public/cross-domain generalization. The separate exact
-  LaTeX propagation gate is consumed; the active manuscript is updated through
-  `8f1f3e1`, remains uncompiled, and requires a new gate for any further edit.
+  LaTeX propagation and subsequent bounded refinement gates are consumed. The
+  active manuscript body is finalized at `1c48d1d`; its 19-page V6 Overleaf PDF
+  passed compile and visual audit. Human metadata remains, and any insertion or
+  post-metadata PDF audit requires a new exact bounded gate.
 
 ### P7 - Optional QLoRA
 
@@ -930,8 +947,10 @@ that every item exists, and missing full-matrix/verification/K-scan artifacts
 must not be fabricated or automatically generated. The current submission route
 uses the verified A/B/C/D domain evidence, P6 calibration report, the complete
 `docs/JISE_OVERLEAF_LATEX_20260729/` manuscript project, and explicit
-limitations recorded in `HANDOFF.md`. Historical Markdown drafts are evidence
-and provenance references only.
+limitations recorded in `HANDOFF.md`. The V6 manuscript-body closeout and final
+PDF hashes are recorded in
+`docs/JISE_ECFSIE_OVERLEAF_V6_FINAL_TECHNICAL_CLOSEOUT_20260809.md`.
+Historical Markdown drafts are evidence and provenance references only.
 
 Original full-plan artifacts:
 
