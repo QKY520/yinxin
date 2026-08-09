@@ -39,14 +39,14 @@ Hard rules in `AGENTS.md` and `AGENT_PLAYBOOK.md` still apply.
 ## 0. Authoritative Snapshot For A New Session
 
 **What we are doing**: the experiment route, evidence-to-paper propagation,
-three Overleaf compile audits, consolidated post-audit EC-FSIE refinement, a
+four Overleaf compile audits, consolidated post-audit EC-FSIE refinement, a
 verified Related Work/citation-coverage pass, the bounded Overleaf-v3 source
-corrections, and the final v4 pagination microfix are finished locally. The
-project preserves an SCI-Q4-oriented Evidence-Controlled Few-Shot Information
-Extraction (`EC-FSIE`) manuscript whose main contribution is low-label Chinese
-equipment-domain NER. The microfixed source is newer than the audited v3 PDF and
-now awaits one clean human Overleaf recompilation; no experiment or paper-edit
-gate is live after this closeout.
+corrections, the v4 pagination pass, and the final v5 Method-widow microfix are
+finished locally. The project preserves an SCI-Q4-oriented Evidence-Controlled
+Few-Shot Information Extraction (`EC-FSIE`) manuscript whose main contribution
+is low-label Chinese equipment-domain NER. The one-sentence v5 source is newer
+than the audited v4 PDF and now awaits one clean human Overleaf recompilation;
+no experiment or paper-edit gate is live after this closeout.
 
 **What is complete**:
 
@@ -102,7 +102,7 @@ gate is live after this closeout.
 - The current static audit covers 14 `.tex` files and one `.bib`: environments,
   braces, and all inputs pass; 11 unique labels and 14 references resolve; all
   37 citation occurrences resolve to 27 unique BibTeX keys; no section is
-  orphaned; and the numeric-token multisets in all three v4-edited files remain
+  orphaned; and all 23 numeric tokens in the v5-edited Method file remain
   exactly unchanged from `HEAD`.
 - The exact paper-only gate
   `JISE_ECFSIE_VERIFIED_RELATED_WORK_CITATION_PROPAGATION_APPROVED` was granted
@@ -153,18 +153,38 @@ gate is live after this closeout.
   duplicate labels, missing references, missing BibTeX keys, missing inputs,
   orphan sections, brace-count failures, or verification markers. Local LaTeX
   compilation remains unavailable and is not claimed.
+- The human supplied `JISE_OVERLEAF_LATEX_20260729__4_.pdf` and its Overleaf
+  output ZIP. The fourth compile again produced 19 uniform A4 pages with zero
+  LaTeX errors, undefined citations/references, BibTeX warnings, rerun requests,
+  or overfull boxes; ChkTeX and qpdf both returned zero. The PDF SHA256 is
+  `54249AF7C31853CBB29D28AAD30F47F2DC7946E6BC61BBE164E1C430B366DFF0` and
+  the ZIP SHA256 is
+  `C55B5CFEA49076A9EF8F30C9815F5D356E3ABBB2BF84D630EA9503310FEBD1BF`.
+  All 19 pages were visually audited. The Results `numer-/ically` split and the
+  isolated Conclusion `gain.` were fixed, while the Method sentence still
+  crossed pages after `it is not a`, leaving `post-hoc filter.` alone at the top
+  of page 9. Nine underfull hbox and four underfull vbox warnings caused no
+  clipping or other visible defect. Metadata remained correct with no Author
+  entry; pdfTeX listed all used Type1 PFB fonts, but local `pdffonts` was absent.
+- The exact `JISE_ECFSIE_OVERLEAF_V5_METHOD_WIDOW_MICROFIX_APPROVED` gate was
+  granted and is consumed by this closeout. It changes only
+  `sections/04_method.tex` and this handoff. The shorter positive formulation
+  `RAG evidence constrains extraction during generation.` preserves the
+  evidence-control timing while removing the negative post-hoc wording and the
+  source of the audited page-top fragment. No experiment number, table, citation,
+  result, negative finding, limitation, or claim boundary changes. Non-Python
+  static checks pass; actual V5 pagination still requires Overleaf compilation.
 
 **Current paper state**: the sole active manuscript is
 `docs/JISE_OVERLEAF_LATEX_20260729/`. `main.tex` is the Overleaf entry point;
 `frontmatter.tex`, `sections/*.tex`, the bibliography, and the TikZ source under
 `figures/` carry the content. Historical Markdown drafts are reference artifacts
-only. The citation-expanded and v3-corrected source compiled successfully and
-was visually audited in the 19-page `__3_` PDF; the three-file pagination
-microfix is newer and has not yet been compiled. This Windows control workspace
-still lacks `latexmk`, `pdflatex`, and `bibtex`. Author/order/affiliation/
-corresponding-author, acknowledgments, funding, conflicts, data/code
-availability, ethics, and CRediT fields still require human-confirmed values.
-The paper is not submitted.
+only. The v4 source compiled successfully and was visually audited in the
+19-page `__4_` PDF; the one-sentence Method widow microfix is newer and has not
+yet been compiled. This Windows control workspace still lacks `latexmk`,
+`pdflatex`, and `bibtex`. Author/order/affiliation/corresponding-author,
+acknowledgments, funding, conflicts, data/code availability, ethics, and CRediT
+fields still require human-confirmed values. The paper is not submitted.
 
 **Supported claims**: in frozen low-label Chinese equipment-domain NER, kNN
 demonstration selection and the domain lexicon improve observed F1/recall;
@@ -194,14 +214,14 @@ annotation, a complete 60-cell matrix, complete F8/F9, or complete end-to-end
 IE success.
 
 **Next plan**: no GPU is needed. The human should upload the current active
-project to Overleaf, keep `main.tex` as the root, compile an `__4_` PDF, and
+project to Overleaf, keep `main.tex` as the root, compile an `__5_` PDF, and
 return the PDF plus output ZIP/log. The next read-only gate should be
-`JISE_ECFSIE_OVERLEAF_V4_COMPILE_PDF_FINAL_AUDIT_APPROVED`; it should verify
-that the three audited pagination defects are gone, then repeat error, warning,
-reference, metadata, font, and full visual checks. Human author and declaration
-metadata may remain deferred. Any further source edit, submission, external
-upload beyond this human Overleaf action, or GitHub synchronization requires
-separate authorization.
+`JISE_ECFSIE_OVERLEAF_V5_COMPILE_PDF_FINAL_CONFIRMATION_APPROVED`; it should
+confirm that page 9 no longer begins with the Method fragment, then repeat the
+error, warning, reference, metadata, font, and full visual checks. Human author
+and declaration metadata may remain deferred. Any further source edit,
+submission, external upload beyond this human Overleaf action, or GitHub
+synchronization requires separate authorization.
 
 **Lessons and red lines**: result-to-claim controls prose; framework positioning
 may be strengthened but missing evidence cannot become a result. `CLOSED` is a
