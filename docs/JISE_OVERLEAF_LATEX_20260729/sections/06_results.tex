@@ -1,43 +1,28 @@
 \section{RESULTS AND ANALYSIS}
 
-The results are organized around EC-FSIE's controlled comparison chain. The
-domain block supplies the primary frozen-test evidence, the CLUENER block checks
-limited directional recurrence under separately constructed resources, and the
-development and Stage-R diagnostics define the verification and relation
-boundaries. No result is pooled across the two schemas.
+Table~\ref{tab:main-results} reports the complete three-seed NER evidence. The
+domain block is the primary frozen-test evaluation; CLUENER tests directional
+recurrence with separately constructed resources.
 
 \begin{table}[ht]
-\caption{Frozen domain-test NER results over seeds 42, 43, and 44 at $K=5$.
-Values are mean $\pm$ sample standard deviation.}
+\caption{NER results at $K=5$ over seeds 42, 43, and 44. Domain uses the
+frozen test set; CLUENER uses all labeled official development rows. Values are
+mean $\pm$ sample standard deviation.}
 \label{tab:main-results}
 \centering
 \scriptsize
-\setlength{\tabcolsep}{2.5pt}
+\setlength{\tabcolsep}{2.1pt}
 \begin{tabular}{ccccc}
 \toprule
 Config. & Precision & Recall & F1 & FP count \\
 \midrule
+\multicolumn{5}{l}{\textit{Equipment-domain frozen test}} \\
 A & $0.484066\pm0.025428$ & $0.599231\pm0.028904$ & $0.534645\pm0.004375$ & $613.3\pm88.8$ \\
 B & $0.505743\pm0.000234$ & $0.615304\pm0.001816$ & $0.555169\pm0.000880$ & $573.7\pm1.2$ \\
 C & $0.511433\pm0.000472$ & $0.640811\pm0.001210$ & $0.568858\pm0.000769$ & $584.0\pm0.0$ \\
 D & $0.525135\pm0.000000$ & $0.613208\pm0.000000$ & $0.565764\pm0.000000$ & $529.0\pm0.0$ \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[ht]
-\caption{Focused CLUENER labeled-dev NER results over seeds 42, 43, and 44
-at $K=5$. The table uses all 1,343 labeled official development rows; the
-official test split is unlabeled and unused. Values are mean $\pm$ sample
-standard deviation.}
-\label{tab:cluener-results}
-\centering
-\scriptsize
-\setlength{\tabcolsep}{2.5pt}
-\begin{tabular}{ccccc}
-\toprule
-Config. & Precision & Recall & F1 & FP count \\
 \midrule
+\multicolumn{5}{l}{\textit{CLUENER labeled development}} \\
 A & $0.448636\pm0.036890$ & $0.413086\pm0.056862$ & $0.428519\pm0.037917$ & $1569.0\pm306.8$ \\
 B & $0.528488\pm0.001929$ & $0.500217\pm0.002118$ & $0.513964\pm0.001907$ & $1371.0\pm7.2$ \\
 C & $0.530932\pm0.001140$ & $0.504774\pm0.001316$ & $0.517521\pm0.000619$ & $1370.0\pm8.7$ \\
@@ -46,182 +31,64 @@ D & $0.540764\pm0.002162$ & $0.488715\pm0.000940$ & $0.513424\pm0.001493$ & $127
 \end{tabular}
 \end{table}
 
-\subsection{Limited CLUENER Directional Replication}
+\subsection{Equipment-Domain Operating Points}
 
-Table~\ref{tab:cluener-results} evaluates the complete designated labeled-dev
-block rather than a sampled check or an official-test score. Relative to A,
-kNN configuration B raises mean F1 by 0.085445
-and improves precision, recall, and FP count. The C-minus-B F1 change is only
-0.003557, with a small recall increase, so the support-derived lexicon result
-is directionally positive but modest. Relative to C, D has a near-tied F1
-change of $-0.004097$, higher precision by 0.009832, lower recall by 0.016059,
-and 95 fewer false-positive entities. This follows the domain-block
-operating-point direction: RAG produces an observed shift toward higher
-precision and fewer false positives with little change in F1; it is not an
-F1-maximizing module. The low A seed44 result is retained
-without selection or rerun. Across the public block, 138 of 16,116 query-cell
-rows required a final no-prediction outcome after the fixed retry ladder; this
-is reported for auditability and does not alter the mechanical metrics.
+kNN demonstrations improve mean F1 by 0.020524 from A to B and reduce FP by
+approximately 39.7. Adding the glossary raises F1 by another 0.013689; recall
+increases from 0.615304 to 0.640811, while FP rises by about 10.3. The glossary
+therefore acts primarily as a coverage and recall control.
 
-The two datasets therefore show directionally consistent observations for the
-three NER controls. Because the CLUENER resources are support-derived and
-schema-specific, this block provides only a limited descriptive directional
-replication on one additional Chinese NER benchmark. It does not establish
-resource transfer, broad public-benchmark portability, or cross-domain
-generalization; paired significance analysis also remains outside this evidence
-line.
+C and D are near-tied in F1 (0.568858 versus 0.565764). Relative to C, D raises
+precision from 0.511433 to 0.525135 and reduces mean FP from 584.0 to 529.0,
+while recall falls from 0.640811 to 0.613208. Thus, RAG changes the operating
+point rather than maximizing F1: C favors recall, whereas D favors precision
+and a smaller review burden. These differences are descriptive.
 
-\subsection{Development Diagnostics and Verification Boundary}
+\subsection{Focused CLUENER Replication}
 
-The final tables are preceded by two bounded development diagnostics that are
-kept separate from the frozen evidence. F4a on the 50-row equipment-domain
-development split produced exact RE F1 values of 0.056680, 0.040404, 0.039024,
-and 0.010989 for A--D; D had a 6\% relation-parse-failure rate and every row
-had zero \texttt{HAS\_METRIC} true positives. Relation-aware E-prime improved
-the development NER/RE scores in that diagnostic, whereas E lowered them. F4b
-on the fixed CLUENER tuning subset produced NER F1 values of
-0.524444/0.563107/0.571429/0.638889 for A/B/C/D; E-prime lowered F1 and E gave
-only a slight increase. Both verifier-deletion audits missed the pre-specified
-70\% positive-evidence threshold. These diagnostics define the framework's
-verification and RE boundary; they remain separate from the final NER evidence
-and Table~\ref{tab:cluener-results}.
+On CLUENER, B improves F1 over A by 0.085445. The support-derived lexicon adds
+a modest 0.003557 from B to C, accompanied by higher recall. D remains near C
+in F1 ($-0.004097$), increases precision by 0.009832, and removes 95 FP while
+reducing recall by 0.016059. The same module directions therefore recur on the
+complete designated labeled-dev block. Because resources are schema-specific
+and the official test labels are unavailable, this result is limited
+descriptive replication rather than broad cross-domain evidence.
 
-The random seed affects both fixed-random example selection and generation in
-configuration A. Configuration B uses deterministic kNN demonstration
-retrieval, and C/D replay B's demonstration identifiers. Therefore, the larger
-variance in A additionally contains fixed-random demonstration-selection noise,
-whereas B/C/D mainly reflect deterministic or near-deterministic generation
-under the recorded setup. Exact-hash cache hits reproduce an identical request
-rather than adding an independent random replicate.
+\subsection{False-Positive Analysis}
 
-\subsection{kNN Demonstrations and Glossary Injection}
-
-Configuration B improves F1 by 0.020524 over A and reduces the mean
-false-positive count by approximately 39.7. In the present frozen dataset,
-this is descriptive evidence that relevant support examples matter for
-few-shot equipment-domain NER.
-
-Configuration C further improves F1 by 0.013689 over B. Its recall increases
-from 0.615304 to 0.640811, while its mean FP count rises by approximately 10.3.
-\mbox{Accordingly}, the glossary is best interpreted as a domain-coverage and
-recall-oriented component, rather than a false-positive suppression mechanism.
-
-\subsection{RAG Precision and False-Positive Trade-Off}
-
-Configurations C and D are near-tied in F1. C has marginally higher F1 and
-recall (0.568858 and 0.640811) than D (0.565764 and 0.613208). D has higher
-precision, 0.525135 versus 0.511433, and its mean FP count falls from 584.0 to
-529.0. The D-minus-C F1 difference is $-0.003094$, while the mean net FP
-reduction is 55.0.
-
-The appropriate conclusion is thus a trade-off: RAG did not produce the best
-F1 in this comparison, but it shifted the extractor toward a more
-precision-oriented operating point with fewer entity-level false positives.
-No statistical significance test was performed, so the near-tie must not be
-described as evidence that C significantly or substantially outperforms D, nor
-that the numerical difference identifies a stable winner.
-
-\subsection{Qualitative C-versus-D False-Positive Analysis}
-
-To explain the FP trade-off, we compared seed-42 predictions from C and D at
-the per-query level. The analysis considered false-positive entities present in
-C but absent from D and grouped them by their relation to the reference
-annotations. D did not simply remove 55 incorrect entities: it removed or
-avoided 181 C-only false positives and introduced 126 new false positives,
-yielding the net reduction of 55. Table~\ref{tab:fp-categories} summarizes the
-181 avoided C-only false positives.
+The locked seed-42 comparison shows that D avoids 181 C-only FP and introduces
+126 D-only FP, for the observed net reduction of 55. Table~\ref{tab:fp-categories}
+groups the avoided errors; Supplementary Table S4 provides representative
+audited cases.
 
 \begin{table}[ht]
 \caption{Seed-42 categories of C-only false positives avoided by D.}
 \label{tab:fp-categories}
 \centering
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{p{3.6cm}rp{6.4cm}}
+\begin{tabular}{lr}
 \toprule
-Category & Count & Interpretation \\
+Error category & Count \\
 \midrule
-Unsupported entity & 84 & The predicted span had no exact reference support. \\
-Type or nested-overlap error & 34 & The prediction overlapped a reference entity but had an inconsistent type or nested boundary. \\
-Over-labeled short alias or code & 25 & A short name, code, or common noun was promoted to an entity. \\
-Boundary error & 24 & The prediction overlapped a same-type reference entity but had an imprecise span boundary. \\
-Metric fragment & 14 & A metric-like fragment was not an exact reference \entitytype{METRIC}. \\
+Unsupported entity & 84 \\
+Type or nested-overlap error & 34 \\
+Over-labeled short alias or code & 25 \\
+Boundary error & 24 \\
+Metric fragment & 14 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-To make these categories concrete, Table~\ref{tab:fp-examples} reports three
-records from the locked seed-42 qualitative sample. The table uses concise
-English glosses of the original Chinese contexts; case identifiers, offsets,
-types, and source text remain in the audit artifact.
+RAG therefore acts as an imperfect constraint, not an error eliminator. The
+audit supports the observed net FP reduction and higher precision in this
+setting; it does not convert FP count into a general factuality measure.
 
-\begin{table}[ht]
-\caption{Illustrative C-only false positives absent from D in the locked
-seed-42 audit. Examples cover distinct error categories and are not an
-exhaustive sample.}
-\label{tab:fp-examples}
-\centering
-\scriptsize
-\setlength{\tabcolsep}{2.5pt}
-\begin{tabular}{p{3.6cm}p{3.1cm}p{4.1cm}}
-\toprule
-Case and context (English gloss) & C-only prediction & Audit interpretation and D behavior \\
-\midrule
-0002: composite guidance uses inertial guidance and active radar homing &
-``inertial guidance'' and ``active radar homing'' as \entitytype{TECH\_SCHEME} &
-Both are exact-boundary errors and are absent from D. \\
-0009: errors are computed along each dimension in 3D space &
-``3D space'' as \entitytype{METRIC} &
-The spatial phrase is an unsupported metric fragment and is absent from D. \\
-0040: an electronic fence covers a material yard, target material, and a work area &
-The three common nominals as \entitytype{EQUIPMENT} &
-The nominals are over-labeled as equipment and are absent from D. \\
-\bottomrule
-\end{tabular}
-\end{table}
+\subsection{Exploratory Relation Boundary}
 
-This seed-42 qualitative evidence is consistent with the precision/FP trade-off
-in Table~\ref{tab:main-results}, but it does not prove the same error mechanism
-for every seed, dataset, model, or entity type. RAG remains an imperfect
-constraint: it can introduce new errors. We therefore describe its observed
-contribution as a net reduction in entity-level false positives and higher
-precision in this scope, not as elimination of hallucination. In particular, D
-introduced 126 false positives that were absent from C. The locked qualitative
-sample retains individual C-only cases and aggregate D-only counts, so no
-unrecorded D-only example is reconstructed here.
-
-\subsection{Auditable Two-Stage Relation Route}
-
-The main three-seed A/B/C/D packages intentionally emit NER only. The framework
-also provides a separate Stage-R pass over the four locked domain Stage-N
-outputs at seed 42. This audit verifies a reproducible and auditable two-stage
-IE route rather than positive relation-extraction effectiveness;
-Table~\ref{tab:f7-re} reports its exact-triple measurements and preserves the
-resulting RE boundary.
-
-\begin{table}[ht]
-\caption{F7 seed-42 exploratory exact relation-extraction audit on the domain
-test split.}
-\label{tab:f7-re}
-\centering
-\scriptsize
-\setlength{\tabcolsep}{2.5pt}
-\begin{tabular}{cccccc}
-\toprule
-Config. & Precision & Recall & F1 & TP/FP/FN & HAS\_METRIC TP \\
-\midrule
-A & 0.047923 & 0.035129 & 0.040541 & 15/298/412 & 0 \\
-B & 0.079167 & 0.044496 & 0.056972 & 19/221/408 & 0 \\
-C & 0.076046 & 0.046838 & 0.057971 & 20/243/407 & 0 \\
-D & 0.073684 & 0.032787 & 0.045381 & 14/176/413 & 0 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Exact RE F1 is low in all four cells, D is below C, and every configuration has
-zero \texttt{HAS\_METRIC} true positives. These measurements define the current
-RE boundary while the locked Stage-N-plus-Stage-R execution, including parsing
-failures, sanitization, caches, and backups, remains fully reproducible and
-auditable. Relation parsing failed on 4/170, 1/170, 3/170, and 2/170 rows for
-A--D, respectively; these rows remain in the audit. The audit therefore supports
-the execution and traceability properties of EC-FSIE, but it supports neither a
-positive RE contribution nor a RAG-for-RE claim.
+The separate seed-42 Stage-R audit yields exact relation F1 of
+0.040541/0.056972/0.057971/0.045381 for A/B/C/D. D is below C, and every cell
+has zero \texttt{HAS\_METRIC} true positives. These results support the
+traceability of the two-stage route, but not positive RE or RAG-for-RE
+effectiveness. Supplementary Tables S5--S6 retain the full relation counts,
+parse outcomes, and development diagnostics. The bounded verifier-deletion
+audits also remained below their prespecified positive-evidence threshold, so
+verification is not part of the supported final-test contribution.

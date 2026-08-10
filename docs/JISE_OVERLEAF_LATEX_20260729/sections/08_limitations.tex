@@ -1,46 +1,28 @@
 \section{LIMITATIONS}
 
-The frozen domain test set contains 170 passages and lacks full mutually blind
-double annotation with formal adjudication. A fresh two-human non-test
-calibration reached exact micro-F1 of 0.8000, meeting the original minimum, but
-not the later conservative 0.85 target. It cannot substitute for frozen-test
-formal IAA, and \entitytype{TECH\_SCHEME} F1 of 0.153846 remains the principal
-dataset-quality limitation.
+The frozen domain test set contains 170 passages and lacks a mutually blind,
+fully adjudicated double-annotation process. The separate non-test calibration
+reaches micro-F1 0.8000, but \entitytype{TECH\_SCHEME} agreement is 0.153846;
+it assesses guideline operability rather than formal frozen-test IAA.
 
-The evaluated NER scope comprises A/B/C/D at $K=5$ over three seeds: 12 domain
-run units and 12 CLUENER run units over all 1,343 labeled official development
-rows. Additional public benchmarks, $K=1$/$K=10$ scans, additional seeds, a
-supervised competitive baseline, and per-type uncertainty analysis remain
-outside this scope. Means and sample standard deviations describe observed run
-variation rather than statistical significance or broad cross-dataset and
-$K$-robustness evidence.
+The evaluated comparison is A/B/C/D at $K=5$ over three recorded seeds for the
+domain test and CLUENER labeled development sets. Means and standard deviations
+describe run variation without a significance test. Accordingly, the evidence
+is an internally controlled ablation rather than a study of $K$ robustness,
+competitive supervised baselines, or broad cross-domain generalization. CLUENER uses a
+30-record support bank, a support-derived lexicon, and a labels-stripped RAG
+pool; its official test labels are unavailable. The original 60-identity
+inventory was stopped at literal accounting of 16/60, with the other 44
+identities route-closed rather than failed, so no complete-matrix claim follows.
 
-The two three-seed blocks are NER-only. A separate four-cell seed-42 Stage-R
-audit reports exact RE F1 of 0.040541/0.056972/0.057971/0.045381 for A/B/C/D,
-with zero \texttt{HAS\_METRIC} true positives and D below C. These low scores
-bound positive RE, RAG-for-RE, and CoVe claims while preserving an auditable
-two-stage execution record. The official CLUENER test file has no usable
-offline gold; the public result therefore uses labeled official development
-rows and is not an official-test score.
+The final three-seed blocks evaluate NER. Exploratory Stage R has low exact
+relation F1, zero \texttt{HAS\_METRIC} true positives, and no positive RAG-for-RE
+result; verifier diagnostics likewise do not support a CoVe gain. These
+extensions remain reproducible components for future study, not current
+performance contributions.
 
-The CLUENER block records 138/16,116 (0.856292\%) mechanical parse failures
-after the fixed retry ladder. Its 30-record support bank, 61-entry
-support-derived lexicon, and labels-stripped RAG replay are schema-specific
-resources rather than transferred equipment-domain assets. Consequently, the
-block supports limited descriptive directional replication, not broad
-portability.
-
-The original frozen inventory contains 60 planned final model identities. Four
-domain Stage-N-plus-Stage-R cells and 12 CLUENER NER cells are complete; eight
-domain identities retain Stage N only and 36 are absent, giving literal
-accounting of 16/60. The other 44 identities are route-closed by the human
-decision, not failed experiments. This boundary precludes a complete-matrix or
-end-to-end IE claim.
-
-Finally, false-positive entity count is an entity-level extraction-error
-quantity rather than an open-domain factuality metric. The qualitative C/D
-audit uses seed 42, and D introduces errors as well as removing them. EC-FSIE
-was evaluated with one local extractor family and one locked
-embedding/reranking stack; the dependency lock and trace artifacts support
-reproduction of this implementation, while operating-point behavior across
-other model families and deployment stacks remains to be established.
+FP count is an entity-level extraction error, not a measure of open-domain
+hallucination or factuality. The detailed C/D error audit covers seed 42, and D
+both removes and introduces errors. Finally, all results use one local extractor
+family and one locked embedding/reranking stack; behavior under other models,
+schemas, and deployment stacks remains to be tested.

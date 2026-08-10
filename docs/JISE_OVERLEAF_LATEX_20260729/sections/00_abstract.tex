@@ -1,29 +1,20 @@
-Low-label named entity recognition (NER) for Chinese equipment documents
-requires both accurate extraction and control over false-positive predictions
-from generative large language model (LLM) extractors. We propose
-Evidence-Controlled Few-Shot Information Extraction (EC-FSIE), which
-coordinates query-adaptive demonstrations, bounded schema terminology,
-deduplicated and reranked retrieval-augmented generation (RAG) evidence, and an
-audit-preserving execution layer around a local
-\modelname{Qwen2.5-7B-Instruct} extractor. On a frozen public-text dataset with
-30 support, 50 development, and 170 test passages, we compare fixed-random
-demonstrations (A), $k$-nearest-neighbor (kNN) demonstrations (B), kNN with a
-domain glossary (C), and C augmented with RAG evidence (D). A fresh two-human
-calibration on 20 unused non-test passages reached exact span-plus-type
-micro-F1 of 0.8000; the class-specific audit identified
-\entitytype{TECH\_SCHEME} as the main annotation risk (F1 0.153846). In
-descriptive three-seed ablations at $K=5$, kNN improved F1 by 0.020524 over A,
-and glossary injection added 0.013689 F1 mainly through recall. C and D were
-near-tied in F1 (0.568858 versus 0.565764), while D achieved higher precision
-and reduced the mean false-positive entity count from 584.0 to 529.0. RAG
-therefore provides an observed precision/false-positive operating-point shift,
-not an F1 gain. A focused external check evaluated all 1,343 labeled official
-CLUENER development rows with the same A/B/C/D, $K=5$, three-seed protocol; the
-unlabeled official test split was unused. Mean F1 for A--D was 0.428519,
-0.513964, 0.517521, and 0.513424. These directions constitute limited
-descriptive replication on one additional Chinese NER benchmark, not broad
-portability or cross-domain generalization. A four-cell relation audit retains
-low exact-relation performance and zero \texttt{HAS\_METRIC} true positives in
-every configuration. The supported performance contribution is the
-reproducible EC-FSIE NER route and its evidence-controlled operating points;
-relation extraction remains an exploratory negative boundary.
+Evidence-Controlled Few-Shot Information Extraction (EC-FSIE) is a
+reproducible framework for low-label Chinese equipment-domain named entity
+recognition (NER) with a local large language model. Rather than treating
+prompt augmentation as a single recipe, EC-FSIE exposes three bounded evidence
+channels: query-adaptive demonstrations, schema terminology, and deduplicated
+and reranked retrieved passages. A shared execution layer fixes prompt order,
+parsing, retries, caching, and trace capture. We evaluate four incremental
+configurations on a frozen public-text dataset with 30 support, 50 development,
+and 170 test passages; a separate two-human calibration on 20 unused non-test
+passages reached exact span-plus-type micro-F1 of 0.8000. At $K=5$ over three
+recorded seeds, k-nearest-neighbor demonstrations improve mean F1 from 0.534645
+to 0.555169, and bounded glossary injection raises it to 0.568858 through
+higher recall. Adding retrieval-augmented generation (RAG) yields near-tied F1
+(0.565764), increases precision from 0.511433 to 0.525135, and reduces the mean
+false-positive entity count from 584.0 to 529.0. The same controlled sequence
+on all 1,343 labeled rows of the official CLUENER development split reproduces
+these qualitative directions: kNN and the lexicon improve F1, while RAG shifts
+the operating point toward precision and 95 fewer false positives. These
+descriptive results identify two usable operating points for auditable
+low-label Chinese NER: glossary-guided recall and RAG-guided precision.

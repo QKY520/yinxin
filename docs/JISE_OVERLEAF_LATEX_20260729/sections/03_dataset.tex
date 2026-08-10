@@ -1,154 +1,45 @@
 \section{DATASET AND TASK DEFINITION}
 
-\subsection{Construction, Split, and Freeze}
+\subsection{Frozen Equipment-Domain Dataset}
 
-We collected 400 candidate passages from public sources: 7 encyclopedia
-passages, 84 patent abstracts, and 309 passages originating from military- or
-equipment-related public text associated with CMNEE source material
-\cite{zhu2024cmnee}. A project-recorded QAonMilitaryKG seed dictionary was used
-only for exact string-match suggestion generation.
-\modelname{Qwen2.5-14B-Instruct-AWQ} was also used in the historical proposal
-workflow to generate review suggestions; neither machine suggestion nor model
-output was accepted as gold by itself.
+We collected 400 public passages: 7 encyclopedia passages, 84 patent abstracts,
+and 309 military- or equipment-related passages associated with CMNEE source
+material \cite{zhu2024cmnee}. A project-recorded QAonMilitaryKG dictionary and
+\modelname{Qwen2.5-14B-Instruct-AWQ} generated annotation suggestions, but no
+machine output became gold without human review. Structural validation and
+review produced dataset v1 with 30 support, 50 development, and 170 frozen test
+passages; the other 150 candidates remain collection records.
 
-After human review and structural validation, 250 passages were frozen as
-dataset version v1: 30 support passages, 50 development passages, and 170 test
-passages. The support split is the sole candidate pool for both fixed-random and
-kNN demonstrations. Development data was used before the final test evaluation.
-The frozen test set was used only to evaluate final configurations; it was not
-used to tune prompts, thresholds, schemas, glossary entries, or retrieval
-settings.
-The remaining 150 collected candidates were not promoted into the frozen v1
-split; they remain collection-stage records rather than evaluation examples.
-These fixed roles constitute EC-FSIE's first evidence-control boundary:
-demonstration evidence is support-only, development decisions precede the
-frozen evaluation, and test labels remain confined to scoring.
+The schema contains \entitytype{EQUIPMENT}, \entitytype{MODULE},
+\entitytype{TECH\_SCHEME}, and \entitytype{METRIC}. The support split is the
+only demonstration pool, development decisions preceded final evaluation, and
+test labels are used only by the scorer. The public-text RAG corpus was
+deduplicated against test texts with a fixed 8-gram overlap rule, preventing a
+held-out query from reappearing as demonstration or retrieved evidence.
+Supplementary Table S1 gives the entity definitions.
 
-The RAG corpus consists of public encyclopedia passages, patent abstracts, and
-\mbox{glossary} entries. It was deduplicated against frozen test texts with a
-fixed 8-gram overlap protocol. Thus, test passages do not enter the
-demonstration pool or RAG corpus, and the system does not retrieve the held-out
-test passage itself as evidence.
+\subsection{Focused CLUENER Block}
 
-Freezing the split does not mean that all 170 test passages received mutually
-blind independent double annotation and formal adjudication. Such a complete
-frozen-test annotation chain is unavailable. We therefore do not describe v1
-as fully independently double-annotated human gold, and we do not report a
-frozen-test formal IAA value.
+CLUENER \cite{xu2020cluener} provides one additional Chinese NER schema. Its
+official test file has no gold labels, so we evaluate all 1,343 labeled official
+development rows (3,072 entity mentions across ten native classes). A separate
+30-record support bank supplies demonstrations and a 61-entry support-derived
+lexicon. The labels-stripped train-text RAG pool contains 9,584 rows after 89
+fixed overlap removals; frozen retrieval selects three passages for each query.
+Gold development labels enter only the scorer. No equipment-domain support,
+glossary, or evidence passage is transferred into this block. Supplementary
+Table S2 reports its class distribution.
 
-\subsection{Focused CLUENER Directional-Replication Protocol}
+\subsection{Evaluation and Human Calibration}
 
-We use CLUENER \cite{xu2020cluener} as one additional Chinese NER benchmark.
-Because the official CLUENER test file is distributed without gold labels, it
-was not used for offline evaluation. Instead, the complete labeled official
-development split---all 1,343 rows---was frozen as the focused final
-evaluation set. This is explicitly a limited descriptive labeled-dev
-directional replication rather than an official-test leaderboard result or a
-broad generalization test.
+An entity is correct only when both span and type exactly match the reference.
+We report entity-level micro precision, recall, F1, and false-positive (FP)
+entity count. FP count measures extraction error, not open-domain factuality.
 
-The CLUENER resources were constructed independently from the equipment-domain
-resources. A frozen 30-record CLUENER support bank supplies demonstrations. A
-61-entry schema-specific lexicon was derived from that support bank only; it is
-not the equipment glossary. The frozen labels-stripped CLUENER train-text RAG
-pool contains 9,584 rows, and its construction log records 89 removals under
-the fixed 8-gram/0.80 containment blocklist. Offline retrieval produced a
-locked top-3 replay for every evaluation query, totaling 4,029 selected
-passages across 1,343 rows. Gold development labels entered only the scorer,
-never prompts, the support bank, the lexicon, or RAG evidence. This separation
-implements the same EC-FSIE evidence-control contract without transferring the
-equipment-domain glossary, support examples, or evidence corpus into CLUENER.
-
-The 1,343-row labeled-dev evaluation contains 3,072 gold entity mentions under
-the native ten-class CLUENER schema. Table~\ref{tab:cluener-types} records the
-class distribution used by every public cell.
-
-\begin{table}[ht]
-\caption{Gold entity distribution in the focused CLUENER labeled-dev split.}
-\label{tab:cluener-types}
-\centering
-\begin{tabular}{lrlr}
-\toprule
-Entity type & Count & Entity type & Count \\
-\midrule
-address & 373 & book & 154 \\
-company & 378 & game & 295 \\
-government & 247 & movie & 151 \\
-name & 465 & organization & 367 \\
-position & 433 & scene & 209 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\subsection{Entity Types and Metrics}
-
-Table~\ref{tab:entity-types} defines the four equipment-domain entity types;
-CLUENER is evaluated under its native published schema rather than remapped to
-these four categories.
-
-\begin{table}[ht]
-\caption{Entity definitions used in the frozen dataset.}
-\label{tab:entity-types}
-\centering
-\begin{tabular}{>{\ttfamily}p{2.3cm}p{8.2cm}}
-\toprule
-\normalfont Entity type & Definition \\
-\midrule
-EQUIPMENT & An equipment item, weapon system, platform, or model name. \\
-MODULE & A component, module, subsystem, or constituent unit. \\
-TECH\_SCHEME & A technical scheme, system, method, or mechanism. \\
-METRIC & A performance metric, parameter, or measurement expression. \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-An entity prediction is counted as a true positive only when both its span
-boundary and type exactly match the reference annotation. We report
-entity-level micro precision, recall, and F1, together with the false-positive
-entity count. The latter is a count of incorrect predicted entities. Dividing
-it by all predicted entities would produce an entity-level
-false-discovery-style measure; it is not an open-domain factuality score and is
-not treated as a general hallucination metric in this paper.
-
-\subsection{Fresh Two-Human Non-Test Calibration}
-
-To independently assess the operability of the locked annotation guideline,
-two human annotators independently labeled 20 previously unused non-test
-passages. The passages were not part of the frozen test set. Annotators began
-from blank sheets, received distinct randomized orders and blind identifiers,
-and were compared without modifying, sorting, completing, or adjudicating
-either annotation file. All 20 pairs passed structural checks; there were zero
-structural hard errors and zero blocking review items, and both annotators used
-all four entity types.
-Table~\ref{tab:calibration} reports the resulting exact span-plus-type
-agreement by entity type.
-
-Annotators A and B produced 175 and 220 entities, respectively, with 158 exact
-span-plus-type matches. Treating A as the reference for the directional
-precision/recall report gives precision 0.718182, recall 0.902857, and exact
-micro-F1 0.800000; exchanging the reference changes directional precision and
-recall but not F1. Five of 20 passages were exactly identical, while 15
-retained disagreements.
-
-\begin{table}[ht]
-\caption{Fresh two-human calibration on 20 previously unused non-test passages.}
-\label{tab:calibration}
-\centering
-\begin{tabular}{lrrr}
-\toprule
-Entity type & A/B entity count & Exact matches & F1 \\
-\midrule
-\entitytype{EQUIPMENT} & 75/109 & 67 & 0.728261 \\
-\entitytype{MODULE} & 84/94 & 80 & 0.898876 \\
-\entitytype{TECH\_SCHEME} & 6/7 & 1 & 0.153846 \\
-\entitytype{METRIC} & 10/10 & 10 & 1.000000 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The overall F1 of 0.8000 exactly met the study's original minimum of at least
-0.80, without a safety margin, and did not reach the later conservative target
-of at least 0.85. The \entitytype{TECH\_SCHEME} F1 of 0.153846, based on 6 and 7
-annotations, exposes substantial ambiguity between technical schemes and
-physical equipment or modules. This fresh two-human non-test agreement is not
-frozen-test formal IAA and does not imply uniform reliability across entity
-types.
+Two annotators independently labeled 20 previously unused non-test passages
+from blank sheets under blinded identifiers. Their 175 and 220 annotations
+contained 158 exact span-and-type matches, giving micro-F1 0.800000. Agreement
+was strongest for \entitytype{METRIC} (1.000000) and weakest for
+\entitytype{TECH\_SCHEME} (0.153846); Supplementary Table S3 contains all
+per-type values. This audit checks whether the guideline can be applied by two
+humans, but it is not formal frozen-test inter-annotator agreement.

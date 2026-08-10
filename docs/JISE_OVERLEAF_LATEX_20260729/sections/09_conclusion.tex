@@ -1,28 +1,16 @@
 \section{CONCLUSION}
 
-This work presents Evidence-Controlled Few-Shot Information Extraction
-(EC-FSIE) for low-label Chinese equipment-domain NER. Its A/B/C/D chain isolates
-kNN demonstrations, glossary injection, and RAG evidence under a common
-audit-preserving execution contract. On the frozen v1 dataset at $K=5$ over
-three seeds, kNN and the glossary increase observed F1/recall. C and D remain
-near-tied in F1, while D achieves higher precision and 55.0 fewer
-false-positive entities on average. RAG therefore yields a precision-oriented
-operating-point shift with near-tied F1.
+EC-FSIE makes inference-time evidence a controlled interface for low-label
+Chinese equipment NER. Its A/B/C/D sequence isolates demonstrations, schema
+terminology, and retrieved passages under one traceable execution contract.
+On the frozen domain test set, kNN and glossary injection improve observed F1
+and recall. The comparison between C and D identifies two deployment-relevant
+settings: C favors recall, while D preserves near-tied F1, improves precision,
+and reduces mean false-positive entities by 55.0.
 
-The same interfaces were evaluated on all 1,343 labeled rows of the official
-CLUENER development split with separately frozen, schema-specific resources.
-The kNN, lexicon, and RAG directions recur descriptively on this additional
-Chinese NER benchmark, without implying official-test performance, resource
-transfer, or broad cross-domain generalization.
-
-These conclusions are scoped to the evaluated NER setting. Non-test human
-calibration reaches overall F1 of 0.8000 but retains weak
-\entitytype{TECH\_SCHEME} agreement, and no frozen-test formal IAA is available.
-The F7 seed-42 Stage-R audit is reproducible and auditable, yet exact RE F1 is
-low, D is below C, and every configuration has zero
-\texttt{HAS\_METRIC} true positives. The frozen inventory is mechanically 16/60
-complete---four domain Stage-N-plus-Stage-R cells and 12 CLUENER NER cells---and
-the other 44 identities remain route-closed. EC-FSIE contributes a reproducible
-evidence-control framework that connects bounded evidence channels to
-interpretable NER operating points while retaining negative trade-offs as
-explicit boundaries for subsequent information-extraction extensions.
+The same qualitative sequence recurs on all 1,343 labeled CLUENER development
+rows with independently frozen resources. Together, these results support a
+reproducible evidence-control approach and an operating-point interpretation of
+few-shot generative NER. The current evidence is deliberately scoped to NER;
+broader generalization, formal uncertainty analysis, and effective relation
+extraction remain targets for subsequent validation.

@@ -1,0 +1,152 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{times}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage[margin=2.5cm]{geometry}
+
+\newcommand{\entitytype}[1]{\texttt{#1}}
+\renewcommand{\thetable}{S\arabic{table}}
+
+\title{Supplementary Tables for\\
+EC-FSIE: Evidence-Controlled Few-Shot NER for Low-Label Chinese Equipment
+Documents}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+This supplement retains detailed definitions, annotation statistics, error
+examples, and exploratory diagnostics moved from the main manuscript. All
+values reproduce frozen project artifacts; no additional experiment is
+reported here.
+
+\section*{Dataset and Annotation Detail}
+
+\begin{table}[ht]
+\caption{Entity definitions used in the frozen equipment-domain dataset.}
+\label{tab:s-entity-types}
+\centering
+\begin{tabular}{>{\ttfamily}p{3.0cm}p{10.5cm}}
+\toprule
+\normalfont Entity type & Definition \\
+\midrule
+EQUIPMENT & An equipment item, weapon system, platform, or model name. \\
+MODULE & A component, module, subsystem, or constituent unit. \\
+TECH\_SCHEME & A technical scheme, system, method, or mechanism. \\
+METRIC & A performance metric, parameter, or measurement expression. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]
+\caption{Gold entity distribution in the 1,343-row CLUENER labeled-development
+evaluation set.}
+\label{tab:s-cluener-types}
+\centering
+\begin{tabular}{lrlr}
+\toprule
+Entity type & Count & Entity type & Count \\
+\midrule
+address & 373 & book & 154 \\
+company & 378 & game & 295 \\
+government & 247 & movie & 151 \\
+name & 465 & organization & 367 \\
+position & 433 & scene & 209 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]
+\caption{Fresh two-human calibration on 20 previously unused non-test
+passages.}
+\label{tab:s-calibration}
+\centering
+\begin{tabular}{lrrr}
+\toprule
+Entity type & A/B entity count & Exact matches & F1 \\
+\midrule
+\entitytype{EQUIPMENT} & 75/109 & 67 & 0.728261 \\
+\entitytype{MODULE} & 84/94 & 80 & 0.898876 \\
+\entitytype{TECH\_SCHEME} & 6/7 & 1 & 0.153846 \\
+\entitytype{METRIC} & 10/10 & 10 & 1.000000 \\
+\midrule
+All types & 175/220 & 158 & 0.800000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section*{False-Positive Examples}
+
+\begin{table}[ht]
+\caption{Illustrative C-only false positives absent from D in the locked
+seed-42 audit. English glosses shorten the original Chinese contexts; source
+text, offsets, and types remain in the audit artifact.}
+\label{tab:s-fp-examples}
+\centering
+\small
+\begin{tabular}{p{4.8cm}p{4.0cm}p{5.3cm}}
+\toprule
+Case and context & C-only prediction & Audit interpretation and D behavior \\
+\midrule
+0002: composite guidance uses inertial guidance and active radar homing &
+``inertial guidance'' and ``active radar homing'' as
+\entitytype{TECH\_SCHEME} & Both are exact-boundary errors and are absent from D. \\
+0009: errors are computed along each dimension in 3D space &
+``3D space'' as \entitytype{METRIC} & The spatial phrase is an unsupported
+metric fragment and is absent from D. \\
+0040: an electronic fence covers a material yard, target material, and a work
+area & The three common nominals as \entitytype{EQUIPMENT} & The nominals are
+over-labeled as equipment and are absent from D. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section*{Exploratory Boundary Diagnostics}
+
+\begin{table}[ht]
+\caption{F7 seed-42 exploratory exact relation-extraction audit on the domain
+test split.}
+\label{tab:s-f7-re}
+\centering
+\begin{tabular}{cccccc}
+\toprule
+Config. & Precision & Recall & F1 & TP/FP/FN & HAS\_METRIC TP \\
+\midrule
+A & 0.047923 & 0.035129 & 0.040541 & 15/298/412 & 0 \\
+B & 0.079167 & 0.044496 & 0.056972 & 19/221/408 & 0 \\
+C & 0.076046 & 0.046838 & 0.057971 & 20/243/407 & 0 \\
+D & 0.073684 & 0.032787 & 0.045381 & 14/176/413 & 0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Relation parsing failed on 4/170, 1/170, 3/170, and 2/170 rows for A--D,
+respectively. All rows remain in the audit. The measurements establish an
+execution boundary, not a positive relation-extraction result.
+
+\begin{table}[ht]
+\caption{Bounded development diagnostics retained separately from final NER
+evidence.}
+\label{tab:s-development}
+\centering
+\begin{tabular}{llcccc}
+\toprule
+Block & Metric & A & B & C & D \\
+\midrule
+Domain F4a (50 rows) & Exact RE F1 & 0.056680 & 0.040404 & 0.039024 & 0.010989 \\
+CLUENER F4b (tuning) & NER F1 & 0.524444 & 0.563107 & 0.571429 & 0.638889 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+In F4a, D had a 6\% relation parse-failure rate and all A--D configurations
+had zero \texttt{HAS\_METRIC} true positives. Relation-aware E-prime improved
+the development NER/RE scores in that diagnostic, whereas E lowered them. In
+F4b, E-prime lowered NER F1 and E raised it only slightly. Both
+verifier-deletion audits remained below the prespecified 70\% positive-evidence
+threshold. These development observations do not enter the final NER aggregate.
+
+\end{document}

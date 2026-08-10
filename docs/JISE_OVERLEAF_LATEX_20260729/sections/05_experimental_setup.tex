@@ -1,60 +1,33 @@
 \section{EXPERIMENTAL SETUP}
 
-\subsection{Frozen NER Evaluation Blocks}
+\subsection{Frozen Evaluation Blocks}
 
-All domain final results come from the frozen 170-passage domain test split
-using $K=5$ and random seeds 42, 43, and 44. The primary extractor is
-\modelname{Qwen2.5-7B-Instruct} \cite{qwen2024qwen25}, deployed locally in FP16
-through vLLM. The domain scope contains four configurations and three seeds,
-yielding 12 completed run units. Each domain unit has 170 traceable per-query
-records, and the observed domain NER parse-failure count is zero.
+Domain results use all 170 frozen test passages at $K=5$ and seeds 42, 43,
+and 44. The primary extractor is
+\modelname{Qwen2.5-7B-Instruct} \cite{qwen2024qwen25}, served locally in FP16
+through vLLM. Four configurations across three seeds produce 12 domain NER run
+units, each with 170 per-query traces and no NER parse failures.
 
-A separately frozen public block applies the same A/B/C/D, $K=5$, seeds
-42/43/44 design to all 1,343 labeled rows of the official CLUENER development
-split, adding 12 completed NER run units. The official unlabeled test split was
-not used. The combined evidence therefore contains 24 NER run units: 12 domain
-units and 12 CLUENER units. The CLUENER audit covers 16,116 query-cell rows and
-records 138 parse failures (0.856292\%), each counted as no prediction after the
-fixed retry ladder; all cells remain below the locked 5\% stop threshold. Tables
-report the mean and sample standard deviation over the three seeds for each
-dataset separately.
-The two blocks instantiate the same EC-FSIE control interfaces with separately
-frozen resources; they are neither pooled into a cross-dataset score nor counted
-as completion of the original full experimental inventory.
+The CLUENER block applies the same A/B/C/D, $K=5$, three-seed design to all
+1,343 labeled official development rows, producing 12 further NER run units.
+Its fixed parser records 138 final no-prediction outcomes among 16,116
+query-cell rows (0.856292\%), below the prespecified 5\% stop threshold. Results
+are aggregated within each dataset; the two schemas are never pooled.
 
-\subsection{Controlled Replay and Descriptive Aggregation}
+\subsection{Controlled Comparisons}
 
-Seeds control fixed-random demonstration selection for A and are also recorded
-in the generation request. B uses deterministic kNN retrieval; C and D replay
-the corresponding B demonstration identifiers, and D replays locked RAG
-passage identifiers. With temperature 0.0 and exact-hash caching, the near-zero
-variation of B/C/D is expected reproducibility under fixed conditions, not
-three independent data samples. The reported standard deviations describe run
-variation only, and no paired uncertainty analysis or hypothesis test was
-performed for CLUENER.
+The seed selects A's fixed-random demonstrations and is recorded in generation
+requests. B uses deterministic kNN retrieval; C and D replay B's demonstration
+identifiers, and D replays frozen RAG passage identifiers. Resource versions,
+prompt order, generation settings, and scoring remain fixed within each chain.
+With temperature 0.0 and exact-hash caching, B/C/D are deterministic or nearly
+so. We report means and sample standard deviations as descriptive run
+variation, not independent data-sample uncertainty, and perform no significance
+test.
 
-This replay design freezes the evidence entering every comparison. B changes
-the demonstration-selection control relative to A; C changes only the lexical
-evidence channel relative to B; and D changes only the RAG channel relative to
-C. Resource identifiers, prompt order, generation settings, and scoring rules
-remain fixed within each dataset-specific chain.
-
-\subsection{Boundary Audits and Reproducibility}
-
-The main three-seed configurations are NER-only: relation types are empty and
-no relation-extraction metric is reported for those 24 NER units. Zero relation
-predictions in these configurations are not relation-extraction results. A
-separate F7 audit reused the four seed-42 domain Stage-N outputs and added Stage
-R once for A/B/C/D. Those four single-seed cells provide auditable RE boundary
-evidence and are not merged into the NER aggregate.
-
-The evaluated scope comprises A/B/C/D at $K=5$ over three seeds for the two
-frozen NER blocks. E/E-prime verifier configurations, $K=1$/$K=10$ scans,
-additional seeds, another public benchmark, and a supervised competitive
-baseline remain outside this scope. Without a hypothesis test, all
-between-configuration readings are descriptive. The frozen run configurations,
-prompt and response hashes, exact dependency lock, per-query traces, and
-versioned finalizers implement EC-FSIE's audit-preserving execution layer and
-are retained for reproduction.
-The dependency lock records vLLM 0.8.5.post1, Transformers 4.51.3,
-sentence-transformers 5.6.0, and PyTorch 2.6.0 for the project environment.
+All 24 three-seed units are NER-only. A separate seed-42 Stage-R audit reuses
+the four locked domain Stage-N outputs to assess relation extraction without
+altering the NER aggregate. Versioned configurations, prompts, responses,
+caches, retries, parser outcomes, and per-query predictions remain traceable.
+The dependency lock includes vLLM 0.8.5.post1, Transformers 4.51.3,
+sentence-transformers 5.6.0, and PyTorch 2.6.0.
