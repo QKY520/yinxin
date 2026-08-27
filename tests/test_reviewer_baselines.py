@@ -6,8 +6,8 @@ from pathlib import Path
 import pytest
 
 from scripts.build_bm25_retrieval import BM25Index, CorpusRow, tokenize
-from scripts.run_bert_crf_baseline import bio_to_entities, build_linear_chain_crf, entities_to_bio
-from scripts.run_reviewer_baselines import build_run_specs, validate_manifest
+from scripts.run_bert_crf_baseline import bio_to_entities, build_bio_label_vocab, build_linear_chain_crf, entities_to_bio
+from scripts.run_reviewer_baselines import build_qwen_baseline_config, build_run_specs, materialize_b1_configs, validate_manifest
 
 
 def manifest() -> dict:
@@ -68,3 +68,35 @@ def test_crf_loss_and_decode_shapes():
     assert torch.isfinite(loss)
     paths = crf.decode(emissions, mask)
     assert [len(path) for path in paths] == [4, 2]
+
+
+def test_bio_label_vocab_is_deterministic():
+    tags, mapping = build_bio_label_vocab(("EQUIPMENT", "MODULE"))
+    assert tags == ["O", "B-EQUIPMENT", "I-EQUIPMENT", "B-MODULE", "I-MODULE"]
+    assert mapping["I-MODULE"] == 4
+
+
+def test_qwen_config_variants_are_locked_without_authorization(tmp_path):
+    spec = build_run_specs(manifest())[0]
+    config = build_qwen_baseline_config(spec)
+    assert config["execution"]["authorized"] is False
+    assert config["examples"] == {"mode": "none", "k": 0, "seed": 42}
+    assert "glossary" not in config and "rag" not in config
+    paths = materialize_b1_configs(manifest(), tmp_path)
+    assert len(paths) == 24
+    assert len({path.name for path in paths}) == 24
+    with pytest.raises(FileExistsError):
+        materialize_b1_configs(manifest(), tmp_path)
+
+
+def test_bert_cli_refuses_evaluation_without_explicit_flag():
+    import subprocess
+    import sys
+    result = subprocess.run(
+        [sys.executable, "scripts/run_bert_crf_baseline.py", "--help"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0
+    assert "--allow-evaluation" in result.stdout

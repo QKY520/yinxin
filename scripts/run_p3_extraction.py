@@ -332,6 +332,11 @@ def build_rag_selector(
         return lambda _record: [], {"enabled": False}
 
     mode = str(rag_config.get("mode", "lexical_preview"))
+    # Preparation and dry-run configs must never initialize dense models. The
+    # formal bge+reranker path is available only after an explicit execution
+    # gate enables model calls.
+    if mode == "bge_faiss_rerank" and config.get("execution", {}).get("model_calls_allowed") is not True:
+        mode = "lexical_preview"
     if mode == "replay_manifest":
         replay_path = rag_config.get("replay_manifest_path")
         if not isinstance(replay_path, str) or not replay_path:
@@ -367,6 +372,40 @@ def build_rag_selector(
         raise ValueError("RAG source-id exclusion removed all passages")
     if top_k <= 0 or retrieve_top_k < top_k:
         raise ValueError("rag.top_k must be positive and rag.retrieve_top_k must be >= top_k")
+
+    if mode == "bm25":
+        try:
+            from scripts.build_bm25_retrieval import BM25Index, CorpusRow
+        except ImportError:
+            from build_bm25_retrieval import BM25Index, CorpusRow
+        index = BM25Index(
+            [CorpusRow(str(passage["id"]), str(passage["text"])) for passage in passages]
+        )
+
+        def select_bm25(record: dict[str, Any]) -> list[dict[str, Any]]:
+            selected = index.retrieve(str(record["text"]), top_k=top_k)
+            by_id = {str(passage["id"]): passage for passage in passages}
+            return [
+                {
+                    **by_id[str(item["id"])],
+                    "bm25_score": float(item["score"]),
+                    "display": format_rag_passage(by_id[str(item["id"])], max_chars=max_passage_chars),
+                }
+                for item in selected
+            ]
+
+        return select_bm25, {
+            "enabled": True,
+            "mode": mode,
+            "corpus_path": corpus_path,
+            "corpus_rows_sha256": sha256_file(corpus_path),
+            "excluded_source_ids": len(excluded_source_ids),
+            "raw_chunk_count": raw_chunk_count,
+            "chunk_count": len(passages),
+            "retrieve_top_k": retrieve_top_k,
+            "top_k": top_k,
+            "index": "BM25Index",
+        }
 
     if mode == "lexical_preview":
         def select(record: dict[str, Any]) -> list[dict[str, Any]]:

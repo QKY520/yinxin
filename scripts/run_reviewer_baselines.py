@@ -14,6 +14,8 @@ from pathlib import Path
 from typing import Any, Mapping, Sequence
 import hashlib
 import json
+import subprocess
+import sys
 
 
 DATASET_NAMES = ("domain", "cluener")
@@ -111,6 +113,130 @@ def write_run_manifest(manifest: Mapping[str, Any], path: str | Path) -> int:
         json.dump({"manifest_sha256": manifest_sha256(manifest), "runs": rows}, handle, ensure_ascii=False, indent=2)
         handle.write("\n")
     return len(rows)
+
+
+def _schema_block() -> dict[str, Any]:
+    return {
+        "task": "ner",
+        "entity_types": {
+            "EQUIPMENT": "完整装备、武器平台、系统或型号名称。",
+            "MODULE": "装备的部件、组件、子系统、传感器、载荷或功能模块。",
+            "TECH_SCHEME": "技术体制、制导方式、作战/测试/改进方案或能力方案。",
+            "METRIC": "数值指标、性能参数、射程、速度、重量、时间或数量表达。",
+        },
+        "relation_types": {},
+    }
+
+
+def build_qwen_baseline_config(
+    spec: RunSpec,
+    *,
+    model_path: str = "/root/autodl-tmp/models/qwen2.5-7b",
+    glossary_path: str = "/root/project/data/domain_dict.jsonl",
+    rag_corpus_path: str | None = None,
+    output_root: str | None = None,
+) -> dict[str, Any]:
+    """Build one locked Qwen config consumed by ``run_p3_extraction.py``.
+
+    The config is deliberately not authorized here. A later bounded execution
+    gate must set the execution fields and choose whether evaluation is allowed.
+    """
+    if spec.variant not in NEW_K5_VARIANTS:
+        raise ValueError("Qwen materialization only supports the four new K=5 baselines")
+    root = output_root or spec.output_dir
+    config: dict[str, Any] = {
+        "run_id": spec.run_id,
+        "config_name": f"reviewer_{spec.dataset}_{spec.variant}_k{spec.k}_seed{spec.seed}",
+        "execution": {
+            "phase": "REVIEWER_BASELINE_PREP",
+            "authorized": False,
+            "human_gate": None,
+            "model_calls_allowed": False,
+            "gpu_required": True,
+        },
+        "data": {
+            "dataset": spec.dataset,
+            "support_path": spec.support_path,
+            "query_path": spec.tune_path,
+            "evaluation_path": spec.evaluation_path,
+        },
+        "schema": _schema_block(),
+        "examples": {"mode": "none", "k": 0, "seed": spec.seed},
+        "prompt": {
+            "output_instruction": "只返回JSON,不要任何解释,不要markdown代码块",
+            "retry_suffix": "只返回合法JSON",
+        },
+        "model": {
+            "name": model_path,
+            "base_url": "http://127.0.0.1:8000",
+            "timeout_seconds": 300,
+            "api_key": "EMPTY",
+        },
+        "generation": {"temperature": 0.0, "top_p": 1.0, "max_tokens": 768, "seed": spec.seed},
+        "cache": {"dir": "/root/project/cache/reviewer_baselines_20260827"},
+        "outputs": {
+            "dry_run_prompts": f"{root}/dry_run_prompts.jsonl",
+            "manifest": f"{root}/dry_run_manifest.json",
+            "per_query": f"{root}/per_query.jsonl",
+            "summary": f"{root}/summary.json",
+        },
+        "parsing": {"drop_invalid_entities": False},
+    }
+    if spec.variant == "glossary_only":
+        config["glossary"] = {"path": glossary_path, "max_entries": 20, "match_mode": "substring"}
+    elif spec.variant in {"bm25_only", "rag_only"}:
+        if not rag_corpus_path:
+            raise ValueError(f"{spec.variant} requires rag_corpus_path")
+        config["rag"] = {
+            "enabled": True,
+            "mode": "bm25" if spec.variant == "bm25_only" else "bge_faiss_rerank",
+            "corpus_path": rag_corpus_path,
+            "top_k": 3,
+            "retrieve_top_k": 20,
+            "chunk_chars": 260,
+            "overlap_chars": 40,
+            "max_passage_chars": 300,
+            "embedding": {"model_path": "/root/autodl-tmp/models/bge-m3", "device": "cuda"},
+            "reranker": {"model_path": "/root/autodl-tmp/models/bge-reranker", "device": "cuda"},
+        }
+    return config
+
+
+def materialize_b1_configs(
+    manifest: Mapping[str, Any],
+    output_dir: str | Path,
+    *,
+    yaml_writer: Any | None = None,
+) -> list[Path]:
+    """Write non-authorized B1 Qwen configs; never overwrites existing files."""
+    specs = [s for s in build_run_specs(manifest) if s.variant in NEW_K5_VARIANTS]
+    output = Path(output_dir)
+    output.mkdir(parents=True, exist_ok=True)
+    corpus_by_dataset = {
+        "domain": "/root/autodl-tmp/data/domain_rag_corpus.jsonl",
+        "cluener": "/root/autodl-tmp/data/cluener_train_pool.jsonl",
+    }
+    paths: list[Path] = []
+    try:
+        import yaml
+    except ImportError:
+        raise RuntimeError("PyYAML is required to materialize runner configs")
+    writer = yaml_writer or (lambda value, handle: yaml.safe_dump(value, handle, allow_unicode=True, sort_keys=False))
+    for spec in specs:
+        path = output / f"{spec.run_id}.yaml"
+        if path.exists():
+            raise FileExistsError(f"refusing to overwrite {path}")
+        value = build_qwen_baseline_config(spec, rag_corpus_path=corpus_by_dataset[spec.dataset])
+        with path.open("x", encoding="utf-8", newline="\n") as handle:
+            writer(value, handle)
+        paths.append(path)
+    return paths
+
+
+def run_p3_config(config_path: str | Path, *, python_executable: str | None = None) -> int:
+    """Execute one already-authorized Qwen config through the canonical runner."""
+    command = [python_executable or sys.executable, str(Path(__file__).with_name("run_p3_extraction.py")), "--config", str(config_path)]
+    return subprocess.run(command, check=False).returncode
 
 
 def load_yaml(path: str | Path) -> dict[str, Any]:
