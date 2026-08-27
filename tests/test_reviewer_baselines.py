@@ -100,3 +100,11 @@ def test_bert_cli_refuses_evaluation_without_explicit_flag():
     )
     assert result.returncode == 0
     assert "--allow-evaluation" in result.stdout
+
+
+def test_dispatcher_bert_validates_config_before_execution(tmp_path):
+    config = tmp_path / "bert.yaml"
+    config.write_text("support: /x\n", encoding="utf-8")
+    from scripts.dispatch_reviewer_baseline import dispatch_bert
+    with pytest.raises(ValueError, match="missing keys"):
+        dispatch_bert(config, allow_evaluation=False)

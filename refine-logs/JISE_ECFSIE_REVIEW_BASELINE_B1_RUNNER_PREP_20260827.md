@@ -18,12 +18,14 @@
 - `scripts/run_bert_crf_baseline.py` now contains deterministic BIO vocabulary,
   tokenizer/label alignment, support-only BERT+CRF training with tune-only
   early stopping, prediction decoding, and an evaluation safety flag.
+- `scripts/dispatch_reviewer_baseline.py` now routes one locked run to the
+  canonical Qwen or BERT runner; BERT evaluation remains opt-in.
 - Added tests for config materialization, overwrite protection, BIO vocabulary,
   and BERT evaluation gating.
 
 ## Verification
 
-- Remote tests: `29 passed` (`tests/test_reviewer_baselines.py` and
+- Remote tests: `30 passed` (`tests/test_reviewer_baselines.py` and
   `tests/test_extraction.py`).
 - All three modified scripts compile remotely.
 - 24 B1 YAML configs are stored under
@@ -33,6 +35,8 @@
 - Representative domain zero-shot, glossary-only, BM25-only, and RAG-only
   dry-runs completed with `api_called=false`, `model_calls=0`, and no GPU.
   RAG-only used lexical preview under the safety downgrade.
+- Dispatcher Qwen dry-run completed with `model_calls=0`; BERT dispatcher config
+  validation rejects incomplete configs before any data access.
 - AutoDL probe remained `No devices were found`; no experiment process ran.
 
 ## Risks and boundary
