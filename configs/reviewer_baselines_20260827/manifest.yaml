@@ -1,0 +1,52 @@
+run_family: JISE_ECFSIE_REVIEW_BASELINE_20260827
+gate: JISE_ECFSIE_REVIEW_BASELINE_EXPERIMENTS_APPROVED
+phase: M1_IMPLEMENTATION
+task: ner
+datasets:
+  domain:
+    support: /root/autodl-tmp/data/domain_support.jsonl
+    tune: /root/autodl-tmp/data/domain_dev.jsonl
+    evaluation: /root/autodl-tmp/data/domain_test.jsonl
+    evaluation_rows: 170
+  cluener:
+    support: /root/autodl-tmp/data/cluener_support_k5_seed42.jsonl
+    tune: /root/autodl-tmp/data/cluener_tune.jsonl
+    evaluation: /root/autodl-tmp/data/cluener_dev.jsonl
+    evaluation_rows: 1343
+variants:
+  - zero_shot
+  - glossary_only
+  - bm25_only
+  - rag_only
+  - bert_crf
+  - A
+  - D
+k_values: [1, 5, 10]
+seeds: [42, 43, 44]
+primary_k: 5
+evaluation_policy:
+  test_is_read_only: true
+  tune_only_on_declared_tune_split: true
+  final_evaluation_once_config_locked: true
+  preserve_all_results: true
+  metric: entity_micro_prf1
+  secondary_metrics: [fp_count, fdr, parse_failure_rate, latency_ms]
+qwen_k5_new_variants: [zero_shot, glossary_only, bm25_only, rag_only]
+k_scan_variants: [A, D]
+k_scan_values: [1, 10]
+bert_crf:
+  encoder: bert-base-chinese
+  source: ModelScope
+  train_split: support_only
+  early_stopping_split: tune
+  max_epochs: 20
+  patience: 3
+  learning_rate: 0.00003
+  batch_size: 8
+  max_length: 256
+  hidden_dropout_prob: 0.1
+  crf_constraint: standard_bio
+outputs:
+  remote_root: /root/autodl-tmp/reviewer_baselines_20260827
+  local_root: results/reviewer_baselines_20260827
+  no_overwrite_existing: true
