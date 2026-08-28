@@ -6,7 +6,11 @@
 >
 > PAPER STRATEGY UPDATE (2026-07-20): The project is now framed for a practical SCI-Q4 submission within roughly one month and a 400 CNY target budget. The original route is retained: equipment-domain small annotated dataset + reproducible few-shot IE pipeline + RAG/glossary/schema constraints + verification to reduce hallucination + ablation evidence. Draft Chinese first, then produce the English SCI manuscript. NER is the main evidence line; RE is auxiliary.
 >
-> EXECUTION STATUS UPDATE (2026-08-07): The focused CLUENER public-NER block and its result-to-claim are closed. Literal accounting is `16/60`; the other 44 incomplete identities remain route-closed. The exact paper-only `NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_APPROVED` gate was later granted and consumed. Commit `8189f71` propagated the verified domain/CLUENER evidence, F4a/F4b/F7 boundaries, and `16/60` accounting into the complete LaTeX manuscript; commit `8f1f3e1` consistently framed the contribution as the Evidence-Controlled Few-Shot Information Extraction (`EC-FSIE`) framework without changing results. Static source audit passed, but the paper has not been compiled because this Windows workspace has no `latexmk`, `pdflatex`, or `bibtex`. Author, affiliation, disclosure, repository, and related submission placeholders remain unresolved. No experiment or paper gate is live. IE051, E/E-prime, K scans, RE, domain reruns, submission, and GitHub sync remain closed. See `HANDOFF.md` and `docs/NER_PUBLIC_CLUENER_ABCD_K5_LATEX_PROPAGATION_CLOSEOUT_20260807.md` before acting.
+> EXECUTION STATUS UPDATE (2026-08-28): The focused CLUENER public-NER block and its result-to-claim are closed. Literal accounting is `16/60`; the other 44 incomplete identities remain route-closed. The final 12-page main and two-page supplement remain technically audited and sealed. A separately gated reviewer-baseline span-index diagnostic then ran on 20 fresh non-test `domain_dev` rows: the first BM25-only variant had 19 parse failures (`95%`) because NER-only responses omitted `relations: []`; the runner was stopped and all failure evidence was preserved. No paper claim or frozen-test result changed. A NER-only envelope repair requires a new exact gate. No experiment or paper gate is live. IE051, E/E-prime, K scans, RE, domain reruns, submission, and GitHub sync remain closed unless explicitly authorized. See `HANDOFF.md` and the dated span-index closeout before acting.
+
+The human subsequently authorized GitHub synchronization for the bounded
+documentation handoff. Push only the related documentation/code commits; do
+not include data, model artifacts, paper sources, or unrelated dirty files.
 
 ---
 
@@ -283,10 +287,15 @@ support broad public/cross-domain generalization, significance, SOTA, K
 robustness, RE, or CoVe. The later exact LaTeX propagation gate is consumed:
 commits `8189f71` and `8f1f3e1` updated the full
 `docs/JISE_OVERLEAF_LATEX_20260729/` LaTeX project, not the historical Markdown
-drafts. No further manuscript edit is authorized. The next paper step, after a
-new exact human gate, is to supply verified author/disclosure metadata, compile
-in a LaTeX-capable environment, and perform a PDF/submission-readiness audit;
-it requires no GPU and does not reopen experiments.
+drafts. The later compression and supplement-repair gates are also consumed.
+The final paper package is a fully audited 12-page main plus two-page
+supplement; see
+`docs/JISE_ECFSIE_COMPRESSION_OVERLEAF_FINAL_TECHNICAL_CLOSEOUT_20260811.md`.
+No further manuscript edit or experiment is authorized. Pause until the human
+returns with reviewer feedback. The first future step must be a bounded,
+read-only feedback-to-evidence triage; any source edit, new experiment,
+human-metadata insertion, submission action, or synchronization requires its
+own exact gate. None of these administrative steps requires a GPU by default.
 
 ## 10. OPTIONAL PHASE P7 — QLoRA fine-tune (only if human approves after P6)
 
@@ -294,4 +303,4 @@ LLaMA-Factory, QLoRA on Qwen2.5-7B, training data formatted from IEPile/CMNEE co
 
 ---
 
-*v1.1 execution contract; status synchronized on 2026-08-06 after focused CLUENER public-NER result-to-claim. Selection rationale lives in《技术选型与分阶段实现方案》; human-oriented narrative in《实验实施指导文档_综合版》. This playbook supersedes both for execution purposes. Any self-made decision (schema edits, glossary growth, verification-prompt revisions) must be committed to git with a one-line rationale.*
+*v1.1 execution contract; status synchronized on 2026-08-11 after final manuscript compression and supplementary-material audits. Selection rationale lives in《技术选型与分阶段实现方案》; human-oriented narrative in《实验实施指导文档_综合版》. This playbook supersedes both for execution purposes. Any self-made decision (schema edits, glossary growth, verification-prompt revisions) must be committed to git with a one-line rationale.*

@@ -1,7 +1,74 @@
 # HANDOFF.md - New Conversation Handoff
 
-Date: 2026-08-10
+Date: 2026-08-11
 Workspace: `D:\yinsir`
+
+## 0B. Latest Reviewer-Baseline Diagnostic Snapshot (2026-08-28)
+
+This section is the newest operational state for a new session. The prior
+2026-08-11 paper closeout remains valid, but the reviewer-baseline diagnostic
+described here is now the latest completed action.
+
+**Current task**: respond to reviewer requests for additional baseline evidence
+through a separately gated, non-test diagnostic route. The paper contribution
+remains low-label Chinese equipment-domain NER under EC-FSIE; this route does
+not reopen the frozen 60-cell IE matrix or change manuscript claims.
+
+**Completed in this step**:
+
+- Added an opt-in `span_index` output protocol in
+  `src/equipment_ie/extraction.py`. The model may return `start`, `end`, and
+  `type`; the parser derives the exact source `span` and still rejects invalid
+  offsets, types, duplicates, overlaps, malformed JSON, and unknown fields.
+- Added the bounded gate/phase to `scripts/run_p3_extraction.py`, prepared four
+  independent diagnostic configurations, and added unit coverage. The remote
+  test suite passed `28 passed`.
+- Under
+  `JISE_ECFSIE_REVIEW_BASELINE_B1_SPAN_INDEX_DIAGNOSTIC_APPROVED`, the first
+  alphabetically executed BM25-only variant used 20 fresh non-test
+  `domain_dev` rows. It completed with 19 parse failures (`95%`), exceeding
+  the required `<=10%` ceiling. The runner was stopped immediately; glossary,
+  RAG-only, and zero-shot variants were not completed, and no full B1
+  evaluation was started.
+- Failure records and raw/cache evidence are preserved in the remote
+  diagnostic directory and the lightweight local mirror
+  `results/reviewer_baselines_20260828_span_index/`. No frozen test data was
+  read and no failed record was removed or repaired.
+- Root cause is an envelope mismatch: the NER-only model commonly returned a
+  valid `{"entities":[...]}` object but omitted the unused top-level
+  `"relations": []` field. The strict parser therefore reported
+  `output must contain entities and relations only`; this is not evidence of
+  unstable span offsets.
+- The closeout is recorded in
+  `refine-logs/JISE_ECFSIE_REVIEW_BASELINE_B1_SPAN_INDEX_DIAGNOSTIC_20260828.md`.
+  Commit `5c123da` contains only the span-index diagnostic code, tests, remote
+  preparation scripts, and closeout; unrelated dirty files remain untouched.
+
+**Current state and next decision**:
+
+- The diagnostic gate is consumed and failed its parse-stability criterion.
+  vLLM and the runner are stopped; final GPU memory was `0 MiB / 24564 MiB`.
+- No experiment, paper, metadata, or submission gate is live. Do not repeat
+  this diagnostic until a new exact gate authorizes a parser-policy change.
+- The technically justified next method proposal is a NER-only envelope repair
+  that supplies an empty `relations` list when the response contains only
+  `entities`, while retaining strict unknown-key and entity validation. This
+  proposal is not authorization to edit or run anything.
+- Recommended next gate:
+  `JISE_ECFSIE_REVIEW_BASELINE_B1_NER_ENVELOPE_REPAIR_APPROVED`. Under it,
+  first modify and test the parser in no-card mode; only a separately approved
+  paid rerun may launch model inference.
+
+**Do not** read or modify frozen-test data, the active LaTeX manuscript,
+human metadata, historical submission-package deletions, or unrelated
+P6/M1/M2/old-plan/script/attachment files while continuing this route.
+Preserve all diagnostic failures and do not turn them into paper-facing
+metrics or claims.
+
+**Synchronization note (2026-08-28)**: the human subsequently authorized
+GitHub synchronization. Only the bounded documentation/code commits for this
+reviewer route may be pushed; no data, model, paper, or unrelated dirty files
+are included.
 
 This file is the latest operational state for a new Codex/agent session with no
 chat history. Read these files before doing any project work:
@@ -38,11 +105,149 @@ chat history. Read these files before doing any project work:
 16. `docs/JISE_ECFSIE_MANUSCRIPT_COMPRESSION_CLOSEOUT_20260810.md` - bounded
     13--14-page compression source pass, supplementary-table split, static
     audit, unverified pagination status, and exact next Overleaf gate.
+17. `docs/JISE_ECFSIE_COMPRESSION_OVERLEAF_FINAL_TECHNICAL_CLOSEOUT_20260811.md`
+    - final 12-page main and two-page supplement audits, source/artifact hashes,
+    paper-quality decision, pause state, reviewer-feedback restart protocol,
+    and lessons.
 
 If older docs conflict with this file on status chronology, this file is newer.
 Hard rules in `AGENTS.md` and `AGENT_PLAYBOOK.md` still apply.
 
-## 0. Authoritative Snapshot For A New Session
+## 0. Final Authoritative Snapshot For A New Session (2026-08-11)
+
+This section and the 2026-08-11 final closeout supersede every later use of
+“current,” “next,” or “last audited PDF” in the historical chronology below.
+Do not continue from an older V6 or pre-compression pause point.
+
+**What we are doing**: the project has completed a reproducible, evidence-
+controlled few-shot NER study for low-label Chinese equipment documents and a
+compact JISE manuscript. The positive evidence line is NER. EC-FSIE controls
+demonstrations, schema terminology, and retrieved passages as explicit,
+auditable inference inputs. RE and verifier work is retained only as an
+exploratory negative boundary and limitation.
+
+**What is complete**:
+
+- P0--P6, full-IE F1--F6, F7 Domain Final Batch 1, the focused twelve-cell
+  CLUENER block, both result-to-claim reviews, validation, backups, and machine
+  closeout are complete.
+- Literal accounting is `16/60`. Four domain seed-42 Stage N+R cells and twelve
+  CLUENER NER cells are complete; eight identities retain Stage N only and 36
+  are absent. The other 44 identities are route-closed, not an execution
+  backlog or failed experiments.
+- Overall result-to-claim is `partial`, confidence `high`. In frozen low-label
+  Chinese equipment-domain NER, kNN demonstrations and the domain glossary
+  improve observed F1/recall. C and D are near-tied on F1; D improves precision
+  and reduces mean entity-level FP by 55 versus C. CLUENER gives limited
+  directional replication on one additional Chinese NER benchmark.
+- F7 A/B/C/D exact RE F1 is
+  `0.040541/0.056972/0.057971/0.045381`; every cell has zero `HAS_METRIC` TP.
+  This supports an auditable execution boundary, not positive RE.
+- The active main source was compressed at `fc8512a`: the ten section files
+  fell from 48,843 to 24,114 bytes, main tables fell from ten to three, and six
+  detailed tables moved to `supplementary_tables.tex` without changing evidence
+  values or claim boundaries.
+- The compressed main PDF passed full technical and twelve-page visual audit.
+  Its SHA256 is
+  `E7DCE7B63A0AF53C6D1D66094A29CF27755CF6160A7953A493018BCBB6F32DEA`;
+  the main output ZIP SHA256 is
+  `1F7597AEF0BE32D49D2F901A339D28B80D73FE9634B10A03F1797E3A4462AB66`.
+  The human explicitly accepts twelve main pages; do not add filler to reach the
+  earlier 13--14-page estimate.
+- The supplement's first three-page compile exposed float-placement defects.
+  A bounded repair changed only `supplementary_tables.tex`; the final two-page
+  PDF passed compilation, metadata/font checks, and full visual audit. Its
+  SHA256 is
+  `B96CA2D8CE0D4B1B289D110830AB8FA12414D5CCB84E7D5EC6D27F68F6560E7F`;
+  the output ZIP SHA256 is
+  `F9079742781F3CA84295EBB4C94C6E20BA3DA4826D3FE3E02D406CC9C6A87332`.
+- Main and supplement have zero LaTeX errors, undefined references/citations,
+  rerun requests, or overfull boxes; ChkTeX and qpdf return zero. The supplement
+  also has zero underfull warnings. All pages were visually checked.
+- The ignored final source ZIP contains 21 files. Its 19 compile-relevant files
+  still match the active project byte-for-byte; only `README.md` and
+  `OVERLEAF_GUIDE_ZH.md` were updated afterward for this handoff. SHA256:
+  `13E0B864E16B6B80724B8421836BD2478CD2DB3A83A1AB81455FE7F8B4B6CA94`.
+  The repaired supplement source SHA256 is
+  `BA782F88B881B232F29D79BBE6887D0822BEA1F2C137D33FE1B487B001B79E28`.
+
+**Current paper and quality state**: the sole active project is
+`docs/JISE_OVERLEAF_LATEX_20260729/`. `main.tex` is the main entry point and
+`supplementary_tables.tex` is the independent supplement entry point. The
+12-page main plus two-page supplement are technically sealed. A professor-style
+review found the problem, evidence, contribution, and narrative defensible for
+the intended applied SCI/Q4 target. Novelty is a reproducible evidence-control
+workflow and operating-point analysis, not a new model architecture, SOTA, or
+top-tier algorithmic claim. The paper does not read as a failure report because
+positive NER evidence leads and negative RE/verifier evidence is bounded in
+limitations and the supplement.
+
+**Supported claims**: kNN and query-matched domain terminology improve observed
+F1/recall on the locked low-label equipment NER setting; RAG preserves near-
+tied F1 while increasing precision and reducing entity-level FP; CLUENER gives
+one limited directional replication.
+
+**Unsupported claims**: statistical significance, SOTA, supervised-baseline
+superiority, broad public/cross-domain generalization, positive RE, public RE,
+RAG-for-RE, CoVe gain, usable `HAS_METRIC`, K robustness, formal frozen-test
+IAA, high-quality relation annotation, complete F8/F9, complete IE, a complete
+60-cell matrix, hallucination elimination, or general factuality improvement.
+
+**Current workspace and human-owned items**:
+
+- Git HEAD is `b3ab486`; `main` was `ahead 77` of `origin/main` at this update.
+- The repaired `supplementary_tables.tex` and final status documents are local
+  working-tree changes. No commit, staging, push, pull, fetch, reset, or clean
+  was authorized.
+- Existing deleted submission-package files and untracked P6/M1/M2/old-plan
+  files belong to the human. Do not restore, clean, stage, read, or combine them
+  with this work.
+- Author/order/affiliation, corresponding author, acknowledgments, funding,
+  conflicts, data/code availability, ethics, and CRediT remain human-owned
+  placeholders in the repository. Never invent them. Metadata changes can
+  reflow pages and require a new compile/PDF audit before submission.
+- AutoDL remains expected in no-card mode; vLLM and all runners are stopped.
+  Do not start GPU, model, training, inference, or experiments.
+
+**Current stop and next plan**: no gate is live. The human directed the agent to
+stop after this documentation refresh and wait until reviewer feedback arrives.
+Do not perform additional experiments, ablations, literature search, styling,
+page-length work, source edits, submission actions, or synchronization in the
+meantime.
+
+When the human returns, first request the verbatim reviewer comments, editor
+decision, venue, deadline, and response limits. The recommended first gate is
+`JISE_ECFSIE_REVIEW_FEEDBACK_TRIAGE_APPROVED`, authorizing only a grounded
+comment-to-evidence/manuscript coverage map. It does not authorize edits or
+experiments. Classify requests into existing-evidence clarification, claim
+reduction, locked-artifact reanalysis, genuinely new experiment, or unsupported
+request. Any later LaTeX edit or experiment needs its own exact bounded gate;
+any experiment remains AutoDL-only with a cost/stop plan.
+
+**Lessons and red lines**:
+
+- Result-to-claim controls prose; framework positioning cannot replace evidence.
+- NER is the contribution; RE and CoVe are boundaries/limitations.
+- C and D are recall- versus precision-oriented operating points; do not claim
+  significance.
+- CLUENER is one limited replication, not broad generalization.
+- Compression removes repetition, not evidence; detailed tables can move to a
+  separately compiled supplement.
+- Static LaTeX checks cannot predict floats or pagination. Always inspect the
+  real Overleaf log and every PDF page.
+- Artifact names can collide between main and supplement; identify artifacts by
+  SHA256, page count, and compile entry.
+- The currently retained Downloads `__7_` files are the superseded three-page
+  supplement, not the audited 12-page main. Re-request the main if its SHA256
+  cannot be matched.
+- Do not pad a sound 12-page paper to an arbitrary estimate.
+- Never invent human metadata, run project Python locally, tune on frozen test,
+  erase negative history, or touch unrelated dirty/untracked artifacts.
+
+Exact full evidence is in
+`docs/JISE_ECFSIE_COMPRESSION_OVERLEAF_FINAL_TECHNICAL_CLOSEOUT_20260811.md`.
+
+## 0A. Superseded Pre-Audit Snapshot (Historical, 2026-08-10)
 
 **What we are doing**: the experiment route and evidence interpretation remain
 closed. The 19-page V6 PDF is still the last fully compiled and visually audited
@@ -1997,7 +2202,7 @@ Useful no-Python status command:
 ssh autodl-paper 'cd /root/project && git rev-parse --short HEAD && git status --short && (nvidia-smi --query-gpu=index,name,memory.used,memory.total --format=csv,noheader 2>/dev/null || echo GPU_FREE_OR_NVIDIA_SMI_UNAVAILABLE)'
 ```
 
-## 7. Current Stop And Next Paper Gate
+## 7. Final Stop And Reviewer-Feedback Resume Gate
 
 The human route decision is complete under the consumed
 `FULL_IE_STOP_AND_NER_FALLBACK_RTC_APPROVED` gate. The result-to-claim verdict
@@ -2049,23 +2254,20 @@ experiment gate is live. Do not start a model or issue any new request.
   exact bounded execution gate. A historical token or tracker row provides no
   authority.
 
-### Post-run claim and paper sequence
+### Final claim and paper sequence
 
-The 12-cell closeout, RTC, exact LaTeX propagation gate, bounded EC-FSIE
-final-refinement gate, verified Related Work/citation pass, and six Overleaf
-compile/PDF audits are complete. The active target was and remains the complete
-`docs/JISE_OVERLEAF_LATEX_20260729/` project: `main.tex` is the entry point,
-while `frontmatter.tex` and `sections/*.tex` contain the manuscript. Commits
-`8189f71` and `8f1f3e1` record the authorized propagation and framework
-positioning; later bounded refinements preserve the same EC-FSIE terminology and
-claim boundary without changing locked results. Commit `1c48d1d` and its
-19-page V6 Overleaf PDF are the last pair to pass compile, reference, metadata,
-warning, and full visual audit. The later bounded compression pass is committed
-at `fc8512a`; it is now the active source but remains uncompiled. Human-owned
-metadata was deferred, and the compressed source first requires its own
-Overleaf audit. Compilation or metadata insertion does not authorize new
-experiments, result recomputation, DOCX generation, submission, or GitHub
-synchronization.
+The 12-cell closeout, RTC, LaTeX propagation, EC-FSIE refinement, verified
+Related Work/citation pass, manuscript compression, supplement layout repair,
+and all required Overleaf/PDF audits are complete. The active target remains
+`docs/JISE_OVERLEAF_LATEX_20260729/`: `main.tex` compiles the audited 12-page
+main, while `supplementary_tables.tex` compiles the audited two-page supplement.
+Commit `fc8512a` records the compressed main; the supplement repair remains an
+uncommitted local change because Git modification was not authorized. Exact
+source and artifact hashes are in
+`docs/JISE_ECFSIE_COMPRESSION_OVERLEAF_FINAL_TECHNICAL_CLOSEOUT_20260811.md`.
+Human-owned metadata remains deferred. No compilation, metadata work, reviewer
+response, or submission action authorizes an experiment, result recomputation,
+DOCX generation, or GitHub synchronization by implication.
 
 The original pre-F7 `125-295 CNY` estimate remains historical planning context,
 not a current remaining-cost estimate. The focused public block's three vLLM
@@ -2105,11 +2307,13 @@ envelopes; the live platform bill controls. No remaining GPU work is authorized.
 Complete-cell accounting is `16/60`, leaving eight Stage N-only cells and 36
 wholly absent cells. The other 44 incomplete identities stay closed.
 
-The JISE author/JCR/fee/AI-policy/template blockers remain valid. The immediate
-next human action is to compile and return the compressed main and supplement
-artifacts under `JISE_ECFSIE_COMPRESSION_OVERLEAF_AUDIT_APPROVED`. Human
-metadata follows only after that audit. No GPU is needed, and actual journal
-submission remains unauthorized.
+The JISE author/JCR/fee/AI-policy/template blockers remain valid. No gate is
+live. The human directed a full pause until reviewer feedback arrives. The
+recommended first future gate is
+`JISE_ECFSIE_REVIEW_FEEDBACK_TRIAGE_APPROVED`, limited to a read-only mapping of
+verbatim comments to existing evidence and manuscript locations. Human metadata
+still requires its own bounded insertion and post-metadata audit before actual
+submission. No GPU is needed by default, and submission remains unauthorized.
 
 ## 8. Lessons Worth Remembering
 

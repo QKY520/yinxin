@@ -13,28 +13,48 @@ design, not supported contributions of the current manuscript.
 - `实验实施指导文档_综合版.md`: human-facing research and implementation guide.
 - `AGENTS.md`: durable repository instructions for Codex.
 - `HANDOFF.md`: latest operational status, claim boundary, and next gate.
+- `docs/JISE_ECFSIE_COMPRESSION_OVERLEAF_FINAL_TECHNICAL_CLOSEOUT_20260811.md`:
+  final paper/source hashes, audits, pause state, and review restart protocol.
 - `docs/PROJECT_ROUTE_AND_SCI_Q4_PLAN.md`: locked SCI-Q4 paper route.
 - `docs/P2_DECISION_LOG.md`: historical P2 gate and decision record.
 
 ## Current Status
 
-As of 2026-07-27, P0/P1/P2 are complete, the domain data is frozen as
-support/dev/test = 30/50/170, and P3/P4 domain-dev sanity is complete. The
-closed paper-facing P5 evidence contains only domain-test NER configurations
-A/B/C/D at K=5 over seeds 42/43/44. Fresh two-human non-test calibration
-reached exact span+type micro-F1 0.8000; this is not frozen-test formal IAA,
-and TECH_SCHEME F1 is 0.153846.
+As of 2026-08-28, P0--P6, full-IE F1--F6, F7 Domain Batch 1, the focused
+12-cell CLUENER block, both result-to-claim reviews, validation, backup, and
+machine closeout are complete. Literal accounting is `16/60`; the other 44
+identities are route-closed. Fresh two-human non-test calibration reached exact
+span+type micro-F1 0.8000; this is not frozen-test formal IAA, and TECH_SCHEME
+F1 is 0.153846.
 
-The current editable manuscript is
-`docs/EQUIPMENT_IE_PAPER_DRAFT_V3_REVIEW_POLISH_20260725.md`. The supported
-claim is narrow: kNN and glossary injection improve F1/recall in the frozen
-domain setting, while RAG preserves near-tied F1 and improves precision with
-55 fewer false-positive entity predictions than the glossary-only row. RE,
-CoVe, public-benchmark generalization, K-scan robustness, statistical
-significance, and full-matrix completion are not claimed.
+The sole active manuscript is the LaTeX project at
+`docs/JISE_OVERLEAF_LATEX_20260729/`. Its compressed main has passed a 12-page
+Overleaf technical and visual audit, and its independent supplement has passed
+a two-page audit. The human accepts the 12-page main. The supported claim is
+narrow: kNN and glossary injection improve observed F1/recall in the frozen
+domain setting, while RAG preserves near-tied F1 and improves precision with 55
+fewer mean false-positive entity predictions than the glossary-only row.
+CLUENER supplies one limited directional replication. RE, CoVe, broad public/
+cross-domain generalization, K robustness, significance, SOTA, and full-matrix
+completion are not claimed.
 
-No new experiment, paid GPU, vLLM launch, model/API call, dry-run, or
-frozen-test prompt generation is authorized without a new bounded human gate.
+No gate is live. The project is paused until the human returns with reviewer
+feedback. Do not launch an experiment, paid GPU, vLLM, model/API call, dry-run,
+frozen-test prompt generation, paper edit, submission action, or GitHub sync
+without a new exact bounded human gate. Human metadata remains unresolved and
+must never be invented.
+
+The latest reviewer-baseline diagnostic used 20 fresh non-test `domain_dev`
+rows with an opt-in span-index output protocol. BM25-only completed with 19/20
+parse failures (`95%`), caused by valid NER JSON omitting the unused top-level
+`relations` list. The run was stopped, the other variants were not completed,
+and the failure evidence is preserved. A NER-only envelope repair is only a
+proposal; it requires a new exact gate before code changes or model calls.
+
+On 2026-08-28 the human explicitly authorized GitHub synchronization for this
+bounded handoff. Only the related documentation/code commits are eligible for
+push; unrelated dirty files, data, paper sources, and attachments remain
+excluded.
 
 ## Layout
 
