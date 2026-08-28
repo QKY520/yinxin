@@ -57,6 +57,10 @@ REVIEWER_PILOT_GATE = "JISE_ECFSIE_REVIEW_BASELINE_B1_PILOT_APPROVED"
 REVIEWER_PILOT_PHASE = "REVIEWER_BASELINE_B1_PILOT"
 REVIEWER_DIAGNOSTIC_GATE = "JISE_ECFSIE_REVIEW_BASELINE_B1_PARSE_DIAGNOSTIC_APPROVED"
 REVIEWER_DIAGNOSTIC_PHASE = "REVIEWER_BASELINE_B1_PARSE_DIAGNOSTIC"
+REVIEWER_STABILITY_GATE = "JISE_ECFSIE_REVIEW_BASELINE_B1_PARSE_STABILITY_20_APPROVED"
+REVIEWER_STABILITY_PHASE = "REVIEWER_BASELINE_B1_PARSE_STABILITY_20"
+SPAN_INDEX_DIAGNOSTIC_GATE = "JISE_ECFSIE_REVIEW_BASELINE_B1_SPAN_INDEX_DIAGNOSTIC_APPROVED"
+SPAN_INDEX_DIAGNOSTIC_PHASE = "REVIEWER_BASELINE_B1_SPAN_INDEX_DIAGNOSTIC"
 
 NER_PUBLIC_EXECUTION_GATE = "NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED"
 NER_PUBLIC_EXECUTION_PHASE = "NER_PUBLIC_CLUENER_FINAL"
@@ -157,6 +161,20 @@ def validate_execution_gate(execution: dict[str, Any]) -> None:
             )
         return
 
+    if human_gate == REVIEWER_STABILITY_GATE:
+        if phase != REVIEWER_STABILITY_PHASE:
+            raise RuntimeError(
+                f"{REVIEWER_STABILITY_GATE} requires execution.phase={REVIEWER_STABILITY_PHASE}"
+            )
+        return
+
+    if human_gate == SPAN_INDEX_DIAGNOSTIC_GATE:
+        if phase != SPAN_INDEX_DIAGNOSTIC_PHASE:
+            raise RuntimeError(
+                f"{SPAN_INDEX_DIAGNOSTIC_GATE} requires execution.phase={SPAN_INDEX_DIAGNOSTIC_PHASE}"
+            )
+        return
+
     required_phase = FULL_IE_EXECUTION_GATES.get(human_gate)
     if required_phase is not None:
         if phase != required_phase:
@@ -169,6 +187,8 @@ def validate_execution_gate(execution: dict[str, Any]) -> None:
         | {M2_EXECUTION_GATE}
         | {REVIEWER_PILOT_GATE}
         | {REVIEWER_DIAGNOSTIC_GATE}
+        | {REVIEWER_STABILITY_GATE}
+        | {SPAN_INDEX_DIAGNOSTIC_GATE}
         | set(FULL_IE_EXECUTION_GATES)
     )
     raise RuntimeError(f"non-dry extraction human_gate must be one of: {allowed}")
@@ -890,6 +910,7 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
     retry_suffix = config["prompt"].get("retry_suffix", "只返回合法JSON")
     parsing = config.get("parsing", {})
     drop_invalid_entities = bool(parsing.get("drop_invalid_entities", False))
+    output_mode = str(parsing.get("output_mode", "occurrence"))
 
     rows: list[dict[str, Any]] = []
     predictions: list[dict[str, Any]] = []
@@ -914,6 +935,7 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
             rag_passages=[passage["display"] for passage in rag_passages],
             include_relations=False,
             output_instruction=config["prompt"]["output_instruction"],
+            output_mode=output_mode,
         )
         prompt_build_ms = elapsed_ms(step_started)
         attempts: list[dict[str, Any]] = []
@@ -948,6 +970,7 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
                     entity_types=entity_types,
                     drop_invalid_entities=drop_invalid_entities,
                     sanitization_flags=sanitization_flags,
+                    output_mode=output_mode,
                 )
                 parse_error = None
             except Exception as exc:  # preserve exact parser message in row logs

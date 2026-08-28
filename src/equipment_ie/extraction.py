@@ -167,6 +167,7 @@ def build_ner_prompt(
     glossary_entries: Sequence[str] | None = None,
     rag_passages: Sequence[str] | None = None,
     output_instruction: str = "只返回JSON,不要任何解释,不要markdown代码块",
+    output_mode: str = "occurrence",
 ) -> str:
     """Build the P3 prompt blocks in the required order."""
 
@@ -181,12 +182,22 @@ def build_ner_prompt(
         blocks.append("领域术语表：\n" + "\n".join(f"- {entry}" for entry in glossary_entries))
     if rag_passages:
         blocks.append("参考资料：\n" + "\n".join(f"- {passage}" for passage in rag_passages))
-    blocks.append(
-        "输出格式："
-        '{"entities":[{"span":"原文片段","type":"实体类型","occurrence":1}],'
-        '"relations":[]}'
-        "。occurrence 表示该完全相同片段在原文中从左到右第几次出现，从1开始。"
-    )
+    if output_mode == "span_index":
+        blocks.append(
+            "输出格式："
+            '{"entities":[{"start":0,"end":2,"type":"实体类型"}],'
+            '"relations":[]}'
+            "。start/end 是原文字符下标，start 包含、end 不包含；程序会从原文切片生成 span。"
+        )
+    elif output_mode == "occurrence":
+        blocks.append(
+            "输出格式："
+            '{"entities":[{"span":"原文片段","type":"实体类型","occurrence":1}],'
+            '"relations":[]}'
+            "。occurrence 表示该完全相同片段在原文中从左到右第几次出现，从1开始。"
+        )
+    else:
+        raise ValueError(f"unsupported output_mode {output_mode!r}")
     blocks.append(
         "硬性输出约束：type 必须逐字等于 Schema 中列出的英文类型之一；禁止输出"
         " Schema 之外的类型，例如 event、person、location、ORG、PER；如果没有"
@@ -212,8 +223,9 @@ def parse_extraction_output(
     relation_types: Mapping[str, Mapping[str, Sequence[str]]] | None = None,
     drop_invalid_entities: bool = False,
     sanitization_flags: list[dict[str, Any]] | None = None,
+    output_mode: str = "occurrence",
 ) -> dict[str, Any]:
-    """Parse occurrence-based extraction JSON into the unified schema."""
+    """Parse extraction JSON into the unified schema."""
 
     try:
         value = json.loads(extract_first_json_object(raw_output))
@@ -247,34 +259,57 @@ def parse_extraction_output(
     parsed_entities: list[tuple[int, dict[str, Any]]] = []
     seen_entities: set[tuple[int, int, str]] = set()
     for index, raw in enumerate(raw_entities):
-        if not isinstance(raw, dict) or set(raw) != {"span", "type", "occurrence"}:
-            if drop_or_raise_entity(index, f"entity {index} must contain span/type/occurrence only", raw):
-                continue
-        span = raw["span"]
-        entity_type = raw["type"]
-        occurrence = raw["occurrence"]
-        if not isinstance(span, str) or not span:
-            if drop_or_raise_entity(index, f"entity {index} span must be non-empty", raw):
-                continue
+        if output_mode == "span_index":
+            if not isinstance(raw, dict) or set(raw) != {"start", "end", "type"}:
+                if drop_or_raise_entity(index, f"entity {index} must contain start/end/type only", raw):
+                    continue
+            start = raw["start"]
+            end = raw["end"]
+            entity_type = raw["type"]
+            if (
+                not isinstance(start, int)
+                or isinstance(start, bool)
+                or not isinstance(end, int)
+                or isinstance(end, bool)
+                or start < 0
+                or end <= start
+                or end > len(text)
+            ):
+                if drop_or_raise_entity(index, f"entity {index} start/end must be valid text offsets", raw):
+                    continue
+            span = text[start:end]
+        elif output_mode == "occurrence":
+            if not isinstance(raw, dict) or set(raw) != {"span", "type", "occurrence"}:
+                if drop_or_raise_entity(index, f"entity {index} must contain span/type/occurrence only", raw):
+                    continue
+            span = raw["span"]
+            entity_type = raw["type"]
+            occurrence = raw["occurrence"]
+            if not isinstance(span, str) or not span:
+                if drop_or_raise_entity(index, f"entity {index} span must be non-empty", raw):
+                    continue
+        else:
+            raise ValueError(f"unsupported output_mode {output_mode!r}")
         if entity_type not in entity_types:
             if drop_or_raise_entity(index, f"entity {index} has unsupported type {entity_type!r}", raw):
                 continue
-        if not isinstance(occurrence, int) or isinstance(occurrence, bool) or occurrence < 1:
-            if drop_or_raise_entity(index, f"entity {index} occurrence must be a positive integer", raw):
-                continue
-        starts = _occurrence_starts(text, span)
-        if occurrence > len(starts):
-            if drop_or_raise_entity(
-                index,
-                f"entity {index} occurrence not found for {span!r}",
-                raw,
-                occurrence_requested=occurrence,
-                occurrence_available=len(starts),
-                occurrence_starts=starts,
-            ):
-                continue
-        start = starts[occurrence - 1]
-        end = start + len(span)
+        if output_mode == "occurrence":
+            if not isinstance(occurrence, int) or isinstance(occurrence, bool) or occurrence < 1:
+                if drop_or_raise_entity(index, f"entity {index} occurrence must be a positive integer", raw):
+                    continue
+            starts = _occurrence_starts(text, span)
+            if occurrence > len(starts):
+                if drop_or_raise_entity(
+                    index,
+                    f"entity {index} occurrence not found for {span!r}",
+                    raw,
+                    occurrence_requested=occurrence,
+                    occurrence_available=len(starts),
+                    occurrence_starts=starts,
+                ):
+                    continue
+            start = starts[occurrence - 1]
+            end = start + len(span)
         key = (start, end, entity_type)
         if key in seen_entities:
             if drop_or_raise_entity(index, f"entity {index} duplicates {key}", raw, duplicate_key=key):

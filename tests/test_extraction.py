@@ -187,6 +187,40 @@ class ExtractionTest(unittest.TestCase):
             }
         )
 
+    def test_validate_execution_gate_accepts_reviewer_parse_stability_gate(self) -> None:
+        validate_execution_gate(
+            {
+                "authorized": True,
+                "model_calls_allowed": True,
+                "phase": "REVIEWER_BASELINE_B1_PARSE_STABILITY_20",
+                "human_gate": "JISE_ECFSIE_REVIEW_BASELINE_B1_PARSE_STABILITY_20_APPROVED",
+            }
+        )
+
+    def test_span_index_output_is_converted_to_exact_entities(self) -> None:
+        from equipment_ie.extraction import parse_extraction_output
+
+        parsed = parse_extraction_output(
+            '{"entities":[{"start":0,"end":2,"type":"EQUIPMENT"}],"relations":[]}',
+            record_id="q1",
+            text="坦克系统",
+            entity_types={"EQUIPMENT"},
+            output_mode="span_index",
+        )
+        self.assertEqual(parsed["entities"], [{"start": 0, "end": 2, "type": "EQUIPMENT", "span": "坦克"}])
+
+    def test_span_index_output_rejects_out_of_bounds_offsets(self) -> None:
+        from equipment_ie.extraction import parse_extraction_output
+
+        with self.assertRaisesRegex(ValueError, "valid text offsets"):
+            parse_extraction_output(
+                '{"entities":[{"start":0,"end":9,"type":"EQUIPMENT"}],"relations":[]}',
+                record_id="q1",
+                text="坦克",
+                entity_types={"EQUIPMENT"},
+                output_mode="span_index",
+            )
+
     def test_request_envelope_can_enable_json_response_format(self) -> None:
         from equipment_ie.extraction import build_request_envelope
 
