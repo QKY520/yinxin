@@ -303,4 +303,4 @@ LLaMA-Factory, QLoRA on Qwen2.5-7B, training data formatted from IEPile/CMNEE co
 
 ---
 
-*v1.1 execution contract; status synchronized on 2026-08-11 after final manuscript compression and supplementary-material audits. Selection rationale lives in《技术选型与分阶段实现方案》; human-oriented narrative in《实验实施指导文档_综合版》. This playbook supersedes both for execution purposes. Any self-made decision (schema edits, glossary growth, verification-prompt revisions) must be committed to git with a one-line rationale.*
+*v1.1 execution contract; status synchronized on 2026-08-28 after the reviewer-baseline span-index diagnostic closeout. Selection rationale lives in《技术选型与分阶段实现方案》; human-oriented narrative in《实验实施指导文档_综合版》. This playbook supersedes both for execution purposes. Any self-made decision (schema edits, glossary growth, verification-prompt revisions) must be committed to git with a one-line rationale.*
