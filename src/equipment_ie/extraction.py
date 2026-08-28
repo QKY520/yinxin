@@ -423,6 +423,11 @@ def build_request_envelope(
         "max_tokens": int(generation["max_tokens"]),
         "seed": int(generation["seed"]),
     }
+    response_format = generation.get("response_format")
+    if response_format is not None:
+        if not isinstance(response_format, Mapping):
+            raise ValueError("generation.response_format must be a mapping")
+        payload["response_format"] = dict(response_format)
     return {
         "run_id": run_id,
         "config_hash": config_hash,

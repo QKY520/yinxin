@@ -177,6 +177,34 @@ class ExtractionTest(unittest.TestCase):
             }
         )
 
+    def test_validate_execution_gate_accepts_reviewer_parse_diagnostic_gate(self) -> None:
+        validate_execution_gate(
+            {
+                "authorized": True,
+                "model_calls_allowed": True,
+                "phase": "REVIEWER_BASELINE_B1_PARSE_DIAGNOSTIC",
+                "human_gate": "JISE_ECFSIE_REVIEW_BASELINE_B1_PARSE_DIAGNOSTIC_APPROVED",
+            }
+        )
+
+    def test_request_envelope_can_enable_json_response_format(self) -> None:
+        from equipment_ie.extraction import build_request_envelope
+
+        envelope = build_request_envelope(
+            prompt="prompt",
+            model="model",
+            generation={
+                "temperature": 0,
+                "top_p": 1,
+                "max_tokens": 100,
+                "seed": 42,
+                "response_format": {"type": "json_object"},
+            },
+            run_id="run",
+            config_hash="hash",
+        )
+        self.assertEqual(envelope["payload"]["response_format"], {"type": "json_object"})
+
     def test_validate_execution_gate_accepts_p5_replication_gate(self) -> None:
         validate_execution_gate(
             {

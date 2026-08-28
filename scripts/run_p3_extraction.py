@@ -53,6 +53,11 @@ P5_EXECUTION_GATES = frozenset(
 M2_EXECUTION_GATE = "M2_DOMAIN_DEV_Z_APPROVED"
 M2_EXECUTION_PHASE = "M2_DOMAIN_DEV_Z_EXECUTION"
 
+REVIEWER_PILOT_GATE = "JISE_ECFSIE_REVIEW_BASELINE_B1_PILOT_APPROVED"
+REVIEWER_PILOT_PHASE = "REVIEWER_BASELINE_B1_PILOT"
+REVIEWER_DIAGNOSTIC_GATE = "JISE_ECFSIE_REVIEW_BASELINE_B1_PARSE_DIAGNOSTIC_APPROVED"
+REVIEWER_DIAGNOSTIC_PHASE = "REVIEWER_BASELINE_B1_PARSE_DIAGNOSTIC"
+
 NER_PUBLIC_EXECUTION_GATE = "NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED"
 NER_PUBLIC_EXECUTION_PHASE = "NER_PUBLIC_CLUENER_FINAL"
 
@@ -138,6 +143,20 @@ def validate_execution_gate(execution: dict[str, Any]) -> None:
             )
         return
 
+    if human_gate == REVIEWER_PILOT_GATE:
+        if phase != REVIEWER_PILOT_PHASE:
+            raise RuntimeError(
+                f"{REVIEWER_PILOT_GATE} requires execution.phase={REVIEWER_PILOT_PHASE}"
+            )
+        return
+
+    if human_gate == REVIEWER_DIAGNOSTIC_GATE:
+        if phase != REVIEWER_DIAGNOSTIC_PHASE:
+            raise RuntimeError(
+                f"{REVIEWER_DIAGNOSTIC_GATE} requires execution.phase={REVIEWER_DIAGNOSTIC_PHASE}"
+            )
+        return
+
     required_phase = FULL_IE_EXECUTION_GATES.get(human_gate)
     if required_phase is not None:
         if phase != required_phase:
@@ -148,6 +167,8 @@ def validate_execution_gate(execution: dict[str, Any]) -> None:
         P3_EXECUTION_GATES
         | P5_EXECUTION_GATES
         | {M2_EXECUTION_GATE}
+        | {REVIEWER_PILOT_GATE}
+        | {REVIEWER_DIAGNOSTIC_GATE}
         | set(FULL_IE_EXECUTION_GATES)
     )
     raise RuntimeError(f"non-dry extraction human_gate must be one of: {allowed}")
