@@ -1,0 +1,13 @@
+{
+  "authorized": false,
+  "config": "/root/project/configs/reviewer_qwen_glossary_only_20260918/glossary_only.yaml",
+  "config_sha256": "3bc541b5d504b0290f1404e48457650baf3012a69a60bfbf033057528ae13dab",
+  "gate": "JISE_ECFSIE_REVIEW_GLOSSARY_ONLY_PREFLIGHT_APPROVED",
+  "glossary_sha256": "01b857822894bb09268cbb7fb14ad0988630137bb7efae0b9d90f7d75a2f3ef6",
+  "model_calls": 0,
+  "only_intended_change": "frozen_query_matched_glossary",
+  "query_records_expected": 170,
+  "query_sha256": "42f6ecbbfd1eb57937cd74a04e5b8362fe0976b5bf108e52523a4778dd53bfd0",
+  "source_config": "/root/project/configs/reviewer_qwen_neutral_envelope_formal_20260917/zero_shot.yaml",
+  "source_config_sha256": "05e01f5fb33a8223d52618b5621d95b055f257834dbdbc67547f349667ffc606"
+}

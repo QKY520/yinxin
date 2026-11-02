@@ -1,0 +1,37 @@
+execution:
+  phase: P3_GPU_FREE_DRY_RUN
+  authorized: false
+  human_gate: null
+  model_calls_allowed: false
+  gpu_required: false
+schema:
+  task: ner
+  entity_types:
+    EQUIPMENT: 完整装备、武器平台、系统或型号名称。
+    MODULE: 装备的部件、组件、子系统、传感器、载荷或功能模块。
+    TECH_SCHEME: 技术体制、制导方式、作战/测试/改进方案或能力方案。
+    METRIC: 数值指标、性能参数、射程、速度、重量、时间或数量表达。
+  relation_types: {}
+prompt:
+  output_instruction: 只返回JSON,不要任何解释,不要markdown代码块
+model:
+  name: /root/autodl-tmp/models/qwen2.5-7b
+generation:
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 768
+  seed: 42
+dry_run:
+  max_queries: 3
+outputs:
+  dry_run_prompts: /root/project/configs/reviewer_baselines_20260827/m2_sanity/cluener_zero_shot_prompts.jsonl
+  manifest: /root/project/configs/reviewer_baselines_20260827/m2_sanity/cluener_zero_shot_manifest.json
+run_id: m2_cluener_zero_shot_sanity
+data:
+  dataset: cluener
+  support_path: /root/autodl-tmp/data/cluener_support_k5_seed42.jsonl
+  query_path: /root/autodl-tmp/data/cluener_tune.jsonl
+examples:
+  mode: none
+  k: 0
+  seed: 42

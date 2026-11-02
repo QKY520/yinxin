@@ -1,0 +1,83 @@
+run_id: round2_formal_20261012_r3_random5_s42
+config_name: round2_random5_s42_formal
+execution:
+  authorized: true
+  model_calls_allowed: true
+  human_gate: ROUND2_QWEN_FORMAL_APPROVED_20261010
+  phase: ROUND2_QWEN_FORMAL
+data:
+  dataset: domain_test
+  support_path: /root/autodl-tmp/data/domain_support.jsonl
+  query_path: /root/autodl-tmp/data/domain_test.jsonl
+  expected_records: 170
+  expected_sha256: 42f6ecbbfd1eb57937cd74a04e5b8362fe0976b5bf108e52523a4778dd53bfd0
+schema:
+  task: ner
+  entity_types:
+    EQUIPMENT: 完整装备、武器平台、系统或型号名称。
+    MODULE: 装备的部件、组件、子系统、传感器、载荷或功能模块。
+    TECH_SCHEME: 技术体制、制导方式、作战/测试/改进方案或能力方案。
+    METRIC: 数值指标、性能参数、射程、速度、重量、时间或数量表达。
+  relation_types: {}
+examples:
+  mode: fixed_random
+  k: 5
+  seed: 42
+prompt:
+  output_instruction: 只返回JSON,不要任何解释,不要markdown代码块
+  retry_suffix: 只返回合法JSON
+  retry_mode: parser_error_aware
+model:
+  name: /root/autodl-tmp/models/qwen2.5-7b
+  base_url: http://127.0.0.1:8000
+  timeout_seconds: 300
+  api_key: EMPTY
+generation:
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 768
+  seed: 42
+parsing:
+  drop_invalid_entities: true
+  output_mode: occurrence
+  constrained_json_schema: false
+  ner_only_envelope_policy: entities_or_entities_relations_v2
+protocol:
+  name: qwen_neutral_envelope_formal_v1
+  parser_failure_ceiling: 0.2
+  gold_or_bert_repair_forbidden: true
+  system: random5_s42
+  run_order:
+  - random5_s42
+  - random5_s43
+  - random5_s44
+  - knn5
+  - knn5_glossary
+query_limit: 170
+dry_run:
+  max_queries: 170
+cache:
+  dir: /root/autodl-tmp/round2_formal_20261012_r3/qwen/random5_s42/cache
+outputs:
+  dry_run_prompts: /root/autodl-tmp/round2_formal_20261012_r3/qwen/random5_s42/dry_run_prompts.jsonl
+  manifest: /root/autodl-tmp/round2_formal_20261012_r3/qwen/random5_s42/manifest.json
+  per_query: /root/autodl-tmp/round2_formal_20261012_r3/qwen/random5_s42/per_query.jsonl
+  summary: /root/autodl-tmp/round2_formal_20261012_r3/qwen/random5_s42/summary.json
+round2_phase: formal
+round2_input_sha256:
+  /root/autodl-tmp/data/domain_test.jsonl: 42f6ecbbfd1eb57937cd74a04e5b8362fe0976b5bf108e52523a4778dd53bfd0
+  /root/autodl-tmp/data/domain_support.jsonl: 9633c7f6ceee8592408034e26834233e3f03b2f58a104783757ae664a4bab22a
+  /root/project/scripts/run_round2_uie.py: 282df81aaee08a665f7cc27498fb9e90940543eab660aa4d5d11378da00c72ab
+  /root/project/scripts/round2_uie_gpu_python.sh: c9e18414469a8ceac9def61d556dcab0e85625ddac7cb36726feb05f38a6add9
+  /root/project/src/equipment_ie/uie_runtime.py: e6354f252f252b2e406e2584f3b081213c19d01a970824992c2479de584f51a6
+  /root/project/src/equipment_ie/uie_cuda_guard.py: d9be6fd9dc3c3af86c85960e34450bd779105852c949f036e8071aa0cad901f1
+  /root/project/src/equipment_ie/uie_adapter.py: b991362635bda0bd0d6310513a507c97bf5f10431d3cf5792ec6405b10377a1c
+  /root/project/scripts/run_round2_qwen.py: 5139bf48939055cf1d55d1ce06ccb74c5e4cc0ebb2ea0ebf23d91bc1bc3af8af
+  /root/project/scripts/run_p3_extraction.py: 0c62cdc736a0ca1b732f11b0c679b0f640afa357647d06630da1f249f7d781f4
+  /root/project/src/equipment_ie/extraction.py: 90f6c86937cc583f573b62f8d26dc2496d8ecd099407565e60c7877474761185
+  /root/project/src/equipment_ie/llm_labeling.py: c93d9d93c4e1a22d508299da041768852cf67ca89e9e3b03409931b8badae1e8
+  /root/project/src/equipment_ie/schema.py: 29e71d12a51b8b1ea55bf653588be6bbb326f1a6fd3556823e072a0eaeb299b9
+  /root/project/scripts/audit_round2_uie_dev_pilot_v2_20261012.py: a8027f815815448d6bb2a9966e77268ea2781878fc14460579ea468aa75b80aa
+  /root/project/scripts/audit_round2_formal_uie_20261012.py: 5ced0fe9932bf5de653c754bf901c5f8159696136eb1ade5b82453b36b5e0bf9
+  /root/project/scripts/audit_round2_formal_qwen_20261012.py: 5b87416e0448698327a9d8f4037446610a810ec73d1d4ad146dfc66490177607
+  /root/project/scripts/run_round2_formal_20261012.py: eb353cf92270f0e73c7efd737afc54be16d0f616582c645980c5fd91c2a86cd4

@@ -1,0 +1,15 @@
+{
+  "protocol": "support_only_bert_base_chinese_linear_chain_crf",
+  "metrics": {
+    "domain": {
+      "f1_mean": 0.035512106809668764,
+      "f1_std": 0.006846378457817919,
+      "parse_failures": 0
+    },
+    "cluener_labeled_dev": {
+      "f1_mean": 0.41752981248424964,
+      "f1_std": 0.009256955779667697,
+      "parse_failures": 0
+    }
+  }
+}

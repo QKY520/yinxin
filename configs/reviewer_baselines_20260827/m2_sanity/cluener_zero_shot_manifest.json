@@ -1,0 +1,31 @@
+{
+  "api_called": false,
+  "config_path": "configs/reviewer_baselines_20260827/m2_sanity/cluener_zero_shot.yaml",
+  "config_sha256": "4e66c551e2ef04162c5252560f0b8d12c725dde62fe2996079a40f47da9fd8b4",
+  "dataset": "cluener",
+  "dry_run_prompts": "/root/project/configs/reviewer_baselines_20260827/m2_sanity/cluener_zero_shot_prompts.jsonl",
+  "dry_run_prompts_sha256": "b16b1f4df79a4a205f9a6d345eb3405ec13e5d1f6136b70b81fd4f171fc41a8a",
+  "example_selection": {
+    "example_ids": [],
+    "k": 0,
+    "mode": "none",
+    "seed": 42
+  },
+  "generated_at": "2026-08-27T02:57:22.034899+00:00",
+  "glossary_selection": {
+    "enabled": false
+  },
+  "gpu_device_present": false,
+  "max_prompt_chars": 590,
+  "model_calls": 0,
+  "model_weights_loaded": false,
+  "phase": "P3",
+  "query_path": "/root/autodl-tmp/data/cluener_tune.jsonl",
+  "query_records": 3,
+  "rag_selection": {
+    "enabled": false
+  },
+  "run_id": "m2_cluener_zero_shot_sanity",
+  "stage": "extraction_dry_run",
+  "support_path": "/root/autodl-tmp/data/cluener_support_k5_seed42.jsonl"
+}

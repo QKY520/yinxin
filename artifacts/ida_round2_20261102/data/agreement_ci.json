@@ -1,0 +1,73 @@
+{
+  "texts": 100,
+  "model_calls": 0,
+  "labels_changed": false,
+  "bootstrap_replicates": 10000,
+  "seed": 20261010,
+  "sampling_unit": "paired complete text with both annotations",
+  "ci": "percentile95",
+  "zero_denominator_rule": "F1=0; count replicates explicitly",
+  "source_hashes": {
+    "a": "8ccb7bda38205a53ed8968fb91a7393bd455ced149c5f68a5e3941c7a8695062",
+    "b": "19274b874c10c914deb5f6018ab07ea4ad63ce8baedb60afa7e76871a892050b"
+  },
+  "author_statement": "Two human annotators; some AI questions were asked. Numerical/file audit does not certify the annotation process.",
+  "scope": "new non-test calibration; not frozen-test IAA",
+  "results": {
+    "ALL": {
+      "a": 691,
+      "b": 651,
+      "matched": 509,
+      "f1": 0.7585692995529061,
+      "ci95": [
+        0.7128560109805796,
+        0.8014988420962346
+      ],
+      "zero_denominator_replicates": 0
+    },
+    "EQUIPMENT": {
+      "a": 397,
+      "b": 362,
+      "matched": 303,
+      "f1": 0.7984189723320159,
+      "ci95": [
+        0.7520210242587602,
+        0.8411465992647059
+      ],
+      "zero_denominator_replicates": 0
+    },
+    "MODULE": {
+      "a": 211,
+      "b": 209,
+      "matched": 147,
+      "f1": 0.7,
+      "ci95": [
+        0.6294389170896785,
+        0.7609262180071488
+      ],
+      "zero_denominator_replicates": 0
+    },
+    "TECH_SCHEME": {
+      "a": 31,
+      "b": 22,
+      "matched": 15,
+      "f1": 0.5660377358490566,
+      "ci95": [
+        0.3333333333333333,
+        0.75
+      ],
+      "zero_denominator_replicates": 0
+    },
+    "METRIC": {
+      "a": 52,
+      "b": 58,
+      "matched": 44,
+      "f1": 0.8,
+      "ci95": [
+        0.6126034197462769,
+        0.9318181818181818
+      ],
+      "zero_denominator_replicates": 0
+    }
+  }
+}

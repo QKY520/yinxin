@@ -1,5 +1,13 @@
 # Few-shot Equipment-Domain Chinese NER
 
+## Current IDA reproducibility update — 2026-11-02
+
+The current experiment code, configurations, environment specifications, and matching test sources have been synchronized from the experiment workspace. The executed round-two Qwen/UIE runners and the prespecified 13/3 statistical analysis are included. Frozen configuration files, aggregate results, text-free support/dev/test annotations, and 14 aligned prediction sets are provided in [artifacts/ida_round2_20261102](artifacts/ida_round2_20261102/README.md).
+
+The new artifacts preserve the original frozen labels and predictions. Their TP/FP/FN agree with the reported results; no model, training, or new bootstrap run was performed for this synchronization. The exports omit source paragraphs, entity surface strings, filled requests, and full retrieval replay text. Source corpora and model weights are acquired separately under their original terms. The artifact README describes which numerical checks can be reproduced directly and which model inputs must be obtained separately.
+
+Earlier status statements below are historical. They describe earlier manuscripts, experiment gates, and repository contents, rather than the scope of this update. Identifying title-page/contact files and internal author-intake materials are not included in the update.
+
 This repository contains a reproducible applied-paper project for low-label
 Chinese equipment-domain named entity recognition. The completed paper-facing
 evidence compares fixed-random and kNN demonstrations, domain-glossary

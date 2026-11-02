@@ -1,0 +1,16 @@
+{
+  "zero": "zero.jsonl",
+  "bm25": "bm25.jsonl",
+  "dense": "dense.jsonl",
+  "full": "full.jsonl",
+  "glossary": "glossary.jsonl",
+  "random42": "random42.jsonl",
+  "random43": "random43.jsonl",
+  "random44": "random44.jsonl",
+  "knn": "knn.jsonl",
+  "knn_g": "knn_g.jsonl",
+  "uie_zs": "uie_zs.jsonl",
+  "uie_ft42": "uie_ft42.jsonl",
+  "uie_ft43": "uie_ft43.jsonl",
+  "uie_ft44": "uie_ft44.jsonl"
+}

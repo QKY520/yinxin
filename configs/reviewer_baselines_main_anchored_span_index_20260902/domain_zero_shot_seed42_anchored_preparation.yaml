@@ -1,0 +1,62 @@
+run_id: main_domain_zero_shot_seed42_anchored_span_index_preparation
+config_name: main_domain_zero_shot_seed42_anchored_span_index_preparation
+execution:
+  phase: REVIEWER_BASELINE_MAIN_ANCHORED_SPAN_INDEX_CORRECTION_PREP
+  authorized: false
+  human_gate: JISE_ECFSIE_REVIEW_BASELINE_MAIN_ANCHORED_SPAN_INDEX_CORRECTION_PREP_READONLY_APPROVED
+  model_calls_allowed: false
+  gpu_required: true
+data:
+  dataset: domain
+  support_path: /root/autodl-tmp/data/domain_support.jsonl
+  query_path: /root/autodl-tmp/data/domain_dev.jsonl
+  evaluation_path: /root/autodl-tmp/data/domain_dev.jsonl
+schema:
+  task: ner
+  entity_types:
+    EQUIPMENT: 完整装备、武器平台、系统或型号名称。
+    MODULE: 设备的部件、组件、子系统、传感器、载荷或功能模块。
+    TECH_SCHEME: 技术体制、制导方式、作战/测试/改进方案或能力方案。
+    METRIC: 数值指标、性能参数、射程、速度、重量、时间或数量表达。
+  relation_types: {}
+examples:
+  mode: none
+  k: 0
+  seed: 42
+prompt:
+  anchored_contract_version: anchored_span_index_v1
+  output_instruction: 只返回JSON，不要任何解释，不要markdown代码块
+  retry_suffix: 只返回合法JSON；每个实体必须同时给出准确的start、end、span、type，且span必须等于最后文本的text[start:end]
+  reference_instruction: 参考资料仅用于辅助判断；实体只能来自最后的待抽取文本，不能从参考资料复制。
+model:
+  name: /root/autodl-tmp/models/qwen2.5-7b
+  base_url: http://127.0.0.1:8000
+  timeout_seconds: 300
+  api_key: EMPTY
+generation:
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 768
+  seed: 42
+  response_format:
+    type: json_object
+cache:
+  dir: /root/autodl-tmp/reviewer_baselines_main_anchored_span_index_20260902/cache/domain_zero_shot_seed42
+outputs:
+  dry_run_prompts: /root/autodl-tmp/reviewer_baselines_main_anchored_span_index_20260902/domain_zero_shot_seed42/dry_run_prompts.jsonl
+  manifest: /root/autodl-tmp/reviewer_baselines_main_anchored_span_index_20260902/domain_zero_shot_seed42/manifest.json
+  per_query: /root/autodl-tmp/reviewer_baselines_main_anchored_span_index_20260902/domain_zero_shot_seed42/per_query.jsonl
+  summary: /root/autodl-tmp/reviewer_baselines_main_anchored_span_index_20260902/domain_zero_shot_seed42/summary.json
+parsing:
+  drop_invalid_entities: false
+  output_mode: anchored_span_index
+  constrained_json_schema: true
+  max_entities: 12
+protocol:
+  name: ner_anchored_span_index_v1
+  query_last: true
+  exact_span_required: true
+  overlap_policy: reject
+  invalid_entity_policy: fail_row
+  retry_count: 1
+query_limit: 20

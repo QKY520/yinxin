@@ -1,0 +1,35 @@
+{
+  "api_called": false,
+  "config_path": "configs/reviewer_baselines_20260827/m2_sanity/cluener_glossary_only.yaml",
+  "config_sha256": "93e60c6fe759fe4263467611bf3c1e0e5cd91144d18d78f59471286db3385506",
+  "dataset": "cluener",
+  "dry_run_prompts": "/root/project/configs/reviewer_baselines_20260827/m2_sanity/cluener_glossary_only_prompts.jsonl",
+  "dry_run_prompts_sha256": "9b358db15989a43002bef7148490c966afa1bcc8a05704fcc7c832ff76b383e1",
+  "example_selection": {
+    "example_ids": [],
+    "k": 0,
+    "mode": "none",
+    "seed": 42
+  },
+  "generated_at": "2026-08-27T02:57:22.363557+00:00",
+  "glossary_selection": {
+    "candidates": 73,
+    "enabled": true,
+    "match_mode": "substring",
+    "max_entries": 20,
+    "path": "/root/project/data/domain_dict.jsonl"
+  },
+  "gpu_device_present": false,
+  "max_prompt_chars": 590,
+  "model_calls": 0,
+  "model_weights_loaded": false,
+  "phase": "P3",
+  "query_path": "/root/autodl-tmp/data/cluener_tune.jsonl",
+  "query_records": 3,
+  "rag_selection": {
+    "enabled": false
+  },
+  "run_id": "m2_cluener_glossary_only_sanity",
+  "stage": "extraction_dry_run",
+  "support_path": "/root/autodl-tmp/data/cluener_support_k5_seed42.jsonl"
+}

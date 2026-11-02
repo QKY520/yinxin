@@ -1,0 +1,22 @@
+\begin{CJK*}{UTF8}{gbsn}
+\small
+\noindent 任务定义：从给定文本中抽取命名实体，实体必须是原文中的连续片段。\par\medskip
+\noindent Schema：\par
+\noindent - EQUIPMENT: 完整装备、武器平台、系统或型号名称。\par
+\noindent - MODULE: 装备的部件、组件、子系统、传感器、载荷或功能模块。\par
+\noindent - TECH\_SCHEME: 技术体制、制导方式、作战/测试/改进方案或能力方案。\par
+\noindent - METRIC: 数值指标、性能参数、射程、速度、重量、时间或数量表达。\par\medskip
+\noindent 领域术语表：\par
+\noindent [matched term--type entries; omit block if empty]\par\medskip
+\noindent 参考资料（仅供判断，不得直接复制实体）：\par
+\noindent [retrieved passages; omit block if empty]\par\medskip
+\noindent 输出格式：\par
+\noindent \{"entities":[\{"span":"原文片段","type":"实体类型","occurrence":1\}],"relations":[]\}\par
+\noindent 。occurrence 表示该完全相同片段在原文中从左到右第几次出现，从1开始。\par\medskip
+\noindent 硬性输出约束：\allowbreak{}type 必须逐字等于 Schema 中列出的英文类型之一；\allowbreak{}禁止输出 Schema 之外的类型，\allowbreak{}例如 event、\allowbreak{}person、\allowbreak{}location、\allowbreak{}ORG、\allowbreak{}PER；\allowbreak{}如果没有把握或片段不在原文中，\allowbreak{}宁可不输出；\allowbreak{}occurrence 不能超过该片段在原文中实际出现的次数；\allowbreak{}禁止重叠或嵌套实体；\allowbreak{}当职位/身份词和人名相邻时，\allowbreak{}分别输出 position 与 name，\allowbreak{}不要输出包含两者的整体片段。\par\medskip
+\noindent 示例[i]文本：[support text i]\par
+\noindent 示例[i]输出：[labeled JSON i]\par
+\noindent [repeat for each selected demonstration; omit when K=0]\par\medskip
+\noindent 待抽取文本：[complete query]\par\medskip
+\noindent 只返回JSON,不要任何解释,不要markdown代码块\par
+\end{CJK*}

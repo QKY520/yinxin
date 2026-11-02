@@ -1,0 +1,69 @@
+run_id: reviewer-qwen-neutral-envelope-formal-bm25_only
+config_name: reviewer_qwen_neutral_envelope_formal_bm25_only
+execution:
+  phase: REVIEWER_BASELINE_QWEN_NEUTRAL_ENVELOPE_FORMAL_EXECUTION
+  authorized: true
+  human_gate: JISE_ECFSIE_REVIEW_BASELINE_QWEN_NEUTRAL_ENVELOPE_FORMAL_EXECUTION_APPROVED
+  model_calls_allowed: true
+  gpu_required: true
+data:
+  dataset: domain_test
+  support_path: null
+  query_path: /root/autodl-tmp/data/domain_test.jsonl
+  expected_records: 170
+  expected_sha256: 42f6ecbbfd1eb57937cd74a04e5b8362fe0976b5bf108e52523a4778dd53bfd0
+schema:
+  task: ner
+  entity_types:
+    EQUIPMENT: 完整装备、武器平台、系统或型号名称。
+    MODULE: 装备的部件、组件、子系统、传感器、载荷或功能模块。
+    TECH_SCHEME: 技术体制、制导方式、作战/测试/改进方案或能力方案。
+    METRIC: 数值指标、性能参数、射程、速度、重量、时间或数量表达。
+  relation_types: {}
+examples:
+  mode: none
+  k: 0
+  seed: 42
+prompt:
+  output_instruction: 只返回JSON,不要任何解释,不要markdown代码块
+  retry_suffix: 只返回合法JSON
+  retry_mode: parser_error_aware
+model:
+  name: /root/autodl-tmp/models/qwen2.5-7b
+  base_url: http://127.0.0.1:8000
+  timeout_seconds: 300
+  api_key: EMPTY
+generation:
+  temperature: 0.0
+  top_p: 1.0
+  max_tokens: 768
+  seed: 42
+parsing:
+  drop_invalid_entities: true
+  output_mode: occurrence
+  constrained_json_schema: false
+  ner_only_envelope_policy: entities_or_entities_relations_v2
+protocol:
+  name: qwen_neutral_envelope_formal_v1
+  parser_failure_ceiling: 0.2
+  gold_or_bert_repair_forbidden: true
+  system: bm25_only
+  run_order:
+  - zero_shot
+  - bm25_only
+  - rag_only
+  - ec_fsie_full
+query_limit: 170
+dry_run:
+  max_queries: 170
+cache:
+  dir: /root/autodl-tmp/reviewer_qwen_neutral_envelope_formal_20260917/formal/bm25_only/cache
+outputs:
+  dry_run_prompts: /root/autodl-tmp/reviewer_qwen_neutral_envelope_formal_20260917/formal/bm25_only/dry_run_prompts.jsonl
+  manifest: /root/autodl-tmp/reviewer_qwen_neutral_envelope_formal_20260917/formal/bm25_only/manifest.json
+  per_query: /root/autodl-tmp/reviewer_qwen_neutral_envelope_formal_20260917/formal/bm25_only/per_query.jsonl
+  summary: /root/autodl-tmp/reviewer_qwen_neutral_envelope_formal_20260917/formal/bm25_only/summary.json
+rag:
+  enabled: true
+  mode: replay_manifest
+  replay_manifest_path: /root/autodl-tmp/reviewer_qwen_neutral_envelope_formal_20260917/replay_manifests/bm25.json

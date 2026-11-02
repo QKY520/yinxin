@@ -1,0 +1,28 @@
+{
+  "files": [
+    {
+      "path": "domain_support_offsets.jsonl",
+      "records": 30,
+      "entities": 183,
+      "sha256": "9378b13d719fecb3d48f0a972974f8e44b045d4f2c60a487c1ee657d50cd8f0e",
+      "frozen_source_sha256": "9633c7f6ceee8592408034e26834233e3f03b2f58a104783757ae664a4bab22a",
+      "transformation": "Only id/split/text SHA256/length/entity start/end/type; no source text or entity surface strings."
+    },
+    {
+      "path": "domain_dev_offsets.jsonl",
+      "records": 50,
+      "entities": 307,
+      "sha256": "6c9befffaabb2fd15d5ae91f4b0d5f245d6502127871eb91d850c9e2ac0e707c",
+      "frozen_source_sha256": "ade6eda3547349117b5fa212c6567bd76722bb1996844b0de4f2d5a01ffc0c6b",
+      "transformation": "Only id/split/text SHA256/length/entity start/end/type; no source text or entity surface strings."
+    },
+    {
+      "path": "domain_test_offsets.jsonl",
+      "records": 170,
+      "entities": 954,
+      "sha256": "581dd3d7dda75dee603d7a3f638f87e54b65c0cfb3e965a70e052941c559f392",
+      "frozen_source_sha256": "42f6ecbbfd1eb57937cd74a04e5b8362fe0976b5bf108e52523a4778dd53bfd0",
+      "transformation": "Only id/split/text SHA256/length/entity start/end/type; no source text or entity surface strings."
+    }
+  ]
+}

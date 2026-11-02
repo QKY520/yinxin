@@ -1,0 +1,42 @@
+{
+  "api_called": false,
+  "config_path": "configs/reviewer_baselines_20260827/m2_sanity/domain_rag_only.yaml",
+  "config_sha256": "3102ba2e80f49ad72eb637cc08f81145ed1fca5381fce60b9f8ba0c800507bb4",
+  "dataset": "domain",
+  "dry_run_prompts": "/root/project/configs/reviewer_baselines_20260827/m2_sanity/domain_rag_only_prompts.jsonl",
+  "dry_run_prompts_sha256": "fbf6553f7ca6ae351bad2d86dfe196c06e8c112d14dc0b4ba86b608a5ce293f0",
+  "example_selection": {
+    "example_ids": [],
+    "k": 0,
+    "mode": "none",
+    "seed": 42
+  },
+  "generated_at": "2026-08-27T02:57:21.662049+00:00",
+  "glossary_selection": {
+    "enabled": false
+  },
+  "gpu_device_present": false,
+  "max_prompt_chars": 1692,
+  "model_calls": 0,
+  "model_weights_loaded": false,
+  "phase": "P3",
+  "query_path": "/root/autodl-tmp/data/domain_dev.jsonl",
+  "query_records": 3,
+  "rag_selection": {
+    "chunk_chars": 260,
+    "chunk_count": 333,
+    "corpus_path": "/root/autodl-tmp/data/domain_rag_corpus.jsonl",
+    "corpus_rows_sha256": "92658eeab6952eba6b160f15b43ec37e98fb37830becc449ca62376e9979368a",
+    "enabled": true,
+    "excluded_source_ids": 0,
+    "mode": "lexical_preview",
+    "note": "GPU-free lexical preview for prompt/evidence audit only; final D uses bge_faiss_rerank.",
+    "overlap_chars": 40,
+    "raw_chunk_count": 333,
+    "retrieve_top_k": 20,
+    "top_k": 3
+  },
+  "run_id": "m2_domain_rag_only_sanity",
+  "stage": "extraction_dry_run",
+  "support_path": "/root/autodl-tmp/data/domain_support.jsonl"
+}

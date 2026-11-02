@@ -55,6 +55,15 @@ def write_jsonl(path: Path, rows: list[dict]) -> None:
 
 
 class ExtractionTest(unittest.TestCase):
+    def test_span_index_prompt_documents_ner_only_envelopes(self) -> None:
+        prompt = build_ner_prompt(
+            query_text="AB", entity_types={"EQUIPMENT": "equipment"},
+            examples=[], output_mode="span_index",
+        )
+        self.assertIn('"entities":[{"start":0,"end":2,"type":"实体类型"}]}', prompt)
+        self.assertIn('"relations":[]', prompt)
+        self.assertIn("禁止其它顶层字段", prompt)
+
     def test_prompt_order_and_output_instruction(self) -> None:
         example = record("ex1", "张三去了北京。", 0, 2, "name")
         prompt = build_ner_prompt(
@@ -66,6 +75,49 @@ class ExtractionTest(unittest.TestCase):
         self.assertLess(prompt.index("Schema"), prompt.index("示例1文本"))
         self.assertLess(prompt.index("示例1文本"), prompt.index("待抽取文本"))
         self.assertTrue(prompt.endswith("只返回JSON,不要任何解释,不要markdown代码块"))
+
+    def test_occurrence_copy_v2_contract_is_opt_in_and_before_query(self) -> None:
+        prompt = build_ner_prompt(
+            query_text="雷达A：测试，雷达A：测试",
+            entity_types={"EQUIPMENT": "equipment"},
+            examples=[],
+            output_mode="occurrence",
+            occurrence_contract_version="occurrence_copy_v2",
+            output_instruction="JSON_ONLY",
+        )
+        self.assertIn("OCCURRENCE_COPY_V2_LITERAL_CONTRACT", prompt)
+        self.assertIn("character-for-character", prompt)
+        self.assertIn("occurrence 1 and 2", prompt)
+        self.assertLess(
+            prompt.index("OCCURRENCE_COPY_V2_LITERAL_CONTRACT"),
+            prompt.index("雷达A：测试，雷达A：测试"),
+        )
+        self.assertTrue(prompt.endswith("JSON_ONLY"))
+
+        legacy = build_ner_prompt(
+            query_text="AB",
+            entity_types={"EQUIPMENT": "equipment"},
+            examples=[],
+            output_mode="occurrence",
+            output_instruction="JSON_ONLY",
+        )
+        self.assertNotIn("OCCURRENCE_COPY_V2_LITERAL_CONTRACT", legacy)
+
+    def test_anchored_span_index_prompt_documents_span_echo_contract(self) -> None:
+        prompt = build_ner_prompt(
+            query_text="AB/CD",
+            entity_types={"EQUIPMENT": "equipment"},
+            examples=[],
+            output_mode="anchored_span_index",
+            output_instruction="JSON_ONLY",
+        )
+        self.assertIn("Anchored span-index NER output", prompt)
+        self.assertIn("text[start:end]", prompt)
+        self.assertIn("Python Unicode character indices", prompt)
+        self.assertLess(prompt.index("Anchored span-index NER output"), prompt.rfind("AB/CD"))
+        self.assertTrue(prompt.endswith("JSON_ONLY"))
+        self.assertIn("occurrence字段在此模式中禁止输出", prompt)
+        self.assertLess(prompt.index("ANCHORED_SPAN_INDEX_OVERRIDE"), prompt.rfind("AB/CD"))
 
     def test_prompt_places_glossary_before_examples(self) -> None:
         example = record("ex1", "歼-16战机采用后掠翼。", 0, 6, "EQUIPMENT")
@@ -197,6 +249,96 @@ class ExtractionTest(unittest.TestCase):
             }
         )
 
+    def test_validate_execution_gate_accepts_ner_envelope_smoke_gate(self) -> None:
+        validate_execution_gate(
+            {
+                "authorized": True,
+                "model_calls_allowed": True,
+                "phase": "REVIEWER_BASELINE_B1_NER_ENVELOPE_SMOKE_TEST",
+                "human_gate": "JISE_ECFSIE_REVIEW_BASELINE_B1_NER_ENVELOPE_SMOKE_TEST_APPROVED",
+            }
+        )
+
+    def test_validate_execution_gate_accepts_domain_schema_smoke_gate(self) -> None:
+        validate_execution_gate(
+            {
+                "authorized": True,
+                "model_calls_allowed": True,
+                "phase": "REVIEWER_BASELINE_B1_DOMAIN_SCHEMA_COMPATIBILITY_SMOKE",
+                "human_gate": "JISE_ECFSIE_REVIEW_BASELINE_B1_DOMAIN_SCHEMA_COMPATIBILITY_SMOKE_APPROVED",
+            }
+        )
+
+    def test_validate_execution_gate_accepts_output_budget_repair_smoke_gate(self) -> None:
+        validate_execution_gate(
+            {
+                "authorized": True,
+                "model_calls_allowed": True,
+                "phase": "REVIEWER_BASELINE_B1_OUTPUT_BUDGET_REPAIR_SMOKE",
+                "human_gate": "JISE_ECFSIE_REVIEW_BASELINE_B1_OUTPUT_BUDGET_REPAIR_SMOKE_APPROVED",
+            }
+        )
+
+    def test_validate_execution_gate_accepts_output_schema_bounded_smoke_15_gate(self) -> None:
+        validate_execution_gate(
+            {
+                "authorized": True,
+                "model_calls_allowed": True,
+                "phase": "REVIEWER_BASELINE_B1_OUTPUT_SCHEMA_BOUNDED_SMOKE_15",
+                "human_gate": "JISE_ECFSIE_REVIEW_BASELINE_B1_OUTPUT_SCHEMA_BOUNDED_SMOKE_15_APPROVED",
+            }
+        )
+
+    def test_validate_execution_gate_accepts_formal_b1_gate(self) -> None:
+        validate_execution_gate(
+            {
+                "authorized": True,
+                "model_calls_allowed": True,
+                "phase": "REVIEWER_BASELINE_B1_FORMAL",
+                "human_gate": "JISE_ECFSIE_REVIEW_BASELINE_B1_FORMAL_APPROVED",
+            }
+        )
+
+    def test_validate_execution_gate_accepts_qwen_parser_correction_gate(self) -> None:
+        validate_execution_gate(
+            {
+                "authorized": True,
+                "model_calls_allowed": True,
+                "phase": "REVIEWER_BASELINE_MAIN_UNIFIED_OCCURRENCE_QWEN_PARSER_CORRECTION",
+                "human_gate": "JISE_ECFSIE_REVIEW_BASELINE_MAIN_UNIFIED_OCCURRENCE_QWEN_PARSER_CORRECTION_APPROVED",
+            }
+        )
+
+    def test_validate_execution_gate_accepts_occurrence_repair_pilot_gate(self) -> None:
+        validate_execution_gate(
+            {
+                "authorized": True,
+                "model_calls_allowed": True,
+                "human_gate": "JISE_ECFSIE_REVIEW_BASELINE_MAIN_UNIFIED_OCCURRENCE_REPAIR_PILOT_APPROVED",
+                "phase": "REVIEWER_BASELINE_MAIN_UNIFIED_OCCURRENCE_REPAIR_PILOT",
+            }
+        )
+
+    def test_candidate_index_maps_only_query_local_candidates(self) -> None:
+        from equipment_ie.extraction import generate_candidate_spans
+        candidates = generate_candidate_spans("雷达A测试")
+        parsed = parse_extraction_output(
+            '{"entities":[{"candidate_id":"c0001","type":"EQUIPMENT"}]}',
+            record_id="candidate", text="雷达A测试", entity_types={"EQUIPMENT"},
+            output_mode="candidate_index", candidate_spans=candidates,
+        )
+        self.assertEqual(parsed["entities"][0]["span"], candidates[0]["span"])
+
+    def test_validate_execution_gate_accepts_anchored_span_index_gate(self) -> None:
+        validate_execution_gate(
+            {
+                "authorized": True,
+                "model_calls_allowed": True,
+                "phase": "REVIEWER_BASELINE_MAIN_ANCHORED_SPAN_INDEX_CORRECTION",
+                "human_gate": "JISE_ECFSIE_REVIEW_BASELINE_MAIN_ANCHORED_SPAN_INDEX_CORRECTION_APPROVED",
+            }
+        )
+
     def test_span_index_output_is_converted_to_exact_entities(self) -> None:
         from equipment_ie.extraction import parse_extraction_output
 
@@ -209,6 +351,56 @@ class ExtractionTest(unittest.TestCase):
         )
         self.assertEqual(parsed["entities"], [{"start": 0, "end": 2, "type": "EQUIPMENT", "span": "坦克"}])
 
+    def test_anchored_span_index_requires_exact_span_echo(self) -> None:
+        from equipment_ie.extraction import (
+            build_ner_anchored_span_index_response_format,
+            parse_extraction_output,
+        )
+
+        parsed = parse_extraction_output(
+            '{"entities":[{"start":0,"end":2,"span":"AB","type":"EQUIPMENT"}],"relations":[]}',
+            record_id="q1", text="ABCD", entity_types={"EQUIPMENT"},
+            output_mode="anchored_span_index",
+        )
+        self.assertEqual(parsed["entities"][0]["span"], "AB")
+        with self.assertRaisesRegex(ValueError, "does not match"):
+            parse_extraction_output(
+                '{"entities":[{"start":0,"end":2,"span":"AC","type":"EQUIPMENT"}],"relations":[]}',
+                record_id="q1", text="ABCD", entity_types={"EQUIPMENT"},
+                output_mode="anchored_span_index",
+            )
+        response = build_ner_anchored_span_index_response_format(["EQUIPMENT"], 4)
+        item = response["json_schema"]["schema"]["properties"]["entities"]["items"]
+        self.assertEqual(item["required"], ["start", "end", "span", "type"])
+        self.assertEqual(response["json_schema"]["name"], "ner_anchored_span_index_output")
+
+    def test_anchored_span_index_rejects_boolean_offsets(self) -> None:
+        from equipment_ie.extraction import parse_extraction_output
+
+        with self.assertRaisesRegex(ValueError, "valid text offsets"):
+            parse_extraction_output(
+                '{"entities":[{"start":true,"end":2,"span":"AB","type":"EQUIPMENT"}],"relations":[]}',
+                record_id="q1", text="ABCD", entity_types={"EQUIPMENT"},
+                output_mode="anchored_span_index",
+            )
+
+    def test_anchored_span_index_rejects_missing_relations_and_unknown_keys(self) -> None:
+        from equipment_ie.extraction import parse_extraction_output
+
+        for payload in (
+            '{"entities":[]}',
+            '{"entities":[],"relations":[],"extra":1}',
+            '{"entities":[{"start":0,"end":2,"span":"AB","type":"EQUIPMENT","extra":1}],"relations":[]}',
+        ):
+            with self.assertRaises(ValueError):
+                parse_extraction_output(
+                    payload,
+                    record_id="q1",
+                    text="ABCD",
+                    entity_types={"EQUIPMENT"},
+                    output_mode="anchored_span_index",
+                )
+
     def test_span_index_output_rejects_out_of_bounds_offsets(self) -> None:
         from equipment_ie.extraction import parse_extraction_output
 
@@ -220,6 +412,88 @@ class ExtractionTest(unittest.TestCase):
                 entity_types={"EQUIPMENT"},
                 output_mode="span_index",
             )
+
+    def test_ner_span_index_response_schema_is_bounded_and_strict(self) -> None:
+        from equipment_ie.extraction import build_ner_span_index_response_format
+
+        response_format = build_ner_span_index_response_format(
+            ["MODULE", "EQUIPMENT"], 17, max_entities=12
+        )
+        self.assertEqual(response_format["type"], "json_schema")
+        schema = response_format["json_schema"]["schema"]
+        self.assertFalse(schema["additionalProperties"])
+        self.assertEqual(schema["properties"]["entities"]["maxItems"], 12)
+        item = schema["properties"]["entities"]["items"]
+        self.assertFalse(item["additionalProperties"])
+        self.assertEqual(item["properties"]["start"]["maximum"], 16)
+        self.assertEqual(item["properties"]["end"]["maximum"], 17)
+        self.assertEqual(item["properties"]["type"]["enum"], ["EQUIPMENT", "MODULE"])
+        self.assertEqual(schema["properties"]["relations"]["maxItems"], 0)
+
+    def test_ner_span_index_response_schema_rejects_invalid_budget(self) -> None:
+        from equipment_ie.extraction import build_ner_span_index_response_format
+
+        with self.assertRaisesRegex(ValueError, "max_entities"):
+            build_ner_span_index_response_format(["EQUIPMENT"], 5, max_entities=0)
+
+    def test_ner_span_index_omitted_relations_are_deterministically_defaulted(self) -> None:
+        flags: list[dict] = []
+        parsed = parse_extraction_output(
+            '{"entities":[{"start":0,"end":2,"type":"EQUIPMENT"}]}',
+            record_id="q1", text="ABCD", entity_types={"EQUIPMENT"},
+            output_mode="span_index", sanitization_flags=flags,
+        )
+        self.assertEqual(parsed["relations"], [])
+        self.assertEqual(flags[0]["kind"], "NER_RELATIONS_DEFAULTED")
+
+    def test_relation_enabled_span_index_still_requires_relations(self) -> None:
+        with self.assertRaisesRegex(ValueError, "entities and relations only"):
+            parse_extraction_output(
+                '{"entities":[]}', record_id="q1", text="AB",
+                entity_types={"EQUIPMENT"},
+                relation_types={"USES": {"head_types": ["EQUIPMENT"], "tail_types": ["EQUIPMENT"]}},
+                output_mode="span_index",
+            )
+
+    def test_occurrence_mode_still_requires_relations_envelope(self) -> None:
+        with self.assertRaisesRegex(ValueError, "entities and relations only"):
+            parse_extraction_output(
+                '{"entities":[]}', record_id="q1", text="AB",
+                entity_types={"EQUIPMENT"}, output_mode="occurrence",
+            )
+
+    def test_ner_span_index_rejects_unknown_or_nonempty_relations(self) -> None:
+        for payload in (
+            '{"entities":[],"extra":1}',
+            '{"entities":[],"relations":[{"head":0,"tail":0,"type":"USES"}]}',
+        ):
+            with self.assertRaisesRegex(ValueError, "output must contain entities and relations only|relations are not enabled"):
+                parse_extraction_output(
+                    payload, record_id="q1", text="AB", entity_types={"EQUIPMENT"},
+                    output_mode="span_index",
+                )
+
+    def test_span_index_rejects_invalid_entity_units(self) -> None:
+        payloads = (
+            '{"entities":[{"start":0,"end":1,"type":"UNKNOWN"}],"relations":[]}',
+            '{"entities":[{"start":0,"end":0,"type":"EQUIPMENT"}],"relations":[]}',
+            '{"entities":[{"start":0,"end":1,"type":"EQUIPMENT"},{"start":0,"end":1,"type":"EQUIPMENT"}],"relations":[]}',
+            '{"entities":[{"start":0,"end":2,"type":"EQUIPMENT"},{"start":1,"end":3,"type":"EQUIPMENT"}],"relations":[]}',
+        )
+        for payload in payloads:
+            with self.assertRaises(ValueError):
+                parse_extraction_output(
+                    payload, record_id="q1", text="ABCD", entity_types={"EQUIPMENT"},
+                    output_mode="span_index",
+                )
+
+    def test_span_index_rejects_malformed_json_and_wrong_entity_shape(self) -> None:
+        for payload in ("{not-json", '{"entities":[{"start":0,"end":1}],"relations":[]}'):
+            with self.assertRaises(ValueError):
+                parse_extraction_output(
+                    payload, record_id="q1", text="AB", entity_types={"EQUIPMENT"},
+                    output_mode="span_index",
+                )
 
     def test_request_envelope_can_enable_json_response_format(self) -> None:
         from equipment_ie.extraction import build_request_envelope
@@ -695,6 +969,10 @@ class ExtractionTest(unittest.TestCase):
             row = saved_rows[0]
             self.assertEqual(row["latency_ms"], 12.5)
             self.assertEqual(row["llm_latency_ms"], 12.5)
+            self.assertEqual(row["accepted_entity_count"], 1)
+            self.assertEqual(row["invalid_unit_drops"], 0)
+            self.assertEqual(row["overlap_drops"], 0)
+            self.assertEqual(row["raw_candidate_entity_count"], 1)
             for field in (
                 "example_selection_ms",
                 "glossary_selection_ms",
@@ -709,6 +987,95 @@ class ExtractionTest(unittest.TestCase):
             self.assertEqual(saved_summary["timing_totals_ms"]["llm_latency_ms"], 12.5)
             self.assertIn("rag_selection_ms", saved_summary["timing_means_ms"])
             self.assertEqual(saved_summary["entity_micro"]["tp"], 1)
+            self.assertEqual(saved_summary["sanitization_counts"]["all_unit_events"], 0)
+            self.assertEqual(saved_summary["entity_audit_counts"]["accepted_entities"], 1)
+            self.assertEqual(
+                saved_summary["entity_audit_counts"]["raw_candidate_entities_observed"], 1
+            )
+            self.assertEqual(saved_summary["entity_audit_counts"]["rows_with_unknown_raw_candidates"], 0)
+
+    def test_run_execute_logs_unit_drops_without_offset_repair(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            per_query = root / "per_query.jsonl"
+            summary = root / "summary.json"
+            query_record = record("q1", "Radar and carrier.", 0, 5, "EQUIPMENT")
+            config = {
+                "run_id": "unit-execute-drop-audit",
+                "config_name": "unit-drop-audit",
+                "execution": {
+                    "authorized": True,
+                    "model_calls_allowed": True,
+                    "phase": "P3_UNIT",
+                    "human_gate": "P3_GPU_SANITY_APPROVED",
+                },
+                "data": {"dataset": "unit"},
+                "schema": {"entity_types": {"EQUIPMENT": "equipment"}, "relation_types": {}},
+                "examples": {"mode": "none", "k": 0, "seed": 42},
+                "prompt": {"output_instruction": "JSON_ONLY"},
+                "model": {
+                    "name": "unit-model",
+                    "base_url": "http://127.0.0.1:8000",
+                    "timeout_seconds": 1,
+                    "api_key": "EMPTY",
+                },
+                "generation": {"temperature": 0.0, "top_p": 1.0, "max_tokens": 64, "seed": 42},
+                "cache": {"dir": (root / "cache").as_posix()},
+                "outputs": {"per_query": per_query.as_posix(), "summary": summary.as_posix()},
+                "parsing": {
+                    "drop_invalid_entities": True,
+                    "output_mode": "occurrence",
+                    "constrained_json_schema": False,
+                    "max_entities": 12,
+                },
+            }
+
+            def fake_chat_with_cache(**_kwargs: object) -> ChatResult:
+                return ChatResult(
+                    content=json.dumps(
+                        {
+                            "entities": [
+                                {"span": "Radar", "type": "EQUIPMENT", "occurrence": 1},
+                                {"span": "not-in-text", "type": "EQUIPMENT", "occurrence": 1},
+                            ],
+                            "relations": [],
+                        }
+                    ),
+                    request_hash="request-drop",
+                    raw_output_hash="raw-drop",
+                    cache_hit=True,
+                    latency_ms=1.0,
+                )
+
+            with (
+                patch("scripts.run_p3_extraction.gpu_visible", return_value=True),
+                patch(
+                    "scripts.run_p3_extraction.build_query_plan",
+                    return_value=(
+                        [],
+                        [query_record],
+                        lambda _r: [],
+                        lambda _r: [],
+                        lambda _r: [],
+                        "hash",
+                        {},
+                        {"enabled": False},
+                        {"enabled": False},
+                    ),
+                ),
+                patch("scripts.run_p3_extraction.chat_with_cache", side_effect=fake_chat_with_cache),
+            ):
+                self.assertEqual(run_execute(config, root / "config.yaml"), 0)
+
+            saved_rows = list(iter_jsonl(per_query, validate=False))
+            self.assertEqual(saved_rows[0]["pred_raw"]["entities"][0]["span"], "Radar")
+            self.assertEqual(saved_rows[0]["accepted_entity_count"], 1)
+            self.assertEqual(saved_rows[0]["invalid_unit_drops"], 1)
+            self.assertEqual(saved_rows[0]["raw_candidate_entity_count"], 2)
+            self.assertEqual(saved_rows[0]["sanitization_flags"][0]["kind"], "ENTITY_DROPPED_INVALID_UNIT")
+            saved_summary = json.loads(summary.read_text(encoding="utf-8"))
+            self.assertEqual(saved_summary["sanitization_counts"]["invalid_unit_drops"], 1)
+            self.assertEqual(saved_summary["entity_audit_counts"]["raw_candidate_entities_observed"], 2)
 
     def test_rag_replay_manifest_round_trip_preserves_passages(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

@@ -1,0 +1,131 @@
+{
+  "package_kind": "pending aggregate-results increment",
+  "model_calls_during_preparation": 0,
+  "statistics_resampled_during_preparation": false,
+  "frozen_sources_modified": false,
+  "files": [
+    {
+      "path": "data/raw_metrics_14_systems.csv",
+      "bytes": 1297,
+      "sha256": "ff7c65473d9baaad9bb1a6d917ab9b43c5b3382c7a274f512b0d1cf8b02fcb5e",
+      "source": "evidence/round2/statistics_cases/raw_metrics_14_systems.csv",
+      "treatment": "byte-identical copy",
+      "review": "All cells are system identifiers, counts, or aggregate numerical metrics.",
+      "source_sha256": "ff7c65473d9baaad9bb1a6d917ab9b43c5b3382c7a274f512b0d1cf8b02fcb5e"
+    },
+    {
+      "path": "data/f1_comparisons_13.csv",
+      "bytes": 2442,
+      "sha256": "8eedc3d677b9f254cd3cf9b5d22062c0292d6774112d55fff238b6e4a1c17e7b",
+      "source": "evidence/round2/statistics_cases/f1_comparisons_13.csv",
+      "treatment": "byte-identical copy",
+      "review": "Thirteen contrast identifiers and numerical test results; no input text.",
+      "source_sha256": "8eedc3d677b9f254cd3cf9b5d22062c0292d6774112d55fff238b6e4a1c17e7b"
+    },
+    {
+      "path": "data/rag_secondary_3.csv",
+      "bytes": 392,
+      "sha256": "60175799fc6f33d2fdfe530cac1494104d0dd100a57e9287c0e4e42f72a7031c",
+      "source": "evidence/round2/statistics_cases/rag_secondary_3.csv",
+      "treatment": "byte-identical copy",
+      "review": "Three endpoint identifiers and numerical test results; no input text.",
+      "source_sha256": "60175799fc6f33d2fdfe530cac1494104d0dd100a57e9287c0e4e42f72a7031c"
+    },
+    {
+      "path": "data/frozen_statistics_protocol.json",
+      "bytes": 592,
+      "sha256": "6243cf268f7291cb338a2aa25c626663e6b641ee45f732278f2d8495013e4421",
+      "source": "evidence/round2/statistics_cases/frozen_statistics_protocol.json",
+      "treatment": "byte-identical copy",
+      "review": "Enumerated test families, resampling unit, replicates, and seed policy only.",
+      "source_sha256": "6243cf268f7291cb338a2aa25c626663e6b641ee45f732278f2d8495013e4421"
+    },
+    {
+      "path": "data/formal_metrics.csv",
+      "bytes": 1224,
+      "sha256": "364ac92c0da801b67d6761e46dbdc2fbb87f106ab2185583c6f0889b38b50062",
+      "source": "evidence/round2/formal/formal_metrics.csv",
+      "treatment": "byte-identical copy",
+      "review": "Aggregate conditions, epochs, generation/training seeds, counts, and metrics only.",
+      "source_sha256": "364ac92c0da801b67d6761e46dbdc2fbb87f106ab2185583c6f0889b38b50062"
+    },
+    {
+      "path": "data/agreement_ci.json",
+      "bytes": 1763,
+      "sha256": "9a8489c46a18fae1338935942a8f2e3ab5c4ac6237f8ff5c5b7b58a9f9fc9737",
+      "source": "evidence/round2/calibration/agreement_ci.json",
+      "treatment": "byte-identical copy",
+      "review": "Aggregate agreement and CI, hashes, and explicit annotation-process limitations; no annotation texts.",
+      "source_sha256": "9a8489c46a18fae1338935942a8f2e3ab5c4ac6237f8ff5c5b7b58a9f9fc9737"
+    },
+    {
+      "path": "prompts/template_body.tex",
+      "bytes": 2044,
+      "sha256": "170e2ca77ac37d771ae5df462f14b3ceb185ec72af1dd0bd4714aa61448f7eb7",
+      "source": "display_prompts/template_body.tex",
+      "treatment": "byte-identical copy",
+      "review": "Placeholder display template only; no filled support/query/retrieved passages. It is not a verbatim executable request.",
+      "source_sha256": "170e2ca77ac37d771ae5df462f14b3ceb185ec72af1dd0bd4714aa61448f7eb7"
+    },
+    {
+      "path": "scripts/analyze_round2_comparisons.py",
+      "bytes": 4816,
+      "sha256": "580128671bb420811cccdb89068ae66b332dee8b3e289e9dce636e70a362f2df",
+      "source": "evidence/round2/statistics_cases/source_snapshot/scripts/analyze_round2_comparisons.py",
+      "treatment": "byte-identical copy",
+      "review": "Inspected complete script: numerical analysis from caller-supplied paths, no embedded source text, credentials, or private path defaults.",
+      "source_sha256": "580128671bb420811cccdb89068ae66b332dee8b3e289e9dce636e70a362f2df"
+    },
+    {
+      "path": "data/comparisons.json",
+      "bytes": 5753,
+      "sha256": "d910fa14359a1e14242c1a7a6cb2b80e10920f8e2b8122cede85b17d80a97f54",
+      "source": "evidence/round2/statistics_cases/statistics/comparisons.json",
+      "treatment": "strict top-level allowlist; removed inputs (private paths and corresponding input hashes)",
+      "review": "All retained values are exactly equal to their frozen source values; no statistics recomputed.",
+      "source_sha256": "c012914f2d61e1aeae35981a4f06cb75423a203faca5423ef1fa01832e327a09"
+    },
+    {
+      "path": "data/bert_metrics.json",
+      "bytes": 351,
+      "sha256": "c71b41b4458ddb34c0ec5ea22943f5d2b4be345c9ec26e948e36e1aa9c034161",
+      "source": "evidence/bert_manifest.json",
+      "treatment": "strict allowlist: protocol and aggregate metrics only",
+      "review": "Omitted execution gates, backup locations, archive names, and run-history metadata; retained numbers unchanged.",
+      "source_sha256": "cc3a1e5e0806775ef1a03d8d4503017182ad0a8b74bf22cd68335771e2fa171f"
+    },
+    {
+      "path": "scripts/build_public_tables.py",
+      "bytes": 6298,
+      "sha256": "8fa026a8c7930bf38c0fdc635d1fd2f46426ef3c273c44b9e04b653fe3b530f1",
+      "source": "tools/build_round2_tables.py",
+      "treatment": "derived public renderer; removed all case rendering and changed input/output locations",
+      "review": "Aggregate formatting code retained; does not resample or edit the frozen results. Output must be a new directory.",
+      "source_sha256": "d1c0f17b15d7751dfc5ee53d44d4e5ea62a44f965fca6ce68f610cf0e6597f5f"
+    },
+    {
+      "path": "scripts/audit_public_metrics.py",
+      "bytes": 4637,
+      "sha256": "7034b407df01179181c54a1f1222bf5898680f7416400928c6da5e62cbbd258f",
+      "source": null,
+      "treatment": "new aggregate-only verification script",
+      "review": "Checks metric arithmetic, contrast CSV/JSON agreement, Holm adjustment, descriptive seeds, calibration counts, and manifest; no raw inputs or model calls."
+    },
+    {
+      "path": "requirements.txt",
+      "bytes": 128,
+      "sha256": "11e28cfb4e7759df637f273f2263e37a03bd52ce90af596188d3f504d1459b3a",
+      "source": null,
+      "treatment": "new package documentation",
+      "review": "Only explicit dependency of the included original numerical-analysis script; no claim of a complete original environment."
+    },
+    {
+      "path": "README.md",
+      "bytes": 6529,
+      "sha256": "3d3fe09025ecb5adcfa8e9c9d8f320331dbea5cc0c8c12996c98f20fe6f3f695",
+      "source": null,
+      "treatment": "new package documentation",
+      "review": "Publication scope, exact transformations, numerical limitations, commands, and source/license boundaries; no identity/contact or raw source text."
+    }
+  ]
+}

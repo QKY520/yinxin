@@ -1,0 +1,203 @@
+{
+  "scope": "text-free derivative of frozen 14-system evaluation; original files unchanged",
+  "files": [
+    {
+      "system": "zero",
+      "path": "zero.jsonl",
+      "records": 170,
+      "bytes": 127165,
+      "sha256": "33a1cba59b4f15a58ddd0c2faf71b32f74c5f0c3c74b6e144ed8ad56ec858c80",
+      "frozen_source_sha256": "ff1c3930bcc6acb3fd0e78530004e28f5e25f26b8429f4a227b25a78c594eb80",
+      "transformation": "Only id, text SHA256, gold/predicted start/end/type, parse-failure flag retained; no text or surface strings."
+    },
+    {
+      "system": "bm25",
+      "path": "bm25.jsonl",
+      "records": 170,
+      "bytes": 117681,
+      "sha256": "3d051919fd139a89a0ec38d4cc43d1763fdb8f0393cab1ab9398a9c35a71ed00",
+      "frozen_source_sha256": "991f5ed0777b307666685616086e382d98f6d7cf514323bb971597860f08fd5b",
+      "transformation": "Only id, text SHA256, gold/predicted start/end/type, parse-failure flag retained; no text or surface strings."
+    },
+    {
+      "system": "dense",
+      "path": "dense.jsonl",
+      "records": 170,
+      "bytes": 116464,
+      "sha256": "690a11c8997ec69a0244589c355a43307bdb8480f922f0875443ffa66ba1bd10",
+      "frozen_source_sha256": "c8ec736a5f5e43cec28ccf87bd25b9c0227de8d24b762aff417ec5adb3f74873",
+      "transformation": "Only id, text SHA256, gold/predicted start/end/type, parse-failure flag retained; no text or surface strings."
+    },
+    {
+      "system": "full",
+      "path": "full.jsonl",
+      "records": 170,
+      "bytes": 124526,
+      "sha256": "2c408ffac7b62707ab647d909cfeee8b44f336316882128c666fa7bc06dd996a",
+      "frozen_source_sha256": "a3f63fc0dd4ab2cfc8c88fb586d9def3b80be77eb52aa0d0bb62d0083d9f5a4b",
+      "transformation": "Only id, text SHA256, gold/predicted start/end/type, parse-failure flag retained; no text or surface strings."
+    },
+    {
+      "system": "glossary",
+      "path": "glossary.jsonl",
+      "records": 170,
+      "bytes": 125591,
+      "sha256": "f0e89b591dd04cb3a4f1689bc5012373ce930ebec8edba1837658e09c546f4df",
+      "frozen_source_sha256": "4c7eecc14ad7053db863406d9637020a95909b10140e31d90c6cebbba5679e1a",
+      "transformation": "Only id, text SHA256, gold/predicted start/end/type, parse-failure flag retained; no text or surface strings."
+    },
+    {
+      "system": "random42",
+      "path": "random42.jsonl",
+      "records": 170,
+      "bytes": 127473,
+      "sha256": "8b11c7eb8a80fe57aebee335c5ecec862597c9cdbcb4adba47c0f13b6c33cdea",
+      "frozen_source_sha256": "f303747f02de58a735ef22bfd1bc480d03c6cd3feaa4fc8354e280eb9b1dc138",
+      "transformation": "Only id, text SHA256, gold/predicted start/end/type, parse-failure flag retained; no text or surface strings."
+    },
+    {
+      "system": "random43",
+      "path": "random43.jsonl",
+      "records": 170,
+      "bytes": 131872,
+      "sha256": "3fa03188640c36269194fe4d0e07af5857613eaea756d3c747ebf3e2d11a8e62",
+      "frozen_source_sha256": "2ddbeca79847208d3bd8d0ca2e65e7a45e84f69b2d69147b6ceeb1fe31f2ac91",
+      "transformation": "Only id, text SHA256, gold/predicted start/end/type, parse-failure flag retained; no text or surface strings."
+    },
+    {
+      "system": "random44",
+      "path": "random44.jsonl",
+      "records": 170,
+      "bytes": 123427,
+      "sha256": "4317ff42b8974d067b9e7f028c819f4d5851c0e8d648c6c40ebd11c1498ea657",
+      "frozen_source_sha256": "aab45c7469410195821f7694bef5f03ee747adffd1b53623862b007ebbb77436",
+      "transformation": "Only id, text SHA256, gold/predicted start/end/type, parse-failure flag retained; no text or surface strings."
+    },
+    {
+      "system": "knn",
+      "path": "knn.jsonl",
+      "records": 170,
+      "bytes": 127491,
+      "sha256": "bdfb5f19f07fe2420268e3b5977eaccacde406d38e3f60e75824c87b30981344",
+      "frozen_source_sha256": "e3c707912c2026cf3ba4dc47cd0a69b4a8cf9099ed295cc7a6df76f5ddd14077",
+      "transformation": "Only id, text SHA256, gold/predicted start/end/type, parse-failure flag retained; no text or surface strings."
+    },
+    {
+      "system": "knn_g",
+      "path": "knn_g.jsonl",
+      "records": 170,
+      "bytes": 128525,
+      "sha256": "2465869381a3ef141c1af995889698bd6dfa38de84f07658f79fd0036aff0be5",
+      "frozen_source_sha256": "48a1eceed7de8de114b6b65aa737f91dd727c3d8683ad99ffb1a991521a14c4a",
+      "transformation": "Only id, text SHA256, gold/predicted start/end/type, parse-failure flag retained; no text or surface strings."
+    },
+    {
+      "system": "uie_zs",
+      "path": "uie_zs.jsonl",
+      "records": 170,
+      "bytes": 122669,
+      "sha256": "a20af5852426b9ccffcf53445ea44d7f6fbb67fffde66dfe821cc011815f7b92",
+      "frozen_source_sha256": "5c28a7454c690af07249469bb24987b4b3115d085fd23580ebfa2b74d1f07db4",
+      "transformation": "Only id, text SHA256, gold/predicted start/end/type, parse-failure flag retained; no text or surface strings."
+    },
+    {
+      "system": "uie_ft42",
+      "path": "uie_ft42.jsonl",
+      "records": 170,
+      "bytes": 116334,
+      "sha256": "badcce428628104630869b0fdfb94760de338896d41ff2fa109ca941fe168994",
+      "frozen_source_sha256": "17ba2dee0984ae7cfedbf757eb9f1e3c29df217098476bce054413767fc3d277",
+      "transformation": "Only id, text SHA256, gold/predicted start/end/type, parse-failure flag retained; no text or surface strings."
+    },
+    {
+      "system": "uie_ft43",
+      "path": "uie_ft43.jsonl",
+      "records": 170,
+      "bytes": 118137,
+      "sha256": "44872a8d17d3f6423c4a3598424a70f14a70cd29fbcb91d4c13af70dc5cddc7d",
+      "frozen_source_sha256": "7e98c3e862b8caf78d9b2f05bded1fa54d9065c5e41e79121d28fed447ea8c71",
+      "transformation": "Only id, text SHA256, gold/predicted start/end/type, parse-failure flag retained; no text or surface strings."
+    },
+    {
+      "system": "uie_ft44",
+      "path": "uie_ft44.jsonl",
+      "records": 170,
+      "bytes": 117841,
+      "sha256": "12982545a180f557cbf57d5de1c043eeec10cf13e062f56c953318cd95722dc7",
+      "frozen_source_sha256": "a5b7942168d8167bd08c5eb2b8300003c539093357e2520ca9015c47617f341a",
+      "transformation": "Only id, text SHA256, gold/predicted start/end/type, parse-failure flag retained; no text or surface strings."
+    }
+  ],
+  "counts": {
+    "zero": {
+      "TP": 477,
+      "FP": 697,
+      "FN": 477
+    },
+    "bm25": {
+      "TP": 420,
+      "FP": 519,
+      "FN": 534
+    },
+    "dense": {
+      "TP": 426,
+      "FP": 484,
+      "FN": 528
+    },
+    "full": {
+      "TP": 590,
+      "FP": 513,
+      "FN": 364
+    },
+    "glossary": {
+      "TP": 483,
+      "FP": 648,
+      "FN": 471
+    },
+    "random42": {
+      "TP": 574,
+      "FP": 609,
+      "FN": 380
+    },
+    "random43": {
+      "TP": 598,
+      "FP": 689,
+      "FN": 356
+    },
+    "random44": {
+      "TP": 534,
+      "FP": 531,
+      "FN": 420
+    },
+    "knn": {
+      "TP": 585,
+      "FP": 593,
+      "FN": 369
+    },
+    "knn_g": {
+      "TP": 609,
+      "FP": 592,
+      "FN": 345
+    },
+    "uie_zs": {
+      "TP": 306,
+      "FP": 759,
+      "FN": 648
+    },
+    "uie_ft42": {
+      "TP": 523,
+      "FP": 377,
+      "FN": 431
+    },
+    "uie_ft43": {
+      "TP": 529,
+      "FP": 416,
+      "FN": 425
+    },
+    "uie_ft44": {
+      "TP": 522,
+      "FP": 411,
+      "FN": 432
+    }
+  }
+}

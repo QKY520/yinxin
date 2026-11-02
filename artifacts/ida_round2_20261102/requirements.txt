@@ -1,0 +1,3 @@
+# Needed only by the archived paired-analysis script.
+# This is not the original model-training or inference environment.
+numpy

@@ -24,6 +24,13 @@ sys.path.insert(0, str(PROJECT_ROOT / "src"))
 from equipment_ie.extraction import (
     build_error_retry_prompt,
     build_ner_prompt,
+    build_ner_occurrence_response_format,
+    build_ner_occurrence_ner_only_response_format,
+    build_ner_char_bio_response_format,
+    build_ner_anchored_span_index_response_format,
+    build_ner_span_index_response_format,
+    build_ner_candidate_index_response_format,
+    generate_candidate_spans,
     build_request_envelope,
     entity_micro_counts,
     parse_extraction_output,
@@ -61,6 +68,76 @@ REVIEWER_STABILITY_GATE = "JISE_ECFSIE_REVIEW_BASELINE_B1_PARSE_STABILITY_20_APP
 REVIEWER_STABILITY_PHASE = "REVIEWER_BASELINE_B1_PARSE_STABILITY_20"
 SPAN_INDEX_DIAGNOSTIC_GATE = "JISE_ECFSIE_REVIEW_BASELINE_B1_SPAN_INDEX_DIAGNOSTIC_APPROVED"
 SPAN_INDEX_DIAGNOSTIC_PHASE = "REVIEWER_BASELINE_B1_SPAN_INDEX_DIAGNOSTIC"
+NER_ENVELOPE_SMOKE_GATE = "JISE_ECFSIE_REVIEW_BASELINE_B1_NER_ENVELOPE_SMOKE_TEST_APPROVED"
+NER_ENVELOPE_SMOKE_PHASE = "REVIEWER_BASELINE_B1_NER_ENVELOPE_SMOKE_TEST"
+DOMAIN_SCHEMA_SMOKE_GATE = "JISE_ECFSIE_REVIEW_BASELINE_B1_DOMAIN_SCHEMA_COMPATIBILITY_SMOKE_APPROVED"
+DOMAIN_SCHEMA_SMOKE_PHASE = "REVIEWER_BASELINE_B1_DOMAIN_SCHEMA_COMPATIBILITY_SMOKE"
+OUTPUT_BUDGET_REPAIR_SMOKE_GATE = "JISE_ECFSIE_REVIEW_BASELINE_B1_OUTPUT_BUDGET_REPAIR_SMOKE_APPROVED"
+OUTPUT_BUDGET_REPAIR_SMOKE_PHASE = "REVIEWER_BASELINE_B1_OUTPUT_BUDGET_REPAIR_SMOKE"
+OUTPUT_SCHEMA_BOUNDED_SMOKE_15_GATE = "JISE_ECFSIE_REVIEW_BASELINE_B1_OUTPUT_SCHEMA_BOUNDED_SMOKE_15_APPROVED"
+OUTPUT_SCHEMA_BOUNDED_SMOKE_15_PHASE = "REVIEWER_BASELINE_B1_OUTPUT_SCHEMA_BOUNDED_SMOKE_15"
+FORMAL_B1_GATE = "JISE_ECFSIE_REVIEW_BASELINE_B1_FORMAL_APPROVED"
+FORMAL_B1_PHASE = "REVIEWER_BASELINE_B1_FORMAL"
+QWEN_PARSER_CORRECTION_GATE = (
+    "JISE_ECFSIE_REVIEW_BASELINE_MAIN_UNIFIED_OCCURRENCE_QWEN_PARSER_CORRECTION_APPROVED"
+)
+QWEN_PARSER_CORRECTION_PHASE = (
+    "REVIEWER_BASELINE_MAIN_UNIFIED_OCCURRENCE_QWEN_PARSER_CORRECTION"
+)
+QWEN_PROMPT_REPAIR_GATE = (
+    "JISE_ECFSIE_REVIEW_BASELINE_MAIN_UNIFIED_OCCURRENCE_QWEN_PROMPT_REPAIR_APPROVED"
+)
+QWEN_PROMPT_REPAIR_PHASE = (
+    "REVIEWER_BASELINE_MAIN_UNIFIED_OCCURRENCE_QWEN_PROMPT_REPAIR"
+)
+OCCURRENCE_REPAIR_PILOT_GATE = (
+    "JISE_ECFSIE_REVIEW_BASELINE_MAIN_UNIFIED_OCCURRENCE_REPAIR_PILOT_APPROVED"
+)
+OCCURRENCE_REPAIR_PILOT_PHASE = (
+    "REVIEWER_BASELINE_MAIN_UNIFIED_OCCURRENCE_REPAIR_PILOT"
+)
+CANDIDATE_INDEX_PILOT_GATE = (
+    "JISE_ECFSIE_REVIEW_BASELINE_MAIN_UNIFIED_OCCURRENCE_CANDIDATE_INDEX_PILOT_APPROVED"
+)
+CANDIDATE_INDEX_PILOT_PHASE = (
+    "REVIEWER_BASELINE_MAIN_UNIFIED_OCCURRENCE_CANDIDATE_INDEX_PILOT"
+)
+ANCHORED_SPAN_INDEX_CORRECTION_GATE = (
+    "JISE_ECFSIE_REVIEW_BASELINE_MAIN_ANCHORED_SPAN_INDEX_CORRECTION_APPROVED"
+)
+ANCHORED_SPAN_INDEX_CORRECTION_PHASE = (
+    "REVIEWER_BASELINE_MAIN_ANCHORED_SPAN_INDEX_CORRECTION"
+)
+CHAR_BIO_QWEN_PILOT_GATE = (
+    "JISE_ECFSIE_REVIEW_BASELINE_MAIN_UNIFIED_BIO_QWEN_PILOT_APPROVED"
+)
+CHAR_BIO_QWEN_PILOT_PHASE = "REVIEWER_BASELINE_MAIN_UNIFIED_BIO_QWEN_PILOT"
+CHAR_BIO_QWEN_REPAIR_PILOT_GATE = (
+    "JISE_ECFSIE_REVIEW_BASELINE_MAIN_UNIFIED_BIO_QWEN_REPAIR_PILOT_APPROVED"
+)
+CHAR_BIO_QWEN_REPAIR_PILOT_PHASE = (
+    "REVIEWER_BASELINE_MAIN_UNIFIED_BIO_QWEN_REPAIR_PILOT"
+)
+B1_V2_PILOT_GATE = "JISE_ECFSIE_REVIEW_BASELINE_B1_V2_PROTOCOL_CORRECTION_PILOT_APPROVED"
+B1_V2_PILOT_PHASE = "REVIEWER_BASELINE_B1_V2_PROTOCOL_CORRECTION_PILOT"
+B1_V2_FORMAL_GATE = "JISE_ECFSIE_REVIEW_BASELINE_B1_V2_PROTOCOL_CORRECTION_FORMAL_APPROVED"
+B1_V2_FORMAL_PHASE = "REVIEWER_BASELINE_B1_V2_PROTOCOL_CORRECTION_FORMAL"
+QWEN_OCCURRENCE_SANITIZED_PILOT_GATE = (
+    "JISE_ECFSIE_REVIEW_BASELINE_QWEN_OCCURRENCE_SANITIZED_DEV_PILOT_APPROVED"
+)
+QWEN_OCCURRENCE_SANITIZED_PILOT_PHASE = (
+    "REVIEWER_BASELINE_QWEN_OCCURRENCE_SANITIZED_DEV_PILOT"
+)
+QWEN_NEUTRAL_ENVELOPE_FORMAL_GATE = (
+    "JISE_ECFSIE_REVIEW_BASELINE_QWEN_NEUTRAL_ENVELOPE_FORMAL_EXECUTION_APPROVED"
+)
+QWEN_NEUTRAL_ENVELOPE_FORMAL_PHASE = (
+    "REVIEWER_BASELINE_QWEN_NEUTRAL_ENVELOPE_FORMAL_EXECUTION"
+)
+GLOSSARY_ONLY_DEV_PILOT_GATE = "JISE_ECFSIE_REVIEW_GLOSSARY_ONLY_DEV_PILOT_APPROVED"
+GLOSSARY_ONLY_DEV_PILOT_PHASE = "REVIEWER_GLOSSARY_ONLY_DEV_PILOT"
+GLOSSARY_ONLY_FORMAL_GATE = "JISE_ECFSIE_REVIEW_GLOSSARY_ONLY_FORMAL_EXECUTION_APPROVED"
+GLOSSARY_ONLY_FORMAL_PHASE = "REVIEWER_GLOSSARY_ONLY_FORMAL_EXECUTION"
 
 NER_PUBLIC_EXECUTION_GATE = "NER_PUBLIC_CLUENER_ABCD_K5_FINAL_APPROVED"
 NER_PUBLIC_EXECUTION_PHASE = "NER_PUBLIC_CLUENER_FINAL"
@@ -122,6 +199,17 @@ def write_jsonl_atomic(path: Path, rows: list[dict[str, Any]]) -> int:
     return len(rows)
 
 
+def refuse_existing_outputs(outputs: dict[str, Any], keys: tuple[str, ...]) -> None:
+    """Refuse any run that would replace an existing artifact."""
+
+    paths = [Path(str(outputs[key])) for key in keys]
+    if len(set(paths)) != len(paths):
+        raise FileExistsError("output paths must be distinct")
+    existing = [str(path) for path in paths if path.exists()]
+    if existing:
+        raise FileExistsError(f"refusing to overwrite existing outputs: {existing}")
+
+
 def gpu_visible() -> bool:
     return any(Path("/dev").glob("nvidia[0-9]*"))
 
@@ -175,6 +263,159 @@ def validate_execution_gate(execution: dict[str, Any]) -> None:
             )
         return
 
+    if human_gate == NER_ENVELOPE_SMOKE_GATE:
+        if phase != NER_ENVELOPE_SMOKE_PHASE:
+            raise RuntimeError(
+                f"{NER_ENVELOPE_SMOKE_GATE} requires execution.phase={NER_ENVELOPE_SMOKE_PHASE}"
+            )
+        return
+
+    if human_gate == DOMAIN_SCHEMA_SMOKE_GATE:
+        if phase != DOMAIN_SCHEMA_SMOKE_PHASE:
+            raise RuntimeError(
+                f"{DOMAIN_SCHEMA_SMOKE_GATE} requires execution.phase={DOMAIN_SCHEMA_SMOKE_PHASE}"
+            )
+        return
+
+    if human_gate == OUTPUT_BUDGET_REPAIR_SMOKE_GATE:
+        if phase != OUTPUT_BUDGET_REPAIR_SMOKE_PHASE:
+            raise RuntimeError(
+                f"{OUTPUT_BUDGET_REPAIR_SMOKE_GATE} requires execution.phase={OUTPUT_BUDGET_REPAIR_SMOKE_PHASE}"
+            )
+        return
+
+    if human_gate == OUTPUT_SCHEMA_BOUNDED_SMOKE_15_GATE:
+        if phase != OUTPUT_SCHEMA_BOUNDED_SMOKE_15_PHASE:
+            raise RuntimeError(
+                f"{OUTPUT_SCHEMA_BOUNDED_SMOKE_15_GATE} requires execution.phase={OUTPUT_SCHEMA_BOUNDED_SMOKE_15_PHASE}"
+            )
+        return
+
+    if human_gate == FORMAL_B1_GATE:
+        if phase != FORMAL_B1_PHASE:
+            raise RuntimeError(
+                f"{FORMAL_B1_GATE} requires execution.phase={FORMAL_B1_PHASE}"
+            )
+        return
+
+    if human_gate == "JISE_ECFSIE_REVIEW_BASELINE_MAIN_UNIFIED_OCCURRENCE_FORMAL_APPROVED":
+        if phase != "REVIEWER_BASELINE_MAIN_UNIFIED_OCCURRENCE_FORMAL":
+            raise RuntimeError(
+                f"{human_gate} requires execution.phase="
+                "REVIEWER_BASELINE_MAIN_UNIFIED_OCCURRENCE_FORMAL"
+            )
+        return
+
+    if human_gate == "JISE_ECFSIE_REVIEW_BASELINE_MAIN_UNIFIED_OCCURRENCE_PILOT_APPROVED":
+        if phase != "REVIEWER_BASELINE_MAIN_UNIFIED_OCCURRENCE_PILOT":
+            raise RuntimeError(
+                f"{human_gate} requires execution.phase="
+                "REVIEWER_BASELINE_MAIN_UNIFIED_OCCURRENCE_PILOT"
+            )
+        return
+
+    if human_gate == QWEN_PARSER_CORRECTION_GATE:
+        if phase != QWEN_PARSER_CORRECTION_PHASE:
+            raise RuntimeError(
+                f"{QWEN_PARSER_CORRECTION_GATE} requires execution.phase="
+                f"{QWEN_PARSER_CORRECTION_PHASE}"
+            )
+        return
+
+    if human_gate == QWEN_PROMPT_REPAIR_GATE:
+        if phase != QWEN_PROMPT_REPAIR_PHASE:
+            raise RuntimeError(
+                f"{QWEN_PROMPT_REPAIR_GATE} requires execution.phase="
+                f"{QWEN_PROMPT_REPAIR_PHASE}"
+            )
+        return
+
+    if human_gate == OCCURRENCE_REPAIR_PILOT_GATE:
+        if phase != OCCURRENCE_REPAIR_PILOT_PHASE:
+            raise RuntimeError(
+                f"{OCCURRENCE_REPAIR_PILOT_GATE} requires execution.phase="
+                f"{OCCURRENCE_REPAIR_PILOT_PHASE}"
+            )
+        return
+
+    if human_gate == CANDIDATE_INDEX_PILOT_GATE:
+        if phase != CANDIDATE_INDEX_PILOT_PHASE:
+            raise RuntimeError(
+                f"{CANDIDATE_INDEX_PILOT_GATE} requires execution.phase="
+                f"{CANDIDATE_INDEX_PILOT_PHASE}"
+            )
+        return
+
+    if human_gate == ANCHORED_SPAN_INDEX_CORRECTION_GATE:
+        if phase != ANCHORED_SPAN_INDEX_CORRECTION_PHASE:
+            raise RuntimeError(
+                f"{ANCHORED_SPAN_INDEX_CORRECTION_GATE} requires execution.phase="
+                f"{ANCHORED_SPAN_INDEX_CORRECTION_PHASE}"
+            )
+        return
+
+    if human_gate == CHAR_BIO_QWEN_PILOT_GATE:
+        if phase != CHAR_BIO_QWEN_PILOT_PHASE:
+            raise RuntimeError(
+                f"{CHAR_BIO_QWEN_PILOT_GATE} requires execution.phase="
+                f"{CHAR_BIO_QWEN_PILOT_PHASE}"
+            )
+        return
+
+    if human_gate == CHAR_BIO_QWEN_REPAIR_PILOT_GATE:
+        if phase != CHAR_BIO_QWEN_REPAIR_PILOT_PHASE:
+            raise RuntimeError(
+                f"{CHAR_BIO_QWEN_REPAIR_PILOT_GATE} requires execution.phase="
+                f"{CHAR_BIO_QWEN_REPAIR_PILOT_PHASE}"
+            )
+        return
+
+    if human_gate == B1_V2_PILOT_GATE:
+        if phase != B1_V2_PILOT_PHASE:
+            raise RuntimeError(
+                f"{B1_V2_PILOT_GATE} requires execution.phase={B1_V2_PILOT_PHASE}"
+            )
+        return
+
+    if human_gate == B1_V2_FORMAL_GATE:
+        if phase != B1_V2_FORMAL_PHASE:
+            raise RuntimeError(
+                f"{B1_V2_FORMAL_GATE} requires execution.phase={B1_V2_FORMAL_PHASE}"
+            )
+        return
+
+    if human_gate == QWEN_OCCURRENCE_SANITIZED_PILOT_GATE:
+        if phase != QWEN_OCCURRENCE_SANITIZED_PILOT_PHASE:
+            raise RuntimeError(
+                f"{QWEN_OCCURRENCE_SANITIZED_PILOT_GATE} requires execution.phase="
+                f"{QWEN_OCCURRENCE_SANITIZED_PILOT_PHASE}"
+            )
+        return
+
+    if human_gate == QWEN_NEUTRAL_ENVELOPE_FORMAL_GATE:
+        if phase != QWEN_NEUTRAL_ENVELOPE_FORMAL_PHASE:
+            raise RuntimeError(
+                f"{QWEN_NEUTRAL_ENVELOPE_FORMAL_GATE} requires execution.phase="
+                f"{QWEN_NEUTRAL_ENVELOPE_FORMAL_PHASE}"
+            )
+        return
+
+    if human_gate == GLOSSARY_ONLY_DEV_PILOT_GATE:
+        if phase != GLOSSARY_ONLY_DEV_PILOT_PHASE:
+            raise RuntimeError(
+                f"{GLOSSARY_ONLY_DEV_PILOT_GATE} requires execution.phase="
+                f"{GLOSSARY_ONLY_DEV_PILOT_PHASE}"
+            )
+        return
+
+    if human_gate == GLOSSARY_ONLY_FORMAL_GATE:
+        if phase != GLOSSARY_ONLY_FORMAL_PHASE:
+            raise RuntimeError(
+                f"{GLOSSARY_ONLY_FORMAL_GATE} requires execution.phase="
+                f"{GLOSSARY_ONLY_FORMAL_PHASE}"
+            )
+        return
+
     required_phase = FULL_IE_EXECUTION_GATES.get(human_gate)
     if required_phase is not None:
         if phase != required_phase:
@@ -189,6 +430,27 @@ def validate_execution_gate(execution: dict[str, Any]) -> None:
         | {REVIEWER_DIAGNOSTIC_GATE}
         | {REVIEWER_STABILITY_GATE}
         | {SPAN_INDEX_DIAGNOSTIC_GATE}
+        | {NER_ENVELOPE_SMOKE_GATE}
+        | {DOMAIN_SCHEMA_SMOKE_GATE}
+        | {OUTPUT_BUDGET_REPAIR_SMOKE_GATE}
+        | {OUTPUT_SCHEMA_BOUNDED_SMOKE_15_GATE}
+        | {FORMAL_B1_GATE}
+        | {
+            "JISE_ECFSIE_REVIEW_BASELINE_MAIN_UNIFIED_OCCURRENCE_FORMAL_APPROVED",
+            "JISE_ECFSIE_REVIEW_BASELINE_MAIN_UNIFIED_OCCURRENCE_PILOT_APPROVED",
+            QWEN_PARSER_CORRECTION_GATE,
+            QWEN_PROMPT_REPAIR_GATE,
+            OCCURRENCE_REPAIR_PILOT_GATE,
+            CANDIDATE_INDEX_PILOT_GATE,
+            ANCHORED_SPAN_INDEX_CORRECTION_GATE,
+            CHAR_BIO_QWEN_REPAIR_PILOT_GATE,
+            B1_V2_PILOT_GATE,
+            B1_V2_FORMAL_GATE,
+            QWEN_OCCURRENCE_SANITIZED_PILOT_GATE,
+            QWEN_NEUTRAL_ENVELOPE_FORMAL_GATE,
+            GLOSSARY_ONLY_DEV_PILOT_GATE,
+            GLOSSARY_ONLY_FORMAL_GATE,
+        }
         | set(FULL_IE_EXECUTION_GATES)
     )
     raise RuntimeError(f"non-dry extraction human_gate must be one of: {allowed}")
@@ -319,6 +581,53 @@ def load_rag_replay_manifest(path: str, config: dict[str, Any]) -> tuple[dict[st
     if not isinstance(rows, list) or not rows:
         raise ValueError(f"{path}: RAG replay manifest rows must be a non-empty list")
 
+    # A replay file is executable evidence only when its retrieval backend and
+    # leakage audit are explicit. Legacy manifests remain readable for
+    # preparation/round-trip inspection, but can never enter a model call.
+    executable = config.get("execution", {}).get("model_calls_allowed") is True
+    if executable and manifest.get("manifest_kind") != "rag_replay":
+        raise ValueError(f"{path}: replay manifest_kind must be rag_replay")
+    selection_backend = manifest.get("selection_backend")
+    if executable and (not isinstance(selection_backend, str) or not selection_backend):
+        raise ValueError(f"{path}: selection_backend is required")
+    if executable and manifest.get("usable_for_model_calls") is not True:
+        raise ValueError(f"{path}: replay manifest is not usable_for_model_calls")
+    retrieval_mode = str(manifest.get("retrieval_mode", ""))
+    if executable and retrieval_mode == "bge_m3_reranker_top20_to_top3":
+        if manifest.get("dense_artifact_ready") is not True:
+            raise ValueError(f"{path}: dense replay requires dense_artifact_ready=true")
+        if selection_backend != "bge_m3_faiss_reranker":
+            raise ValueError(
+                f"{path}: dense replay selection_backend must be bge_m3_faiss_reranker"
+            )
+    leakage_audit = manifest.get("leakage_audit")
+    if executable and not isinstance(leakage_audit, dict):
+        raise ValueError(f"{path}: leakage_audit is required")
+    if executable:
+        for field in ("source_id_exclusion", "exact_text_exclusion", "eight_gram_exclusion"):
+            if leakage_audit.get(field) is not True:
+                raise ValueError(f"{path}: leakage_audit.{field} must be true")
+        if leakage_audit.get("labels_stripped") is not True and not manifest.get(
+            "labels_stripped_corpus_sha256"
+        ):
+            raise ValueError(f"{path}: labels-stripped corpus identity is required")
+        for field in ("residual_exact_text_rows", "residual_8gram_rows"):
+            residual = leakage_audit.get(field)
+            if residual is not None and residual:
+                raise ValueError(f"{path}: leakage residuals present in {field}")
+    declared_count = manifest.get("query_count")
+    if declared_count is not None and int(declared_count) != len(rows):
+        raise ValueError(f"{path}: query_count does not match replay rows")
+    query_limit = config.get("query_limit")
+    if query_limit is not None and int(query_limit) != len(rows):
+        raise ValueError(f"{path}: replay rows do not match config query_limit")
+    expected_identity = config.get("protocol", {}).get("condition_identity", {})
+    for field in ("retrieval_mode", "retrieve_top_k", "top_k"):
+        expected = expected_identity.get(field)
+        actual = manifest.get(field)
+        if expected is not None and actual != expected:
+            raise ValueError(f"{path}: {field} mismatch: {actual!r} != {expected!r}")
+
     query_path = config.get("data", {}).get("query_path")
     manifest_query_sha = manifest.get("query_path_sha256")
     if query_path and manifest_query_sha:
@@ -340,6 +649,12 @@ def load_rag_replay_manifest(path: str, config: dict[str, Any]) -> tuple[dict[st
             raise ValueError(f"{path}: duplicate replay id {query_id}")
         if not isinstance(selected, list):
             raise ValueError(f"{path}: row {query_id} selected_passages must be a list")
+        expected_top_k = expected_identity.get("top_k")
+        if expected_top_k is not None and len(selected) != int(expected_top_k):
+            raise ValueError(
+                f"{path}: row {query_id} selected passage count {len(selected)} "
+                f"does not match top_k={expected_top_k}"
+            )
         passages: list[dict[str, Any]] = []
         for passage_index, passage in enumerate(selected):
             if not isinstance(passage, dict):
@@ -715,6 +1030,11 @@ def build_query_plan(
     dict[str, Any],
 ]:
     query_records = load_records(config["data"]["query_path"])
+    query_limit = config.get("query_limit")
+    if query_limit is not None:
+        if isinstance(query_limit, bool) or int(query_limit) <= 0:
+            raise ValueError("query_limit must be a positive integer")
+        query_records = query_records[: int(query_limit)]
     if dry_run:
         max_queries = int(config.get("dry_run", {}).get("max_queries", len(query_records)))
         query_records = query_records[:max_queries]
@@ -815,9 +1135,16 @@ def run_dry(config: dict[str, Any], config_path: Path) -> int:
     )
     entity_types = config["schema"]["entity_types"]
     generation = config["generation"]
+    output_mode = str(config.get("parsing", {}).get("output_mode", "occurrence"))
+    constrained_json_schema = bool(config.get("parsing", {}).get("constrained_json_schema", False))
+    max_entities = int(config.get("parsing", {}).get("max_entities", 12))
+    ner_only_envelope_policy = str(
+        config.get("parsing", {}).get("ner_only_envelope_policy", "strict")
+    )
     prompt_rows: list[dict[str, Any]] = []
     max_prompt_chars = 0
     for record in query_records:
+        candidate_spans = generate_candidate_spans(record["text"]) if output_mode == "candidate_index" else None
         examples = select_examples(record)
         glossary_entries = select_glossary(record)
         rag_passages = select_rag(record)
@@ -829,12 +1156,48 @@ def run_dry(config: dict[str, Any], config_path: Path) -> int:
             rag_passages=[passage["display"] for passage in rag_passages],
             include_relations=False,
             output_instruction=config["prompt"]["output_instruction"],
+            output_mode=output_mode,
+            reference_instruction=config["prompt"].get("reference_instruction"),
+            occurrence_contract_version=config["prompt"].get("occurrence_contract_version"),
+            anchored_contract_version=config["prompt"].get("anchored_contract_version"),
+            candidate_spans=candidate_spans,
         )
         max_prompt_chars = max(max_prompt_chars, len(prompt))
+        request_generation = generation
+        if constrained_json_schema and output_mode == "char_bio":
+            request_generation = dict(generation)
+            request_generation["response_format"] = build_ner_char_bio_response_format(
+                sorted(entity_types), len(record["text"])
+            )
+        elif constrained_json_schema and output_mode == "anchored_span_index":
+            request_generation = dict(generation)
+            request_generation["response_format"] = build_ner_anchored_span_index_response_format(
+                sorted(entity_types), len(record["text"]), max_entities=max_entities
+            )
+        elif constrained_json_schema and output_mode == "span_index":
+            request_generation = dict(generation)
+            request_generation["response_format"] = build_ner_span_index_response_format(
+                sorted(entity_types), len(record["text"]), max_entities=max_entities
+            )
+        elif constrained_json_schema and output_mode == "occurrence":
+            request_generation = dict(generation)
+            if ner_only_envelope_policy == "entities_or_entities_relations_v2":
+                request_generation["response_format"] = build_ner_occurrence_ner_only_response_format(
+                    sorted(entity_types), max_entities=max_entities
+                )
+            else:
+                request_generation["response_format"] = build_ner_occurrence_response_format(
+                    sorted(entity_types), max_entities=max_entities
+                )
+        elif constrained_json_schema and output_mode == "candidate_index":
+            request_generation = dict(generation)
+            request_generation["response_format"] = build_ner_candidate_index_response_format(
+                sorted(entity_types), [item["id"] for item in candidate_spans or []], max_entities=max_entities
+            )
         envelope = build_request_envelope(
             prompt=prompt,
             model=config["model"]["name"],
-            generation=generation,
+            generation=request_generation,
             run_id=config["run_id"],
             config_hash=config_hash,
         )
@@ -853,6 +1216,7 @@ def run_dry(config: dict[str, Any], config_path: Path) -> int:
         )
 
     outputs = config["outputs"]
+    refuse_existing_outputs(outputs, ("dry_run_prompts", "manifest"))
     write_jsonl_atomic(Path(outputs["dry_run_prompts"]), prompt_rows)
     manifest = {
         "phase": "P3",
@@ -903,6 +1267,7 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
     entity_types = set(config["schema"]["entity_types"])
     generation = config["generation"]
     outputs = config["outputs"]
+    refuse_existing_outputs(outputs, ("per_query", "summary"))
     cache_dir = Path(config["cache"]["dir"])
     base_url = config["model"]["base_url"]
     api_key = config["model"].get("api_key", "EMPTY")
@@ -911,6 +1276,9 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
     parsing = config.get("parsing", {})
     drop_invalid_entities = bool(parsing.get("drop_invalid_entities", False))
     output_mode = str(parsing.get("output_mode", "occurrence"))
+    constrained_json_schema = bool(parsing.get("constrained_json_schema", False))
+    max_entities = int(parsing.get("max_entities", 12))
+    ner_only_envelope_policy = str(parsing.get("ner_only_envelope_policy", "strict"))
 
     rows: list[dict[str, Any]] = []
     predictions: list[dict[str, Any]] = []
@@ -926,6 +1294,7 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
         step_started = time.monotonic()
         rag_passages = select_rag(record)
         rag_selection_ms = elapsed_ms(step_started)
+        candidate_spans = generate_candidate_spans(record["text"]) if output_mode == "candidate_index" else None
         step_started = time.monotonic()
         prompt = build_ner_prompt(
             query_text=record["text"],
@@ -936,8 +1305,43 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
             include_relations=False,
             output_instruction=config["prompt"]["output_instruction"],
             output_mode=output_mode,
+            reference_instruction=config["prompt"].get("reference_instruction"),
+            occurrence_contract_version=config["prompt"].get("occurrence_contract_version"),
+            anchored_contract_version=config["prompt"].get("anchored_contract_version"),
+            candidate_spans=candidate_spans,
         )
         prompt_build_ms = elapsed_ms(step_started)
+        request_generation = generation
+        if constrained_json_schema and output_mode == "char_bio":
+            request_generation = dict(generation)
+            request_generation["response_format"] = build_ner_char_bio_response_format(
+                sorted(entity_types), len(record["text"])
+            )
+        elif constrained_json_schema and output_mode == "anchored_span_index":
+            request_generation = dict(generation)
+            request_generation["response_format"] = build_ner_anchored_span_index_response_format(
+                sorted(entity_types), len(record["text"]), max_entities=max_entities
+            )
+        elif constrained_json_schema and output_mode == "span_index":
+            request_generation = dict(generation)
+            request_generation["response_format"] = build_ner_span_index_response_format(
+                sorted(entity_types), len(record["text"]), max_entities=max_entities
+            )
+        elif constrained_json_schema and output_mode == "occurrence":
+            request_generation = dict(generation)
+            if ner_only_envelope_policy == "entities_or_entities_relations_v2":
+                request_generation["response_format"] = build_ner_occurrence_ner_only_response_format(
+                    sorted(entity_types), max_entities=max_entities
+                )
+            else:
+                request_generation["response_format"] = build_ner_occurrence_response_format(
+                    sorted(entity_types), max_entities=max_entities
+                )
+        elif constrained_json_schema and output_mode == "candidate_index":
+            request_generation = dict(generation)
+            request_generation["response_format"] = build_ner_candidate_index_response_format(
+                sorted(entity_types), [item["id"] for item in candidate_spans or []], max_entities=max_entities
+            )
         attempts: list[dict[str, Any]] = []
         pred: dict[str, Any] | None = None
         parse_error: str | None = None
@@ -949,7 +1353,7 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
             envelope = build_request_envelope(
                 prompt=attempt_prompt,
                 model=config["model"]["name"],
-                generation=generation,
+                generation=request_generation,
                 run_id=config["run_id"],
                 config_hash=config_hash,
             )
@@ -971,6 +1375,9 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
                     drop_invalid_entities=drop_invalid_entities,
                     sanitization_flags=sanitization_flags,
                     output_mode=output_mode,
+                    ner_only_envelope_policy=ner_only_envelope_policy,
+                    candidate_spans=candidate_spans,
+                    max_entities=max_entities,
                 )
                 parse_error = None
             except Exception as exc:  # preserve exact parser message in row logs
@@ -991,10 +1398,30 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
                 attempt_prompt = build_error_retry_prompt(
                     base_prompt=prompt,
                     parse_error=parse_error,
+                    output_mode=output_mode,
                     retry_suffix=retry_suffix,
                 )
         if pred is None:
             pred = empty_prediction(record)
+        invalid_unit_drops = sum(
+            1
+            for flag in sanitization_flags
+            if flag.get("kind") == "ENTITY_DROPPED_INVALID_UNIT"
+        )
+        overlap_drops = sum(
+            1
+            for flag in sanitization_flags
+            if flag.get("kind") == "ENTITY_DROPPED_OVERLAP"
+        )
+        accepted_entity_count = len(pred.get("entities", []))
+        # Every entity-level drop is logged before a prediction is emitted.
+        # This is an audit count, not a repair: malformed-envelope rows have
+        # zero observable candidates and remain parser failures.
+        raw_candidate_entity_count = (
+            accepted_entity_count + invalid_unit_drops + overlap_drops
+            if parse_error is None
+            else None
+        )
         predictions.append(pred)
         rows.append(
             {
@@ -1022,6 +1449,10 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
                 "rag_passages": [passage["display"] for passage in rag_passages],
                 "attempts": attempts,
                 "sanitization_flags": sanitization_flags,
+                "accepted_entity_count": accepted_entity_count,
+                "invalid_unit_drops": invalid_unit_drops,
+                "overlap_drops": overlap_drops,
+                "raw_candidate_entity_count": raw_candidate_entity_count,
             }
         )
 
@@ -1043,6 +1474,13 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
         field: round(timing_totals_ms[field] / len(rows), 3) if rows else 0.0
         for field in timing_fields
     }
+    parse_failure_rate = parse_failures / len(rows) if rows else 0.0
+    protocol = config.get("protocol", {})
+    parser_failure_ceiling = protocol.get("parser_failure_ceiling")
+    if parser_failure_ceiling is not None:
+        parser_failure_ceiling = float(parser_failure_ceiling)
+        if not 0.0 <= parser_failure_ceiling <= 1.0:
+            raise ValueError("protocol.parser_failure_ceiling must be between 0 and 1")
     summary = {
         "phase": "P3",
         "stage": "extraction_execution",
@@ -1057,15 +1495,33 @@ def run_execute(config: dict[str, Any], config_path: Path) -> int:
         "timing_totals_ms": timing_totals_ms,
         "timing_means_ms": timing_means_ms,
         "parse_failures": parse_failures,
-        "parse_failure_rate": parse_failures / len(rows) if rows else 0.0,
+        "parse_failure_rate": parse_failure_rate,
+        "parser_failure_ceiling": parser_failure_ceiling,
+        "parser_failure_ceiling_passed": (
+            parser_failure_ceiling is None or parse_failure_rate <= parser_failure_ceiling
+        ),
         "sanitized_unit_events": sum(len(row["sanitization_flags"]) for row in rows),
+        "sanitization_counts": {
+            "invalid_unit_drops": sum(int(row["invalid_unit_drops"]) for row in rows),
+            "overlap_drops": sum(int(row["overlap_drops"]) for row in rows),
+            "all_unit_events": sum(len(row["sanitization_flags"]) for row in rows),
+        },
+        "entity_audit_counts": {
+            "accepted_entities": sum(int(row["accepted_entity_count"]) for row in rows),
+            "raw_candidate_entities_observed": sum(
+                int(row["raw_candidate_entity_count"] or 0) for row in rows
+            ),
+            "rows_with_unknown_raw_candidates": sum(
+                1 for row in rows if row["raw_candidate_entity_count"] is None
+            ),
+        },
         "entity_micro": counts.report(),
         "per_query": outputs["per_query"],
         "per_query_sha256": sha256_file(outputs["per_query"]),
     }
     write_json_atomic(Path(outputs["summary"]), summary)
     print(json.dumps(summary, ensure_ascii=False, sort_keys=True))
-    return 0
+    return 0 if summary["parser_failure_ceiling_passed"] else 2
 
 
 def main() -> int:

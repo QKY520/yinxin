@@ -1,0 +1,29 @@
+{
+  "bm25_manifest_sha256": "f89d1cd5f067ba1ddd9917b14d53698dbbb4a1e50f5603b16e6ec81d3a7b77f3",
+  "configs_authorized": false,
+  "dense_manifest_sha256": "c93a05d196f7fd01518affbba76591ca3a3ed5a18796f194f998fc8bb3bd0599",
+  "gate": "JISE_ECFSIE_REVIEW_BASELINE_QWEN_NEUTRAL_ENVELOPE_FORMAL_PREFLIGHT_APPROVED",
+  "leakage_audit": {
+    "blocked_rows": 200,
+    "containment_threshold": 0.8,
+    "eight_gram_exclusion": true,
+    "exact_text_exclusion": true,
+    "input_corpus_rows": 230,
+    "kept_corpus_rows": 200,
+    "labels_stripped": true,
+    "ngram_size": 8,
+    "removed_by_reason": {
+      "source_id_exclusion": 30
+    },
+    "removed_rows": 30,
+    "residual_8gram_rows": 0,
+    "residual_exact_text_rows": 0,
+    "source_id_exclusion": true
+  },
+  "model_calls": 0,
+  "p5_b_sha256": "cbf5b907a421c904e4c121e4e4203dd1451c6fb698032809805de4928ee9f75e",
+  "p5_d_sha256": "ebaa68c940223ff8688377f63a3f9dbafefaf561382b6a3445c5cdda354a1ed0",
+  "query_records": 170,
+  "query_sha256": "42f6ecbbfd1eb57937cd74a04e5b8362fe0976b5bf108e52523a4778dd53bfd0",
+  "support_sha256": "9633c7f6ceee8592408034e26834233e3f03b2f58a104783757ae664a4bab22a"
+}

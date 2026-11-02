@@ -1,0 +1,19 @@
+{
+  "context_limit": 8192,
+  "dry_manifest_sha256": "c1cfdf270bd20d57a477df33b0fd63f2481c0a79af4e9314fc925365cc1332d5",
+  "examples_present": false,
+  "gate": "JISE_ECFSIE_REVIEW_GLOSSARY_ONLY_PREFLIGHT_APPROVED",
+  "glossary_enabled": true,
+  "glossary_entries_max": 8,
+  "glossary_entries_min": 0,
+  "max_input_plus_generation_tokens": 1343,
+  "max_input_tokens": 575,
+  "model_calls": 0,
+  "only_allowed_config_change": true,
+  "passed": true,
+  "queries_with_glossary": 149,
+  "query_records": 170,
+  "rag_present": false,
+  "source_config_sha256": "05e01f5fb33a8223d52618b5621d95b055f257834dbdbc67547f349667ffc606",
+  "target_config_sha256": "3bc541b5d504b0290f1404e48457650baf3012a69a60bfbf033057528ae13dab"
+}

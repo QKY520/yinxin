@@ -1,0 +1,35 @@
+{
+  "api_called": false,
+  "config_path": "configs/reviewer_baselines_20260827/m2_sanity/domain_glossary_only.yaml",
+  "config_sha256": "283f2de8067585e6bff8c77d3315ce03e586996e120331370afb4f24c568dc7c",
+  "dataset": "domain",
+  "dry_run_prompts": "/root/project/configs/reviewer_baselines_20260827/m2_sanity/domain_glossary_only_prompts.jsonl",
+  "dry_run_prompts_sha256": "0c818f7bcb0d26e935b39d037988df05255895879dc9a0ca3f8a4c9fd325de32",
+  "example_selection": {
+    "example_ids": [],
+    "k": 0,
+    "mode": "none",
+    "seed": 42
+  },
+  "generated_at": "2026-08-27T02:57:21.229674+00:00",
+  "glossary_selection": {
+    "candidates": 73,
+    "enabled": true,
+    "match_mode": "substring",
+    "max_entries": 20,
+    "path": "/root/project/data/domain_dict.jsonl"
+  },
+  "gpu_device_present": false,
+  "max_prompt_chars": 907,
+  "model_calls": 0,
+  "model_weights_loaded": false,
+  "phase": "P3",
+  "query_path": "/root/autodl-tmp/data/domain_dev.jsonl",
+  "query_records": 3,
+  "rag_selection": {
+    "enabled": false
+  },
+  "run_id": "m2_domain_glossary_only_sanity",
+  "stage": "extraction_dry_run",
+  "support_path": "/root/autodl-tmp/data/domain_support.jsonl"
+}

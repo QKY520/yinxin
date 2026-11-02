@@ -1,0 +1,31 @@
+{
+  "api_called": false,
+  "config_path": "configs/reviewer_baselines_20260827/m2_sanity/domain_zero_shot.yaml",
+  "config_sha256": "6ab2d7fc5e70af5390b8797b227fab1f79c728293706a994cf8301e8927f7ae8",
+  "dataset": "domain",
+  "dry_run_prompts": "/root/project/configs/reviewer_baselines_20260827/m2_sanity/domain_zero_shot_prompts.jsonl",
+  "dry_run_prompts_sha256": "da70ce3b13f837e6436dad742e845337332ab26f045c21b8f678ad4a0e21cce2",
+  "example_selection": {
+    "example_ids": [],
+    "k": 0,
+    "mode": "none",
+    "seed": 42
+  },
+  "generated_at": "2026-08-27T02:57:20.857666+00:00",
+  "glossary_selection": {
+    "enabled": false
+  },
+  "gpu_device_present": false,
+  "max_prompt_chars": 816,
+  "model_calls": 0,
+  "model_weights_loaded": false,
+  "phase": "P3",
+  "query_path": "/root/autodl-tmp/data/domain_dev.jsonl",
+  "query_records": 3,
+  "rag_selection": {
+    "enabled": false
+  },
+  "run_id": "m2_domain_zero_shot_sanity",
+  "stage": "extraction_dry_run",
+  "support_path": "/root/autodl-tmp/data/domain_support.jsonl"
+}

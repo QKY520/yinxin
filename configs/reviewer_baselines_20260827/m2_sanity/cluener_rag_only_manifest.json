@@ -1,0 +1,42 @@
+{
+  "api_called": false,
+  "config_path": "configs/reviewer_baselines_20260827/m2_sanity/cluener_rag_only.yaml",
+  "config_sha256": "99638df946bafd7e1f7ef32da7ace85e572a90bd2ae2722b3503e1898d59fccd",
+  "dataset": "cluener",
+  "dry_run_prompts": "/root/project/configs/reviewer_baselines_20260827/m2_sanity/cluener_rag_only_prompts.jsonl",
+  "dry_run_prompts_sha256": "d0c23923843c48120e2fc7f8b652c2df03173e3bc149628dc82b21340c3b43a5",
+  "example_selection": {
+    "example_ids": [],
+    "k": 0,
+    "mode": "none",
+    "seed": 42
+  },
+  "generated_at": "2026-08-27T02:57:23.927933+00:00",
+  "glossary_selection": {
+    "enabled": false
+  },
+  "gpu_device_present": false,
+  "max_prompt_chars": 919,
+  "model_calls": 0,
+  "model_weights_loaded": false,
+  "phase": "P3",
+  "query_path": "/root/autodl-tmp/data/cluener_tune.jsonl",
+  "query_records": 3,
+  "rag_selection": {
+    "chunk_chars": 260,
+    "chunk_count": 9673,
+    "corpus_path": "/root/autodl-tmp/data/cluener_train_pool.jsonl",
+    "corpus_rows_sha256": "cdc3b21794d4191917dc40d3c7b238b0002508455b80988e347c7a6b5c0663e8",
+    "enabled": true,
+    "excluded_source_ids": 0,
+    "mode": "lexical_preview",
+    "note": "GPU-free lexical preview for prompt/evidence audit only; final D uses bge_faiss_rerank.",
+    "overlap_chars": 40,
+    "raw_chunk_count": 9673,
+    "retrieve_top_k": 20,
+    "top_k": 3
+  },
+  "run_id": "m2_cluener_rag_only_sanity",
+  "stage": "extraction_dry_run",
+  "support_path": "/root/autodl-tmp/data/cluener_support_k5_seed42.jsonl"
+}
